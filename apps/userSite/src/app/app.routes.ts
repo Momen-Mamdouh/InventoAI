@@ -35,7 +35,7 @@ export const routes: Routes = [
       {
         path: 'account-settings',
         loadChildren: () =>
-          import('@invento/user-site/app/features/account-settings/account-settings.routes').then(
+          import('@invento/user-site/app/pages/account-settings/account-settings.routes').then(
             (m) => m.ACCOUNT_SETTINGS_ROUTES,
           ),
       },

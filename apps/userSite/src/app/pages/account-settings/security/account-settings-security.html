@@ -13,16 +13,19 @@
           <input
             hlmInput
             id="currentPassword"
-            class="pr-10 w-full"
+            class="pe-10 w-full"
             [type]="showCurrent() ? 'text' : 'password'"
             formControlName="currentPassword"
             autocomplete="current-password"
             placeholder="Enter current password"
           />
           <button
+            hlmBtn
+            variant="ghost"
+            size="icon-sm"
             type="button"
             (click)="showCurrent.set(!showCurrent())"
-            class="top-1/2 right-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
+            class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
             [attr.aria-label]="showCurrent() ? 'Hide password' : 'Show password'"
           >
             <ng-icon [name]="showCurrent() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
@@ -38,16 +41,19 @@
             <input
               hlmInput
               id="newPassword"
-              class="pr-10 w-full"
+              class="pe-10 w-full"
               [type]="showNew() ? 'text' : 'password'"
               formControlName="newPassword"
               autocomplete="new-password"
               placeholder="Min. 8 characters"
             />
             <button
+              hlmBtn
+              variant="ghost"
+              size="icon-sm"
               type="button"
               (click)="showNew.set(!showNew())"
-              class="top-1/2 right-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
+              class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
               [attr.aria-label]="showNew() ? 'Hide password' : 'Show password'"
             >
               <ng-icon [name]="showNew() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
@@ -56,7 +62,7 @@
           @if (
             form.controls.newPassword.touched && form.controls.newPassword.hasError('minlength')
           ) {
-            <p class="text-destructive text-xs">Password must be at least 8 characters.</p>
+            <p hlmSmall class="text-destructive text-xs">Password must be at least 8 characters.</p>
           }
         </div>
 
@@ -66,23 +72,26 @@
             <input
               hlmInput
               id="confirmPassword"
-              class="pr-10 w-full"
+              class="pe-10 w-full"
               [type]="showConfirm() ? 'text' : 'password'"
               formControlName="confirmPassword"
               autocomplete="new-password"
               placeholder="Repeat new password"
             />
             <button
+              hlmBtn
+              variant="ghost"
+              size="icon-sm"
               type="button"
               (click)="showConfirm.set(!showConfirm())"
-              class="top-1/2 right-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
+              class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
               [attr.aria-label]="showConfirm() ? 'Hide password' : 'Show password'"
             >
               <ng-icon [name]="showConfirm() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
             </button>
           </div>
           @if (form.controls.confirmPassword.touched && form.hasError('passwordMismatch')) {
-            <p class="text-destructive text-xs">Passwords do not match.</p>
+            <p hlmSmall class="text-destructive text-xs">Passwords do not match.</p>
           }
         </div>
       </div>

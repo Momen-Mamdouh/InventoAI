@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideCreditCard, lucidePlus, lucideTrash2 } from '@ng-icons/lucide';
@@ -8,6 +8,7 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSeparatorImports } from '@spartan/helm/separator';
+import { HlmTypographyImports } from '@spartan/helm/typography';
 
 interface PaymentCard {
   id: number;
@@ -30,9 +31,11 @@ interface PaymentCard {
     HlmLabelImports,
     HlmBadgeImports,
     HlmSeparatorImports,
+    HlmTypographyImports,
   ],
   providers: [provideIcons({ lucideCreditCard, lucidePlus, lucideCheck, lucideTrash2 })],
   templateUrl: './account-settings-billing.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsBillingComponent {
   private readonly fb = inject(FormBuilder);

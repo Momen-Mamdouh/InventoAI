@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -24,6 +24,7 @@ interface NavItem {
     provideIcons({ lucideUser, lucideShield, lucideBell, lucideCreditCard, lucideTrash2 }),
   ],
   templateUrl: './account-settings-sidebar.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsSidebarComponent {
   // "My Stores" removed for the e-commerce customer-facing profile.

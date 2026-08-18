@@ -90,13 +90,13 @@
                 </div>
                 <div>
                   <div class="flex items-center gap-2">
-                    <p class="font-medium">{{ card.brand }} •••• {{ card.last4 }}</p>
+                    <p hlmSmall>{{ card.brand }} •••• {{ card.last4 }}</p>
                     @if (card.isDefault) {
                       <span hlmBadge variant="secondary">Default</span>
                     }
                   </div>
-                  <p class="text-muted-foreground text-sm">{{ card.holderName }}</p>
-                  <p class="text-muted-foreground text-sm">Expires {{ card.expiry }}</p>
+                  <p hlmMuted>{{ card.holderName }}</p>
+                  <p hlmMuted>Expires {{ card.expiry }}</p>
                 </div>
               </div>
 
