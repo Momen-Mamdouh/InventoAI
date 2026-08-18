@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideUpload } from '@ng-icons/lucide';
@@ -6,6 +6,7 @@ import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmCardImports } from '@spartan/helm/card';
+import { HlmTypographyImports } from '@spartan/helm/typography';
 
 @Component({
   selector: 'app-account-settings-profile',
@@ -17,9 +18,11 @@ import { HlmCardImports } from '@spartan/helm/card';
     HlmInputImports,
     HlmLabelImports,
     HlmCardImports,
+    HlmTypographyImports,
   ],
   providers: [provideIcons({ lucideUpload })],
   templateUrl: './account-settings-profile.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsProfileComponent {
   private readonly fb = inject(FormBuilder);

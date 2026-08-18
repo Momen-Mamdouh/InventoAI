@@ -9,14 +9,14 @@ export const ACCOUNT_SETTINGS_ROUTES: Routes = [
       {
         path: 'profile',
         loadComponent: () =>
-          import('./components/account-settings-profile/account-settings-profile').then(
+          import('./profile/account-settings-profile').then(
             (m) => m.AccountSettingsProfileComponent,
           ),
       },
       {
         path: 'security',
         loadComponent: () =>
-          import('./components/account-settings-security/account-settings-security').then(
+          import('./security/account-settings-security').then(
             (m) => m.AccountSettingsSecurityComponent,
           ),
       },
@@ -24,7 +24,7 @@ export const ACCOUNT_SETTINGS_ROUTES: Routes = [
       {
         path: 'billing',
         loadComponent: () =>
-          import('./components/account-settings-billing/account-settings-billing').then(
+          import('./billing/account-settings-billing').then(
             (m) => m.AccountSettingsBillingComponent,
           ),
       },

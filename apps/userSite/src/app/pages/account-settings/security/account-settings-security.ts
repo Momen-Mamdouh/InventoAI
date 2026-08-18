@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -13,6 +13,7 @@ import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmCardImports } from '@spartan/helm/card';
+import { HlmTypographyImports } from '@spartan/helm/typography';
 
 function passwordsMatchValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
@@ -32,9 +33,11 @@ function passwordsMatchValidator(): ValidatorFn {
     HlmInputImports,
     HlmLabelImports,
     HlmCardImports,
+    HlmTypographyImports,
   ],
   providers: [provideIcons({ lucideEye, lucideEyeOff, lucideLock })],
   templateUrl: './account-settings-security.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsSecurityComponent {
   private readonly fb = inject(FormBuilder);
