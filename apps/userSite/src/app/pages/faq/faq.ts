@@ -39,7 +39,7 @@ import {
 // Feature
 import { FaqDataService } from '@invento/user-site/app/features/faq';
 import type { FaqCategory, FaqItem } from '@invento/user-site/app/features/faq';
-import { environment } from '@invento/user-site/environments/environment';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
   selector: 'app-faq',
@@ -79,6 +79,9 @@ import { environment } from '@invento/user-site/environments/environment';
   styleUrl: './faq.css',
 })
 export class FaqComponent {
+  /** Resolved from the URL/host, never a build-time constant. */
+  private readonly resolvedStoreSlug = inject(StoreSlugService).slug;
+
   private readonly faqDataService = inject(FaqDataService);
   private readonly route = inject(ActivatedRoute);
 
@@ -172,7 +175,7 @@ export class FaqComponent {
     this.currentStoreSlug =
       this.route.snapshot.paramMap.get('storeSlug') ??
       this.route.parent?.snapshot.paramMap.get('storeSlug') ??
-      environment.storeSlug;
+      this.resolvedStoreSlug();
 
     this.faqDataService.loadFaqs(this.currentStoreSlug);
 

@@ -1,7 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, firstValueFrom, tap, throwError } from 'rxjs';
-import { environment } from '@invento/user-site/environments/environment';
 import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
 import type {
   CancelOrderPayload,
@@ -12,6 +11,8 @@ import type {
   OrderStatusConfig,
   OrderSummaryItem,
 } from '@invento/user-site/app/features/orders';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
+import { environment } from '@invento/user-site/environments/environment';
 
 const RECIPIENT_OVERRIDES_KEY = 'invento_order_recipients';
 
@@ -37,7 +38,9 @@ export class OrdersDataService {
   private readonly _limit = signal<number>(20);
   private readonly _totalPages = signal<number>(1);
   private readonly _totalCount = signal<number>(0);
-  private readonly _activeStoreSlug = signal<string>(environment.storeSlug);
+  /** Seeded from the URL, not a constant — a stale fallback would fetch another tenant's orders. */
+  private readonly _urlSlug = inject(StoreSlugService).slug;
+  private readonly _activeStoreSlug = signal<string>('');
 
   // Readonly public signals
   readonly orders = this._orders.asReadonly();
@@ -109,7 +112,7 @@ export class OrdersDataService {
   // --- API Observable Methods ---
 
   getMyOrders(slug: string, page = 1, limit = 20): Observable<MyOrdersResponse> {
-    const storeSlug = slug || this._activeStoreSlug() || environment.storeSlug;
+    const storeSlug = slug || this._activeStoreSlug() || this._urlSlug();
     const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
 
     return this.http.get<MyOrdersResponse>(`${this.apiUrl}/site/${storeSlug}/orders/me`, {
@@ -118,7 +121,7 @@ export class OrdersDataService {
   }
 
   getMyOrder(slug: string, orderNumber: number): Observable<OrderDetail> {
-    const storeSlug = slug || this._activeStoreSlug() || environment.storeSlug;
+    const storeSlug = slug || this._activeStoreSlug() || this._urlSlug();
     return this.http.get<OrderDetail>(`${this.apiUrl}/site/${storeSlug}/orders/me/${orderNumber}`);
   }
 
@@ -127,7 +130,7 @@ export class OrdersDataService {
     orderNumber: number,
     payload?: CancelOrderPayload,
   ): Observable<OrderDetail> {
-    const storeSlug = slug || this._activeStoreSlug() || environment.storeSlug;
+    const storeSlug = slug || this._activeStoreSlug() || this._urlSlug();
     return this.http.post<OrderDetail>(
       `${this.apiUrl}/site/${storeSlug}/orders/me/${orderNumber}/cancel`,
       payload || {},
@@ -161,7 +164,7 @@ export class OrdersDataService {
   // --- Reactive State Management ---
 
   loadOrders(slug?: string, page = 1, limit = 20): void {
-    const storeSlug = slug || this._activeStoreSlug() || environment.storeSlug;
+    const storeSlug = slug || this._activeStoreSlug() || this._urlSlug();
     this._activeStoreSlug.set(storeSlug);
     this._isLoading.set(true);
     this._error.set(null);
@@ -221,7 +224,7 @@ export class OrdersDataService {
       return currentMap.get(orderNumber)!;
     }
 
-    const storeSlug = slug || this._activeStoreSlug() || environment.storeSlug;
+    const storeSlug = slug || this._activeStoreSlug() || this._urlSlug();
 
     // Mark as loading
     this._loadingDetails.update((set) => {
@@ -258,7 +261,7 @@ export class OrdersDataService {
     reason?: string,
     slug?: string,
   ): Promise<{ success: boolean; message?: string }> {
-    const storeSlug = slug || this._activeStoreSlug() || environment.storeSlug;
+    const storeSlug = slug || this._activeStoreSlug() || this._urlSlug();
     this._isCancelling.set(orderNumber);
 
     try {

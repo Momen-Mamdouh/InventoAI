@@ -88,5 +88,9 @@
     "in_progress": "In Progress",
     "delivered": "Delivered",
     "total_spent": "Total Spent"
+  },
+  "no_store": {
+    "title": "No store selected",
+    "description": "This address does not point to a store. Open a storefront by its own web address, or add the store name to the URL."
   }
 }

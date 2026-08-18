@@ -1,9 +1,10 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, throwError } from 'rxjs';
-import { environment } from '@invento/user-site/environments/environment';
 import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
 import type { FaqItem } from '@invento/user-site/app/features/faq/types';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
+import { environment } from '@invento/user-site/environments/environment';
 
 /**
  * Service that manages fetching FAQ entries for a store from the backend endpoint:
@@ -11,6 +12,10 @@ import type { FaqItem } from '@invento/user-site/app/features/faq/types';
  */
 @Injectable({ providedIn: 'root' })
 export class FaqDataService {
+  /** The tenant in the URL. Never a build-time constant: a stale fallback here would
+   * silently serve one store's FAQs under another store's URL. */
+  private readonly storeSlug = inject(StoreSlugService).slug;
+
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
@@ -28,7 +33,7 @@ export class FaqDataService {
    * Fetch FAQs for the given store slug as an Observable.
    */
   getFaqs(slug: string): Observable<FaqItem[]> {
-    const storeSlug = slug || environment.storeSlug;
+    const storeSlug = slug || this.storeSlug();
     return this.http.get<FaqItem[]>(`${this.apiUrl}/site/${storeSlug}/faqs`);
   }
 
@@ -36,7 +41,7 @@ export class FaqDataService {
    * Load FAQ data for the store into reactive signals.
    */
   loadFaqs(slug?: string): void {
-    const storeSlug = slug || environment.storeSlug;
+    const storeSlug = slug || this.storeSlug();
 
     this._isLoading.set(true);
     this._error.set(null);

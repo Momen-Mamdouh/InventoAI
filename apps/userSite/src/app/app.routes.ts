@@ -8,6 +8,7 @@ import { OrderConfirmedComponent } from '@invento/user-site/app/pages/order-conf
 import { HomeComponent } from '@invento/user-site/app/pages/home';
 import { FaqComponent } from '@invento/user-site/app/pages/faq';
 import { OrdersComponent } from '@invento/user-site/app/pages/orders';
+import { NoStoreComponent } from '@invento/user-site/app/pages/no-store';
 
 import { AuthLayout } from '@invento/user-site/app/layouts/auth-layout/auth-layout';
 import { Login } from '@invento/user-site/app/pages/auth/login/login';
@@ -15,11 +16,11 @@ import { Register } from '@invento/user-site/app/pages/auth/register/register';
 import { ForgotPassword } from '@invento/user-site/app/pages/auth/forgot-password/forgot-password';
 import { ResetPassword } from '@invento/user-site/app/pages/auth/reset-password/reset-password';
 import { VerifyEmail } from '@invento/user-site/app/pages/auth/verify-email/verify-email';
-import { environment } from '../environments/environment';
 
 export const routes: Routes = [
-  // Redirect root to fallback store slug for local testing
-  { path: '', redirectTo: environment.storeSlug, pathMatch: 'full' },
+  // No slug in the URL means no store to show. Previously this redirected to a slug baked
+  // into the environment file, which guessed a tenant the database might not have.
+  { path: '', component: NoStoreComponent, pathMatch: 'full' },
 
   // Multi-tenant route wrapper
   {

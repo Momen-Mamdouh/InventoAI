@@ -3,13 +3,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
 import { AuthService } from '../../../core/service/auth.service';
-import { environment } from '../../../../environments/environment';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 
 import { extractErrorMessage } from '../../../core/utils/error.utils';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +19,9 @@ import { extractErrorMessage } from '../../../core/utils/error.utils';
   styleUrl: './login.css',
 })
 export class Login implements OnInit {
+  /** Resolved from the URL/host, never a build-time constant. */
+  private readonly resolvedStoreSlug = inject(StoreSlugService).slug;
+
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -36,7 +39,7 @@ export class Login implements OnInit {
     this.storeSlug =
       this.route.snapshot.paramMap.get('storeSlug') ??
       this.route.parent?.snapshot.paramMap.get('storeSlug') ??
-      environment.storeSlug;
+      this.resolvedStoreSlug();
 
     // Prefill email if provided in query params
     const emailParam = this.route.snapshot.queryParamMap.get('email');

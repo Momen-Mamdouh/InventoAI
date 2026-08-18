@@ -40,8 +40,8 @@ import { CartService } from '@invento/user-site/app/core/service/cart.service';
 import { AuthService } from '@invento/user-site/app/core/service/auth.service';
 import { OrdersDataService, type OrderDetail } from '@invento/user-site/app/features/orders';
 import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
-import { environment } from '@invento/user-site/environments/environment';
 import type { CreateOrderPayload } from '@invento/user-site/app/core/interface/cart.interface';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
   selector: 'app-checkout',
@@ -79,6 +79,9 @@ import type { CreateOrderPayload } from '@invento/user-site/app/core/interface/c
   templateUrl: './checkout.html',
 })
 export class CheckoutComponent implements OnInit {
+  /** Resolved from the URL/host, never a build-time constant. */
+  private readonly resolvedStoreSlug = inject(StoreSlugService).slug;
+
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -96,7 +99,7 @@ export class CheckoutComponent implements OnInit {
   // UI state
   readonly isSubmitting = signal<boolean>(false);
   readonly isClearCartModalOpen = signal<boolean>(false);
-  readonly activeStoreSlug = signal<string>(environment.storeSlug);
+  readonly activeStoreSlug = signal<string>(this.resolvedStoreSlug());
 
   readonly checkoutForm = this.fb.group({
     firstName: ['', [Validators.required, Validators.maxLength(50)]],
