@@ -9,13 +9,13 @@ import {
 import { Router, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
 import { AuthService } from '../../../core/service/auth.service';
-import { environment } from '../../../../environments/environment';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 
 import { extractErrorMessage } from '../../../core/utils/error.utils';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -25,6 +25,9 @@ import { extractErrorMessage } from '../../../core/utils/error.utils';
   styleUrl: './reset-password.css',
 })
 export class ResetPassword implements OnInit {
+  /** Resolved from the URL/host, never a build-time constant. */
+  private readonly resolvedStoreSlug = inject(StoreSlugService).slug;
+
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -96,7 +99,7 @@ export class ResetPassword implements OnInit {
     this.storeSlug =
       this.route.snapshot.paramMap.get('storeSlug') ??
       this.route.parent?.snapshot.paramMap.get('storeSlug') ??
-      environment.storeSlug;
+      this.resolvedStoreSlug();
 
     // Cache returnUrl if present
     const returnUrl =

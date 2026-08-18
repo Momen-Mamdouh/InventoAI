@@ -30,10 +30,10 @@ import {
 
 import { CartService } from '@invento/user-site/app/core/service/cart.service';
 import { animateElementsOnRender } from '@invento/user-site/app/core/utils/animation.utils';
-import { environment } from '@invento/user-site/environments/environment';
 import { FormatOrderDatePipe } from '@invento/user-site/app/core/pipes/format-date.pipe';
 import type { PlacedOrderResponse } from '@invento/user-site/app/core/interface/cart.interface';
 import { OrdersDataService, type OrderDetail } from '@invento/user-site/app/features/orders';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
   selector: 'app-order-confirmed',
@@ -63,6 +63,9 @@ import { OrdersDataService, type OrderDetail } from '@invento/user-site/app/feat
   templateUrl: './order-confirmed.html',
 })
 export class OrderConfirmedComponent implements OnInit {
+  /** Resolved from the URL/host, never a build-time constant. */
+  private readonly resolvedStoreSlug = inject(StoreSlugService).slug;
+
   protected readonly cartService = inject(CartService);
   protected readonly ordersService = inject(OrdersDataService);
   private readonly route = inject(ActivatedRoute);
@@ -71,7 +74,7 @@ export class OrderConfirmedComponent implements OnInit {
     return (
       this.route.snapshot.paramMap.get('storeSlug') ||
       this.route.parent?.snapshot.paramMap.get('storeSlug') ||
-      environment.storeSlug
+      this.resolvedStoreSlug()
     );
   });
 
