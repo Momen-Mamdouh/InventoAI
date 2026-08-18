@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 
 import { Products } from '@invento/user-site/app/pages/products/product';
 import { ProductDetails } from '@invento/user-site/app/pages/product-details/product-details';
-import { CheckoutComponent } from '@invento/user-site/app/features/checkout/checkout';
+import { CheckoutComponent } from '@invento/user-site/app/pages/checkout';
 import { NotFoundComponent } from '@invento/user-site/app/shared/components/not-found/not-found';
 import { OrderConfirmedComponent } from '@invento/user-site/app/pages/order-confirmed';
 import { HomeComponent } from '@invento/user-site/app/pages/home';
