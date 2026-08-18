@@ -1,4 +1,12 @@
-import { Component, afterNextRender, inject, signal, effect, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  afterNextRender,
+  inject,
+  signal,
+  effect,
+  OnInit,
+} from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule, CurrencyPipe } from '@angular/common';
@@ -13,6 +21,7 @@ import { EmptyState } from '@invento/shared';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmDialogImports } from '@spartan/helm/dialog';
 import { BrnDialogContent } from '@spartan-ng/brain/dialog';
+import { HlmTypographyImports } from '@spartan/helm/typography';
 import { provideIcons, NgIconComponent } from '@ng-icons/core';
 import {
   lucideShoppingCart,
@@ -27,13 +36,12 @@ import {
 } from '@ng-icons/lucide';
 import { toast } from '@spartan/helm/sonner';
 
-import { CartService } from '../../core/service/cart.service';
-import { AuthService } from '../../core/service/auth.service';
-import { OrdersDataService } from '@invento/user-site/app/features/orders';
-import { extractErrorMessage } from '../../core/utils/error.utils';
-import { environment } from '../../../environments/environment';
-import type { CreateOrderPayload } from '../../core/interface/cart.interface';
-import type { OrderDetail } from '../orders/types/orders';
+import { CartService } from '@invento/user-site/app/core/service/cart.service';
+import { AuthService } from '@invento/user-site/app/core/service/auth.service';
+import { OrdersDataService, type OrderDetail } from '@invento/user-site/app/features/orders';
+import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
+import { environment } from '@invento/user-site/environments/environment';
+import type { CreateOrderPayload } from '@invento/user-site/app/core/interface/cart.interface';
 
 @Component({
   selector: 'app-checkout',
@@ -50,9 +58,11 @@ import type { OrderDetail } from '../orders/types/orders';
     HlmTextareaImports,
     HlmDialogImports,
     BrnDialogContent,
+    HlmTypographyImports,
     EmptyState,
     NgIconComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     provideIcons({
       lucideShoppingCart,
