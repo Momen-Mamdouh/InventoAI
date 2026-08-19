@@ -107,6 +107,7 @@ export class Preview {
   readonly navTabs = this.previewDataClientService.navTabs;
   readonly isLoading = this.previewDataClientService.isLoading;
   readonly themeError = this.previewDataClientService.themeError;
+  readonly usingFallbackThemes = this.previewDataClientService.usingFallbackThemes;
   readonly logoUrl = this.builderState.logoUrl;
 
   readonly previewUrl = computed(() => {
@@ -310,6 +311,14 @@ export class Preview {
     const theme = this.selectedTheme();
     if (!theme) {
       toast.error(this._localeService.translate('preview_theme_not_ready'));
+      return;
+    }
+
+    // The sample themes carry slugs like `midnight-edge`, not the store's
+    // theme UUIDs, so publishing one came back as "themeId must be a UUID".
+    // Say why up front instead of forwarding an id the backend cannot accept.
+    if (this.usingFallbackThemes()) {
+      toast.error(this._localeService.translate('preview_themes_unavailable'));
       return;
     }
 
