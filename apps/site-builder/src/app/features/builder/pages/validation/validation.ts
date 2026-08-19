@@ -141,6 +141,9 @@ export class Validation {
   finish(): void {
     if (this.isSubmitting()) return;
     this.isSubmitting.set(true);
+    // Cleared up front so a failed or abandoned retry cannot leave a stale
+    // confirmation behind that would keep the Preview guard open.
+    this.builderState.domainConfirmed.set(false);
     this.builderState.isNavigating.set(true);
     this.currentStep.set('AI_ANALYSIS');
     this.domainSuggestions.set([]);
@@ -178,6 +181,9 @@ export class Validation {
           if (themesRes?.themes?.length) {
             this.builderState.themes.set(themesRes.themes);
           }
+          // Only now is the step genuinely complete: the domain was confirmed
+          // and theme generation ran. This is what opens the Preview guard.
+          this.builderState.domainConfirmed.set(true);
           this.router.navigate(['/build/preview']);
         },
         error: (err) => {
