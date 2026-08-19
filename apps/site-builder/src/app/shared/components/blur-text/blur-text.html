@@ -1,0 +1,10 @@
+<p class="flex flex-wrap justify-center" [ngClass]="className()">
+  @for (segment of elements(); track $index) {
+    <span class="blur-text-element inline-block will-change-[transform,filter,opacity]">
+      {{ segment.text === ' ' ? '&nbsp;' : segment.text }}
+    </span>
+    @if (segment.needsSpace) {
+      <span>&nbsp;</span>
+    }
+  }
+</p>

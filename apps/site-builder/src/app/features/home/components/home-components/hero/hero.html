@@ -1,134 +1,144 @@
 <section
-  class="items-center gap-10 lg:gap-16 grid grid-cols-1 lg:grid-cols-2 mx-auto px-4 sm:px-8 md:px-16 lg:px-24 py-10 max-w-7xl"
+  class="relative flex flex-col items-center justify-center min-h-[85vh] mx-auto px-4 sm:px-8 md:px-16 lg:px-24 py-20 max-w-7xl overflow-hidden"
 >
-  <div class="flex flex-col gap-6 w-full max-w-2xl">
-    <!-- Andrew Animation  -->
-    <!-- <span
-      appScrollAnimate="fade-left"
-      [animDelay]="0"
-      hlmBadge
-      variant="outline"
-      class="relative gap-2 px-3 py-1.5 w-fit overflow-hidden font-mono text-xs hero-badge"
-    >
-      <span class="absolute inset-0 pointer-events-none hero-badge__shimmer"></span>
-      <span class="relative bg-primary rounded-full w-2 h-2 animate-pulse"></span>
-      <span class="relative">SYSTEM_ONLINE — v1.0.0</span>
-    </span> -->
-    <!-- Added her the same page header used for all pages waiting for Andrew approve -->
-    <app-page-header badgeText="hero_badge" title="" accentTitle=""></app-page-header>
-    <!-- Used hlmH1 directive from SpartanUI to have the same shape in all project -->
-    <h1 class="flex flex-col gap-1 leading-tight" [class]="hlmH1">
+  <!-- Background Glow / Grid -->
+  <div class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
+    <div
+      class="absolute w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] opacity-70"
+    ></div>
+    <div
+      class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
+    ></div>
+  </div>
+
+  <div class="relative z-10 flex flex-col items-center text-center gap-8 w-full max-w-4xl mx-auto">
+    <!-- Massive Typography -->
+    <h1 class="flex flex-col gap-2 leading-tight tracking-tighter" [class]="hlmH1">
+      <span appScrollAnimate="fade-up" [animDelay]="100" class="block mb-4 md:mb-6">
+        <span
+          class="inline-block pb-[0.2em] -mb-[0.2em] font-extrabold text-foreground text-5xl md:text-7xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70"
+        >
+          {{ 'hero_title' | translate }}
+        </span>
+      </span>
       <span
         appScrollAnimate="fade-up"
-        [animDelay]="100"
-        class="block font-bold text-foreground text-5xl md:text-6xl lg:text-7xl"
+        [animDelay]="200"
+        class="block min-h-[1.2em] font-medium text-3xl md:text-5xl lg:text-6xl text-primary"
       >
-        {{ 'hero_title' | translate }}
-      </span>
-      <!-- Typing Animation -->
-      <span appScrollAnimate="fade-up" [animDelay]="200" class="block min-h-[1.2em]">
-        <app-typing-text [words]="welcomeWords" />
+        <app-blur-text [texts]="welcomeWords" />
       </span>
     </h1>
-    <!-- Used hlmP directive from SpartanUI to ahve the same shape in all project -->
+
     <p
       appScrollAnimate="fade-up"
       [animDelay]="300"
-      class="max-w-lg text-muted-foreground text-base leading-relaxed"
+      class="max-w-2xl text-muted-foreground text-lg md:text-xl leading-relaxed font-medium"
       [class]="hlmP"
     >
       {{ 'hero_desc' | translate }}
     </p>
-    <div appScrollAnimate="fade-up" [animDelay]="400" class="flex sm:flex-row flex-col gap-3 mt-2">
-      <!-- Added here Chevron right icon instead of using normal text as (→) -->
-      <a hlmBtn routerLink="/build" class="justify-center gap-2 w-full sm:w-auto font-mono text-sm">
+
+    <!-- Action Buttons -->
+    <div
+      appScrollAnimate="fade-up"
+      [animDelay]="400"
+      class="flex flex-col sm:flex-row items-center gap-4 mt-6"
+    >
+      <a
+        hlmBtn
+        routerLink="/build"
+        class="justify-center gap-2 w-full sm:w-auto !rounded-full !px-8 !py-6 text-base font-semibold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+      >
         <ng-icon name="lucideBolt" />
         {{ 'hero_btn' | translate }}
         <ng-icon name="lucideChevronRight" />
       </a>
-      <!-- Commented the View Architecture btn as it is not used for anything here Waiting for ANDREW Approve -->
-      <!-- <button
-        hlmBtn
-        variant="outline"
-        class="justify-center gap-2 w-full sm:w-auto font-mono text-sm"
-      >
-        <ng-icon name="lucideCode" />
-        VIEW_ARCHITECTURE
-      </button> -->
     </div>
   </div>
 
-  <!-- AI schema-generation terminal visual, desktop only -->
+  <!-- Abstract Glassmorphic Visualization -->
   <div
-    appScrollAnimate="fade-left"
-    [animDelay]="200"
-    class="hidden relative lg:flex justify-center items-center"
+    appScrollAnimate="fade-up"
+    [animDelay]="600"
+    class="relative z-10 w-full max-w-5xl mt-20 perspective-1000"
   >
-    <!-- Ambient glow behind the panel -->
     <div
-      class="-z-10 absolute inset-0 bg-primary/20 blur-3xl rounded-full hero-terminal__glow"
-      aria-hidden="true"
-    ></div>
-
-    <div
-      class="relative bg-card shadow-2xl shadow-primary/10 border border-border rounded-xl w-full max-w-md overflow-hidden hero-terminal"
-      aria-hidden="true"
+      class="relative rounded-2xl border border-border/50 bg-background/40 backdrop-blur-xl shadow-2xl overflow-hidden transform hover:-translate-y-2 transition-transform duration-700"
     >
-      <!-- Panel header -->
-      <div class="flex items-center gap-2 bg-muted/50 px-4 py-3 border-border border-b">
-        <span class="bg-red-500 rounded-full w-2.5 h-2.5"></span>
-        <span class="bg-yellow-500 rounded-full w-2.5 h-2.5"></span>
-        <span class="bg-green-500 rounded-full w-2.5 h-2.5"></span>
-        <span class="ml-2 font-mono text-muted-foreground text-xs">{{
-          'hero_terminal_file' | translate
-        }}</span>
+      <!-- Browser Header -->
+      <div class="flex items-center gap-2 px-4 py-3 border-b border-border/50 bg-muted/20">
+        <div class="flex gap-1.5">
+          <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+        </div>
+        <div
+          class="mx-auto px-6 py-1 rounded-md bg-muted/30 text-xs font-mono text-muted-foreground"
+        >
+          site-builder.invento.ai
+        </div>
       </div>
 
-      <!-- Panel body -->
-      <div class="flex flex-col gap-2.5 p-5 font-mono text-xs sm:text-sm leading-relaxed">
-        <div appScrollAnimate="fade-up" [animDelay]="350" class="text-muted-foreground uppercase">
-          <app-double-slash />
-          {{ 'hero_terminal_user_prompt' | translate }}
-        </div>
-        <div appScrollAnimate="fade-up" [animDelay]="450" class="text-foreground">
-          <ng-icon name="lucideTerminal" class="text-foreground" />
-          {{ 'hero_terminal_prompt_value' | translate }}
-        </div>
-        <div appScrollAnimate="fade-up" [animDelay]="550" class="text-muted-foreground">
-          <ng-icon name="lucideTerminal" class="text-foreground" />
-          {{ 'hero_terminal_schema' | translate }}
-          <app-typing-text fontSizeClasses="text-md" [words]="terminalGenratingWords" />
-        </div>
+      <!-- Abstract Content Grid (Bento Style Preview) -->
+      <div
+        class="grid grid-cols-12 gap-4 p-6 md:p-8 bg-gradient-to-b from-transparent to-muted/10 h-[300px] md:h-[400px]"
+      >
+        <!-- Sidebar Mock -->
         <div
-          appScrollAnimate="fade-up"
-          [animDelay]="650"
-          class="flex items-center gap-2.5 text-foreground"
+          class="col-span-3 rounded-xl border border-border/40 bg-card/30 flex flex-col gap-3 p-4"
         >
-          <ng-icon name="lucideTerminal" class="text-foreground" />
-          {{ 'hero_terminal_theme' | translate }}
-          <span> &#123; {{ 'hero_terminal_theme_primary' | translate }} </span>
-          <app-typing-text fontSizeClasses="text-md" [words]="terminalThemeWords" />
-          <span>&#125;</span>
+          <div class="w-full h-8 rounded-lg bg-primary/20 animate-pulse"></div>
+          <div class="w-3/4 h-4 rounded-md bg-muted/50 mt-4"></div>
+          <div class="w-1/2 h-4 rounded-md bg-muted/50"></div>
+          <div class="w-2/3 h-4 rounded-md bg-muted/50"></div>
         </div>
-        <div
-          appScrollAnimate="fade-up"
-          [animDelay]="750"
-          class="flex items-center gap-2 text-foreground"
-        >
-          {{ 'hero_terminal_storefront' | translate }}
-          <ng-icon name="lucideCheck" class="text-green-500" />
-          <span class="hero-terminal__cursor" aria-hidden="true"></span>
+
+        <!-- Main Content Mock -->
+        <div class="col-span-9 flex flex-col gap-4">
+          <!-- Top Row -->
+          <div class="grid grid-cols-3 gap-4 h-24">
+            <div
+              class="col-span-1 rounded-xl border border-border/40 bg-card/30 flex items-center p-4"
+            >
+              <div class="w-10 h-10 rounded-full bg-blue-500/20 flex-shrink-0"></div>
+              <div class="ml-3 flex flex-col gap-2 w-full">
+                <div class="w-1/2 h-3 rounded bg-muted/60"></div>
+                <div class="w-3/4 h-2 rounded bg-muted/40"></div>
+              </div>
+            </div>
+            <div
+              class="col-span-1 rounded-xl border border-border/40 bg-card/30 flex items-center p-4"
+            >
+              <div class="w-10 h-10 rounded-full bg-green-500/20 flex-shrink-0"></div>
+              <div class="ml-3 flex flex-col gap-2 w-full">
+                <div class="w-1/2 h-3 rounded bg-muted/60"></div>
+                <div class="w-3/4 h-2 rounded bg-muted/40"></div>
+              </div>
+            </div>
+            <div
+              class="col-span-1 rounded-xl border border-border/40 bg-card/30 flex items-center p-4"
+            >
+              <div class="w-10 h-10 rounded-full bg-primary/20 flex-shrink-0"></div>
+              <div class="ml-3 flex flex-col gap-2 w-full">
+                <div class="w-1/2 h-3 rounded bg-muted/60"></div>
+                <div class="w-3/4 h-2 rounded bg-muted/40"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Hero Mock inside Preview -->
+          <div
+            class="flex-1 rounded-xl border border-border/40 bg-card/30 p-6 flex items-center justify-center overflow-hidden relative"
+          >
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+            <div class="text-center z-10 flex flex-col items-center gap-4">
+              <div class="w-48 h-8 rounded-lg bg-foreground/10"></div>
+              <div class="w-64 h-4 rounded-md bg-muted/50"></div>
+              <div class="w-32 h-10 rounded-full bg-primary/20 mt-2"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- Mo'men Comment :
-  1- Add spartanUI typography directive to make sure all app use it
-  2- Add app-page-header instead of other badge above to make everything comp in same dir
-  3- Add AI schema-generation terminal visual, desktop only to make hero section better in animation
-  4- I used same animation logic Andrew implement to give cursor effects on added panel
-  5- Comment the second button as it does nothing in the app
-  6- Main logic not touced
--->

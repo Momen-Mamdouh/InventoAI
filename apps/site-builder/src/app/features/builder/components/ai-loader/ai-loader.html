@@ -1,9 +1,52 @@
 @if (isNavigating()) {
   <div class="loader-overlay" aria-label="Loading">
     <div class="flex flex-col items-center gap-6">
-      <div class="ai-loader-border">
-        <div class="ai-loader-dot"></div>
-        <span class="ai-loader-letter">N</span>
+      <div class="ai-loader-svg-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+          <defs>
+            <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow
+                dx="1"
+                dy="3"
+                stdDeviation="4"
+                flood-opacity="0.12"
+                flood-color="#000000"
+              />
+            </filter>
+          </defs>
+
+          <g filter="url(#softShadow)">
+            <!-- Outer Border -->
+            <path
+              d="M 160 115 L 385 115 L 385 385 L 115 385 L 115 160"
+              fill="none"
+              stroke="#f0f0f0"
+              stroke-width="30"
+              stroke-linejoin="miter"
+              stroke-linecap="butt"
+            />
+
+            <!-- Central 'N' -->
+            <path
+              d="M 180 320 L 180 180 L 320 320 L 320 180"
+              fill="none"
+              stroke="#f0f0f0"
+              stroke-width="32"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
+
+          <!-- Blue Dot -->
+          <circle
+            class="ai-loader-dot"
+            cx="115"
+            cy="115"
+            r="38"
+            fill="#307be8"
+            filter="url(#softShadow)"
+          />
+        </svg>
       </div>
       <span class="text-lg md:text-xl font-bold text-primary">
         {{ displayText() }}

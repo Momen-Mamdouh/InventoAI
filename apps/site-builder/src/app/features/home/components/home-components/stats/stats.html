@@ -1,37 +1,52 @@
-<section class="mx-auto my-10 px-4 sm:px-8 md:px-16 lg:px-24 border-y w-[85%]">
-  <div class="gap-6 grid grid-cols-2 sm:grid-cols-4 py-6">
+<section class="mx-auto my-20 px-4 sm:px-8 md:px-16 lg:px-24 w-full max-w-7xl">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 relative">
+    <!-- Background Glow -->
+    <div class="absolute inset-0 bg-primary/5 blur-3xl rounded-full z-0 pointer-events-none"></div>
+
     @for (stat of displayStats(); track stat.label; let i = $index) {
       <div
-        appScrollAnimate="zoom-in"
+        appScrollAnimate="fade-up"
         [animDelay]="i * 100"
-        class="flex flex-col items-center sm:items-start gap-1 sm:text-left text-center"
+        class="relative z-10 flex flex-col items-center sm:items-start gap-3 p-6 sm:p-8 rounded-2xl bg-card/40 backdrop-blur-md border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 group"
       >
         <span
-          class="flex items-center gap-1 font-mono font-bold tabular-nums text-primary text-3xl"
+          class="flex items-center gap-2 font-mono font-bold tabular-nums text-foreground text-4xl group-hover:text-primary transition-colors"
         >
           @if (stat.standaloneIcon) {
-            <ng-icon [name]="stat.standaloneIcon" size="32" />
+            <ng-icon
+              [name]="stat.standaloneIcon"
+              size="36"
+              class="text-primary/80 group-hover:text-primary transition-colors"
+            />
           } @else {
             @if (stat.prefixIcon) {
-              <ng-icon [name]="stat.prefixIcon" size="22" />
+              <ng-icon
+                [name]="stat.prefixIcon"
+                size="24"
+                class="text-primary/60 group-hover:text-primary transition-colors"
+              />
             }
             {{ stat.value }}
             @if (stat.suffixIcon) {
-              <ng-icon [name]="stat.suffixIcon" size="22" />
+              <ng-icon
+                [name]="stat.suffixIcon"
+                size="24"
+                class="text-primary/60 group-hover:text-primary transition-colors"
+              />
             }
             @if (stat.suffixText) {
-              <span class="text-2xl">{{ stat.suffixText | translate }}</span>
+              <span
+                class="text-2xl text-muted-foreground group-hover:text-primary/80 transition-colors"
+                >{{ stat.suffixText | translate }}</span
+              >
             }
           }
         </span>
-        <span class="text-muted-foreground text-sm">{{ stat.label | translate }}</span>
+        <span
+          class="text-muted-foreground text-sm font-medium uppercase tracking-wider group-hover:text-foreground transition-colors"
+          >{{ stat.label | translate }}</span
+        >
       </div>
     }
   </div>
 </section>
-<!-- Mo'men Comment :
-  1- Removed <div class="bg-border w-full h-px"></div> -> as it not useful to make only div for have a border we can make it by CSS class directly
-  2- Make the icons by lucide icons not by only plain text to make everything comp in same dir
-  3- Change the interface in the ts file to match the icons i use 
-  4- Main logic not touced
--->

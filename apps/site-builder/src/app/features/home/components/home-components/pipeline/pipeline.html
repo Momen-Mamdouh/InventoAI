@@ -1,54 +1,65 @@
 <section
-  class="flex flex-col items-center sm:items-start gap-6 px-4 sm:px-8 md:px-16 lg:px-24 py-10"
+  class="flex flex-col items-center gap-12 px-4 sm:px-8 md:px-16 lg:px-24 py-20 w-full max-w-7xl mx-auto"
 >
-  <!-- Added her the same page header used for all pages waiting for Andrew approve -->
-  <!-- <span
-    appScrollAnimate="fade-left"
-    [animDelay]="0"
-    hlmBadge
-    variant="outline"
-    class="px-3 py-1 font-mono text-xs tracking-widest"
-  >
-    BUILD_PIPELINE
-  </span> -->
   <app-page-header badgeText="pipeline_badge" title="" accentTitle=""></app-page-header>
 
-  <!-- Grid -->
-  <div class="gap-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 w-full">
-    @for (step of steps(); track step.number; let i = $index) {
-      <a
-        hlmCard
-        appScrollAnimate="fade-up"
-        [animDelay]="i * 120"
-        routerLink="/build"
-        class="relative flex flex-col gap-3 hover:shadow-lg p-6 hover:ring-primary/40 overflow-hidden sm:text-left text-center no-underline transition-all duration-300 cursor-pointer pipeline-card"
-        (mousemove)="onMouseMove($event)"
-        (mouseleave)="onMouseLeave($event)"
-      >
-        <!-- Glow layer -->
-        <div
-          class="absolute inset-0 opacity-0 rounded-xl transition-opacity duration-300 pointer-events-none pipeline-glow"
-        ></div>
+  <!-- Flow / Timeline -->
+  <div class="relative w-full mt-10">
+    <!-- Connecting Line (Desktop) -->
+    <div
+      class="hidden lg:block absolute top-[40px] left-[10%] right-[10%] h-[2px] bg-border/50 z-0"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent w-1/2 animate-[pulse_3s_ease-in-out_infinite]"
+      ></div>
+    </div>
 
-        <span class="relative font-mono font-bold text-muted-foreground/40 text-3xl">
-          {{ step.number }}
-        </span>
-        <div hlmCardHeader class="relative gap-1 p-0">
-          <h3 hlmCardTitle class="font-semibold text-base" [class]="hlmH3">
-            {{ step.title | translate }}
-          </h3>
-          <p hlmCardDescription class="font-mono text-xs" [class]="hlmP">
-            {{ step.subtitle | translate }}
-          </p>
-        </div>
-      </a>
-    }
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10 w-full">
+      @for (step of steps(); track step.number; let i = $index) {
+        <a
+          hlmCard
+          appScrollAnimate="fade-up"
+          [animDelay]="i * 120"
+          routerLink="/build"
+          class="relative flex flex-col pt-8 hover:shadow-2xl hover:shadow-primary/5 border border-border/40 bg-card/40 backdrop-blur-md overflow-hidden text-center no-underline transition-all duration-500 cursor-pointer pipeline-card group rounded-2xl"
+          (mousemove)="onMouseMove($event)"
+          (mouseleave)="onMouseLeave($event)"
+        >
+          <!-- Glow layer -->
+          <div
+            class="absolute inset-0 opacity-0 rounded-2xl transition-opacity duration-300 pointer-events-none pipeline-glow"
+          ></div>
+
+          <!-- Number Indicator -->
+          <div
+            class="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-background border border-border/50 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-primary/50 transition-all duration-300 z-20"
+          >
+            <span
+              class="font-mono font-bold text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/50 text-2xl group-hover:from-primary group-hover:to-primary/50 transition-all"
+            >
+              {{ step.number }}
+            </span>
+          </div>
+
+          <div hlmCardHeader class="relative flex flex-col items-center gap-3 p-8 pt-10">
+            <div
+              class="w-10 h-1 rounded-full bg-primary/20 group-hover:bg-primary group-hover:w-16 transition-all duration-300"
+            ></div>
+            <h3
+              hlmCardTitle
+              class="font-semibold text-xl tracking-tight text-foreground group-hover:text-primary transition-colors"
+            >
+              {{ step.title | translate }}
+            </h3>
+            <p
+              hlmCardDescription
+              class="text-sm text-muted-foreground/80 leading-relaxed font-medium"
+            >
+              {{ step.subtitle | translate }}
+            </p>
+          </div>
+        </a>
+      }
+    </div>
   </div>
 </section>
-
-<!-- Mo'men Comment :
-  1- Add spartanUI typography directive to make sure all app use it
-  2- Add app-page-header instead of other badge above to make everything comp in same dir
-  3- Change the flow of pipeline
-  4- Main logic not touced
--->

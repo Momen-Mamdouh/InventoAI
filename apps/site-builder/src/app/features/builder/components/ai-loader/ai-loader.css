@@ -8,52 +8,40 @@
   z-index: 9999;
 }
 
-.ai-loader-border {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border: 8px solid var(--foreground);
-  box-sizing: border-box;
+.ai-loader-svg-container {
+  width: 70px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.ai-loader-letter {
-  color: var(--foreground);
-  font-size: 56px;
-  font-family: var(--font-sans);
-  font-weight: var(--font-weight-medium);
-  line-height: 1;
-  z-index: 1;
-}
-
 .ai-loader-dot {
-  position: absolute;
-  top: -14px;
-  left: -14px;
-  width: 20px;
-  height: 20px;
-  background-color: oklch(60% 0.16 250);
-  border-radius: 50%;
-  z-index: 50;
-  animation: tracePath 2.5s linear infinite;
+  /* Animate the blue dot relative to its cx/cy in the SVG viewBox */
+  transform-origin: center;
+  animation: tracePath 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
+/* 
+  The SVG viewBox is 500x500.
+  The dot starts at cx="115" cy="115".
+  The border path goes from 115 to 385 on both axes.
+  Total travel distance is 385 - 115 = 270.
+*/
 @keyframes tracePath {
   0% {
-    transform: translate(0, 0);
+    transform: translate(0px, 0px);
   }
   25% {
-    transform: translate(92px, 0);
+    transform: translate(270px, 0px);
   }
   50% {
-    transform: translate(92px, 92px);
+    transform: translate(270px, 270px);
   }
   75% {
-    transform: translate(0, 92px);
+    transform: translate(0px, 270px);
   }
   100% {
-    transform: translate(0, 0);
+    transform: translate(0px, 0px);
   }
 }
