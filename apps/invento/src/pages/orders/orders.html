@@ -190,9 +190,37 @@
   <div hlmCard class="relative bg-card shadow-sm border-border rounded-xl overflow-hidden">
     @if (store.isLoading() && store.orders().length === 0) {
       <!-- Initial Loading Skeleton -->
-      <div class="flex flex-col justify-center items-center py-20 text-muted-foreground gap-3">
-        <ng-icon name="lucideLoader2" size="32" class="animate-spin text-primary" />
-        <p class="font-medium text-sm">{{ 'orders.loading' | translate }}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-start border-collapse">
+          <thead>
+            <tr class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider">
+              <th class="px-2 sm:px-3 md:px-4 py-3 w-10"></th>
+              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_id' | translate }}</th>
+              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_customer' | translate }}</th>
+              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_date' | translate }}</th>
+              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_items' | translate }}</th>
+              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_total' | translate }}</th>
+              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_payment' | translate }}</th>
+              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_fulfillment' | translate }}</th>
+              <th class="px-2.5 sm:px-3 md:px-4 py-3 w-14"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border/60 text-sm">
+            @for (item of [1,2,3,4,5]; track item) {
+              <tr>
+                <td class="px-2 sm:px-3 md:px-4 py-3 text-center"><hlm-skeleton class="h-4 w-4 rounded mx-auto" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-20" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-32" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-12" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-16" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-5 w-20 rounded-full" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-5 w-20 rounded-full" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-8 w-8 rounded-md" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     } @else if (store.orders().length > 0) {
       <div class="overflow-x-auto">
@@ -351,7 +379,7 @@
                       class="rounded-full w-1.5 h-1.5"
                       [ngClass]="order.paymentStatus === 'paid' ? 'bg-emerald-500' : 'bg-amber-500'"
                     ></span>
-                    {{ 'orders.' + order.paymentStatus | translate }}
+                    {{ 'orders.' + (order.paymentStatus ? order.paymentStatus.toLowerCase() : '') | translate }}
                   </span>
                 </td>
 
@@ -361,7 +389,7 @@
                     class="inline-flex justify-center items-center px-3 py-0.5 rounded-full text-xs font-medium"
                     [class]="getFulfillmentBadgeClass(order.status)"
                   >
-                    {{ 'orders.filter_' + order.status | translate }}
+                    {{ 'orders.filter_' + (order.status ? order.status.toLowerCase() : '') | translate }}
                   </span>
                 </td>
 
@@ -609,7 +637,7 @@
                 class="inline-flex justify-center items-center px-2.5 py-0.5 rounded-full font-medium text-xs"
                 [class]="getFulfillmentBadgeClass(detail.status)"
               >
-                {{ 'orders.filter_' + detail.status | translate }}
+                {{ 'orders.filter_' + (detail.status ? detail.status.toLowerCase() : '') | translate }}
               </span>
               <span
                 class="inline-flex items-center gap-1.5 px-2 py-0.5 border rounded-full font-medium text-xs capitalize"
@@ -619,7 +647,7 @@
                   class="rounded-full w-1.5 h-1.5"
                   [ngClass]="detail.paymentStatus === 'paid' ? 'bg-emerald-500' : 'bg-amber-500'"
                 ></span>
-                {{ 'orders.' + detail.paymentStatus | translate }}
+                {{ 'orders.' + (detail.paymentStatus ? detail.paymentStatus.toLowerCase() : '') | translate }}
               </span>
             </div>
 

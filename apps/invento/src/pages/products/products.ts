@@ -22,6 +22,7 @@ import {
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { forkJoin } from 'rxjs';
@@ -65,6 +66,7 @@ interface FormVariant {
     CdkDrag,
     DeleteConfirmDialog,
     SearchPipe,
+    HlmSkeleton,
   ],
   providers: [
     provideIcons({

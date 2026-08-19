@@ -14,6 +14,11 @@ export const appRoutes: Routes = [
           import('@invento/invento/pages/home/home').then((c) => c.HomeComponent),
       },
       {
+        path: 'catalog-ai',
+        loadComponent: () =>
+          import('../features/catalog-ai/ui/catalog-ai-review/catalog-ai-review.component').then((c) => c.CatalogAiReviewComponent),
+      },
+      {
         path: 'products',
         loadComponent: () =>
           import('@invento/invento/pages/products/products').then((c) => c.Products),
@@ -55,11 +60,7 @@ export const appRoutes: Routes = [
         loadComponent: () =>
           import('@invento/invento/pages/suppliers/suppliers').then((c) => c.Suppliers),
       },
-      {
-        path: 'analytics',
-        loadComponent: () =>
-          import('@invento/invento/pages/analytics/analytics').then((c) => c.Analytics),
-      },
+
       {
         path: 'ai-advisor',
         loadComponent: () =>

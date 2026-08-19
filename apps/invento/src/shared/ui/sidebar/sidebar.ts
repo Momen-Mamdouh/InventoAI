@@ -20,11 +20,15 @@ import {
   lucideCreditCard,
   lucideBell,
   lucideLogOut,
+  lucideUser,
+  lucideLock,
+  lucideStore,
 } from '@ng-icons/lucide';
 import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
 import { HlmAvatar, HlmAvatarImage, HlmAvatarFallback } from '@spartan/helm/avatar';
 import { TranslatePipe, LocaleService } from '@invento/core';
 import { BrandLogo } from '@invento/shared';
+import { AuthService } from '../../../core/service/auth.service';
 
 interface NavItem {
   label: string;
@@ -65,6 +69,9 @@ interface NavItem {
       lucideCreditCard,
       lucideBell,
       lucideLogOut,
+      lucideUser,
+      lucideLock,
+      lucideStore,
     }),
   ],
   templateUrl: './sidebar.html',
@@ -81,11 +88,39 @@ export class Sidebar {
     { label: 'nav_products', icon: 'lucidePackage', route: '/products' },
     { label: 'nav_attributes', icon: 'lucideTags', route: '/attributes' },
     { label: 'nav_categories', icon: 'lucideFolderTree', route: '/categories' },
+    { label: 'AI Catalog', icon: 'lucideSparkles', route: '/catalog-ai' },
     { label: 'nav_orders', icon: 'lucideShoppingCart', route: '/orders' },
     { label: 'nav_faq', icon: 'lucideMessageCircleQuestionMark', route: '/faq' },
     { label: 'nav_suppliers', icon: 'lucideTruck', route: '/suppliers' },
-    { label: 'nav_analytics', icon: 'lucideBarChart3', route: '/analytics' },
     { label: 'nav_ai_advisor', icon: 'lucideBot', route: '/ai-advisor' },
     { label: 'nav_chatbot', icon: 'lucideBotMessageSquare', route: '/chatbot' },
   ];
+
+  private readonly authService = inject(AuthService);
+
+  protected readonly user = computed(() => {
+    const currentUser = this.authService.currentUser();
+    if (currentUser) {
+      return {
+        name: `${currentUser.firstName} ${currentUser.lastName}`.trim(),
+        email: currentUser.email,
+        image: currentUser.image,
+      };
+    }
+    // Fallback if no user loaded
+    return {
+      name: 'Owner',
+      email: 'owner@inventoai.com',
+      image: null,
+    };
+  });
+
+  protected readonly userInitials = computed(() => {
+    const name = this.user().name;
+    const names = name.split(' ');
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  });
 }
