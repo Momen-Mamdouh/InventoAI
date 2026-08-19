@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiConfig } from '@/app/core/config/api-config';
-import { fallbackOnServerError } from '@/app/core/http/api-fallback';
 
 export interface SubmitAnswersPayload {
   questions: {
@@ -15,7 +14,6 @@ export interface SubmitAnswersResponse {
   message: string[];
   error: string;
   statusCode: number;
-  isFallback?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -23,14 +21,16 @@ export class AiInterviewApi {
   private readonly http = inject(HttpClient);
   private readonly config = inject(ApiConfig);
 
+  /**
+   * Deliberately unguarded by fallbackOnServerError. The backend wizard is a
+   * strict ladder — each step refuses to run until the previous one advanced
+   * the draft — so faking success here does not degrade gracefully, it moves
+   * the failure to a later step where it surfaces as an unexplained 409.
+   */
   submitAnswers(payload: SubmitAnswersPayload): Observable<SubmitAnswersResponse> {
-    return this.http
-      .post<SubmitAnswersResponse>(this.config.url('/site-builder/answers'), payload)
-      .pipe(
-        fallbackOnServerError(
-          () => of({ message: ['Success'], error: '', statusCode: 200, isFallback: true }),
-          'AiInterviewApi',
-        ),
-      );
+    return this.http.post<SubmitAnswersResponse>(
+      this.config.url('/site-builder/answers'),
+      payload,
+    );
   }
 }

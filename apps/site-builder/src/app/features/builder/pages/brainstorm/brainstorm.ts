@@ -226,11 +226,7 @@ export class Brainstorm implements OnInit {
 
     this.brainstormApi.analyzePrompt(text, this.logoFile() || undefined).subscribe({
       next: (response) => {
-        if (response?.isFallback) {
-          toast.warning(this.localeService.translate('toast_prompt_fallback'), { id: toastId });
-        } else {
-          toast.success(this.localeService.translate('toast_prompt_success'), { id: toastId });
-        }
+        toast.success(this.localeService.translate('toast_prompt_success'), { id: toastId });
 
         const prefill: Record<string, string | number | string[] | number[]> = {};
         for (const q of response?.questions ?? []) {

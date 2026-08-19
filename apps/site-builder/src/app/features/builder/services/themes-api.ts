@@ -35,10 +35,17 @@ export class ThemesApi {
     return this.config.url('/site-builder/themes');
   }
 
-  generateThemes(): Observable<unknown> {
-    return this.http
-      .post(this.endpoint, {})
-      .pipe(fallbackOnServerError(() => of({}), 'ThemesApi.generateThemes'));
+  /**
+   * Deliberately unguarded by fallbackOnServerError.
+   *
+   * This is the only call that advances the backend draft to the `themed`
+   * step, and publish refuses anything below it. Swallowing a failure here let
+   * the wizard sail on to Preview, where listThemes still returned themes from
+   * an earlier generation — so the store looked ready and Deploy came back 409.
+   * A failed generation has to be seen.
+   */
+  generateThemes(): Observable<GetThemesResponse> {
+    return this.http.post<GetThemesResponse>(this.endpoint, {});
   }
 
   getThemes(): Observable<GetThemesResponse> {

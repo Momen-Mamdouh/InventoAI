@@ -19,7 +19,7 @@ import { DoubleSlash } from '@invento/shared';
 import { BuilderState } from '@/app/features/builder/services/builder-state';
 import { TranslatePipe, LocaleService } from '@invento/core';
 import { toast } from '@spartan/helm/sonner';
-import { switchMap, tap, finalize } from 'rxjs';
+import { switchMap, tap, finalize, of } from 'rxjs';
 import { DomainApi } from '@/app/features/builder/services/domain-api';
 import { ThemesApi } from '@/app/features/builder/services/themes-api';
 import { toastApiError } from '@/app/shared/utils/toast-api-error';
@@ -156,22 +156,26 @@ export class Validation {
       .confirmDomain({ businessName: this.businessName(), domain: this.domain() })
       .pipe(
         tap((res) => {
-          if (res?.isFallback) {
-            toast.warning(this._localeService.translate('toast_domain_fallback'));
+          if (res.hint) {
+            this.hintMessage.set(res.hint);
+            toast.warning(res.hint);
           } else {
-            if (res.hint) {
-              this.hintMessage.set(res.hint);
-              toast.warning(res.hint);
-            } else {
-              toast.success(this._localeService.translate('validation_domain_confirmed'));
-            }
+            toast.success(this._localeService.translate('validation_domain_confirmed'));
           }
         }),
-        // Theme generation is best-effort: both calls already degrade to an
-        // empty result rather than throwing, so Preview is always reachable
-        // once the domain is confirmed.
+        // Theme generation is NOT best-effort, whatever this used to say. It is
+        // the only call that advances the backend draft to `themed`, and publish
+        // rejects anything below that with a 409. When it was allowed to fail
+        // quietly the wizard still reached Preview — listThemes served themes
+        // from an earlier generation — and the store only proved unpublishable
+        // at the very last click. A failure here must stop the step.
+        //
+        // The POST already returns the freshly generated set, so it is used
+        // directly; the GET is only a fallback for a response that carries none.
         switchMap(() => this.themesApi.generateThemes()),
-        switchMap(() => this.themesApi.getThemes()),
+        switchMap((themesRes) =>
+          themesRes?.themes?.length ? of(themesRes) : this.themesApi.getThemes(),
+        ),
         // isNavigating is deliberately NOT cleared here. Clearing it on
         // completion tore the loader down at the same instant we navigated, so
         // Preview mounted bare and the shopper saw its skeleton instead of the
