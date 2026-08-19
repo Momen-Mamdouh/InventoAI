@@ -1,65 +1,63 @@
 <div class="flex flex-col gap-6">
-  <!-- Profile Photo -->
-  <section hlmCard>
-    <div hlmCardHeader>
-      <h3 hlmCardTitle>Profile Photo</h3>
-      <p hlmCardDescription>Upload a profile photo visible to your team and customers.</p>
-    </div>
-
-    <div hlmCardContent class="flex items-center gap-4">
-      <div
-        class="flex justify-center items-center bg-primary rounded-2xl w-20 h-20 font-semibold text-white text-xl shrink-0"
-      >
-        {{ initials() }}
+  @if (currentUser(); as user) {
+    <!-- Profile Photo -->
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h3 hlmCardTitle>Profile Photo</h3>
+        <p hlmCardDescription>Upload a profile photo visible to your team and customers.</p>
       </div>
-      <div class="flex flex-col gap-1">
-        <button hlmBtn variant="outline" type="button" class="gap-2 w-fit">
-          <ng-icon name="lucideUpload" size="16" />
-          Upload Photo
-        </button>
-        <p hlmMuted class="text-xs">JPG, PNG or WebP. Max 4 MB. Min 200&times;200 px.</p>
-        <p hlmMuted class="text-xs">Or drag and drop onto the avatar.</p>
-      </div>
-    </div>
-  </section>
 
-  <!-- Personal Information -->
-  <section hlmCard>
-    <div hlmCardHeader>
-      <h3 hlmCardTitle>Personal Information</h3>
-      <p hlmCardDescription>Your name and contact details used across Storai.</p>
-    </div>
-
-    <form hlmCardContent [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-5">
-      <!-- First / Last name -->
-      <div class="gap-5 grid grid-cols-1 sm:grid-cols-2">
-        <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="firstName">First Name</label>
-          <input hlmInput id="firstName" formControlName="firstName" autocomplete="given-name" />
+      <div hlmCardContent class="flex items-center gap-4">
+        <div
+          class="flex justify-center items-center bg-primary rounded-2xl w-20 h-20 font-semibold text-primary-foreground text-xl shrink-0"
+        >
+          {{ initials() }}
         </div>
-        <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="lastName">Last Name</label>
-          <input hlmInput id="lastName" formControlName="lastName" autocomplete="family-name" />
-        </div>
+        <!--
+          The upload button and its "drag and drop" copy were removed with the rest of this tab's
+          save actions: there is no avatar upload endpoint for shoppers, so the control did nothing
+          and the instructions described a capability that does not exist.
+        -->
+      </div>
+    </section>
+
+    <!-- Personal Information -->
+    <section hlmCard>
+      <div hlmCardHeader>
+        <h3 hlmCardTitle>Personal Information</h3>
+        <p hlmCardDescription>Your name and contact details on file with Storai.</p>
       </div>
 
-      <!-- Email / Phone -->
-      <div class="gap-5 grid grid-cols-1 sm:grid-cols-2">
+      <div hlmCardContent class="flex flex-col gap-5">
+        <!-- First / Last name -->
+        <div class="gap-5 grid grid-cols-1 sm:grid-cols-2">
+          <div class="flex flex-col gap-1.5">
+            <label hlmLabel for="firstName">First Name</label>
+            <input hlmInput id="firstName" [value]="user.firstName" readonly disabled />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label hlmLabel for="lastName">Last Name</label>
+            <input hlmInput id="lastName" [value]="user.lastName" readonly disabled />
+          </div>
+        </div>
+
+        <!-- Email -->
         <div class="flex flex-col gap-1.5">
           <label hlmLabel for="email">Email Address</label>
-          <input hlmInput id="email" type="email" formControlName="email" autocomplete="email" />
+          <input hlmInput id="email" type="email" [value]="user.email" readonly disabled />
         </div>
-        <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="phone">Phone Number</label>
-          <input hlmInput id="phone" formControlName="phone" autocomplete="tel" />
-          <p hlmMuted class="text-xs">Used for account security and support only.</p>
-        </div>
-      </div>
 
-      <div class="flex items-center gap-3 pt-2">
-        <button hlmBtn type="submit" [disabled]="form.invalid">Save Changes</button>
-        <button hlmBtn variant="ghost" type="button" (click)="cancel()">Cancel</button>
+        <div class="pt-2 border-t text-muted-foreground text-xs">
+          Profile editing isn't available yet. Reach out to support if any of these details need to
+          change.
+        </div>
       </div>
-    </form>
-  </section>
+    </section>
+  } @else {
+    <section hlmCard>
+      <div hlmCardContent class="py-10 text-muted-foreground text-sm text-center">
+        Sign in to view your profile details.
+      </div>
+    </section>
+  }
 </div>

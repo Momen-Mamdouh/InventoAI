@@ -7,7 +7,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { HlmCarouselImports } from '@spartan/helm/carousel';
-import { ProductCard } from '../product-card/product-card';
+import { ProductCard } from '@invento/user-site/app/features/product/components/product-card/product-card';
 import { ProductApiService } from '@invento/user-site/app/features/product';
 import { ProductListItem } from '@invento/user-site/app/features/product/types/product';
 import { Subscription } from 'rxjs';
@@ -33,11 +33,9 @@ export class RecommendedProducts implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Fetch top 10 rated or default products to show as recommended
-    this.sub = this.apiService
-      .getProducts(this.storeSlug(), { limit: 10 })
-      .subscribe((res) => {
-        this.products.set(res.items);
-      });
+    this.sub = this.apiService.getProducts(this.storeSlug(), { limit: 10 }).subscribe((res) => {
+      this.products.set(res.items);
+    });
   }
 
   ngOnDestroy(): void {

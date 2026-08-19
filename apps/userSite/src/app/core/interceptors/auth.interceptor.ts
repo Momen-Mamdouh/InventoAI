@@ -2,8 +2,8 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
-import { TokenService } from '../service/token.service';
-import { AuthService } from '../service/auth.service';
+import { TokenService } from '@invento/user-site/app/core/service/token.service';
+import { AuthService } from '@invento/user-site/app/core/service/auth.service';
 
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);

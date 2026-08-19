@@ -1,10 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  afterNextRender,
+  ElementRef,
   computed,
   inject,
   signal,
+  viewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -41,6 +42,7 @@ import { FaqDataService } from '@invento/user-site/app/features/faq';
 import type { FaqCategory, FaqItem } from '@invento/user-site/app/features/faq';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 import { StoreService } from '@invento/user-site/app/core/service/store.service';
+import { animateElementsOnRender } from '@invento/user-site/app/core/utils/animation.utils';
 
 @Component({
   selector: 'app-faq',
@@ -171,6 +173,14 @@ export class FaqComponent {
     return this.activeCategoryData()?.items ?? [];
   });
 
+  /**
+   * Scoped view query instead of `document.querySelectorAll`.
+   *
+   * The global lookup matched `.faq-hero-anim` anywhere in the document, so it could animate
+   * elements belonging to another component; this resolves only within this template.
+   */
+  private readonly heroAnimItems = viewChildren<ElementRef<HTMLElement>>('faqHeroAnim');
+
   private currentStoreSlug = '';
 
   constructor() {
@@ -181,18 +191,22 @@ export class FaqComponent {
 
     this.faqDataService.loadFaqs(this.currentStoreSlug);
 
-    afterNextRender(() => {
-      const heroAnim = document.querySelectorAll('.faq-hero-anim');
-      if (heroAnim.length > 0) {
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-        tl.from(heroAnim, {
-          y: 25,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.1,
-        });
-      }
-    });
+    /**
+     * `afterRenderEffect` (via `animateElementsOnRender`), not `afterNextRender`.
+     *
+     * The previous `afterNextRender` + `document.querySelectorAll` fired once with no
+     * cleanup, so the tween leaked when this component was destroyed. `animateElementsOnRender`
+     * disposes it via `onCleanup` and stays reactive if the targets show up later.
+     */
+    animateElementsOnRender(this.heroAnimItems, (items) =>
+      gsap.from(items, {
+        y: 25,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power3.out',
+      }),
+    );
   }
 
   setCategory(categoryId: string): void {

@@ -20,14 +20,9 @@ export const ACCOUNT_SETTINGS_ROUTES: Routes = [
             (m) => m.AccountSettingsSecurityComponent,
           ),
       },
-
-      {
-        path: 'billing',
-        loadComponent: () =>
-          import('./billing/account-settings-billing').then(
-            (m) => m.AccountSettingsBillingComponent,
-          ),
-      },
+      // 'billing' route intentionally removed: no payment-method endpoint exists on the backend
+      // yet. See billing/account-settings-billing.ts for details. The component file is kept but
+      // unrouted so it doesn't ship a fake payment surface.
     ],
   },
 ];

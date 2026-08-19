@@ -7,27 +7,29 @@
       >
         <div class="relative z-10 max-w-2xl">
           <span
+            #faqHeroAnim
             hlmBadge
             variant="secondary"
-            class="faq-hero-anim inline-flex items-center gap-1.5 mb-5 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 font-bold tracking-wider uppercase text-[11px] px-3.5 py-1 rounded-full"
+            class="inline-flex items-center gap-1.5 mb-5 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 font-bold tracking-wider uppercase text-[11px] px-3.5 py-1 rounded-full"
           >
             <ng-icon name="lucideSparkles" size="14px"></ng-icon>
             Help Center & FAQs
           </span>
 
           <h1
+            #faqHeroAnim
             hlmH1
-            class="faq-hero-anim text-3xl sm:text-4xl md:text-5xl text-foreground leading-[1.15] mb-4"
+            class="text-3xl sm:text-4xl md:text-5xl text-foreground leading-[1.15] mb-4"
           >
             {{ 'faq.title' | translate }}
           </h1>
 
-          <p hlmMuted class="faq-hero-anim sm:text-base leading-relaxed mb-8 max-w-xl">
+          <p #faqHeroAnim hlmMuted class="sm:text-base leading-relaxed mb-8 max-w-xl">
             {{ 'faq.subtitle' | translate }}
           </p>
 
           <!-- Search Bar -->
-          <div class="faq-hero-anim max-w-xl">
+          <div #faqHeroAnim class="max-w-xl">
             <app-search-input
               [value]="searchQuery()"
               (valueChange)="onSearchChange($event)"
@@ -40,7 +42,8 @@
 
         <!-- Stats Chips -->
         <div
-          class="faq-hero-anim relative z-10 flex flex-wrap gap-4 sm:gap-8 mt-8 sm:mt-10 pt-6 border-t border-border/40"
+          #faqHeroAnim
+          class="relative z-10 flex flex-wrap gap-4 sm:gap-8 mt-8 sm:mt-10 pt-6 border-t border-border/40"
         >
           <div class="flex items-center gap-3">
             <div

@@ -19,7 +19,7 @@
               class="rounded-full w-1.5 h-1.5 shrink-0"
               [ngClass]="getStatusConfig(order().status).dotClass"
             ></span>
-            <span>{{ getStatusConfig(order().status).label }}</span>
+            <span>{{ getStatusConfig(order().status).label | translate }}</span>
           </span>
         </div>
 

@@ -1,7 +1,7 @@
 <div class="bg-background p-4 md:p-8 min-h-screen font-sans text-foreground">
   <div class="items-start gap-8 lg:gap-10 grid grid-cols-1 lg:grid-cols-12 mx-auto max-w-6xl">
     <!-- Left Column: Order Summary & Cart Items -->
-    <div class="fade-in-left lg:col-span-5">
+    <div #fadeInLeft class="lg:col-span-5">
       <div class="flex items-center gap-2 mb-1">
         <a
           [routerLink]="['/', activeStoreSlug(), 'orders']"
@@ -188,7 +188,7 @@
     </div>
 
     <!-- Right Column: Shipping & Checkout Form -->
-    <div class="fade-in-right lg:col-span-7">
+    <div #fadeInRight class="lg:col-span-7">
       <form
         [formGroup]="checkoutForm"
         (ngSubmit)="onSubmit()"

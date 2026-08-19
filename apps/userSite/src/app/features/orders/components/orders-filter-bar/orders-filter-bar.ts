@@ -1,7 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  computed,
+  inject,
+  viewChildren,
+} from '@angular/core';
+import gsap from 'gsap';
 import { FilterTabs, SearchInput, type FilterTab } from '@invento/shared';
 import { LocaleService, TranslatePipe } from '@invento/core';
 import { OrdersDataService, type OrderFilter } from '@invento/user-site/app/features/orders';
+import { animateElementsOnRender } from '@invento/user-site/app/core/utils/animation.utils';
 
 const ORDER_FILTER_IDS: readonly OrderFilter[] = [
   'all',
@@ -20,6 +29,14 @@ const ORDER_FILTER_IDS: readonly OrderFilter[] = [
   templateUrl: './orders-filter-bar.html',
 })
 export class OrdersFilterBarComponent {
+  /**
+   * This section used to carry the class `orders-hero-anim`, which belongs to `orders-hero`.
+   * It was only ever animated as a side effect of that component's document-wide
+   * `querySelectorAll`; once those queries were scoped to their own views, the entrance
+   * silently stopped. It now owns its animation rather than borrowing a sibling's.
+   */
+  private readonly filterBar = viewChildren<ElementRef<HTMLElement>>('filterBar');
+
   protected readonly ordersService = inject(OrdersDataService);
   // Tab labels are data, not template text, so they are translated here rather than by the pipe.
   private readonly locale = inject(LocaleService);
@@ -33,6 +50,12 @@ export class OrdersFilterBarComponent {
       count: counts[id],
     }));
   });
+
+  constructor() {
+    animateElementsOnRender(this.filterBar, (targets) =>
+      gsap.from(targets, { y: 25, opacity: 0, duration: 0.6, ease: 'power3.out' }),
+    );
+  }
 
   protected onFilterChange(filter: OrderFilter): void {
     this.ordersService.setFilter(filter);

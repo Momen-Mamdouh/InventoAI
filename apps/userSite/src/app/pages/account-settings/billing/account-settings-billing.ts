@@ -19,6 +19,16 @@ interface PaymentCard {
   isDefault: boolean;
 }
 
+/**
+ * NOT WIRED UP.
+ *
+ * The backend exposes no payment-method endpoint of any kind (verified against
+ * BACKEND/src/users — there is no card/billing controller, service, or DTO anywhere in the API).
+ * This component has nothing to load and nothing to save to, so it is intentionally left out of
+ * `account-settings.routes.ts` and unlinked from the account-settings sidebar. It is kept here,
+ * unrouted, only as a starting point for whoever builds the real payment-method feature once a
+ * backend endpoint exists. All local state below is empty scaffolding, not real data.
+ */
 @Component({
   selector: 'app-account-settings-billing',
   standalone: true,
@@ -41,46 +51,20 @@ export class AccountSettingsBillingComponent {
   private readonly fb = inject(FormBuilder);
 
   readonly showForm = signal(false);
-  readonly cards = signal<PaymentCard[]>([
-    {
-      id: 1,
-      brand: 'Visa',
-      last4: '4242',
-      holderName: 'Clara Morin',
-      expiry: '08/28',
-      isDefault: true,
-    },
-    {
-      id: 2,
-      brand: 'Mastercard',
-      last4: '9010',
-      holderName: 'Clara Morin',
-      expiry: '12/30',
-      isDefault: false,
-    },
-  ]);
+  readonly cards = signal<PaymentCard[]>([]);
 
   readonly form = this.fb.nonNullable.group({
-    cardName: ['Clara Morin', Validators.required],
-    cardNumber: [
-      '4242 4242 4242 4242',
-      [Validators.required, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)],
-    ],
-    expiry: ['08/28', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/)]],
-    cvc: ['123', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
-    zip: ['10001', Validators.required],
+    cardName: ['', Validators.required],
+    cardNumber: ['', [Validators.required, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
+    expiry: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/)]],
+    cvc: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
+    zip: ['', Validators.required],
   });
 
   toggleForm() {
     this.showForm.set(!this.showForm());
     if (!this.showForm()) {
-      this.form.reset({
-        cardName: 'Clara Morin',
-        cardNumber: '4242 4242 4242 4242',
-        expiry: '08/28',
-        cvc: '123',
-        zip: '10001',
-      });
+      this.form.reset();
     }
   }
 
@@ -107,13 +91,7 @@ export class AccountSettingsBillingComponent {
 
     this.cards.set([...this.cards(), nextCard]);
     this.showForm.set(false);
-    this.form.reset({
-      cardName: 'Clara Morin',
-      cardNumber: '4242 4242 4242 4242',
-      expiry: '08/28',
-      cvc: '123',
-      zip: '10001',
-    });
+    this.form.reset();
   }
 
   setDefaultCard(cardId: number) {

@@ -1,13 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideUser,
-  lucideShield,
-  lucideBell,
-  lucideCreditCard,
-  lucideTrash2,
-} from '@ng-icons/lucide';
+import { lucideUser, lucideShield, lucideBell, lucideTrash2 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan/helm/button';
 
 interface NavItem {
@@ -20,18 +14,16 @@ interface NavItem {
   selector: 'app-account-settings-sidebar',
   standalone: true,
   imports: [RouterLink, RouterLinkActive, NgIcon, HlmButtonImports],
-  providers: [
-    provideIcons({ lucideUser, lucideShield, lucideBell, lucideCreditCard, lucideTrash2 }),
-  ],
+  providers: [provideIcons({ lucideUser, lucideShield, lucideBell, lucideTrash2 })],
   templateUrl: './account-settings-sidebar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsSidebarComponent {
   // "My Stores" removed for the e-commerce customer-facing profile.
-  // "Billing & Plan" renamed to "Billing".
+  // "Billing" removed: no payment-method endpoint exists on the backend yet, so the route is
+  // unrouted (see account-settings.routes.ts) and has no entry point here.
   navItems: NavItem[] = [
     { label: 'Profile', icon: 'lucideUser', route: 'profile' },
     { label: 'Security', icon: 'lucideShield', route: 'security' },
-    { label: 'Billing', icon: 'lucideCreditCard', route: 'billing' },
   ];
 }

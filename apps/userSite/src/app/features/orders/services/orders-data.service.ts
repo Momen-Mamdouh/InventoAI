@@ -137,13 +137,47 @@ export class OrdersDataService {
     );
   }
 
+  /**
+   * Namespaces a storage key with the active store's slug.
+   *
+   * The storefront is multi-tenant: in production each store is its own subdomain, so origin
+   * isolation keeps this apart for free, but in development every store shares
+   * `localhost:4300` — a recipient-name override entered for an order on `/emberbean` would
+   * otherwise be visible to (and could be matched against) order numbers on `/fokhar` under a
+   * single global key. Falls back to the bare key when no slug has resolved.
+   */
+  private storageKey(base: string): string {
+    const slug = this._activeStoreSlug() || this._urlSlug();
+    return slug ? `${base}:${slug}` : base;
+  }
+
+  /**
+   * Reads the namespaced recipient-overrides map, migrating a pre-existing unscoped value
+   * into it on first read so nobody's already-saved override silently vanishes.
+   */
+  private readMigratedRecipientOverrides(): string | null {
+    const namespacedKey = this.storageKey(RECIPIENT_OVERRIDES_KEY);
+    const existing = localStorage.getItem(namespacedKey);
+    if (existing !== null) return existing;
+
+    // No slug resolved yet, so the "namespaced" key is the bare key — nothing to migrate.
+    if (namespacedKey === RECIPIENT_OVERRIDES_KEY) return null;
+
+    const legacy = localStorage.getItem(RECIPIENT_OVERRIDES_KEY);
+    if (legacy === null) return null;
+
+    localStorage.setItem(namespacedKey, legacy);
+    localStorage.removeItem(RECIPIENT_OVERRIDES_KEY);
+    return legacy;
+  }
+
   saveRecipientOverride(orderNumber: number, contactName: string): void {
     if (typeof localStorage === 'undefined' || !orderNumber || !contactName) return;
     try {
-      const raw = localStorage.getItem(RECIPIENT_OVERRIDES_KEY);
+      const raw = this.readMigratedRecipientOverrides();
       const map: Record<number, string> = raw ? JSON.parse(raw) : {};
       map[orderNumber] = contactName;
-      localStorage.setItem(RECIPIENT_OVERRIDES_KEY, JSON.stringify(map));
+      localStorage.setItem(this.storageKey(RECIPIENT_OVERRIDES_KEY), JSON.stringify(map));
     } catch {
       // Ignore storage write errors
     }
@@ -152,7 +186,7 @@ export class OrdersDataService {
   getRecipientOverride(orderNumber: number): string | null {
     if (typeof localStorage === 'undefined' || !orderNumber) return null;
     try {
-      const raw = localStorage.getItem(RECIPIENT_OVERRIDES_KEY);
+      const raw = this.readMigratedRecipientOverrides();
       if (!raw) return null;
       const map: Record<number, string> = JSON.parse(raw);
       return map[orderNumber] || null;
@@ -308,43 +342,52 @@ export class OrdersDataService {
     }
   }
 
+  /**
+   * Maps each order status to the theme's semantic tokens (`--success`/`--warning`/
+   * `--destructive`/`--primary`, from `libs/core/src/styles/spartan-theme.css`) instead of
+   * hardcoded Tailwind palette colours, and to a translation key instead of a hardcoded
+   * English label — the orders templates already moved to semantic tokens; this service was
+   * the one place still hardcoding both.
+   *
+   * `shipped` and `confirmed` both read as "in progress" so they share `primary`, since the
+   * theme has no separate token for that distinction; `shipped` keeps the pulse the badge had
+   * before so the two remain visually distinguishable in the badge dot.
+   */
   getStatusConfig(status: OrderStatus): OrderStatusConfig {
     switch (status) {
       case 'delivered':
         return {
-          label: 'Delivered',
-          badgeClass:
-            'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
-          dotClass: 'bg-emerald-500',
+          label: 'orders.status.delivered',
+          badgeClass: 'bg-success/10 text-success border border-success/20',
+          dotClass: 'bg-success',
           icon: 'lucideCircleCheck',
         };
       case 'shipped':
         return {
-          label: 'Shipped',
-          badgeClass: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20',
-          dotClass: 'bg-blue-500 animate-pulse',
+          label: 'orders.status.shipped',
+          badgeClass: 'bg-primary/10 text-primary border border-primary/20',
+          dotClass: 'bg-primary animate-pulse',
           icon: 'lucideTruck',
         };
       case 'confirmed':
         return {
-          label: 'Confirmed',
-          badgeClass: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20',
-          dotClass: 'bg-sky-500',
+          label: 'orders.status.confirmed',
+          badgeClass: 'bg-primary/10 text-primary border border-primary/20',
+          dotClass: 'bg-primary',
           icon: 'lucideCircleCheck',
         };
       case 'pending':
         return {
-          label: 'Pending',
-          badgeClass:
-            'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
-          dotClass: 'bg-amber-500 animate-pulse',
+          label: 'orders.status.pending',
+          badgeClass: 'bg-warning/10 text-warning border border-warning/20',
+          dotClass: 'bg-warning animate-pulse',
           icon: 'lucideClock',
         };
       case 'cancelled':
         return {
-          label: 'Cancelled',
-          badgeClass: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20',
-          dotClass: 'bg-rose-500',
+          label: 'orders.status.cancelled',
+          badgeClass: 'bg-destructive/10 text-destructive border border-destructive/20',
+          dotClass: 'bg-destructive',
           icon: 'lucideCircleX',
         };
     }

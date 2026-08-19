@@ -10,10 +10,10 @@ import type { Locale } from '@invento/core';
 import globalEn from '@invento/user-site/assets/i18n/en.json';
 import globalAr from '@invento/user-site/assets/i18n/ar.json';
 
-import productEn from '../locales/product/en.json';
-import productAr from '../locales/product/ar.json';
-import homeEn from '../locales/home/en.json';
-import homeAr from '../locales/home/ar.json';
+import productEn from '@invento/user-site/locales/product/en.json';
+import productAr from '@invento/user-site/locales/product/ar.json';
+import homeEn from '@invento/user-site/locales/home/en.json';
+import homeAr from '@invento/user-site/locales/home/ar.json';
 
 const en = { ...globalEn, product: productEn, home: homeEn };
 const ar = { ...globalAr, product: productAr, home: homeAr };

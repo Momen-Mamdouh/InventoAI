@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { Footer } from '@invento/user-site/app/shared/components/footer/footer';
-import { Navbar } from '@invento/user-site/app/shared/components/navbar/navbar';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, startWith } from 'rxjs';
+import { Footer, Navbar } from '@invento/user-site/app/shared/components';
 import { Chatbot } from '@invento/user-site/app/features/chatbot/chatbot';
 import { HlmToasterImports } from '@spartan/helm/sonner';
 import { StoreSeoService } from '@invento/user-site/app/core/service/store-seo.service';
 import { StoreThemeService } from '@invento/user-site/app/core/service/store-theme.service';
+import { StoreService } from '@invento/user-site/app/core/service/store.service';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
   imports: [RouterModule, Chatbot, Navbar, Footer, HlmToasterImports],
@@ -24,4 +27,35 @@ export class App {
    */
   private readonly storeTheme = inject(StoreThemeService);
   private readonly storeSeo = inject(StoreSeoService);
+
+  private readonly router = inject(Router);
+  private readonly storeSlugService = inject(StoreSlugService);
+  private readonly storeService = inject(StoreService);
+
+  /** Same `NavigationEnd` + `toSignal` pattern as `StoreSlugService.currentUrl`. */
+  private readonly currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => e.urlAfterRedirects),
+      startWith(this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  /**
+   * Navbar, footer and chatbot are storefront chrome: they belong only on pages that
+   * actually represent a tenant's storefront. Without this they also rendered on the
+   * no-store page, the store-not-found page, the 404 page and the auth pages — on bare
+   * `/` the slug is `''`, so the navbar's `links` computed produced broken paths like `//faq`.
+   */
+  protected readonly showStorefrontChrome = computed(() => {
+    if (!this.storeSlugService.slug()) return false;
+    if (!this.storeService.store()) return false;
+
+    const path = this.currentUrl().split('?')[0].split('#')[0];
+    const segments = path.split('/').filter(Boolean);
+    // segments[0] is the store slug; segments[1] === 'auth' means login/register/etc, which
+    // render inside their own AuthLayout rather than the storefront chrome.
+    return segments[1] !== 'auth';
+  });
 }

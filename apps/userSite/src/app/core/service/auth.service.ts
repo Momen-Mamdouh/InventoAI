@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '@invento/user-site/environments/environment';
 import { TokenService } from './token.service';
 import {
   AuthResponse,
@@ -9,7 +9,7 @@ import {
   RefreshTokenResponse,
   RegisterResponse,
   User,
-} from '../interface/auth.interface';
+} from '@invento/user-site/app/core/interface/auth.interface';
 
 const USER_STORAGE_KEY = 'usersite_current_user';
 
