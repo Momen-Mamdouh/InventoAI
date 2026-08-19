@@ -6,10 +6,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideImage } from '@ng-icons/lucide';
+import { TranslatePipe } from '@invento/core';
 
 @Component({
   selector: 'app-product-gallery',
-  imports: [HlmCarouselImports, NgIcon],
+  imports: [HlmCarouselImports, NgIcon, TranslatePipe],
   providers: [provideIcons({ lucideImage })],
   templateUrl: './product-gallery.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

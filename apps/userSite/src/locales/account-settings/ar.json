@@ -1,0 +1,63 @@
+{
+  "title": "إعدادات الحساب",
+  "subtitle": "إدارة ملفك الشخصي والأمان.",
+  "delete_account": "حذف الحساب",
+  "sidebar": {
+    "profile": "الملف الشخصي",
+    "security": "الأمان"
+  },
+  "profile": {
+    "photo_title": "الصورة الشخصية",
+    "photo_description": "قم برفع صورة شخصية تظهر لفريقك وعملائك.",
+    "info_title": "المعلومات الشخصية",
+    "info_description": "اسمك وبيانات التواصل المسجلة لدى Storai.",
+    "first_name": "الاسم الأول",
+    "last_name": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "edit_notice": "تعديل الملف الشخصي غير متاح حاليًا. تواصل مع الدعم إذا احتجت لتغيير أي من هذه البيانات.",
+    "sign_in_prompt": "سجّل الدخول لعرض تفاصيل ملفك الشخصي."
+  },
+  "security": {
+    "title": "تغيير كلمة المرور",
+    "description": "استخدم كلمة مرور قوية لا تقل عن 12 حرفًا.",
+    "current_password": "كلمة المرور الحالية",
+    "current_password_placeholder": "أدخل كلمة المرور الحالية",
+    "new_password": "كلمة المرور الجديدة",
+    "new_password_placeholder": "8 أحرف على الأقل",
+    "confirm_password": "تأكيد كلمة المرور الجديدة",
+    "confirm_password_placeholder": "أعد إدخال كلمة المرور الجديدة",
+    "show_password": "إظهار كلمة المرور",
+    "hide_password": "إخفاء كلمة المرور",
+    "error_min_length": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+    "error_pattern": "يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد على الأقل.",
+    "error_mismatch": "كلمتا المرور غير متطابقتين.",
+    "submit": "تحديث كلمة المرور",
+    "submitting": "جارٍ التحديث…",
+    "toast_success": "تم تحديث كلمة المرور بنجاح",
+    "toast_error": "تعذر تحديث كلمة المرور. حاول مرة أخرى."
+  },
+  "billing": {
+    "payment_methods_title": "طرق الدفع",
+    "payment_methods_description": "حافظ على تحديث بطاقاتك واختر البطاقة المستخدمة للمشتريات القادمة.",
+    "add_card": "إضافة بطاقة",
+    "card_name": "الاسم على البطاقة",
+    "card_number": "رقم البطاقة",
+    "card_number_placeholder": "1234 5678 9012 3456",
+    "expiry": "تاريخ الانتهاء",
+    "expiry_placeholder": "شهر/سنة",
+    "cvc": "رمز التحقق CVC",
+    "cvc_placeholder": "123",
+    "billing_zip": "الرمز البريدي للفواتير",
+    "save_card": "حفظ البطاقة",
+    "cancel": "إلغاء",
+    "empty": "لا توجد طرق دفع محفوظة بعد. أضف بطاقتك الأولى للبدء.",
+    "default_badge": "افتراضية",
+    "expires": "تنتهي في {{expiry}}",
+    "set_default": "تعيين كافتراضية",
+    "remove": "إزالة",
+    "preference_title": "تفضيلات الفوترة",
+    "preference_description": "بطاقاتك المحفوظة جاهزة للاشتراكات والمشتريات القادمة.",
+    "preference_point_1": "تُستخدم طرق الدفع الافتراضية تلقائيًا لعمليات التجديد والفواتير.",
+    "preference_point_2": "يمكنك تحديث طريقتك في أي وقت يحتاج فيه حسابك لذلك."
+  }
+}

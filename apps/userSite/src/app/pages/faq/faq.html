@@ -13,7 +13,7 @@
             class="inline-flex items-center gap-1.5 mb-5 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 font-bold tracking-wider uppercase text-[11px] px-3.5 py-1 rounded-full"
           >
             <ng-icon name="lucideSparkles" size="14px"></ng-icon>
-            Help Center & FAQs
+            {{ 'faq.help_center_badge' | translate }}
           </span>
 
           <h1
@@ -184,7 +184,7 @@
               hlmH3
               class="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 px-1"
             >
-              Categories
+              {{ 'faq.categories' | translate }}
             </h3>
             <nav
               class="custom-scrollbar flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0"
@@ -264,7 +264,7 @@
                     (click)="clearSearch()"
                     class="text-xs text-primary hover:underline font-medium"
                   >
-                    Show all
+                    {{ 'faq.show_all' | translate }}
                   </button>
                 }
               </div>

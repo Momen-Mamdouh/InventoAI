@@ -3,14 +3,14 @@
     <div hlmCardHeader class="gap-3">
       <div class="flex justify-between items-start gap-4">
         <div>
-          <h3 hlmCardTitle>Payment Methods</h3>
+          <h3 hlmCardTitle>{{ 'account_settings.billing.payment_methods_title' | translate }}</h3>
           <p hlmCardDescription>
-            Keep your cards up to date and choose which one is used for future purchases.
+            {{ 'account_settings.billing.payment_methods_description' | translate }}
           </p>
         </div>
         <button hlmBtn type="button" class="gap-2" (click)="toggleForm()">
           <ng-icon name="lucidePlus" size="16" />
-          Add Card
+          {{ 'account_settings.billing.add_card' | translate }}
         </button>
       </div>
     </div>
@@ -20,61 +20,73 @@
         <form [formGroup]="form" (ngSubmit)="saveCard()" class="bg-muted/30 p-4 border rounded-xl">
           <div class="gap-4 grid md:grid-cols-2">
             <div class="flex flex-col gap-1.5 md:col-span-2">
-              <label hlmLabel for="cardName">Name on card</label>
+              <label hlmLabel for="cardName">{{
+                'account_settings.billing.card_name' | translate
+              }}</label>
               <input hlmInput id="cardName" formControlName="cardName" autocomplete="cc-name" />
             </div>
 
             <div class="flex flex-col gap-1.5 md:col-span-2">
-              <label hlmLabel for="cardNumber">Card number</label>
+              <label hlmLabel for="cardNumber">{{
+                'account_settings.billing.card_number' | translate
+              }}</label>
               <input
                 hlmInput
                 id="cardNumber"
                 formControlName="cardNumber"
                 inputmode="numeric"
                 autocomplete="cc-number"
-                placeholder="1234 5678 9012 3456"
+                [placeholder]="'account_settings.billing.card_number_placeholder' | translate"
               />
             </div>
 
             <div class="flex flex-col gap-1.5">
-              <label hlmLabel for="expiry">Expiry</label>
+              <label hlmLabel for="expiry">{{
+                'account_settings.billing.expiry' | translate
+              }}</label>
               <input
                 hlmInput
                 id="expiry"
                 formControlName="expiry"
                 autocomplete="cc-exp"
-                placeholder="MM/YY"
+                [placeholder]="'account_settings.billing.expiry_placeholder' | translate"
               />
             </div>
 
             <div class="flex flex-col gap-1.5">
-              <label hlmLabel for="cvc">CVC</label>
+              <label hlmLabel for="cvc">{{ 'account_settings.billing.cvc' | translate }}</label>
               <input
                 hlmInput
                 id="cvc"
                 formControlName="cvc"
                 inputmode="numeric"
                 autocomplete="cc-csc"
-                placeholder="123"
+                [placeholder]="'account_settings.billing.cvc_placeholder' | translate"
               />
             </div>
 
             <div class="flex flex-col gap-1.5 md:col-span-2">
-              <label hlmLabel for="zip">Billing ZIP</label>
+              <label hlmLabel for="zip">{{
+                'account_settings.billing.billing_zip' | translate
+              }}</label>
               <input hlmInput id="zip" formControlName="zip" autocomplete="postal-code" />
             </div>
           </div>
 
           <div class="flex flex-wrap items-center gap-3 mt-4">
-            <button hlmBtn type="submit">Save card</button>
-            <button hlmBtn variant="ghost" type="button" (click)="toggleForm()">Cancel</button>
+            <button hlmBtn type="submit">
+              {{ 'account_settings.billing.save_card' | translate }}
+            </button>
+            <button hlmBtn variant="ghost" type="button" (click)="toggleForm()">
+              {{ 'account_settings.billing.cancel' | translate }}
+            </button>
           </div>
         </form>
       }
 
       @if (cards().length === 0) {
         <div class="p-6 border border-dashed rounded-xl text-muted-foreground text-sm text-center">
-          No saved payment methods yet. Add your first card to get started.
+          {{ 'account_settings.billing.empty' | translate }}
         </div>
       }
 
@@ -92,18 +104,22 @@
                   <div class="flex items-center gap-2">
                     <p hlmSmall>{{ card.brand }} •••• {{ card.last4 }}</p>
                     @if (card.isDefault) {
-                      <span hlmBadge variant="secondary">Default</span>
+                      <span hlmBadge variant="secondary">{{
+                        'account_settings.billing.default_badge' | translate
+                      }}</span>
                     }
                   </div>
                   <p hlmMuted>{{ card.holderName }}</p>
-                  <p hlmMuted>Expires {{ card.expiry }}</p>
+                  <p hlmMuted>
+                    {{ 'account_settings.billing.expires' | translate: { expiry: card.expiry } }}
+                  </p>
                 </div>
               </div>
 
               <div class="flex flex-wrap items-center gap-2">
                 @if (!card.isDefault) {
                   <button hlmBtn variant="outline" type="button" (click)="setDefaultCard(card.id)">
-                    Set as default
+                    {{ 'account_settings.billing.set_default' | translate }}
                   </button>
                 }
                 <button
@@ -114,7 +130,7 @@
                   (click)="removeCard(card.id)"
                 >
                   <ng-icon name="lucideTrash2" size="16" />
-                  Remove
+                  {{ 'account_settings.billing.remove' | translate }}
                 </button>
               </div>
             </div>
@@ -126,18 +142,20 @@
 
   <section hlmCard>
     <div hlmCardHeader>
-      <h3 hlmCardTitle>Billing Preference</h3>
-      <p hlmCardDescription>Your saved cards are ready for future subscriptions and purchases.</p>
+      <h3 hlmCardTitle>{{ 'account_settings.billing.preference_title' | translate }}</h3>
+      <p hlmCardDescription>
+        {{ 'account_settings.billing.preference_description' | translate }}
+      </p>
     </div>
 
     <div hlmCardContent class="flex flex-col gap-3 text-muted-foreground text-sm">
       <div class="flex items-center gap-2">
         <ng-icon name="lucideCheck" size="16" class="text-primary" />
-        <span>Default payments are used automatically for renewals and invoices.</span>
+        <span>{{ 'account_settings.billing.preference_point_1' | translate }}</span>
       </div>
       <div class="flex items-center gap-2">
         <ng-icon name="lucideCheck" size="16" class="text-primary" />
-        <span>You can update your method whenever your account needs it.</span>
+        <span>{{ 'account_settings.billing.preference_point_2' | translate }}</span>
       </div>
     </div>
   </section>

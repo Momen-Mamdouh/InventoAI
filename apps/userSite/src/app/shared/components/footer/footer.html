@@ -61,7 +61,7 @@
             <a
               [href]="'mailto:' + email"
               class="text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Email us"
+              [attr.aria-label]="'footer.social_email' | translate"
             >
               <ng-icon name="lucideMail" size="18" />
             </a>

@@ -14,7 +14,9 @@
             type="button"
             (click)="selectImage(i)"
             [attr.aria-pressed]="i === activeIdx"
-            [attr.aria-label]="'View image ' + (i + 1) + ' of ' + name"
+            [attr.aria-label]="
+              'product.gallery.view_image' | translate: { index: i + 1, name: name }
+            "
             class="basis-auto h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 bg-card transition-colors md:h-24 md:w-full"
             [class.border-primary]="i === activeIdx"
             [class.border-border]="i !== activeIdx"
@@ -23,8 +25,16 @@
           </button>
         }
       </div>
-      <button hlmCarouselPrevious class="hidden" aria-label="Carousel Previous"></button>
-      <button hlmCarouselNext class="hidden" aria-label="Carousel Previous"></button>
+      <button
+        hlmCarouselPrevious
+        class="hidden"
+        [attr.aria-label]="'product.gallery.carousel_previous' | translate"
+      ></button>
+      <button
+        hlmCarouselNext
+        class="hidden"
+        [attr.aria-label]="'product.gallery.carousel_next' | translate"
+      ></button>
     </hlm-carousel>
   }
 

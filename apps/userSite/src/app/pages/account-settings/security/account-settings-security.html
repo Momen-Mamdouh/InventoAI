@@ -1,14 +1,16 @@
 <div class="flex flex-col gap-6">
   <section hlmCard>
     <div hlmCardHeader>
-      <h3 hlmCardTitle>Change Password</h3>
-      <p hlmCardDescription>Use a strong password at least 12 characters long.</p>
+      <h3 hlmCardTitle>{{ 'account_settings.security.title' | translate }}</h3>
+      <p hlmCardDescription>{{ 'account_settings.security.description' | translate }}</p>
     </div>
 
     <form hlmCardContent [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-5">
       <!-- Current Password -->
       <div class="flex flex-col gap-1.5">
-        <label hlmLabel for="currentPassword">Current Password</label>
+        <label hlmLabel for="currentPassword">{{
+          'account_settings.security.current_password' | translate
+        }}</label>
         <div class="relative">
           <input
             hlmInput
@@ -17,7 +19,7 @@
             [type]="showCurrent() ? 'text' : 'password'"
             formControlName="currentPassword"
             autocomplete="current-password"
-            placeholder="Enter current password"
+            [placeholder]="'account_settings.security.current_password_placeholder' | translate"
             [attr.disabled]="isLoading() ? true : null"
           />
           <button
@@ -27,7 +29,12 @@
             type="button"
             (click)="showCurrent.set(!showCurrent())"
             class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
-            [attr.aria-label]="showCurrent() ? 'Hide password' : 'Show password'"
+            [attr.aria-label]="
+              (showCurrent()
+                ? 'account_settings.security.hide_password'
+                : 'account_settings.security.show_password'
+              ) | translate
+            "
           >
             <ng-icon [name]="showCurrent() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
           </button>
@@ -37,7 +44,9 @@
       <!-- New Password / Confirm New Password -->
       <div class="gap-5 grid grid-cols-1 sm:grid-cols-2">
         <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="newPassword">New Password</label>
+          <label hlmLabel for="newPassword">{{
+            'account_settings.security.new_password' | translate
+          }}</label>
           <div class="relative">
             <input
               hlmInput
@@ -46,7 +55,7 @@
               [type]="showNew() ? 'text' : 'password'"
               formControlName="newPassword"
               autocomplete="new-password"
-              placeholder="Min. 8 characters"
+              [placeholder]="'account_settings.security.new_password_placeholder' | translate"
               [attr.disabled]="isLoading() ? true : null"
             />
             <button
@@ -56,7 +65,12 @@
               type="button"
               (click)="showNew.set(!showNew())"
               class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
-              [attr.aria-label]="showNew() ? 'Hide password' : 'Show password'"
+              [attr.aria-label]="
+                (showNew()
+                  ? 'account_settings.security.hide_password'
+                  : 'account_settings.security.show_password'
+                ) | translate
+              "
             >
               <ng-icon [name]="showNew() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
             </button>
@@ -64,18 +78,22 @@
           @if (
             form.controls.newPassword.touched && form.controls.newPassword.hasError('minlength')
           ) {
-            <p hlmSmall class="text-destructive text-xs">Password must be at least 8 characters.</p>
+            <p hlmSmall class="text-destructive text-xs">
+              {{ 'account_settings.security.error_min_length' | translate }}
+            </p>
           } @else if (
             form.controls.newPassword.touched && form.controls.newPassword.hasError('pattern')
           ) {
             <p hlmSmall class="text-destructive text-xs">
-              Password must contain at least one letter and one number.
+              {{ 'account_settings.security.error_pattern' | translate }}
             </p>
           }
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="confirmPassword">Confirm New Password</label>
+          <label hlmLabel for="confirmPassword">{{
+            'account_settings.security.confirm_password' | translate
+          }}</label>
           <div class="relative">
             <input
               hlmInput
@@ -84,7 +102,7 @@
               [type]="showConfirm() ? 'text' : 'password'"
               formControlName="confirmPassword"
               autocomplete="new-password"
-              placeholder="Repeat new password"
+              [placeholder]="'account_settings.security.confirm_password_placeholder' | translate"
               [attr.disabled]="isLoading() ? true : null"
             />
             <button
@@ -94,20 +112,32 @@
               type="button"
               (click)="showConfirm.set(!showConfirm())"
               class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
-              [attr.aria-label]="showConfirm() ? 'Hide password' : 'Show password'"
+              [attr.aria-label]="
+                (showConfirm()
+                  ? 'account_settings.security.hide_password'
+                  : 'account_settings.security.show_password'
+                ) | translate
+              "
             >
               <ng-icon [name]="showConfirm() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
             </button>
           </div>
           @if (form.controls.confirmPassword.touched && form.hasError('passwordMismatch')) {
-            <p hlmSmall class="text-destructive text-xs">Passwords do not match.</p>
+            <p hlmSmall class="text-destructive text-xs">
+              {{ 'account_settings.security.error_mismatch' | translate }}
+            </p>
           }
         </div>
       </div>
 
       <button hlmBtn type="submit" [disabled]="form.invalid || isLoading()" class="gap-2 w-fit">
         <ng-icon name="lucideLock" size="16" />
-        {{ isLoading() ? 'Updating…' : 'Update Password' }}
+        {{
+          (isLoading()
+            ? 'account_settings.security.submitting'
+            : 'account_settings.security.submit'
+          ) | translate
+        }}
       </button>
     </form>
   </section>

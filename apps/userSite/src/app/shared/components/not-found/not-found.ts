@@ -6,12 +6,13 @@ import gsap from 'gsap';
 import { HlmButton } from '@spartan/helm/button';
 
 import { animateElementsOnRender } from '@invento/user-site/app/core/utils/animation.utils';
+import { TranslatePipe } from '@invento/core';
 
 @Component({
   selector: 'app-not-found',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, HlmButton],
+  imports: [RouterLink, HlmButton, TranslatePipe],
   templateUrl: './not-found.html',
 })
 export class NotFoundComponent {

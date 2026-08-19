@@ -17,6 +17,7 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { AuthService } from '@invento/user-site/app/core/service/auth.service';
 import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
+import { LocaleService, TranslatePipe } from '@invento/core';
 
 function passwordsMatchValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
@@ -37,6 +38,7 @@ function passwordsMatchValidator(): ValidatorFn {
     HlmLabelImports,
     HlmCardImports,
     HlmTypographyImports,
+    TranslatePipe,
   ],
   providers: [provideIcons({ lucideEye, lucideEyeOff, lucideLock })],
   templateUrl: './account-settings-security.html',
@@ -45,6 +47,7 @@ function passwordsMatchValidator(): ValidatorFn {
 export class AccountSettingsSecurityComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly locale = inject(LocaleService);
 
   readonly showCurrent = signal(false);
   readonly showNew = signal(false);
@@ -84,12 +87,17 @@ export class AccountSettingsSecurityComponent {
       .subscribe({
         next: () => {
           this.isLoading.set(false);
-          toast.success('Password updated successfully');
+          toast.success(this.locale.translate('account_settings.security.toast_success'));
           this.form.reset();
         },
         error: (err) => {
           this.isLoading.set(false);
-          toast.error(extractErrorMessage(err, 'Failed to update password. Please try again.'));
+          toast.error(
+            extractErrorMessage(
+              err,
+              this.locale.translate('account_settings.security.toast_error'),
+            ),
+          );
         },
       });
   }

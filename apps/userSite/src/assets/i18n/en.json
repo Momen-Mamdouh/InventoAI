@@ -24,41 +24,13 @@
     "cart": "Cart",
     "customer_service": "Customer Service",
     "faq": "FAQ",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "social_email": "Email us"
   },
   "pagination": {
     "showing": "Showing {{from}}–{{to}} of {{total}}",
     "aria": "Product pages",
     "go_to_page": "Go to page {{page}}"
-  },
-  "orders": {
-    "signin_title": "Sign in to view your orders",
-    "signin_desc": "Please log in to your account to view your past purchases, track active shipments, and manage your orders.",
-    "log_in": "Log In",
-    "error_title": "Unable to load orders",
-    "try_again": "Try Again",
-    "empty_title": "No orders found",
-    "empty_desc": "We couldn't find any orders matching your current filter or search criteria. Try clearing your search or switching filter categories.",
-    "reset_filters": "Reset Filters",
-    "browse_store": "Browse Store",
-    "filters": {
-      "all": "All Orders",
-      "pending": "Pending",
-      "confirmed": "Confirmed",
-      "shipped": "Shipped",
-      "delivered": "Delivered",
-      "cancelled": "Cancelled"
-    },
-    "status": {
-      "pending": "Pending",
-      "confirmed": "Confirmed",
-      "shipped": "Shipped",
-      "delivered": "Delivered",
-      "cancelled": "Cancelled"
-    },
-    "search_placeholder": "Search order # or item...",
-    "search_aria": "Search orders",
-    "filter_aria": "Filter orders by status"
   },
   "faq": {
     "title": "Frequently Asked Questions",
@@ -80,15 +52,9 @@
     "questions": "questions",
     "cta_title": "Still Have Questions?",
     "cta_desc": "Can't find the answer you're looking for? Reach out to our customer support team or use our AI assistant for immediate help.",
-    "contact_support": "Contact Support"
-  },
-  "orders_hero": {
-    "title": "My Orders",
-    "subtitle": "Track shipments, inspect order details, download receipts, and manage your purchase history in real time.",
-    "total_orders": "Total Orders",
-    "in_progress": "In Progress",
-    "delivered": "Delivered",
-    "total_spent": "Total Spent"
+    "contact_support": "Contact Support",
+    "help_center_badge": "Help Center & FAQs",
+    "show_all": "Show all"
   },
   "no_store": {
     "title": "No store selected",
@@ -98,5 +64,11 @@
     "title": "Store not found",
     "description": "We couldn't find a store at this address. It may have been renamed or removed, or the link you followed may be out of date.",
     "retry": "Try again"
+  },
+  "not_found": {
+    "label": "// SYSTEM_ERROR",
+    "title": "Page Not Found",
+    "description": "There is no active route at this destination in the ecosystem registry.",
+    "action": "Reboot Interface"
   }
 }

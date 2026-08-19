@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "back_to_orders": "Back to My Orders"
+  },
+  "page": {
+    "title": "Checkout",
+    "subtitle": "Review the items and complete your delivery details below."
+  },
+  "summary": {
+    "order_items": "Order Items ({{count}})",
+    "clear_all": "Clear All",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "total": "Total"
+  },
+  "empty": {
+    "title": "Your cart is empty",
+    "description": "Browse our catalog or select reorder from your order history.",
+    "browse_products": "Browse Products"
+  },
+  "item": {
+    "decrease_quantity": "Decrease quantity",
+    "increase_quantity": "Increase quantity",
+    "remove_item": "Remove item"
+  },
+  "form": {
+    "contact": {
+      "heading": "Recipient & Contact Details",
+      "first_name_label": "First Name *",
+      "first_name_placeholder": "First name",
+      "last_name_label": "Last Name *",
+      "last_name_placeholder": "Last name",
+      "email_label": "Email Address *",
+      "account_email_badge": "Account Email",
+      "email_placeholder": "name@example.com",
+      "phone_label": "Phone Number *",
+      "phone_placeholder": "+201001234567"
+    },
+    "address": {
+      "heading": "Delivery Address",
+      "line1_label": "Street Address (Line 1) *",
+      "line1_placeholder": "e.g., 18 Talaat Harb St",
+      "line2_label": "Apartment, Suite, Building (Optional)",
+      "line2_placeholder": "e.g., Apt 5, Floor 3",
+      "city_label": "City *",
+      "city_placeholder": "e.g., Cairo",
+      "governorate_label": "Governorate (Optional)",
+      "governorate_placeholder": "e.g., Cairo",
+      "postal_code_label": "Postal Code (Optional)",
+      "postal_code_placeholder": "e.g., 11511",
+      "note_label": "Order / Delivery Note (Optional)",
+      "note_placeholder": "e.g., Please ring the bell or leave with security"
+    }
+  },
+  "payment": {
+    "heading": "Payment Method",
+    "cod_label": "Cash on Delivery (COD)",
+    "cod_description_prefix": "Pay in cash with",
+    "cod_description_suffix": "directly to the courier upon receiving your package."
+  },
+  "actions": {
+    "placing_order": "Placing Order...",
+    "place_order": "Place Order ({{amount}})",
+    "sign_in_to_place_order": "Sign in to Place Order ({{amount}})",
+    "sign_in_note": "Please sign in to place your order. Your cart items and delivery details will be preserved."
+  },
+  "errors": {
+    "first_name_required": "First name is required.",
+    "last_name_required": "Last name is required.",
+    "email_invalid": "Valid email is required.",
+    "phone_required": "Phone number is required (6-32 characters).",
+    "line1_required": "Street address is required.",
+    "city_required": "City is required."
+  },
+  "modal": {
+    "clear_cart_title": "Clear Shopping Cart?",
+    "clear_cart_description": "Are you sure you want to remove all items from your cart? You will need to re-add them if you change your mind.",
+    "keep_items": "Keep Items",
+    "confirm_clear": "Yes, Clear Cart"
+  },
+  "toast": {
+    "cart_cleared": "Your cart has been cleared.",
+    "cart_empty": "Your cart is empty. Please add items to checkout.",
+    "guest_sign_in_prompt": "Please sign in to place your order. Your entered details have been saved.",
+    "validation_error": "Please complete all required delivery details.",
+    "order_placed": "Order #{{orderNumber}} placed successfully!",
+    "order_failed": "Failed to place your order. Please check your details and try again."
+  }
+}

@@ -8,7 +8,7 @@
     [disabled]="store.quantity() <= 1"
     (click)="store.decrement()"
     class="rounded-none rounded-l-md hover:bg-muted border-r border-input h-full w-10 shrink-0"
-    aria-label="Decrease quantity"
+    [attr.aria-label]="'product.stepper.decrease' | translate"
   >
     <ng-icon name="lucideMinus" size="16" class="text-foreground" />
   </button>
@@ -26,7 +26,7 @@
     size="icon"
     (click)="store.increment()"
     class="rounded-none rounded-r-md hover:bg-muted border-l border-input h-full w-10 shrink-0"
-    aria-label="Increase quantity"
+    [attr.aria-label]="'product.stepper.increase' | translate"
   >
     <ng-icon name="lucidePlus" size="16" class="text-foreground" />
   </button>

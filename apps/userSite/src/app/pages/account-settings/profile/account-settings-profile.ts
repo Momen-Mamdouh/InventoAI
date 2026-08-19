@@ -5,6 +5,7 @@ import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { AuthService } from '@invento/user-site/app/core/service/auth.service';
+import { TranslatePipe } from '@invento/core';
 
 @Component({
   selector: 'app-account-settings-profile',
@@ -15,6 +16,7 @@ import { AuthService } from '@invento/user-site/app/core/service/auth.service';
     HlmLabelImports,
     HlmCardImports,
     HlmTypographyImports,
+    TranslatePipe,
   ],
   templateUrl: './account-settings-profile.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

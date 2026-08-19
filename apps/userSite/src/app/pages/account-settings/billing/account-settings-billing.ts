@@ -9,6 +9,7 @@ import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSeparatorImports } from '@spartan/helm/separator';
 import { HlmTypographyImports } from '@spartan/helm/typography';
+import { TranslatePipe } from '@invento/core';
 
 interface PaymentCard {
   id: number;
@@ -42,6 +43,7 @@ interface PaymentCard {
     HlmBadgeImports,
     HlmSeparatorImports,
     HlmTypographyImports,
+    TranslatePipe,
   ],
   providers: [provideIcons({ lucideCreditCard, lucidePlus, lucideCheck, lucideTrash2 })],
   templateUrl: './account-settings-billing.html',
