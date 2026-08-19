@@ -20,7 +20,8 @@
     "low_stock": "Only {{count}} left in stock",
     "in_stock": "In Stock",
     "out_of_stock": "Out of Stock",
-    "add_to_cart": "Add to Cart"
+    "add_to_cart": "Add to Cart",
+    "toast_added": "Added {{quantity}} × \"{{title}}\" to cart!"
   },
   "recommended": {
     "title": "Recommended for You",

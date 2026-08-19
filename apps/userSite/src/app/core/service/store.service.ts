@@ -39,7 +39,20 @@ export class StoreService {
   readonly hero = computed(() => this._store()?.hero ?? null);
   readonly featuredCategories = computed(() => this._store()?.featuredCategories ?? []);
   readonly featuredProducts = computed(() => this._store()?.featuredProducts ?? []);
-  readonly contactEmail = computed(() => this._store()?.contactEmail?.trim() || null);
+  /**
+   * `GET /site/:slug` serves no email today (see the `contactEmail` doc on `StorePublic`), so
+   * this used to just return `null` and the FAQ CTA / footer mail icon never rendered for any
+   * store. Per an explicit no-backend-change decision, derive a placeholder address from the
+   * store's slug instead. A real `contactEmail` from the backend takes precedence automatically
+   * the moment the API starts serving one — this only ever falls back when it's absent/blank.
+   * Still returns `null` when no store is loaded, so the existing `@if` gates on the no-store
+   * and store-not-found pages keep collapsing correctly.
+   */
+  readonly contactEmail = computed(() => {
+    const store = this._store();
+    if (!store) return null;
+    return store.contactEmail?.trim() || `owner.${store.slug}@inventoai.test`;
+  });
   readonly social = computed(() => this._store()?.social ?? null);
 
   /**

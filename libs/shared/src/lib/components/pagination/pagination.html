@@ -19,6 +19,8 @@
             [class.pointer-events-none]="isFirst()"
             [class.opacity-40]="isFirst()"
             [attr.aria-disabled]="isFirst() ? 'true' : null"
+            [text]="'pagination.previous' | translate"
+            [aria-label]="'pagination.go_to_previous' | translate"
             (click)="goTo(currentPage() - 1)"
           />
         </li>
@@ -54,6 +56,8 @@
             [class.pointer-events-none]="isLast()"
             [class.opacity-40]="isLast()"
             [attr.aria-disabled]="isLast() ? 'true' : null"
+            [text]="'pagination.next' | translate"
+            [aria-label]="'pagination.go_to_next' | translate"
             (click)="goTo(currentPage() + 1)"
           />
         </li>

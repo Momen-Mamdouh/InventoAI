@@ -7,3 +7,13 @@
 @import 'tailwindcss/utilities.css';
 
 @import '../../../libs/core/src/styles/spartan-theme.css';
+
+/* userSite-only: reserve the scrollbar's width permanently so a list whose height changes
+ * (e.g. filtering orders) doesn't toggle the scrollbar on/off and shift the page horizontally.
+ * Deliberately not in the shared theme (libs/core) — invento also imports that file and this is
+ * a userSite-specific layout fix. */
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+}

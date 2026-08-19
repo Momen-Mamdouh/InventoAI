@@ -454,6 +454,22 @@ export class CheckoutComponent implements OnInit {
       },
       error: (err: unknown) => {
         this.isSubmitting.set(false);
+
+        if (this.isUnavailableItemsError(err)) {
+          // Recoverable: the backend rejected one or more variantIds in the cart (often a
+          // stale cart adopted from a different store — see CartService.readNamespaced).
+          // A plain toast is a dead end here since nothing about the form was wrong, so offer
+          // a real way out instead of just naming the problem.
+          toast.error(this.locale.translate('checkout.toast.unavailable_items'), {
+            duration: 10000,
+            action: {
+              label: this.locale.translate('checkout.toast.clear_cart_action'),
+              onClick: () => this.recoverFromUnavailableItems(),
+            },
+          });
+          return;
+        }
+
         const errorMsg = extractErrorMessage(
           err,
           this.locale.translate('checkout.toast.order_failed'),
@@ -461,5 +477,25 @@ export class CheckoutComponent implements OnInit {
         toast.error(errorMsg);
       },
     });
+  }
+
+  /**
+   * Matches the two message shapes `describeUnavailable()` in the backend's
+   * `checkout.service.ts` can throw for a 400 on unknown/foreign `variantId`s:
+   *   - generic: `items: one of these products is no longer available` (matched zero variants
+   *     for the store — e.g. every id in a stale, wrong-store cart)
+   *   - named:   `items: "Title A", "Title B" is no longer available`
+   * Both end in "is no longer available", which nothing else in the checkout flow produces.
+   */
+  private isUnavailableItemsError(err: unknown): boolean {
+    const message = extractErrorMessage(err, '');
+    return /is no longer available/i.test(message);
+  }
+
+  /** The shopper's way out of an unrecoverable stale/foreign cart: start over. */
+  private recoverFromUnavailableItems(): void {
+    this.cartService.clearCart();
+    this.cartService.clearPrefill();
+    toast.info(this.locale.translate('checkout.toast.cart_cleared'));
   }
 }

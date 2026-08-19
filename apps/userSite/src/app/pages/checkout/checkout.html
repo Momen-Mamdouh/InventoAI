@@ -74,18 +74,23 @@
                   {{ item.productTitle }}
                 </h4>
 
-                <!-- Variant Options -->
-                @if (item.variantOptions) {
-                  <div class="flex flex-wrap items-center gap-1 my-1">
-                    @for (opt of item.variantOptions | keyvalue; track opt.key) {
-                      <span
-                        dir="auto"
-                        class="bg-muted px-1.5 py-0.5 rounded text-[10px] font-medium text-muted-foreground"
-                      >
-                        {{ opt.key }}: {{ opt.value }}
-                      </span>
-                    }
-                  </div>
+                <!-- Variant Options. `item.variantOptions` is `{}` (truthy) for a variant with
+                     no options, so guard on the keyvalue list actually having entries — an
+                     empty map otherwise rendered a blank strip that made two different cart
+                     lines look identical. -->
+                @if (item.variantOptions | keyvalue; as variantOptions) {
+                  @if (variantOptions.length > 0) {
+                    <div class="flex flex-wrap items-center gap-1 my-1">
+                      @for (opt of variantOptions; track opt.key) {
+                        <span
+                          dir="auto"
+                          class="bg-muted px-1.5 py-0.5 rounded text-[10px] font-medium text-muted-foreground"
+                        >
+                          {{ opt.key }}: {{ opt.value }}
+                        </span>
+                      }
+                    </div>
+                  }
                 }
 
                 <div class="flex flex-wrap justify-between items-center gap-2 mt-2">
