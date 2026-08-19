@@ -113,7 +113,11 @@
 
                 <div class="flex-1 min-w-0">
                   <div class="flex justify-between items-start gap-2">
-                    <h4 hlmH4 class="font-bold text-foreground text-sm sm:text-base line-clamp-2">
+                    <h4
+                      hlmH4
+                      dir="auto"
+                      class="font-bold text-foreground text-sm sm:text-base line-clamp-2"
+                    >
                       {{ item.productTitle }}
                     </h4>
                     <p hlmSmall class="font-bold text-foreground text-sm sm:text-base shrink-0">
@@ -125,6 +129,7 @@
                     <div class="flex flex-wrap items-center gap-1 my-1">
                       @for (opt of item.variantOptions | keyvalue; track opt.key) {
                         <span
+                          dir="auto"
                           class="bg-muted px-1.5 py-0.5 rounded text-[10px] font-medium text-muted-foreground"
                         >
                           {{ opt.key }}: {{ opt.value }}
@@ -261,14 +266,14 @@
               {{ 'order_confirmed.delivery_address' | translate }}
             </h2>
             <hr class="mb-3 border-border" />
-            <h4 hlmH4 class="font-bold text-foreground text-sm">
+            <h4 hlmH4 dir="auto" class="font-bold text-foreground text-sm">
               {{ ord.contactName }}
             </h4>
-            <p hlmMuted class="text-xs">{{ ord.shippingAddress.line1 }}</p>
+            <p hlmMuted dir="auto" class="text-xs">{{ ord.shippingAddress.line1 }}</p>
             @if (ord.shippingAddress.line2) {
-              <p hlmMuted class="text-xs">{{ ord.shippingAddress.line2 }}</p>
+              <p hlmMuted dir="auto" class="text-xs">{{ ord.shippingAddress.line2 }}</p>
             }
-            <p hlmMuted class="text-xs">
+            <p hlmMuted dir="auto" class="text-xs">
               {{ ord.shippingAddress.city }}
               @if (ord.shippingAddress.governorate) {
                 , {{ ord.shippingAddress.governorate }}
@@ -277,7 +282,7 @@
                 - {{ ord.shippingAddress.postalCode }}
               }
             </p>
-            <p hlmSmall class="text-xs font-semibold text-foreground">
+            <p hlmSmall dir="auto" class="text-xs font-semibold text-foreground">
               {{ ord.shippingAddress.country }}
             </p>
             <p hlmMuted class="text-xs pt-1 border-t border-border/40">

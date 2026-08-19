@@ -67,12 +67,18 @@
           <h1
             #heroItem
             hlmH1
+            dir="auto"
             class="mb-4 leading-[1.1] font-bold sm:text-5xl md:mb-6 md:text-6xl md:font-extrabold"
           >
             {{ hero()?.headline || ('home.hero_fallback_title' | translate) }}
           </h1>
 
-          <p #heroItem hlmLead class="mb-8 max-w-lg text-base leading-relaxed md:mb-10 md:text-lg">
+          <p
+            #heroItem
+            hlmLead
+            dir="auto"
+            class="mb-8 max-w-lg text-base leading-relaxed md:mb-10 md:text-lg"
+          >
             {{ hero()?.subtitle || ('home.hero_fallback_subtitle' | translate) }}
           </p>
 
@@ -164,7 +170,11 @@
           <h2 hlmH2 class="text-foreground mb-3 text-xl font-bold md:text-2xl border-none pb-0">
             {{ 'home.about' | translate }}
           </h2>
-          <p hlmP class="text-muted-foreground max-w-3xl text-sm leading-relaxed md:text-base m-0">
+          <p
+            hlmP
+            dir="auto"
+            class="text-muted-foreground max-w-3xl text-sm leading-relaxed md:text-base m-0"
+          >
             {{ description }}
           </p>
         </section>
@@ -239,6 +249,7 @@
                   }
                 </div>
                 <span
+                  dir="auto"
                   class="text-foreground group-hover:text-primary text-center text-xs font-medium transition-colors md:text-sm"
                 >
                   {{ category.name }}

@@ -217,7 +217,7 @@
                       "
                     ></ng-icon>
                   </div>
-                  <span class="flex-1">{{ category.title }}</span>
+                  <span dir="auto" class="flex-1">{{ category.title }}</span>
                   <span
                     class="ms-auto text-[11px] font-bold px-2.5 py-0.5 rounded-full transition-colors"
                     [ngClass]="
@@ -246,7 +246,7 @@
                     <ng-icon [name]="activeCat.icon" size="20px"></ng-icon>
                   </div>
                   <div>
-                    <h2 hlmH2 class="text-xl font-bold text-foreground border-none pb-0">
+                    <h2 hlmH2 dir="auto" class="text-xl font-bold text-foreground border-none pb-0">
                       {{ activeCat.title }}
                     </h2>
                     <p hlmMuted class="text-xs">
@@ -286,6 +286,7 @@
                         </span>
                         <h3
                           hlmH3
+                          dir="auto"
                           class="text-foreground text-start text-sm leading-snug font-bold sm:text-base"
                         >
                           {{ item.question }}
@@ -296,7 +297,9 @@
                       <div
                         class="faq-answer text-muted-foreground border-border/40 border-t px-5 pt-4 pb-6 text-sm leading-relaxed sm:px-6"
                       >
-                        <div class="faq-answer-text whitespace-pre-line">{{ item.answer }}</div>
+                        <div dir="auto" class="faq-answer-text whitespace-pre-line">
+                          {{ item.answer }}
+                        </div>
                       </div>
                     </hlm-accordion-content>
                   </div>

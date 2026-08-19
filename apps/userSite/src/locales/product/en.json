@@ -9,6 +9,9 @@
   "summary": {
     "save": "Save {{percentage}}%"
   },
+  "variant": {
+    "select_option": "Select {{name}}"
+  },
   "accordion": {
     "details": "Product Details",
     "specifications": "Specifications"

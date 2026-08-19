@@ -67,6 +67,7 @@
               <div class="flex-1 min-w-0">
                 <h4
                   hlmH4
+                  dir="auto"
                   class="font-bold text-foreground text-sm truncate"
                   [title]="item.productTitle"
                 >
@@ -78,6 +79,7 @@
                   <div class="flex flex-wrap items-center gap-1 my-1">
                     @for (opt of item.variantOptions | keyvalue; track opt.key) {
                       <span
+                        dir="auto"
                         class="bg-muted px-1.5 py-0.5 rounded text-[10px] font-medium text-muted-foreground"
                       >
                         {{ opt.key }}: {{ opt.value }}

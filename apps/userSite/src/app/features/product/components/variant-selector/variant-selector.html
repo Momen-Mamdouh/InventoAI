@@ -2,10 +2,13 @@
   @for (axis of store.variantAxes(); track axis.key) {
     <div>
       <div class="mb-2 flex items-center justify-between">
-        <h3 hlmH3 class="text-sm font-semibold text-foreground">
+        <h3 hlmH3 dir="auto" class="text-sm font-semibold text-foreground">
           {{ axis.name }}:
-          <span class="font-normal text-muted-foreground">
-            {{ store.selectedOptions()[axis.key] || 'Select ' + axis.name }}
+          <span dir="auto" class="font-normal text-muted-foreground">
+            {{
+              store.selectedOptions()[axis.key] ||
+                ('product.variant.select_option' | translate: { name: axis.name })
+            }}
           </span>
         </h3>
       </div>
@@ -43,6 +46,7 @@
           @for (opt of axis.options; track opt.slug) {
             <button
               type="button"
+              dir="auto"
               [attr.aria-label]="'Select ' + axis.name + ' ' + opt.value"
               [attr.aria-pressed]="store.selectedOptions()[axis.key] === opt.slug"
               (click)="store.selectOption(axis.key, opt.slug)"

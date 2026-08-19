@@ -9,6 +9,9 @@
   "summary": {
     "save": "وفر {{percentage}}%"
   },
+  "variant": {
+    "select_option": "اختر {{name}}"
+  },
   "accordion": {
     "details": "تفاصيل المنتج",
     "specifications": "المواصفات"

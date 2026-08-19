@@ -33,12 +33,12 @@
           <dl class="divide-y divide-border">
             @for (spec of p.specs; track spec.key) {
               <div class="px-1 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm font-medium leading-6 text-foreground">
+                <dt dir="auto" class="text-sm font-medium leading-6 text-foreground">
                   {{ spec.name || spec.key }}
                 </dt>
                 <dd class="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
                   @for (val of spec.values; track val.slug) {
-                    <span>{{ val.value }}{{ $last ? '' : ', ' }}</span>
+                    <span dir="auto">{{ val.value }}{{ $last ? '' : ', ' }}</span>
                   }
                 </dd>
               </div>

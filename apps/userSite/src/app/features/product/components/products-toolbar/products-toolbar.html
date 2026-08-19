@@ -66,7 +66,9 @@
                   (click)="onSuggestionClick(suggestion)"
                   class="w-full text-left px-4 py-6 rounded-none flex items-center justify-between transition-colors border-b border-border/50 last:border-0"
                 >
-                  <span hlmP class="truncate font-medium m-0">{{ suggestion.title }}</span>
+                  <span hlmP dir="auto" class="truncate font-medium m-0">{{
+                    suggestion.title
+                  }}</span>
                   <span hlmSmall class="text-primary shrink-0 ms-3 font-semibold">{{
                     suggestion.minPriceAmount / 100 | currency
                   }}</span>
