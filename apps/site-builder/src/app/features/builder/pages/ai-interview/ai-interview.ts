@@ -103,7 +103,6 @@ export class AiInterview implements OnInit {
   }
 
   ngOnInit() {
-    const controls: Record<string, FormControl> = {};
     const prefill = this.builderState.aiAnswers();
 
     this.visibleQuestions().forEach((q) => {
@@ -113,10 +112,11 @@ export class AiInterview implements OnInit {
         this.selectedChannels.update((prev) => ({ ...prev, [q.id]: initialValue as string[] }));
       }
 
-      controls[q.id] = new FormControl(initialValue, q.required ? [Validators.required] : []);
+      this.form.addControl(
+        q.id,
+        new FormControl(initialValue, q.required ? [Validators.required] : []),
+      );
     });
-
-    this.form = new FormGroup(controls);
 
     this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.builderState.aiAnswers.update((current) => ({ ...current, ...val }));
@@ -137,16 +137,43 @@ export class AiInterview implements OnInit {
 
   onPrevStep() {
     const stepper = this.stepper();
-    if (!stepper) return;
-    stepper.previous();
+    if (!stepper) {
+      return;
+    }
+    if (stepper.selectedIndex === 0) {
+      this.router.navigate(['/build/brainstorm']);
+      return;
+    }
+    stepper.selectedIndex = stepper.selectedIndex - 1;
     this.scrollToStep(stepper.selectedIndex);
   }
 
   onNextStep() {
     const stepper = this.stepper();
     if (!stepper) return;
-    stepper.next();
+
+    const currentQuestion = this.visibleQuestions()[stepper.selectedIndex];
+    if (currentQuestion && currentQuestion.required) {
+      const control = this.form.get(currentQuestion.id);
+      if (control && (control.invalid || !isAnswered(currentQuestion, control.value))) {
+        control.markAsTouched();
+        this.invalidQuestionId.set(currentQuestion.id);
+        toast.error(this._localeService.translate('toast_required_questions'));
+        return;
+      }
+    }
+
+    this.invalidQuestionId.set(null);
+    stepper.selectedIndex = stepper.selectedIndex + 1;
     this.scrollToStep(stepper.selectedIndex);
+  }
+
+  isQuestionCompleted(questionId: string): boolean {
+    const control = this.form.get(questionId);
+    const question = this.visibleQuestions().find((item) => item.id === questionId);
+    if (!question || !control) return false;
+    if (!question.required) return true;
+    return isAnswered(question, control.value) && control.valid;
   }
 
   isQuestionInvalid(questionId: string): boolean {

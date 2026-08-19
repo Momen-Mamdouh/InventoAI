@@ -22,7 +22,11 @@
         #stepper
       >
         @for (question of visibleQuestions(); track question.id) {
-          <spartan-step [label]="question.label | translate" [stepControl]="form.get(question.id)!">
+          <spartan-step
+            [label]="question.label | translate"
+            [stepControl]="form.get(question.id)!"
+            [completed]="isQuestionCompleted(question.id)"
+          >
             <ng-template spartanStepContent>
               @if (question.type === 'single') {
                 <div
@@ -112,6 +116,7 @@
       <div class="flex md:flex-row flex-col md:justify-between md:items-center gap-2.5">
         <button
           hlmBtn
+          type="button"
           variant="outline"
           size="lg"
           (click)="onPrevStep()"
@@ -124,6 +129,7 @@
         @if (stepper.selectedIndex < visibleQuestions().length - 1) {
           <button
             hlmBtn
+            type="button"
             variant="default"
             size="lg"
             (click)="onNextStep()"
@@ -135,9 +141,10 @@
         } @else {
           <button
             hlmBtn
+            type="button"
             variant="default"
             size="lg"
-            [disabled]="!canSubmit() || isSubmitting()"
+            [disabled]="isSubmitting()"
             (click)="onNext()"
             class="flex justify-center items-center gap-2 disabled:opacity-50 font-bold dark:text-white uppercase cursor-pointer disabled:cursor-not-allowed"
           >
