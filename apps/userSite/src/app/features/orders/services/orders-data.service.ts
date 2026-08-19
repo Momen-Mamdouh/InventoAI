@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, firstValueFrom, tap, throwError } from 'rxjs';
+import { LocaleService } from '@invento/core';
 import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
 import type {
   CancelOrderPayload,
@@ -22,6 +23,9 @@ const RECIPIENT_OVERRIDES_KEY = 'invento_order_recipients';
 export class OrdersDataService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
+  // Class-side error fallbacks are translated here rather than by the pipe — they're plain
+  // strings stored in a signal, not template text.
+  private readonly locale = inject(LocaleService);
 
   private readonly _orders = signal<OrderSummaryItem[]>([]);
   private readonly _orderDetailsMap = signal<Map<number, OrderDetail>>(new Map());
@@ -233,11 +237,11 @@ export class OrdersDataService {
           this._isLoading.set(false);
           if (err.status === 401) {
             this._isUnauthorized.set(true);
-            this._error.set('Please log in to view your orders.');
+            this._error.set(this.locale.translate('orders.errors.login_required'));
           } else {
             const errorMsg = extractErrorMessage(
               err,
-              'Failed to fetch your orders. Please try again later.',
+              this.locale.translate('orders.errors.fetch_failed'),
             );
             this._error.set(errorMsg);
           }
@@ -321,7 +325,10 @@ export class OrdersDataService {
 
       return { success: true };
     } catch (err: unknown) {
-      const errorMsg = extractErrorMessage(err, 'Failed to cancel order.');
+      const errorMsg = extractErrorMessage(
+        err,
+        this.locale.translate('orders.errors.cancel_failed_fallback'),
+      );
       return { success: false, message: errorMsg };
     } finally {
       this._isCancelling.set(null);

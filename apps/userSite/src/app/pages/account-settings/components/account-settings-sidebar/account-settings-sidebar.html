@@ -1,6 +1,6 @@
 <aside class="flex flex-row md:flex-col justify-between gap-2 md:gap-0 w-full md:w-60 md:h-full">
   <nav class="flex flex-row md:flex-col gap-1 pb-1 md:pb-0 md:overflow-visible overflow-x-auto">
-    @for (item of navItems; track item.route) {
+    @for (item of navItems(); track item.route) {
       <a
         [routerLink]="item.route"
         routerLinkActive="bg-primary/20 text-primary hover:bg-primary/20"
@@ -20,6 +20,6 @@
     class="hidden md:flex justify-start gap-3 hover:bg-destructive/10 w-full text-destructive hover:text-destructive"
   >
     <ng-icon name="lucideTrash2" size="18" />
-    Delete Account
+    {{ 'account_settings.delete_account' | translate }}
   </button>
 </aside>

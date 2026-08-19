@@ -3,8 +3,10 @@
     <!-- Profile Photo -->
     <section hlmCard>
       <div hlmCardHeader>
-        <h3 hlmCardTitle>Profile Photo</h3>
-        <p hlmCardDescription>Upload a profile photo visible to your team and customers.</p>
+        <h3 hlmCardTitle>{{ 'account_settings.profile.photo_title' | translate }}</h3>
+        <p hlmCardDescription>
+          {{ 'account_settings.profile.photo_description' | translate }}
+        </p>
       </div>
 
       <div hlmCardContent class="flex items-center gap-4">
@@ -24,39 +26,44 @@
     <!-- Personal Information -->
     <section hlmCard>
       <div hlmCardHeader>
-        <h3 hlmCardTitle>Personal Information</h3>
-        <p hlmCardDescription>Your name and contact details on file with Storai.</p>
+        <h3 hlmCardTitle>{{ 'account_settings.profile.info_title' | translate }}</h3>
+        <p hlmCardDescription>
+          {{ 'account_settings.profile.info_description' | translate }}
+        </p>
       </div>
 
       <div hlmCardContent class="flex flex-col gap-5">
         <!-- First / Last name -->
         <div class="gap-5 grid grid-cols-1 sm:grid-cols-2">
           <div class="flex flex-col gap-1.5">
-            <label hlmLabel for="firstName">First Name</label>
+            <label hlmLabel for="firstName">{{
+              'account_settings.profile.first_name' | translate
+            }}</label>
             <input hlmInput id="firstName" [value]="user.firstName" readonly disabled />
           </div>
           <div class="flex flex-col gap-1.5">
-            <label hlmLabel for="lastName">Last Name</label>
+            <label hlmLabel for="lastName">{{
+              'account_settings.profile.last_name' | translate
+            }}</label>
             <input hlmInput id="lastName" [value]="user.lastName" readonly disabled />
           </div>
         </div>
 
         <!-- Email -->
         <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="email">Email Address</label>
+          <label hlmLabel for="email">{{ 'account_settings.profile.email' | translate }}</label>
           <input hlmInput id="email" type="email" [value]="user.email" readonly disabled />
         </div>
 
         <div class="pt-2 border-t text-muted-foreground text-xs">
-          Profile editing isn't available yet. Reach out to support if any of these details need to
-          change.
+          {{ 'account_settings.profile.edit_notice' | translate }}
         </div>
       </div>
     </section>
   } @else {
     <section hlmCard>
       <div hlmCardContent class="py-10 text-muted-foreground text-sm text-center">
-        Sign in to view your profile details.
+        {{ 'account_settings.profile.sign_in_prompt' | translate }}
       </div>
     </section>
   }

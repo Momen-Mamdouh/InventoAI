@@ -11,6 +11,7 @@
       @for (cat of p.categories; track cat.slug) {
         <span
           hlmBadge
+          dir="auto"
           class="bg-primary/10 text-primary hover:bg-primary/20 border-transparent shadow-none"
           >{{ cat.name }}</span
         >
@@ -19,11 +20,11 @@
   </div>
 }
 
-<h1 hlmH1 class="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+<h1 hlmH1 dir="auto" class="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
   {{ p.title }}
 </h1>
 @if (p.shortDescription) {
-  <p hlmP class="mb-5 text-base text-muted-foreground">{{ p.shortDescription }}</p>
+  <p hlmP dir="auto" class="mb-5 text-base text-muted-foreground">{{ p.shortDescription }}</p>
 }
 
 <div class="flex items-center gap-3">

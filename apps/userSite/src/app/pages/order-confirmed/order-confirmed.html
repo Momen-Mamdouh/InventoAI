@@ -30,23 +30,25 @@
       </div>
 
       <h1 hlmH1 class="mb-2 font-bold text-foreground text-2xl sm:text-3xl">
-        Thank You for Your Order!
+        {{ 'order_confirmed.title' | translate }}
       </h1>
       @if (order(); as ord) {
-        <p hlmMuted class="mb-1 text-sm sm:text-base font-semibold">Order #{{ ord.orderNumber }}</p>
+        <p hlmMuted class="mb-1 text-sm sm:text-base font-semibold">
+          {{ 'order_confirmed.order_number' | translate: { orderNumber: ord.orderNumber } }}
+        </p>
         <p hlmMuted class="text-xs sm:text-sm">
-          A confirmation has been recorded for
+          {{ 'order_confirmed.confirmation_prefix' | translate }}
           <strong class="text-foreground">{{ ord.contactEmail }}</strong
           >.
         </p>
       } @else if (isLoading()) {
         <div class="flex items-center justify-center gap-2 text-xs text-muted-foreground mt-2">
           <ng-icon name="lucideLoader2" class="animate-spin text-sm"></ng-icon>
-          <span>Retrieving order confirmation details...</span>
+          <span>{{ 'order_confirmed.retrieving' | translate }}</span>
         </div>
       } @else {
         <p hlmMuted class="text-xs sm:text-sm">
-          Your order has been received and is being processed.
+          {{ 'order_confirmed.received_processing' | translate }}
         </p>
       }
     </div>
@@ -63,7 +65,7 @@
           hlmH2
           class="mb-3 sm:mb-4 font-bold text-foreground text-lg sm:text-xl border-none pb-0"
         >
-          Order Summary
+          {{ 'order_confirmed.order_summary' | translate }}
         </h2>
         <hr class="mb-4 sm:mb-6 border-border" />
 
@@ -111,7 +113,11 @@
 
                 <div class="flex-1 min-w-0">
                   <div class="flex justify-between items-start gap-2">
-                    <h4 hlmH4 class="font-bold text-foreground text-sm sm:text-base line-clamp-2">
+                    <h4
+                      hlmH4
+                      dir="auto"
+                      class="font-bold text-foreground text-sm sm:text-base line-clamp-2"
+                    >
                       {{ item.productTitle }}
                     </h4>
                     <p hlmSmall class="font-bold text-foreground text-sm sm:text-base shrink-0">
@@ -123,6 +129,7 @@
                     <div class="flex flex-wrap items-center gap-1 my-1">
                       @for (opt of item.variantOptions | keyvalue; track opt.key) {
                         <span
+                          dir="auto"
                           class="bg-muted px-1.5 py-0.5 rounded text-[10px] font-medium text-muted-foreground"
                         >
                           {{ opt.key }}: {{ opt.value }}
@@ -132,9 +139,11 @@
                   }
 
                   <p hlmMuted class="mt-1 text-xs">
-                    Qty: <strong class="text-foreground">{{ item.quantity }}</strong>
+                    {{ 'order_confirmed.qty_label' | translate }}
+                    <strong class="text-foreground">{{ item.quantity }}</strong>
                     <span class="mx-1 text-muted-foreground/50">•</span>
-                    {{ (item.unitAmount || 0) / 100 | currency: ord.currency || 'EGP' }} each
+                    {{ (item.unitAmount || 0) / 100 | currency: ord.currency || 'EGP' }}
+                    {{ 'order_confirmed.each_suffix' | translate }}
                   </p>
                 </div>
               </div>
@@ -145,17 +154,17 @@
             class="space-y-2.5 mt-6 sm:mt-8 mb-5 sm:mb-6 text-muted-foreground text-xs sm:text-sm pt-4 border-t border-border/60"
           >
             <div class="flex justify-between">
-              <span>Subtotal</span>
+              <span>{{ 'order_confirmed.subtotal' | translate }}</span>
               <span class="font-medium text-foreground">
                 {{ (ord.subtotalAmount || 0) / 100 | currency: ord.currency || 'EGP' }}
               </span>
             </div>
             <div class="flex justify-between">
-              <span>Shipping</span>
+              <span>{{ 'order_confirmed.shipping' | translate }}</span>
               <span class="font-semibold text-success">
                 {{
                   ord.shippingFee === 0
-                    ? 'Free'
+                    ? ('order_confirmed.free' | translate)
                     : ((ord.shippingFee || 0) / 100 | currency: ord.currency || 'EGP')
                 }}
               </span>
@@ -165,14 +174,14 @@
           <div
             class="flex justify-between items-center font-bold text-foreground text-base sm:text-lg"
           >
-            <span>Total</span>
+            <span>{{ 'order_confirmed.total' | translate }}</span>
             <span class="text-primary">
               {{ (ord.totalAmount || 0) / 100 | currency: ord.currency || 'EGP' }}
             </span>
           </div>
         } @else {
           <div class="text-center py-6 text-muted-foreground text-xs">
-            <p hlmP>Your order details will appear on your Orders history page.</p>
+            <p hlmP>{{ 'order_confirmed.details_fallback' | translate }}</p>
           </div>
         }
       </div>
@@ -185,7 +194,7 @@
             hlmH2
             class="mb-5 sm:mb-6 font-bold text-foreground text-base sm:text-lg border-none pb-0"
           >
-            Order Status
+            {{ 'order_confirmed.order_status' | translate }}
           </h2>
 
           <div class="relative space-y-5 sm:space-y-6 ms-3 border-primary border-s-2">
@@ -209,10 +218,12 @@
                 </svg>
               </div>
               <h4 hlmH4 class="pt-0.5 font-bold text-foreground text-sm leading-none">
-                Order Placed
+                {{ 'order_confirmed.order_placed' | translate }}
               </h4>
               <p hlmMuted class="mt-1.5 sm:mt-1 text-[11px]">
-                {{ (order()?.createdAt | formatOrderDate) || 'Just now' }}
+                {{
+                  (order()?.createdAt | formatOrderDate) || ('order_confirmed.just_now' | translate)
+                }}
               </p>
             </div>
 
@@ -222,10 +233,10 @@
                 class="top-0 -start-[11px] absolute bg-card border-2 border-border rounded-full w-5 h-5"
               ></div>
               <h4 hlmH4 class="pt-0.5 font-bold text-muted-foreground text-sm leading-none">
-                Processing & Confirmation
+                {{ 'order_confirmed.processing_confirmation' | translate }}
               </h4>
               <p hlmMuted class="mt-1 text-[11px] text-muted-foreground/70">
-                Pending merchant review
+                {{ 'order_confirmed.pending_merchant_review' | translate }}
               </p>
             </div>
 
@@ -235,9 +246,11 @@
                 class="top-0 -start-[11px] absolute bg-card border-2 border-border rounded-full w-5 h-5"
               ></div>
               <h4 hlmH4 class="pt-0.5 font-bold text-muted-foreground text-sm leading-none">
-                Out for Delivery
+                {{ 'order_confirmed.out_for_delivery' | translate }}
               </h4>
-              <p hlmMuted class="mt-1 text-[11px] text-muted-foreground/70">Cash on Delivery</p>
+              <p hlmMuted class="mt-1 text-[11px] text-muted-foreground/70">
+                {{ 'order_confirmed.cash_on_delivery' | translate }}
+              </p>
             </div>
           </div>
         </div>
@@ -250,17 +263,17 @@
             class="block bg-card shadow-sm p-4 sm:p-6 border-border rounded-2xl text-xs leading-relaxed space-y-2"
           >
             <h2 hlmH2 class="mb-3 font-bold text-foreground text-base sm:text-lg border-none pb-0">
-              Delivery Address
+              {{ 'order_confirmed.delivery_address' | translate }}
             </h2>
             <hr class="mb-3 border-border" />
-            <h4 hlmH4 class="font-bold text-foreground text-sm">
+            <h4 hlmH4 dir="auto" class="font-bold text-foreground text-sm">
               {{ ord.contactName }}
             </h4>
-            <p hlmMuted class="text-xs">{{ ord.shippingAddress.line1 }}</p>
+            <p hlmMuted dir="auto" class="text-xs">{{ ord.shippingAddress.line1 }}</p>
             @if (ord.shippingAddress.line2) {
-              <p hlmMuted class="text-xs">{{ ord.shippingAddress.line2 }}</p>
+              <p hlmMuted dir="auto" class="text-xs">{{ ord.shippingAddress.line2 }}</p>
             }
-            <p hlmMuted class="text-xs">
+            <p hlmMuted dir="auto" class="text-xs">
               {{ ord.shippingAddress.city }}
               @if (ord.shippingAddress.governorate) {
                 , {{ ord.shippingAddress.governorate }}
@@ -269,11 +282,12 @@
                 - {{ ord.shippingAddress.postalCode }}
               }
             </p>
-            <p hlmSmall class="text-xs font-semibold text-foreground">
+            <p hlmSmall dir="auto" class="text-xs font-semibold text-foreground">
               {{ ord.shippingAddress.country }}
             </p>
             <p hlmMuted class="text-xs pt-1 border-t border-border/40">
-              Phone: <strong class="text-foreground">{{ ord.contactPhone }}</strong>
+              {{ 'order_confirmed.phone_label' | translate }}
+              <strong class="text-foreground">{{ ord.contactPhone }}</strong>
             </p>
             @if (ord.customerNote) {
               <p hlmMuted class="text-xs italic pt-1">"{{ ord.customerNote }}"</p>
@@ -288,7 +302,7 @@
             hlmBtn
             class="block bg-primary hover:bg-primary/90 shadow-sm py-3 rounded-xl w-full h-auto font-bold text-primary-foreground text-sm text-center transition-colors cursor-pointer"
           >
-            View All My Orders
+            {{ 'order_confirmed.view_all_orders' | translate }}
           </a>
 
           <a
@@ -297,7 +311,7 @@
             variant="outline"
             class="block py-2.5 rounded-xl w-full h-auto font-semibold text-xs text-center transition-colors cursor-pointer"
           >
-            Continue Shopping
+            {{ 'order_confirmed.continue_shopping' | translate }}
           </a>
         </div>
       </div>

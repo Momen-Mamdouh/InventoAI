@@ -1,4 +1,4 @@
-<nav hlmBreadcrumb aria-label="Breadcrumb" class="mb-4">
+<nav hlmBreadcrumb [attr.aria-label]="'product.breadcrumb.nav_label' | translate" class="mb-4">
   <ul
     hlmBreadcrumbList
     class="flex items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5"
@@ -14,6 +14,7 @@
         <li hlmBreadcrumbItem class="hidden md:inline-flex items-center gap-1.5">
           <a
             hlmBreadcrumbLink
+            dir="auto"
             [routerLink]="['/', storeSlug(), 'products']"
             [queryParams]="{ category: product.categories[0].slug }"
           >
@@ -26,7 +27,9 @@
         <span hlmBreadcrumbSeparator class="flex items-center"></span>
       }
       <li hlmBreadcrumbItem class="inline-flex items-center gap-1.5">
-        <span hlmBreadcrumbPage class="text-foreground font-semibold">{{ product.title }}</span>
+        <span hlmBreadcrumbPage dir="auto" class="text-foreground font-semibold">{{
+          product.title
+        }}</span>
       </li>
     }
   </ul>

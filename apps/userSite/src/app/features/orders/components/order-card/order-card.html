@@ -9,7 +9,7 @@
       <div>
         <div class="flex flex-wrap items-center gap-2">
           <h3 hlmH3 class="font-bold text-foreground text-base sm:text-lg">
-            Order #{{ order().orderNumber }}
+            {{ 'orders.card.order_number' | translate: { orderNumber: order().orderNumber } }}
           </h3>
           <span
             class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold text-xs"
@@ -29,7 +29,14 @@
             {{ order().createdAt | formatOrderDate }}
           </span>
           <span>•</span>
-          <span>{{ order().itemCount }} {{ order().itemCount === 1 ? 'item' : 'items' }}</span>
+          <span
+            >{{ order().itemCount }}
+            {{
+              order().itemCount === 1
+                ? ('orders.card.item_singular' | translate)
+                : ('orders.card.item_plural' | translate)
+            }}</span
+          >
           <span>•</span>
           <span class="font-medium text-foreground uppercase">
             {{ order().paymentMethod }}
@@ -41,7 +48,9 @@
 
     <div class="flex justify-between sm:justify-end items-center gap-4 sm:gap-6">
       <div class="text-left sm:text-right">
-        <div class="font-medium text-muted-foreground text-xs">Total Amount</div>
+        <div class="font-medium text-muted-foreground text-xs">
+          {{ 'orders.card.total_amount' | translate }}
+        </div>
         <div class="font-extrabold text-foreground text-lg sm:text-xl">
           {{ (order().totalAmount || 0) / 100 | currency: order().currency || 'EGP' }}
         </div>
@@ -56,14 +65,14 @@
           (click)="reorder()"
           [disabled]="isReordering()"
           class="rounded-xl h-9 px-3.5 text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shadow-2xs hover:bg-primary/10 hover:text-primary hover:border-primary/40 transition-colors"
-          title="Reorder items from this order"
+          [title]="'orders.card.reorder_title' | translate"
         >
           @if (isReordering()) {
             <ng-icon name="lucideLoader2" class="text-sm animate-spin"></ng-icon>
-            <span>Reordering...</span>
+            <span>{{ 'orders.card.reordering' | translate }}</span>
           } @else {
             <ng-icon name="lucideRotateCcw" class="text-sm"></ng-icon>
-            <span>Reorder</span>
+            <span>{{ 'orders.card.reorder' | translate }}</span>
           }
         </button>
 
@@ -72,9 +81,9 @@
           variant="ghost"
           size="icon"
           (click)="printReceipt()"
-          aria-label="Print Receipt"
+          [attr.aria-label]="'orders.card.print_receipt_aria' | translate"
           class="rounded-xl w-9 h-9 text-muted-foreground hover:text-foreground cursor-pointer"
-          title="Print Receipt / Invoice"
+          [title]="'orders.card.print_receipt_title' | translate"
         >
           <ng-icon name="lucidePrinter" class="text-base"></ng-icon>
         </button>
@@ -121,14 +130,14 @@
                       ]"
                       class="font-bold text-foreground text-sm hover:text-primary transition-colors line-clamp-1 inline-flex items-center gap-1"
                     >
-                      <span>{{ item.productTitle }}</span>
+                      <span dir="auto">{{ item.productTitle }}</span>
                       <ng-icon
                         name="lucideExternalLink"
                         class="text-xs text-muted-foreground"
                       ></ng-icon>
                     </a>
                   } @else {
-                    <h4 hlmH4 class="font-bold text-foreground text-sm line-clamp-1">
+                    <h4 hlmH4 dir="auto" class="font-bold text-foreground text-sm line-clamp-1">
                       {{ item.productTitle }}
                     </h4>
                   }
@@ -137,6 +146,7 @@
                   <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-1">
                     @for (opt of item.variantOptions | keyvalue; track opt.key) {
                       <span
+                        dir="auto"
                         class="bg-muted px-2 py-0.5 rounded-md font-medium text-[11px] text-muted-foreground"
                       >
                         {{ opt.key }}: {{ opt.value }}
@@ -144,15 +154,18 @@
                     }
                     @if (item.sku) {
                       <span class="font-mono text-[11px] text-muted-foreground/70 hidden sm:inline">
-                        SKU: {{ item.sku }}
+                        {{ 'orders.card.sku_label' | translate }}
+                        <span dir="auto">{{ item.sku }}</span>
                       </span>
                     }
                   </div>
 
                   <div class="mt-1 text-muted-foreground text-xs">
-                    Quantity: <strong class="text-foreground">{{ item.quantity }}</strong>
+                    {{ 'orders.card.quantity_label' | translate }}
+                    <strong class="text-foreground">{{ item.quantity }}</strong>
                     <span class="text-muted-foreground/60 mx-1">•</span>
-                    {{ (item.unitAmount || 0) / 100 | currency: order().currency || 'EGP' }} each
+                    {{ (item.unitAmount || 0) / 100 | currency: order().currency || 'EGP' }}
+                    {{ 'orders.card.each_suffix' | translate }}
                   </div>
                 </div>
               </div>
@@ -187,13 +200,17 @@
       <div class="flex items-center gap-2 text-muted-foreground text-xs py-1">
         <ng-icon name="lucidePackage" class="text-sm shrink-0"></ng-icon>
         <span
-          >Contains <strong>{{ order().itemCount }}</strong>
-          {{ order().itemCount === 1 ? 'item' : 'items' }}</span
+          >{{ 'orders.card.contains_label' | translate }} <strong>{{ order().itemCount }}</strong>
+          {{
+            order().itemCount === 1
+              ? ('orders.card.item_singular' | translate)
+              : ('orders.card.item_plural' | translate)
+          }}</span
         >
         <span>•</span>
         <span
-          >Recipient:
-          <strong>{{ orderDetails()?.contactName || order().contactName }}</strong></span
+          >{{ 'orders.card.recipient_label' | translate }}
+          <strong dir="auto">{{ orderDetails()?.contactName || order().contactName }}</strong></span
         >
       </div>
     }
@@ -206,8 +223,8 @@
     <div class="flex items-center gap-2 text-muted-foreground">
       <ng-icon name="lucideMapPin" class="text-sm shrink-0"></ng-icon>
       <span
-        >Placed by
-        <strong class="text-foreground">{{
+        >{{ 'orders.card.placed_by_label' | translate }}
+        <strong dir="auto" class="text-foreground">{{
           orderDetails()?.contactName || order().contactName
         }}</strong>
         ({{ order().contactEmail }})</span
@@ -224,7 +241,7 @@
           class="hover:bg-destructive/10 border-destructive/30 rounded-xl h-8 px-3 text-destructive hover:text-destructive/80 text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
         >
           <ng-icon name="lucideCircleX" class="text-sm"></ng-icon>
-          <span>Cancel Order</span>
+          <span>{{ 'orders.card.cancel_order' | translate }}</span>
         </button>
       }
 
@@ -234,7 +251,9 @@
         class="inline-flex items-center gap-1.5 font-semibold text-primary hover:text-primary/80 transition-colors cursor-pointer py-1"
       >
         <span>{{
-          isExpanded() ? 'Hide Shipment & Address Details' : 'View Tracking, Address & Payment'
+          isExpanded()
+            ? ('orders.card.hide_details' | translate)
+            : ('orders.card.view_details' | translate)
         }}</span>
         <ng-icon
           name="lucideChevronDown"
@@ -264,7 +283,7 @@
             <!-- Typography lib only ships H1-H4 directives; hlmMuted matches this label's
                  actual visual intent (a small muted section heading). -->
             <h5 hlmMuted class="mb-4 font-bold text-xs uppercase tracking-wider">
-              Shipment Progress
+              {{ 'orders.card.shipment_progress' | translate }}
             </h5>
             <div class="relative gap-3 grid grid-cols-2 sm:grid-cols-4">
               @for (step of timelineSteps(); track step.title; let idx = $index) {
@@ -308,7 +327,7 @@
                             : 'bg-primary/10 text-primary'
                         "
                       >
-                        Current
+                        {{ 'orders.card.current_badge' | translate }}
                       </span>
                     }
                   </div>
@@ -343,17 +362,17 @@
                 class="flex items-center gap-2 mb-2 font-bold text-muted-foreground text-xs uppercase tracking-wider"
               >
                 <ng-icon name="lucideMapPin" class="text-sm"></ng-icon>
-                <span>Delivery Address</span>
+                <span>{{ 'orders.card.delivery_address' | translate }}</span>
               </div>
-              <div class="font-semibold text-foreground">
+              <div dir="auto" class="font-semibold text-foreground">
                 {{ details.contactName || order().contactName }}
               </div>
               <div class="space-y-0.5 mt-1 text-muted-foreground text-xs leading-relaxed">
-                <p hlmMuted class="text-xs">{{ details.shippingAddress.line1 }}</p>
+                <p hlmMuted dir="auto" class="text-xs">{{ details.shippingAddress.line1 }}</p>
                 @if (details.shippingAddress.line2) {
-                  <p hlmMuted class="text-xs">{{ details.shippingAddress.line2 }}</p>
+                  <p hlmMuted dir="auto" class="text-xs">{{ details.shippingAddress.line2 }}</p>
                 }
-                <p hlmMuted class="text-xs">
+                <p hlmMuted dir="auto" class="text-xs">
                   {{ details.shippingAddress.city }}
                   @if (details.shippingAddress.governorate) {
                     , {{ details.shippingAddress.governorate }}
@@ -362,7 +381,7 @@
                     - {{ details.shippingAddress.postalCode }}
                   }
                 </p>
-                <p hlmSmall class="text-xs font-semibold text-foreground">
+                <p hlmSmall dir="auto" class="text-xs font-semibold text-foreground">
                   {{ details.shippingAddress.country }}
                 </p>
               </div>
@@ -374,18 +393,22 @@
                 class="flex items-center gap-2 mb-2 font-bold text-muted-foreground text-xs uppercase tracking-wider"
               >
                 <ng-icon name="lucideInfo" class="text-sm"></ng-icon>
-                <span>Contact & Notes</span>
+                <span>{{ 'orders.card.contact_notes' | translate }}</span>
               </div>
               <div class="space-y-1 text-xs">
                 <div>
-                  <span class="text-muted-foreground">Email: </span>
+                  <span class="text-muted-foreground"
+                    >{{ 'orders.card.email_label' | translate }}
+                  </span>
                   <span class="font-medium text-foreground">{{
                     details.contactEmail || order().contactEmail
                   }}</span>
                 </div>
                 @if (details.contactPhone) {
                   <div>
-                    <span class="text-muted-foreground">Phone: </span>
+                    <span class="text-muted-foreground"
+                      >{{ 'orders.card.phone_label' | translate }}
+                    </span>
                     <span class="font-medium text-foreground">{{ details.contactPhone }}</span>
                   </div>
                 }
@@ -405,17 +428,21 @@
                 class="flex items-center gap-2 mb-2 font-bold text-muted-foreground text-xs uppercase tracking-wider"
               >
                 <ng-icon name="lucideCreditCard" class="text-sm"></ng-icon>
-                <span>Payment Summary</span>
+                <span>{{ 'orders.card.payment_summary' | translate }}</span>
               </div>
               <div class="space-y-1.5 text-xs">
                 <div class="flex justify-between items-center">
-                  <span class="text-muted-foreground">Method:</span>
+                  <span class="text-muted-foreground">{{
+                    'orders.card.method_label' | translate
+                  }}</span>
                   <span class="font-bold text-foreground uppercase">{{
                     details.paymentMethod
                   }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                  <span class="text-muted-foreground">Payment Status:</span>
+                  <span class="text-muted-foreground">{{
+                    'orders.card.payment_status_label' | translate
+                  }}</span>
                   <span
                     class="font-bold uppercase"
                     [class.text-success]="details.paymentStatus === 'paid'"
@@ -425,17 +452,21 @@
                   </span>
                 </div>
                 <div class="flex justify-between items-center pt-1 border-t border-border/40">
-                  <span class="text-muted-foreground">Subtotal:</span>
+                  <span class="text-muted-foreground">{{
+                    'orders.card.subtotal_label' | translate
+                  }}</span>
                   <span class="font-medium text-foreground">{{
                     (details.subtotalAmount || 0) / 100 | currency: order().currency || 'EGP'
                   }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                  <span class="text-muted-foreground">Shipping Fee:</span>
+                  <span class="text-muted-foreground">{{
+                    'orders.card.shipping_fee_label' | translate
+                  }}</span>
                   <span class="font-medium text-foreground">
                     {{
                       details.shippingFee === 0
-                        ? 'Free'
+                        ? ('orders.card.free' | translate)
                         : ((details.shippingFee || 0) / 100 | currency: order().currency || 'EGP')
                     }}
                   </span>
@@ -443,7 +474,7 @@
                 <div
                   class="flex justify-between items-center pt-1.5 border-t border-border text-sm font-bold"
                 >
-                  <span class="text-foreground">Total:</span>
+                  <span class="text-foreground">{{ 'orders.card.total_label' | translate }}</span>
                   <span class="text-foreground">{{
                     (details.totalAmount || 0) / 100 | currency: order().currency || 'EGP'
                   }}</span>
@@ -472,31 +503,34 @@
           </div>
           <div>
             <h3 hlmDialogTitle class="text-foreground text-lg font-bold">
-              Cancel Order #{{ order().orderNumber }}
+              {{
+                'orders.card.cancel_modal_title' | translate: { orderNumber: order().orderNumber }
+              }}
             </h3>
             <p hlmMuted class="text-xs mt-0.5">
-              Are you sure you want to cancel this order? This action cannot be undone once
-              confirmed.
+              {{ 'orders.card.cancel_modal_desc' | translate }}
             </p>
           </div>
         </div>
 
         <!-- Preset Reason Options -->
         <div class="space-y-2">
-          <span class="block text-xs font-semibold text-foreground"> Select a reason: </span>
+          <span class="block text-xs font-semibold text-foreground">
+            {{ 'orders.card.select_reason' | translate }}
+          </span>
           <div class="flex flex-wrap gap-2">
-            @for (preset of presetReasons; track preset) {
+            @for (preset of presetReasons(); track preset.key) {
               <button
                 type="button"
                 (click)="selectPresetReason(preset)"
                 class="px-3 py-1.5 rounded-xl text-xs font-medium border transition-all text-left cursor-pointer"
                 [ngClass]="
-                  selectedPreset() === preset
+                  selectedPreset()?.key === preset.key
                     ? 'bg-destructive/10 border-destructive/50 text-destructive font-semibold shadow-xs'
                     : 'bg-muted/40 hover:bg-muted border-border/70 text-muted-foreground hover:text-foreground'
                 "
               >
-                {{ preset }}
+                {{ preset.label }}
               </button>
             }
           </div>
@@ -505,7 +539,7 @@
         <!-- Custom Reason / Additional Comments Textarea -->
         <div class="space-y-1.5">
           <label for="cancel-reason-textarea" class="block text-xs font-semibold text-foreground">
-            Additional details (Optional, max 200 characters)
+            {{ 'orders.card.additional_details_label' | translate }}
           </label>
           <textarea
             hlmTextarea
@@ -514,11 +548,11 @@
             (input)="onCancelReasonInput($event)"
             maxlength="200"
             rows="2"
-            placeholder="Add any additional comments..."
+            [placeholder]="'orders.card.additional_comments_placeholder' | translate"
             class="w-full bg-background p-3 text-xs border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-destructive/30 text-foreground placeholder:text-muted-foreground resize-none"
           ></textarea>
           <div class="flex justify-between items-center text-[10px] text-muted-foreground">
-            <span>Optional, up to 200 characters</span>
+            <span>{{ 'orders.card.optional_chars_hint' | translate }}</span>
             <span>{{ cancelReason().length }}/200</span>
           </div>
         </div>
@@ -534,7 +568,7 @@
             [disabled]="isCancelling()"
             class="rounded-xl px-4 text-xs font-medium cursor-pointer"
           >
-            Keep Order
+            {{ 'orders.card.keep_order' | translate }}
           </button>
           <button
             hlmBtn
@@ -545,9 +579,9 @@
           >
             @if (isCancelling()) {
               <ng-icon name="lucideLoader2" class="text-sm animate-spin"></ng-icon>
-              <span>Cancelling...</span>
+              <span>{{ 'orders.card.cancelling' | translate }}</span>
             } @else {
-              <span>Confirm Cancellation</span>
+              <span>{{ 'orders.card.confirm_cancellation' | translate }}</span>
             }
           </button>
         </hlm-dialog-footer>

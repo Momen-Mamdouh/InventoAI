@@ -38,9 +38,13 @@
 
   <div hlmCardContent class="flex flex-col flex-1 gap-3 p-4">
     <div hlmCardHeader class="gap-1 p-0">
-      <h3 hlmCardTitle class="text-base line-clamp-1 leading-tight">{{ product().title }}</h3>
+      <h3 hlmCardTitle dir="auto" class="text-base line-clamp-1 leading-tight">
+        {{ product().title }}
+      </h3>
       @if (product().shortDescription) {
-        <p hlmCardDescription class="text-sm line-clamp-1">{{ product().shortDescription }}</p>
+        <p hlmCardDescription dir="auto" class="text-sm line-clamp-1">
+          {{ product().shortDescription }}
+        </p>
       }
     </div>
 

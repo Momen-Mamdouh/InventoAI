@@ -56,14 +56,14 @@
 
     <!-- Typography & Button -->
     <p #contentReveal class="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">
-      // SYSTEM_ERROR
+      {{ 'not_found.label' | translate }}
     </p>
     <h2 #contentReveal class="text-3xl font-bold tracking-tight text-foreground mb-4 mt-2">
-      Page Not Found
+      {{ 'not_found.title' | translate }}
     </h2>
 
     <p #contentReveal class="text-muted-foreground mb-10 max-w-md mx-auto text-sm">
-      There is no active route at this destination in the ecosystem registry.
+      {{ 'not_found.description' | translate }}
     </p>
 
     <div #contentReveal>
@@ -73,7 +73,7 @@
         variant="default"
         class="font-mono uppercase tracking-wider text-xs px-8 py-6 shadow-md hover:scale-105 transition-transform duration-300"
       >
-        Reboot Interface
+        {{ 'not_found.action' | translate }}
       </a>
     </div>
   </div>

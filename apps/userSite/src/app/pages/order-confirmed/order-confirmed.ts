@@ -1,4 +1,5 @@
 import { SkeletonBlock } from '@invento/shared';
+import { TranslatePipe } from '@invento/core';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -49,6 +50,7 @@ import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug
     ...HlmTypographyImports,
     NgIconComponent,
     FormatOrderDatePipe,
+    TranslatePipe,
   ],
 
   providers: [

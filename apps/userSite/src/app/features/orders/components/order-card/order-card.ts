@@ -3,7 +3,7 @@ import { HlmDialogImports } from '@spartan/helm/dialog';
 import { BrnDialogContent } from '@spartan-ng/brain/dialog';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { SkeletonBlock } from '@invento/shared';
-import { TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/core';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -46,6 +46,13 @@ import {
   type OrderSummaryItem,
   type OrderTimelineStep,
 } from '@invento/user-site/app/features/orders';
+
+/** A translated cancellation-reason option: `key` identifies it, `label` is the localized text
+ *  shown to the user and stored as the actual cancel reason sent to the server. */
+interface PresetReason {
+  key: string;
+  label: string;
+}
 
 @Component({
   selector: 'app-order-card',
@@ -97,24 +104,36 @@ export class OrderCardComponent {
   protected readonly ordersService = inject(OrdersDataService);
   protected readonly cartService = inject(CartService);
   protected readonly router = inject(Router);
+  // Class-side strings (toasts, preset reasons, timeline labels) are translated here rather
+  // than by the pipe, matching the pattern established in orders-filter-bar.ts.
+  private readonly locale = inject(LocaleService);
 
   // Local UI states
   protected readonly isExpanded = signal<boolean>(false);
   protected readonly isCancelModalOpen = signal<boolean>(false);
   protected readonly isReordering = signal<boolean>(false);
-  protected readonly selectedPreset = signal<string | null>(null);
+  protected readonly selectedPreset = signal<PresetReason | null>(null);
   protected readonly cancelReason = signal<string>('');
   protected readonly copiedField = signal<string | null>(null);
 
-  // Preset cancellation reasons
-  protected readonly presetReasons: string[] = [
-    'Ordered wrong size or color',
-    'Changed my mind',
-    'Need to change delivery address',
-    'Found a better price elsewhere',
-    'Delivery time is too long',
-    'Duplicate order by mistake',
-  ];
+  // Preset cancellation reasons — translated labels; the label text becomes the reason value
+  // sent to the server, so it must be recomputed whenever the active locale changes.
+  private static readonly PRESET_REASON_KEYS = [
+    'wrong_size',
+    'changed_mind',
+    'change_address',
+    'better_price',
+    'long_delivery',
+    'duplicate_order',
+  ] as const;
+
+  protected readonly presetReasons = computed<PresetReason[]>(() => {
+    this.locale.locale(); // re-compute labels when the language changes
+    return OrderCardComponent.PRESET_REASON_KEYS.map((key) => ({
+      key,
+      label: this.locale.translate(`orders.card.cancel_reasons.${key}`),
+    }));
+  });
 
   // Computed state for order details
   protected readonly orderDetails = computed<OrderDetail | undefined>(() =>
@@ -132,21 +151,23 @@ export class OrderCardComponent {
   protected readonly timelineSteps = computed<OrderTimelineStep[]>(() => {
     const status = this.order().status;
     const details = this.orderDetails();
+    this.locale.locale(); // re-compute titles/subtitles when the language changes
+    const t = (key: string) => this.locale.translate(`orders.card.timeline.${key}`);
 
     if (status === 'cancelled') {
       return [
         {
-          title: 'Order Placed',
+          title: t('order_placed'),
           date: this.order().createdAt,
           completed: true,
           current: false,
         },
         {
-          title: 'Order Cancelled',
+          title: t('order_cancelled'),
           date: details?.cancelledAt || undefined,
           subtitle: details?.cancelReason
-            ? `Reason: ${details.cancelReason}`
-            : 'Cancelled by customer',
+            ? `${t('cancel_reason_prefix')} ${details.cancelReason}`
+            : t('cancelled_by_customer'),
           completed: true,
           current: true,
           isCancelled: true,
@@ -156,25 +177,25 @@ export class OrderCardComponent {
 
     const steps: OrderTimelineStep[] = [
       {
-        title: 'Order Placed',
+        title: t('order_placed'),
         date: this.order().createdAt,
         completed: true,
         current: status === 'pending',
       },
       {
-        title: 'Confirmed',
+        title: t('confirmed'),
         date: undefined,
         completed: ['confirmed', 'shipped', 'delivered'].includes(status),
         current: status === 'confirmed',
       },
       {
-        title: 'Shipped',
+        title: t('shipped'),
         date: undefined,
         completed: ['shipped', 'delivered'].includes(status),
         current: status === 'shipped',
       },
       {
-        title: 'Delivered',
+        title: t('delivered'),
         date: undefined,
         completed: status === 'delivered',
         current: status === 'delivered',
@@ -219,14 +240,14 @@ export class OrderCardComponent {
     this.isCancelModalOpen.set(false);
   }
 
-  protected selectPresetReason(preset: string): void {
-    if (this.selectedPreset() === preset) {
+  protected selectPresetReason(preset: PresetReason): void {
+    if (this.selectedPreset()?.key === preset.key) {
       // Deselect
       this.selectedPreset.set(null);
       this.cancelReason.set('');
     } else {
       this.selectedPreset.set(preset);
-      this.cancelReason.set(preset);
+      this.cancelReason.set(preset.label);
     }
   }
 
@@ -234,7 +255,8 @@ export class OrderCardComponent {
     const input = event.target as HTMLInputElement | HTMLTextAreaElement;
     this.cancelReason.set(input.value);
     // If input differs from selected preset, unselect badge
-    if (this.selectedPreset() && input.value !== this.selectedPreset()) {
+    const selected = this.selectedPreset();
+    if (selected && input.value !== selected.label) {
       this.selectedPreset.set(null);
     }
   }
@@ -246,10 +268,12 @@ export class OrderCardComponent {
     const result = await this.ordersService.cancelOrder(orderNumber, reason);
 
     if (result.success) {
-      toast.success(`Order #${orderNumber} has been cancelled.`);
+      toast.success(this.locale.translate('orders.card.toast.order_cancelled', { orderNumber }));
       this.closeCancelModal();
     } else {
-      toast.error(result.message || `Unable to cancel order #${orderNumber}.`);
+      toast.error(
+        result.message || this.locale.translate('orders.card.toast.cancel_failed', { orderNumber }),
+      );
     }
   }
 
@@ -262,7 +286,7 @@ export class OrderCardComponent {
       }
 
       if (!details || !details.items || details.items.length === 0) {
-        toast.error('Unable to load items for this order.');
+        toast.error(this.locale.translate('orders.card.toast.load_items_failed'));
         return;
       }
 
@@ -282,7 +306,7 @@ export class OrderCardComponent {
         }));
 
       if (cartItems.length === 0) {
-        toast.warning('No available variant items found to reorder.');
+        toast.warning(this.locale.translate('orders.card.toast.no_variant_items'));
         return;
       }
 
@@ -295,11 +319,11 @@ export class OrderCardComponent {
       };
 
       this.cartService.setReorder(cartItems, prefill, this.order().currency);
-      toast.success('Order items added to checkout!');
+      toast.success(this.locale.translate('orders.card.toast.reorder_added'));
       this.router.navigate(['/', this.ordersService.activeStoreSlug(), 'checkout']);
     } catch (err: unknown) {
       console.error('[OrderCardComponent] Reorder failed:', err);
-      toast.error('Failed to prepare reorder. Please try again.');
+      toast.error(this.locale.translate('orders.card.toast.reorder_failed'));
     } finally {
       this.isReordering.set(false);
     }
@@ -311,9 +335,23 @@ export class OrderCardComponent {
 
     const printWindow = window.open('', '_blank', 'width=800,height=900');
     if (!printWindow) {
-      toast.info('Please allow popups to print receipt.');
+      toast.info(this.locale.translate('orders.card.toast.popup_blocked'));
       return;
     }
+
+    // The receipt is a standalone print document, not part of this component's own template —
+    // its static chrome (headings, table labels) is translated here via LocaleService so an
+    // Arabic-locale customer reads Arabic labels, but the document layout itself stays LTR:
+    // mirroring it for RTL is a print-layout concern, out of scope for an i18n text pass.
+    const t = (key: string, params?: Record<string, string | number>) =>
+      this.locale.translate(`orders.card.receipt.${key}`, params);
+    const itemLabel =
+      this.order().itemCount === 1
+        ? this.locale.translate('orders.card.item_singular')
+        : this.locale.translate('orders.card.item_plural');
+    const statusLabel = this.locale.translate(
+      this.ordersService.getStatusConfig(this.order().status).label,
+    );
 
     const itemsHtml =
       details?.items
@@ -333,7 +371,7 @@ export class OrderCardComponent {
     `,
         )
         .join('') ||
-      `<tr><td colspan="4" style="padding: 12px; text-align: center;">${this.order().itemCount} items</td></tr>`;
+      `<tr><td colspan="4" style="padding: 12px; text-align: center;">${this.order().itemCount} ${itemLabel}</td></tr>`;
 
     const addressHtml = details?.shippingAddress
       ? `
@@ -348,7 +386,7 @@ export class OrderCardComponent {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Receipt - Order #${orderNumber}</title>
+          <title>${t('title_prefix', { orderNumber })}</title>
           <style>
             body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 40px; color: #111827; }
             .header { display: flex; justify-content: space-between; border-bottom: 2px solid #111827; padding-bottom: 20px; margin-bottom: 24px; }
@@ -365,27 +403,27 @@ export class OrderCardComponent {
         <body>
           <div class="header">
             <div>
-              <h1 style="margin: 0 0 6px 0; font-size: 24px;">Order Receipt</h1>
-              <div style="font-size: 14px; color: #6b7280;">Order #${orderNumber} • ${formatOrderDate(this.order().createdAt)}</div>
+              <h1 style="margin: 0 0 6px 0; font-size: 24px;">${t('heading')}</h1>
+              <div style="font-size: 14px; color: #6b7280;">${t('order_line', { orderNumber })} • ${formatOrderDate(this.order().createdAt)}</div>
             </div>
             <div style="text-align: right;">
-              <span class="badge">${this.order().status}</span>
-              <div style="margin-top: 8px; font-size: 13px; color: #6b7280;">Payment: ${this.order().paymentMethod.toUpperCase()} (${this.order().paymentStatus})</div>
+              <span class="badge">${statusLabel}</span>
+              <div style="margin-top: 8px; font-size: 13px; color: #6b7280;">${t('payment_label')} ${this.order().paymentMethod.toUpperCase()} (${this.order().paymentStatus})</div>
             </div>
           </div>
 
           <div style="margin-bottom: 24px;">
-            <h3 style="margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; color: #6b7280;">Shipping To</h3>
+            <h3 style="margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; color: #6b7280;">${t('shipping_to')}</h3>
             ${addressHtml}
           </div>
 
           <table>
             <thead>
               <tr>
-                <th>Item</th>
-                <th style="text-align: center;">Qty</th>
-                <th style="text-align: right;">Price</th>
-                <th style="text-align: right;">Total</th>
+                <th>${t('table_item')}</th>
+                <th style="text-align: center;">${t('table_qty')}</th>
+                <th style="text-align: right;">${t('table_price')}</th>
+                <th style="text-align: right;">${t('table_total')}</th>
               </tr>
             </thead>
             <tbody>
@@ -399,25 +437,25 @@ export class OrderCardComponent {
                 details
                   ? `
                 <tr>
-                  <td style="color: #6b7280;">Subtotal</td>
+                  <td style="color: #6b7280;">${t('subtotal')}</td>
                   <td style="text-align: right;">${(details.subtotalAmount / 100).toFixed(2)} ${this.order().currency}</td>
                 </tr>
                 <tr>
-                  <td style="color: #6b7280;">Shipping</td>
-                  <td style="text-align: right;">${details.shippingFee === 0 ? 'Free' : (details.shippingFee / 100).toFixed(2) + ' ' + this.order().currency}</td>
+                  <td style="color: #6b7280;">${t('shipping')}</td>
+                  <td style="text-align: right;">${details.shippingFee === 0 ? t('free') : (details.shippingFee / 100).toFixed(2) + ' ' + this.order().currency}</td>
                 </tr>
               `
                   : ''
               }
               <tr class="total-row">
-                <td>Total</td>
+                <td>${t('total')}</td>
                 <td style="text-align: right;">${(this.order().totalAmount / 100).toFixed(2)} ${this.order().currency}</td>
               </tr>
             </table>
           </div>
 
           <div style="margin-top: 48px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af; text-align: center;">
-            Thank you for shopping with us!
+            ${t('thanks')}
           </div>
 
           <script>

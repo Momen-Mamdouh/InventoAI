@@ -1,0 +1,63 @@
+{
+  "title": "Account Settings",
+  "subtitle": "Manage your profile and security.",
+  "delete_account": "Delete Account",
+  "sidebar": {
+    "profile": "Profile",
+    "security": "Security"
+  },
+  "profile": {
+    "photo_title": "Profile Photo",
+    "photo_description": "Upload a profile photo visible to your team and customers.",
+    "info_title": "Personal Information",
+    "info_description": "Your name and contact details on file with Storai.",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "Email Address",
+    "edit_notice": "Profile editing isn't available yet. Reach out to support if any of these details need to change.",
+    "sign_in_prompt": "Sign in to view your profile details."
+  },
+  "security": {
+    "title": "Change Password",
+    "description": "Use a strong password at least 12 characters long.",
+    "current_password": "Current Password",
+    "current_password_placeholder": "Enter current password",
+    "new_password": "New Password",
+    "new_password_placeholder": "Min. 8 characters",
+    "confirm_password": "Confirm New Password",
+    "confirm_password_placeholder": "Repeat new password",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "error_min_length": "Password must be at least 8 characters.",
+    "error_pattern": "Password must contain at least one letter and one number.",
+    "error_mismatch": "Passwords do not match.",
+    "submit": "Update Password",
+    "submitting": "Updating…",
+    "toast_success": "Password updated successfully",
+    "toast_error": "Failed to update password. Please try again."
+  },
+  "billing": {
+    "payment_methods_title": "Payment Methods",
+    "payment_methods_description": "Keep your cards up to date and choose which one is used for future purchases.",
+    "add_card": "Add Card",
+    "card_name": "Name on card",
+    "card_number": "Card number",
+    "card_number_placeholder": "1234 5678 9012 3456",
+    "expiry": "Expiry",
+    "expiry_placeholder": "MM/YY",
+    "cvc": "CVC",
+    "cvc_placeholder": "123",
+    "billing_zip": "Billing ZIP",
+    "save_card": "Save card",
+    "cancel": "Cancel",
+    "empty": "No saved payment methods yet. Add your first card to get started.",
+    "default_badge": "Default",
+    "expires": "Expires {{expiry}}",
+    "set_default": "Set as default",
+    "remove": "Remove",
+    "preference_title": "Billing Preference",
+    "preference_description": "Your saved cards are ready for future subscriptions and purchases.",
+    "preference_point_1": "Default payments are used automatically for renewals and invoices.",
+    "preference_point_2": "You can update your method whenever your account needs it."
+  }
+}

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ProductStore } from '@invento/user-site/app/features/product';
+import { TranslatePipe } from '@invento/core';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSlash, lucideTriangleAlert } from '@ng-icons/lucide';
@@ -8,7 +9,7 @@ import { lucideSlash, lucideTriangleAlert } from '@ng-icons/lucide';
   selector: 'app-variant-selector',
   templateUrl: './variant-selector.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmTypographyImports, NgIcon],
+  imports: [HlmTypographyImports, NgIcon, TranslatePipe],
   providers: [provideIcons({ lucideSlash, lucideTriangleAlert })],
 })
 export class VariantSelector {

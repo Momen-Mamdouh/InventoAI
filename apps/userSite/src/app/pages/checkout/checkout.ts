@@ -12,7 +12,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import gsap from 'gsap';
-import { LocaleService } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/core';
 
 // Spartan UI & Icons
 import { HlmLabel } from '@spartan/helm/label';
@@ -64,6 +64,7 @@ import { animateElementsOnRender } from '@invento/user-site/app/core/utils/anima
     HlmTypographyImports,
     EmptyState,
     NgIconComponent,
+    TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -352,12 +353,12 @@ export class CheckoutComponent implements OnInit {
   confirmClearCart(): void {
     this.cartService.clearCart();
     this.closeClearCartModal();
-    toast.info('Your cart has been cleared.');
+    toast.info(this.locale.translate('checkout.toast.cart_cleared'));
   }
 
   onGuestProceedToLogin(): void {
     if (this.cartItems().length === 0) {
-      toast.warning('Your cart is empty. Please add items to checkout.');
+      toast.warning(this.locale.translate('checkout.toast.cart_empty'));
       return;
     }
 
@@ -380,7 +381,7 @@ export class CheckoutComponent implements OnInit {
     });
 
     const storeSlug = this.activeStoreSlug();
-    toast.info('Please sign in to place your order. Your entered details have been saved.');
+    toast.info(this.locale.translate('checkout.toast.guest_sign_in_prompt'));
     this.router.navigate(['/', storeSlug, 'auth', 'login'], {
       queryParams: { returnUrl: `/${storeSlug}/checkout` },
     });
@@ -388,7 +389,7 @@ export class CheckoutComponent implements OnInit {
 
   onSubmit(): void {
     if (this.cartItems().length === 0) {
-      toast.warning('Your cart is empty. Please add items to checkout.');
+      toast.warning(this.locale.translate('checkout.toast.cart_empty'));
       return;
     }
 
@@ -399,7 +400,7 @@ export class CheckoutComponent implements OnInit {
 
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
-      toast.error('Please complete all required delivery details.');
+      toast.error(this.locale.translate('checkout.toast.validation_error'));
       return;
     }
 
@@ -442,7 +443,11 @@ export class CheckoutComponent implements OnInit {
         this.cartService.clearCart();
         this.cartService.clearPrefill();
 
-        toast.success(`Order #${placedOrder.orderNumber} placed successfully!`);
+        toast.success(
+          this.locale.translate('checkout.toast.order_placed', {
+            orderNumber: placedOrder.orderNumber,
+          }),
+        );
         this.router.navigate(['/', storeSlug, 'order-confirmed'], {
           queryParams: { orderNumber: placedOrder.orderNumber },
         });
@@ -451,7 +456,7 @@ export class CheckoutComponent implements OnInit {
         this.isSubmitting.set(false);
         const errorMsg = extractErrorMessage(
           err,
-          'Failed to place your order. Please check your details and try again.',
+          this.locale.translate('checkout.toast.order_failed'),
         );
         toast.error(errorMsg);
       },

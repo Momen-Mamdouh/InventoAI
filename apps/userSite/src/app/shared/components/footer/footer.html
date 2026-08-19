@@ -17,9 +17,9 @@
             >{{ initials }}</span
           >
         }
-        <span>{{ storeService.displayName() }}</span>
+        <span dir="auto">{{ storeService.displayName() }}</span>
       </a>
-      <p hlmMuted class="max-w-xs text-sm">
+      <p hlmMuted dir="auto" class="max-w-xs text-sm">
         {{ storeService.store()?.description || ('footer.tagline' | translate) }}
       </p>
       @if (hasSocialLinks()) {
@@ -61,7 +61,7 @@
             <a
               [href]="'mailto:' + email"
               class="text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Email us"
+              [attr.aria-label]="'footer.social_email' | translate"
             >
               <ng-icon name="lucideMail" size="18" />
             </a>
@@ -105,7 +105,8 @@
 
   <div class="border-border/60 border-t px-4 py-5 sm:px-8 md:px-16 lg:px-24">
     <p hlmMuted class="text-center text-xs">
-      &copy; {{ year }} {{ storeService.displayName() }}. {{ 'footer.rights' | translate }}
+      &copy; {{ year }} <span dir="auto">{{ storeService.displayName() }}</span
+      >. {{ 'footer.rights' | translate }}
     </p>
   </div>
 </footer>

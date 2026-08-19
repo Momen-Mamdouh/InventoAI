@@ -45,6 +45,7 @@
                         (checkedChange)="onCategoryClick(cat.slug)"
                       />
                       <span
+                        dir="auto"
                         class="text-muted-foreground group-hover:text-foreground text-sm transition-colors flex-1"
                       >
                         {{ cat.name }}
@@ -65,6 +66,7 @@
               class="hover:no-underline py-5 items-center group hover:**:data-[slot=accordion-trigger-icon]:text-foreground!"
             >
               <span
+                dir="auto"
                 class="text-xs uppercase tracking-widest font-medium text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all duration-300"
               >
                 {{ attr.name }}
@@ -89,7 +91,7 @@
                           [name]="val.value"
                           sizeClass="w-6 h-6"
                         />
-                        <span class="sr-only">{{ val.value }}</span>
+                        <span dir="auto" class="sr-only">{{ val.value }}</span>
                       </button>
                     }
                   }
@@ -102,6 +104,7 @@
                     @if (val.count !== 0) {
                       <button
                         hlmBtn
+                        dir="auto"
                         size="sm"
                         [variant]="isAttributeSelected(attr.key, val.slug) ? 'default' : 'outline'"
                         (click)="onAttributeToggle(attr.key, val.slug)"
@@ -138,6 +141,7 @@
                           (checkedChange)="onAttributeToggle(attr.key, val.slug)"
                         />
                         <span
+                          dir="auto"
                           class="text-muted-foreground group-hover:text-foreground text-sm transition-colors flex-1"
                         >
                           {{ val.value }}

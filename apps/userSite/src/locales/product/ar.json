@@ -9,6 +9,9 @@
   "summary": {
     "save": "وفر {{percentage}}%"
   },
+  "variant": {
+    "select_option": "اختر {{name}}"
+  },
   "accordion": {
     "details": "تفاصيل المنتج",
     "specifications": "المواصفات"
@@ -20,7 +23,18 @@
     "add_to_cart": "أضف إلى السلة"
   },
   "recommended": {
-    "title": "موصى به لك"
+    "title": "موصى به لك",
+    "previous_slide": "الشريحة السابقة",
+    "next_slide": "الشريحة التالية"
+  },
+  "stepper": {
+    "decrease": "إنقاص الكمية",
+    "increase": "زيادة الكمية"
+  },
+  "gallery": {
+    "view_image": "عرض الصورة {{index}} من {{name}}",
+    "carousel_previous": "الصورة السابقة",
+    "carousel_next": "الصورة التالية"
   },
   "filters": {
     "title": "التصنيفات",
@@ -49,7 +63,8 @@
     "sort_title_desc": "العنوان: ي-أ"
   },
   "breadcrumb": {
-    "shop": "المتجر"
+    "shop": "المتجر",
+    "nav_label": "مسار التصفح"
   },
   "products": {
     "title": "المنتجات",

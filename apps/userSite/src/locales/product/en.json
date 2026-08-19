@@ -9,6 +9,9 @@
   "summary": {
     "save": "Save {{percentage}}%"
   },
+  "variant": {
+    "select_option": "Select {{name}}"
+  },
   "accordion": {
     "details": "Product Details",
     "specifications": "Specifications"
@@ -20,7 +23,18 @@
     "add_to_cart": "Add to Cart"
   },
   "recommended": {
-    "title": "Recommended for You"
+    "title": "Recommended for You",
+    "previous_slide": "Previous slide",
+    "next_slide": "Next slide"
+  },
+  "stepper": {
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity"
+  },
+  "gallery": {
+    "view_image": "View image {{index}} of {{name}}",
+    "carousel_previous": "Carousel Previous",
+    "carousel_next": "Carousel Next"
   },
   "filters": {
     "title": "Filters",
@@ -49,7 +63,8 @@
     "sort_title_desc": "Title: Z-A"
   },
   "breadcrumb": {
-    "shop": "Shop"
+    "shop": "Shop",
+    "nav_label": "Breadcrumb"
   },
   "products": {
     "title": "Products",
