@@ -24,6 +24,7 @@
       "@spartan/helm/label": ["./libs/ui/label/src/index.ts"],
       "@spartan/helm/input": ["./libs/ui/input/src/index.ts"],
       "@spartan/helm/dialog": ["./libs/ui/dialog/src/index.ts"],
+      "@spartan/helm/dropdown-menu": ["./libs/ui/dropdown-menu/src/index.ts"],
       "@spartan/helm/progress": ["./libs/ui/progress/src/index.ts"],
       "@spartan/helm/radio-group": ["./libs/ui/radio-group/src/index.ts"],
       "@spartan/styles": ["./libs/ui/utils/src/lib/spartan-styles/index.ts"],

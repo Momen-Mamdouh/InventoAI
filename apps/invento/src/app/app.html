@@ -1,2 +1,11 @@
 <router-outlet></router-outlet>
-<hlm-toaster position="bottom-center" richColors />
+<!-- bottom-center needs no RTL mirroring, unlike the other apps' bottom-right. -->
+<hlm-toaster
+  position="bottom-center"
+  [theme]="toasterTheme()"
+  richColors
+  closeButton
+  expand
+  [visibleToasts]="4"
+  [duration]="5000"
+/>
