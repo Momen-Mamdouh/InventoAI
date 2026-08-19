@@ -1,62 +1,262 @@
-<hlm-popover align="end" sideOffset="8">
-  <button hlmPopoverTrigger hlmBtn class="size-12">
-    <ng-icon name="lucideBotMessageSquare" size="25" />
-  </button>
-  <hlm-popover-content
-    *hlmPopoverPortal="let ctx"
-    class="relative bg-popover/40 backdrop-blur-xl p-0 border border-border rounded-4xl w-sm h-88 overflow-hidden"
-  >
-    <div
-      class="top-20 right-20 z-0 absolute bg-primary/25 blur-3xl rounded-full size-48 pointer-events-none"
-    ></div>
-
-    <hlm-popover-header
-      class="z-20 relative flex-row justify-between items-center bg-popover/60 px-4 py-3"
+@if (showWidget()) {
+  <hlm-popover align="end" sideOffset="8">
+    <button hlmPopoverTrigger hlmBtn class="size-12">
+      <ng-icon name="lucideBotMessageSquare" size="25" />
+    </button>
+    <hlm-popover-content
+      *hlmPopoverPortal="let ctx"
+      class="relative bg-popover/40 backdrop-blur-xl p-0 border border-border rounded-4xl w-sm h-88 overflow-hidden"
     >
-      <div class="flex items-center gap-2">
-        <div class="flex justify-center items-center bg-muted rounded-full size-10">
-          <ng-icon name="lucideBotMessageSquare" size="20" class="text-primary" />
-        </div>
-        <div class="flex flex-col">
-          <span class="font-bold">Invento</span>
-          <span class="text-muted-foreground">Digital chatbot interface</span>
-        </div>
-      </div>
-      <button hlmBtn (click)="ctx.close()" variant="secondary" class="rounded-full size-8">
-        <ng-icon name="lucideX" />
-      </button>
-    </hlm-popover-header>
-
-    <div class="z-10 relative space-y-3 px-4 h-[calc(100%-4rem)] overflow-y-auto">
-      <div class="flex justify-start">
-        <div class="bg-popover px-4 py-2.5 rounded-2xl rounded-tl-none max-w-[75%] text-foreground">
-          <p class="text-sm">Hey! How can I help you today?</p>
-        </div>
-      </div>
-
-      <div class="flex justify-end">
-        <div
-          class="bg-primary px-4 py-2.5 rounded-2xl rounded-tr-none max-w-[75%] text-primary-foreground"
-        >
-          <p class="text-sm">I need help tracking an order.</p>
-        </div>
-      </div>
-    </div>
-    <div class="z-20 relative flex items-center px-4 py-3">
       <div
-        class="flex items-center gap-1 bg-popover/50 shadow-sm backdrop-blur-md p-1 rounded-full focus-within:ring-2 focus-within:ring-ring w-full transition-shadow"
+        class="top-20 right-20 z-0 absolute bg-primary/25 blur-3xl rounded-full size-48 pointer-events-none"
+      ></div>
+
+      <hlm-popover-header class="z-20 relative flex flex-col gap-2 bg-popover/60 px-4 py-3">
+        <div class="flex justify-between items-start w-full">
+          <div class="flex items-center gap-2">
+            <div class="flex justify-center items-center bg-muted rounded-full size-10 shrink-0">
+              <ng-icon name="lucideBotMessageSquare" size="20" class="text-primary" />
+            </div>
+            <div class="flex flex-col">
+              <span class="font-bold text-sm">{{ storeName() }}</span>
+              <span class="text-muted-foreground text-xs line-clamp-1"
+                >Digital chatbot interface</span
+              >
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <button
+              hlmBtn
+              size="sm"
+              variant="ghost"
+              (click)="startNewChat()"
+              class="text-[10px] h-7 px-2 rounded-lg text-primary font-medium hover:bg-primary/10"
+              title="New Chat"
+            >
+              <ng-icon name="lucidePlus" size="14" class="mr-1" /> New
+            </button>
+            <button
+              hlmBtn
+              (click)="ctx.close()"
+              variant="ghost"
+              class="rounded-full size-7 p-0 text-muted-foreground hover:bg-muted"
+            >
+              <ng-icon name="lucideX" size="16" />
+            </button>
+          </div>
+        </div>
+
+        @if (chatHistory().length > 0) {
+        <div class="flex justify-between items-center w-full bg-muted/30 rounded-lg px-2 py-1 mt-1 relative z-[60]">
+          <span class="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
+            <ng-icon name="lucideHistory" size="12" /> Past Chats
+          </span>
+          <div class="relative">
+            <!-- The Button -->
+            <button (click)="toggleHistory()" class="flex items-center justify-between text-[10px] h-6 pl-2 pr-1.5 rounded-md bg-background hover:bg-muted border border-border/60 text-foreground cursor-pointer outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all w-[130px] shadow-sm">
+              <span class="truncate">Select a session...</span>
+              <ng-icon name="lucideChevronDown" size="12" class="text-muted-foreground transition-transform duration-200" [class.rotate-180]="isHistoryOpen()" />
+            </button>
+
+            <!-- The Dropdown -->
+            @if (isHistoryOpen()) {
+              <!-- Backdrop -->
+              <div class="fixed inset-0 z-40" (click)="closeHistory()"></div>
+              
+              <!-- Menu Box -->
+              <div class="absolute right-0 top-full mt-1 z-50 w-44 bg-popover/95 backdrop-blur-md border border-border shadow-lg rounded-xl overflow-hidden flex flex-col py-1 animate-in fade-in zoom-in-95 duration-200">
+                <div class="px-3 py-1.5 border-b border-border/50 bg-muted/20">
+                  <span class="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Your History</span>
+                </div>
+                <div class="max-h-[160px] overflow-y-auto overflow-x-hidden flex flex-col py-1 custom-scrollbar">
+                  @for (session of chatHistory(); track session.sessionId) {
+                    <button (click)="selectSession(session.sessionId)" class="text-left text-[11px] px-3 py-2 hover:bg-primary hover:text-primary-foreground text-foreground transition-colors cursor-pointer flex items-center gap-2 border-b border-border/40 last:border-0">
+                      <ng-icon name="lucideMessageSquare" size="12" class="opacity-70 shrink-0" />
+                      <span class="truncate">{{ session.updatedAt | date:'MMM d, h:mm a' }}</span>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+      </hlm-popover-header>
+
+      <div
+        id="chat-scroll-container"
+        class="z-10 relative space-y-3 px-4 py-4 h-[calc(100%-4rem)] overflow-y-auto"
       >
-        <input
-          hlmInput
-          [(ngModel)]="inputMessage"
-          type="text"
-          placeholder="Chat here..."
-          class="flex-1 bg-transparent shadow-none px-2 border-none rounded-full outline-none focus-visible:ring-0"
-        />
-        <button hlmBtn size="icon" class="rounded-full shrink-0">
-          <ng-icon name="lucideSendHorizonal" size="18" />
-        </button>
+        <div class="flex justify-center mb-4">
+          <span class="text-[10px] text-muted-foreground/60 px-3 py-1 bg-muted/30 rounded-full"
+            >Conversations are kept for 180 days and then deleted</span
+          >
+        </div>
+
+        @if (isLoading()) {
+          <div class="flex justify-center p-4">
+            <span class="text-sm text-muted-foreground">Loading...</span>
+          </div>
+        }
+        @for (message of messages(); track message.id) {
+          <div
+            [id]="'msg-' + message.id"
+            class="flex"
+            [class.justify-end]="message.role === 'user'"
+            [class.justify-start]="message.role === 'assistant'"
+          >
+            <div
+              class="px-4 py-2.5 rounded-2xl"
+              [class.max-w-[75%]]="message.role === 'user' || !message.products?.length"
+              [class.max-w-[95%]]="message.role === 'assistant' && message.products?.length"
+              [class.bg-primary]="message.role === 'user'"
+              [class.text-primary-foreground]="message.role === 'user'"
+              [class.rounded-tr-none]="message.role === 'user'"
+              [class.bg-popover]="message.role === 'assistant'"
+              [class.text-foreground]="message.role === 'assistant'"
+              [class.rounded-tl-none]="message.role === 'assistant'"
+            >
+              <p class="text-sm whitespace-pre-line">{{ message.text }}</p>
+
+              @if (message.products?.length) {
+                <div class="mt-4 flex gap-2">
+                  @for (product of message.products; track product.slug) {
+                    <a
+                      [routerLink]="['/', storeSlug, 'product-details', product.slug]"
+                      class="flex flex-col bg-background/50 hover:bg-muted border border-border/50 rounded-xl overflow-hidden transition-colors w-[90px] shrink-0"
+                    >
+                      <div class="aspect-square bg-muted/30 w-full relative">
+                        @if (product.imageUrl) {
+                          <img
+                            [src]="product.imageUrl"
+                            [alt]="product.title"
+                            class="w-full h-full object-cover"
+                          />
+                        }
+                      </div>
+                      <div class="p-1.5 flex flex-col gap-0.5">
+                        <span
+                          class="text-[10px] font-semibold leading-tight line-clamp-2"
+                          [title]="product.title"
+                          >{{ product.title }}</span
+                        >
+                        <span class="text-[9px] text-muted-foreground font-medium">{{
+                          product.minPriceAmount / 100 | currency: 'EGP' : 'symbol' : '1.0-0'
+                        }}</span>
+                      </div>
+                    </a>
+                  }
+                </div>
+              }
+
+              @if (message.faqs?.length) {
+                <div class="mt-4 border-t border-border/50 pt-3">
+                  <p class="text-xs font-semibold uppercase text-muted-foreground mb-2">
+                    From our FAQ:
+                  </p>
+                  <div class="flex flex-col gap-2">
+                    @for (faq of message.faqs; track faq.id) {
+                      <a [routerLink]="['/', storeSlug, 'faq']" [queryParams]="{q: faq.question}" class="text-xs text-primary font-medium hover:underline inline-flex items-center gap-1 mt-1">
+                        Read more in FAQ <ng-icon name="lucideExternalLink" size="10" />
+                      </a>
+                    }
+                  </div>
+                </div>
+              }
+
+              @if (message.order) {
+                <div class="mt-4 border border-border/50 rounded-lg p-3 bg-background/50">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="font-semibold text-sm"
+                      >Order #{{ message.order.orderNumber }}</span
+                    >
+                    <span
+                      class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase font-bold"
+                      >{{ message.order.status }}</span
+                    >
+                  </div>
+                  <div class="text-xs text-muted-foreground mb-3 flex flex-col gap-0.5">
+                    <span
+                      >{{ message.order.itemCount }} item{{
+                        message.order.itemCount !== 1 ? 's' : ''
+                      }}
+                      •
+                      {{ message.order.totalAmount / 100 | currency: message.order.currency }}</span
+                    >
+                    <span>{{ message.order.createdAt | date: 'mediumDate' }}</span>
+                  </div>
+                  <a
+                    [routerLink]="['/', storeSlug, 'orders']"
+                    [queryParams]="{ search: message.order.orderNumber }"
+                    hlmBtn
+                    variant="secondary"
+                    size="sm"
+                    class="w-full text-xs h-8"
+                  >
+                    View Details
+                  </a>
+                </div>
+              }
+
+              @if (message.requiresLogin) {
+                <div class="mt-4">
+                  <a routerLink="/auth/login" hlmBtn size="sm" class="w-full text-xs h-8">
+                    Sign in
+                  </a>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (isSending()) {
+          <div id="typing-indicator" class="flex justify-start">
+            <div
+              class="px-4 py-3 rounded-2xl max-w-[75%] bg-popover text-foreground rounded-tl-none"
+            >
+              <div class="flex gap-1.5 items-center h-4 px-1">
+                <div
+                  class="w-1.5 h-1.5 bg-foreground/50 rounded-full animate-bounce"
+                  style="animation-delay: 0ms"
+                ></div>
+                <div
+                  class="w-1.5 h-1.5 bg-foreground/50 rounded-full animate-bounce"
+                  style="animation-delay: 150ms"
+                ></div>
+                <div
+                  class="w-1.5 h-1.5 bg-foreground/50 rounded-full animate-bounce"
+                  style="animation-delay: 300ms"
+                ></div>
+              </div>
+            </div>
+          </div>
+        }
       </div>
-    </div>
-  </hlm-popover-content>
-</hlm-popover>
+      <div class="z-20 relative flex items-center px-4 py-3">
+        <div
+          class="flex items-center gap-1 bg-popover/50 shadow-sm backdrop-blur-md p-1 rounded-full focus-within:ring-2 focus-within:ring-ring w-full transition-shadow"
+        >
+          <input
+            hlmInput
+            [(ngModel)]="inputMessage"
+            (keyup.enter)="sendMessage()"
+            [disabled]="isSending()"
+            type="text"
+            placeholder="Chat here..."
+            class="flex-1 bg-transparent shadow-none px-2 border-none rounded-full outline-none focus-visible:ring-0 disabled:opacity-50"
+          />
+          <button
+            hlmBtn
+            size="icon"
+            class="rounded-full shrink-0"
+            (click)="sendMessage()"
+            [disabled]="isSending()"
+          >
+            <ng-icon name="lucideSendHorizonal" size="18" />
+          </button>
+        </div>
+      </div>
+    </hlm-popover-content>
+  </hlm-popover>
+}

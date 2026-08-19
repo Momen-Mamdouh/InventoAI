@@ -74,3 +74,5 @@ screenshots/
 .claude/
 CLAUDE.md
 .removed-dead-config/
+fix-routing.js
+update-imports.js

@@ -1,10 +1,12 @@
 import {
-  ChangeDetectionStrategy,
   Component,
-  ElementRef,
+  afterNextRender,
   computed,
   inject,
   signal,
+  effect,
+  ChangeDetectionStrategy,
+  ElementRef,
   viewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -91,6 +93,7 @@ export class FaqComponent {
 
   readonly activeCategory = signal<string>('general');
   readonly searchQuery = signal<string>('');
+  readonly openFaqIdentifier = signal<string | null>(null);
 
   readonly faqs = this.faqDataService.faqs;
   readonly isLoading = this.faqDataService.isLoading;
@@ -207,6 +210,40 @@ export class FaqComponent {
         ease: 'power3.out',
       }),
     );
+    this.route.fragment.subscribe((fragment) => {
+      if (fragment) {
+        this.openFaqIdentifier.set(fragment);
+        this.expandFaqCategory(fragment);
+      }
+    });
+
+    this.route.queryParams.subscribe((params) => {
+      if (params['q']) {
+        this.openFaqIdentifier.set(params['q']);
+        this.expandFaqCategory(params['q']);
+      }
+    });
+
+    effect(() => {
+      const allFaqs = this.faqs();
+      const identifier = this.openFaqIdentifier();
+      if (allFaqs.length > 0 && identifier) {
+        this.expandFaqCategory(identifier);
+      }
+    });
+
+    afterNextRender(() => {
+      const heroAnim = document.querySelectorAll('.faq-hero-anim');
+      if (heroAnim.length > 0) {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        tl.from(heroAnim, {
+          y: 25,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.1,
+        });
+      }
+    });
   }
 
   setCategory(categoryId: string): void {
