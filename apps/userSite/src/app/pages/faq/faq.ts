@@ -40,6 +40,7 @@ import {
 import { FaqDataService } from '@invento/user-site/app/features/faq';
 import type { FaqCategory, FaqItem } from '@invento/user-site/app/features/faq';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
+import { StoreService } from '@invento/user-site/app/core/service/store.service';
 
 @Component({
   selector: 'app-faq',
@@ -84,6 +85,7 @@ export class FaqComponent {
 
   private readonly faqDataService = inject(FaqDataService);
   private readonly route = inject(ActivatedRoute);
+  protected readonly storeService = inject(StoreService);
 
   readonly activeCategory = signal<string>('general');
   readonly searchQuery = signal<string>('');

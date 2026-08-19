@@ -70,4 +70,15 @@ export interface StorePublic {
   theme: StoreThemePublic | null;
   featuredCategories: StoreCategory[];
   featuredProducts: StoreFeaturedProduct[];
+  /**
+   * Not yet returned by `GET /site/:slug`. The data exists in the database
+   * (`stores.ownerId` -> `users.email`) but no public DTO exposes it, so every consumer must
+   * treat these as absent and render nothing until the backend adds them.
+   */
+  readonly contactEmail?: string | null;
+  readonly social?: {
+    readonly facebook?: string | null;
+    readonly instagram?: string | null;
+    readonly twitter?: string | null;
+  } | null;
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideFacebook, lucideInstagram, lucideTwitter, lucideMail } from '@ng-icons/lucide';
@@ -22,4 +22,15 @@ export class Footer {
   protected readonly activeStoreSlug = inject(StoreSlugService).slug;
 
   protected readonly year = new Date().getFullYear();
+
+  /** Gates the social row so no empty flex container with margin is left behind. */
+  protected readonly hasSocialLinks = computed(() => {
+    const social = this.storeService.social();
+    return !!(
+      social?.facebook ||
+      social?.instagram ||
+      social?.twitter ||
+      this.storeService.contactEmail()
+    );
+  });
 }
