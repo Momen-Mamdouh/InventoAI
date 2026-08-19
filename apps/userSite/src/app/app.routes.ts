@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { authGuard, guestGuard } from '@invento/user-site/app/core/guards';
+
 import { Products } from '@invento/user-site/app/pages/products/product';
 import { ProductDetails } from '@invento/user-site/app/pages/product-details/product-details';
 import { CheckoutComponent } from '@invento/user-site/app/pages/checkout';
@@ -29,12 +31,13 @@ export const routes: Routes = [
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'products', component: Products },
       { path: 'product-details/:id', component: ProductDetails },
-      { path: 'checkout', component: CheckoutComponent },
+      { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
       { path: 'order-confirmed', component: OrderConfirmedComponent },
       { path: 'faq', component: FaqComponent },
-      { path: 'orders', component: OrdersComponent },
+      { path: 'orders', component: OrdersComponent, canActivate: [authGuard] },
       {
         path: 'account-settings',
+        canActivate: [authGuard],
         loadChildren: () =>
           import('@invento/user-site/app/pages/account-settings/account-settings.routes').then(
             (m) => m.ACCOUNT_SETTINGS_ROUTES,
@@ -43,6 +46,7 @@ export const routes: Routes = [
       {
         path: 'auth',
         component: AuthLayout,
+        canActivate: [guestGuard],
         children: [
           { path: 'login', component: Login },
           { path: 'register', component: Register },
