@@ -18,6 +18,7 @@
         orientation="vertical"
         [linear]="true"
         indicatorMode="number"
+        [selectedIndex]="currentStepIndex()"
         (selectionChange)="onSelectionChange($event)"
         #stepper
       >

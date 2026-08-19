@@ -36,6 +36,7 @@ interface PersistedState {
   brainstormAnalyzed: boolean;
   aiInterviewSubmitted: boolean;
   domainConfirmed: boolean;
+  aiInterviewStepIndex?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -60,6 +61,7 @@ export class BuilderState {
   readonly brainstormAnalyzed = signal(false);
   readonly aiInterviewSubmitted = signal(false);
   readonly domainConfirmed = signal(false);
+  readonly aiInterviewStepIndex = signal<number>(0);
   readonly brainstorm = signal<string>('');
   readonly hasLogo = signal<boolean>(false);
   readonly logoUrl = signal<string | null>(null);
@@ -155,6 +157,7 @@ export class BuilderState {
         brainstormAnalyzed: this.brainstormAnalyzed(),
         aiInterviewSubmitted: this.aiInterviewSubmitted(),
         domainConfirmed: this.domainConfirmed(),
+        aiInterviewStepIndex: this.aiInterviewStepIndex(),
       };
       this.persist(snapshot);
     });
@@ -174,6 +177,7 @@ export class BuilderState {
     this.brainstormAnalyzed.set(false);
     this.aiInterviewSubmitted.set(false);
     this.domainConfirmed.set(false);
+    this.aiInterviewStepIndex.set(0);
     if (isPlatformBrowser(this.platformId)) {
       try {
         sessionStorage.removeItem(STORAGE_KEY);
@@ -237,5 +241,7 @@ export class BuilderState {
     if (typeof saved.aiInterviewSubmitted === 'boolean')
       this.aiInterviewSubmitted.set(saved.aiInterviewSubmitted);
     if (typeof saved.domainConfirmed === 'boolean') this.domainConfirmed.set(saved.domainConfirmed);
+    if (typeof saved.aiInterviewStepIndex === 'number')
+      this.aiInterviewStepIndex.set(saved.aiInterviewStepIndex);
   }
 }
