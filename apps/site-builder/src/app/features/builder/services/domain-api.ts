@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiConfig } from '@/app/core/config/api-config';
-import { fallbackOnServerError } from '@/app/core/http/api-fallback';
 
 export interface ConfirmDomainPayload {
   businessName: string;
@@ -11,7 +10,6 @@ export interface ConfirmDomainPayload {
 
 export interface ConfirmDomainResponse {
   success?: boolean;
-  isFallback?: boolean;
   slug?: string;
   storeUrl?: string;
   hint?: string | null;
@@ -28,9 +26,16 @@ export class DomainApi {
   private readonly http = inject(HttpClient);
   private readonly config = inject(ApiConfig);
 
+  /**
+   * Deliberately unguarded by fallbackOnServerError. The backend wizard is a
+   * strict ladder — each step refuses to run until the previous one advanced
+   * the draft — so faking success here does not degrade gracefully, it moves
+   * the failure to a later step where it surfaces as an unexplained 409.
+   */
   confirmDomain(payload: ConfirmDomainPayload): Observable<ConfirmDomainResponse> {
-    return this.http
-      .post<ConfirmDomainResponse>(this.config.url('/site-builder/domain'), payload)
-      .pipe(fallbackOnServerError(() => of({ success: true, isFallback: true }), 'DomainApi'));
+    return this.http.post<ConfirmDomainResponse>(
+      this.config.url('/site-builder/domain'),
+      payload,
+    );
   }
 }

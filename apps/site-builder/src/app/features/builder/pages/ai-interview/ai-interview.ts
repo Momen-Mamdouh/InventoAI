@@ -273,11 +273,7 @@ export class AiInterview implements OnInit {
       next: (res) => {
         this.isSubmitting.set(false);
 
-        if (res?.isFallback) {
-          toast.warning(this._localeService.translate('toast_answers_fallback'), { id: toastId });
-        } else {
-          toast.success(this._localeService.translate('toast_answers_success'), { id: toastId });
-        }
+        toast.success(this._localeService.translate('toast_answers_success'), { id: toastId });
 
         // Answers alone never complete this step — the wizard guards require
         // that submitAnswers actually reached the backend.

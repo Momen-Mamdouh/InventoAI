@@ -341,8 +341,19 @@ export class Preview {
           window.location.href = redirectUrl;
         }, 1000);
       },
-      error: (err) => {
+      error: (err: { status?: number }) => {
         this.isDeploying.set(false);
+
+        // A 409 here is never about the theme — a bad themeId is a 404. It means
+        // the backend draft has not reached the step publish requires, almost
+        // always because theme generation never completed for this draft. The
+        // recovery is to redo the Validation step, which is not something the
+        // raw message says, so it is spelled out.
+        if (err?.status === 409) {
+          toast.error(this._localeService.translate('preview_deploy_conflict'), { id: toastId });
+          return;
+        }
+
         toastApiError(err, 'toast_deploy_failed', this._localeService, toastId);
       },
     });
