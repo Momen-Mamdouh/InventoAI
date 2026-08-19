@@ -135,6 +135,44 @@ export const appRoutes: Routes = [
             (c) => c.BilingPlanComponent,
           ),
       },
+      {
+        path: 'chatbot',
+        loadComponent: () =>
+          import('../pages/chatbot/chatbot.layout').then((c) => c.ChatbotLayoutComponent),
+        children: [
+          { path: '', redirectTo: 'insights', pathMatch: 'full' },
+          {
+            path: 'insights',
+            loadComponent: () =>
+              import('../pages/chatbot/views/insights/insights.component').then((c) => c.InsightsComponent),
+          },
+          {
+            path: 'settings',
+            loadComponent: () =>
+              import('../pages/chatbot/views/settings/settings.component').then((c) => c.SettingsComponent),
+          },
+          {
+            path: 'knowledge',
+            loadComponent: () =>
+              import('../pages/chatbot/views/knowledge/knowledge.component').then((c) => c.KnowledgeComponent),
+          },
+          {
+            path: 'history',
+            loadComponent: () =>
+              import('../pages/chatbot/views/history/history.component').then((c) => c.HistoryComponent),
+          },
+          {
+            path: 'history/:id',
+            loadComponent: () =>
+              import('../pages/chatbot/views/transcript/transcript.component').then((c) => c.TranscriptComponent),
+          },
+          {
+            path: 'unanswered',
+            loadComponent: () =>
+              import('../pages/chatbot/views/unanswered/unanswered.component').then((c) => c.UnansweredComponent),
+          }
+        ]
+      },
     ],
   },
   {

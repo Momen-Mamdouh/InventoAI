@@ -1,0 +1,117 @@
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmButton } from '@spartan/helm/button';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck, lucideMessageSquare, lucideAlertCircle, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
+import { ChatAdminService } from '../../services/chat-admin.service';
+import { UnansweredResponse } from '../../types/chat-admin.types';
+
+@Component({
+  selector: 'app-chatbot-unanswered',
+  standalone: true,
+  imports: [CommonModule, HlmCard, HlmButton, NgIcon, DatePipe],
+  providers: [
+    provideIcons({
+      lucideCheck,
+      lucideMessageSquare,
+      lucideAlertCircle,
+      lucideChevronLeft,
+      lucideChevronRight
+    })
+  ],
+  templateUrl: './unanswered.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class UnansweredComponent implements OnInit {
+  private readonly chatService = inject(ChatAdminService);
+
+  data = signal<UnansweredResponse | null>(null);
+  isLoading = signal<boolean>(true);
+  
+  // Filters
+  page = signal<number>(1);
+  limit = signal<number>(10);
+  days = signal<number>(30);
+  includeReviewed = signal<boolean>(false);
+
+  // Template Helpers
+  Math = Math;
+  
+  // Track loading state for individual review actions
+  reviewingIds = signal<Set<string>>(new Set<string>());
+
+  ngOnInit() {
+    this.loadThemes();
+  }
+
+  loadThemes() {
+    this.isLoading.set(true);
+    this.chatService.getUnansweredQuestions({
+      page: this.page(),
+      limit: this.limit(),
+      days: this.days(),
+      includeReviewed: this.includeReviewed()
+    }).subscribe({
+      next: (res) => {
+        this.data.set(res);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  onIncludeReviewedChange(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.includeReviewed.set(checked);
+    this.page.set(1);
+    this.loadThemes();
+  }
+
+  onDaysChange(event: Event) {
+    const val = (event.target as HTMLSelectElement).value;
+    this.days.set(Number(val));
+    this.page.set(1);
+    this.loadThemes();
+  }
+
+  markAsReviewed(theme: any) {
+    // The endpoint takes a messageId. We'll use the first messageId of the theme occurrences.
+    if (!theme.messageIds || theme.messageIds.length === 0) return;
+    
+    const messageId = theme.messageIds[0];
+    
+    // Add to reviewing set
+    const currentSet = new Set(this.reviewingIds());
+    currentSet.add(theme.key);
+    this.reviewingIds.set(currentSet);
+
+    this.chatService.reviewUnansweredTheme(messageId).subscribe({
+      next: () => {
+        // Remove from reviewing set
+        const updatedSet = new Set(this.reviewingIds());
+        updatedSet.delete(theme.key);
+        this.reviewingIds.set(updatedSet);
+        
+        // Reload list to get updated status
+        this.loadThemes();
+      },
+      error: () => {
+        const updatedSet = new Set(this.reviewingIds());
+        updatedSet.delete(theme.key);
+        this.reviewingIds.set(updatedSet);
+      }
+    });
+  }
+
+  changePage(newPage: number) {
+    if (newPage < 1) return;
+    const totalPages = this.data()?.totalPages || 1;
+    if (newPage > totalPages) return;
+    
+    this.page.set(newPage);
+    this.loadThemes();
+  }
+}

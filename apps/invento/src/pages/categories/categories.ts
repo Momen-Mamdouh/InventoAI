@@ -74,6 +74,7 @@ type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
     }),
   ],
   templateUrl: './categories.html',
+  styleUrls: ['./categories.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Categories implements OnInit, OnDestroy {

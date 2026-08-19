@@ -14,6 +14,7 @@ import {
   lucideTags,
   lucideMessageCircleQuestionMark,
   lucideChevronUp,
+  lucideBotMessageSquare,
   lucideSparkles,
   lucideBadgeCheck,
   lucideCreditCard,
@@ -58,6 +59,7 @@ interface NavItem {
       lucideTags,
       lucideMessageCircleQuestionMark,
       lucideChevronUp,
+      lucideBotMessageSquare,
       lucideSparkles,
       lucideBadgeCheck,
       lucideCreditCard,
@@ -84,5 +86,6 @@ export class Sidebar {
     { label: 'nav_suppliers', icon: 'lucideTruck', route: '/suppliers' },
     { label: 'nav_analytics', icon: 'lucideBarChart3', route: '/analytics' },
     { label: 'nav_ai_advisor', icon: 'lucideBot', route: '/ai-advisor' },
+    { label: 'nav_chatbot', icon: 'lucideBotMessageSquare', route: '/chatbot' },
   ];
 }
