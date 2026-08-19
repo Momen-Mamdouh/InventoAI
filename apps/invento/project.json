@@ -4,7 +4,10 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/invento/src",
-  "tags": ["type:app", "scope:invento"],
+  "tags": [
+    "type:app",
+    "scope:invento"
+  ],
   "implicitDependencies": [
     "spartan-ui",
     "spartan-stepper",
@@ -15,7 +18,9 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/invento",
@@ -27,7 +32,9 @@
             "input": "apps/invento/public"
           }
         ],
-        "styles": ["apps/invento/src/styles.css"],
+        "styles": [
+          "apps/invento/src/styles.css"
+        ],
         "server": "apps/invento/src/main.server.ts",
         "ssr": {
           "entry": "apps/invento/src/server.ts"
@@ -53,7 +60,13 @@
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/invento/src/environments/environment.ts",
+              "with": "apps/invento/src/environments/environment.development.ts"
+            }
+          ]
         }
       }
     },
@@ -62,7 +75,8 @@
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "port": 4400
+        "port": 4400,
+        "proxyConfig": "apps/invento/proxy.conf.json"
       },
       "configurations": {
         "production": {
