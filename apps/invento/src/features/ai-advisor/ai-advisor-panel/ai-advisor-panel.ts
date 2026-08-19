@@ -613,7 +613,10 @@ export class AiAdvisorPanel {
       item.kind === 'slow_mover'
     ) {
       const payload = item.payload as
-        StockoutPayload | RestockPayload | TrendingPayload | SlowMoverPayload;
+        | StockoutPayload
+        | RestockPayload
+        | TrendingPayload
+        | SlowMoverPayload;
       return payload.productId ? `/products/${payload.productId}` : null;
     }
     return null;

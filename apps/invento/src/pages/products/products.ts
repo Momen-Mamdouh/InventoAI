@@ -6,7 +6,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { CurrencyPipe, DatePipe, DecimalPipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -25,7 +25,12 @@ import { HlmInputImports } from '@spartan/helm/input';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { forkJoin } from 'rxjs';
-import { ApiProductListItem, PaginatedResponse, CreateProductDto, CreateProductVariantDto } from '../../features/products/product.model';
+import {
+  ApiProductListItem,
+  PaginatedResponse,
+  CreateProductDto,
+  CreateProductVariantDto,
+} from '../../features/products/product.model';
 import { ProductService } from '../../features/products/product.service';
 import { AttributeService } from '../../features/attributes/attribute.service';
 import { ProductAttribute } from '../../features/attributes/attribute.model';
@@ -59,7 +64,7 @@ interface FormVariant {
     CdkDropList,
     CdkDrag,
     DeleteConfirmDialog,
-    SearchPipe
+    SearchPipe,
   ],
   providers: [
     provideIcons({
@@ -98,8 +103,8 @@ export class Products implements OnInit {
   readonly totalProducts = signal<number>(0);
 
   readonly attributes = signal<ProductAttribute[]>([]);
-  readonly variantAttributes = computed(() => this.attributes().filter(a => a.isVariantAxis));
-  readonly productAttributes = computed(() => this.attributes().filter(a => !a.isVariantAxis));
+  readonly variantAttributes = computed(() => this.attributes().filter((a) => a.isVariantAxis));
+  readonly productAttributes = computed(() => this.attributes().filter((a) => !a.isVariantAxis));
 
   readonly categories = signal<Category[]>([]);
 
@@ -115,14 +120,14 @@ export class Products implements OnInit {
     weightGrams: null as number | null,
     categoryIds: [] as string[],
     productAttributeValues: {} as Record<string, string>,
-    variants: [this.createEmptyVariant()]
+    variants: [this.createEmptyVariant()],
   };
   isSubmitting = signal(false);
 
   createEmptyVariant(): FormVariant {
     const variantAttributeValues: Record<string, string> = {};
-    if (this.attributes && this.attributes().length > 0) {
-      this.variantAttributes().forEach(a => variantAttributeValues[a.id] = '');
+    if (this.attributes().length > 0) {
+      this.variantAttributes().forEach((a) => (variantAttributeValues[a.id] = ''));
     }
     return {
       sku: '',
@@ -130,7 +135,7 @@ export class Products implements OnInit {
       compareAtAmount: null,
       stock: null,
       lowStockThreshold: null,
-      variantAttributeValues
+      variantAttributeValues,
     };
   }
 
@@ -153,13 +158,13 @@ export class Products implements OnInit {
         this.attributes.set(attrs);
 
         const prodAttrs = { ...this.newProduct.productAttributeValues };
-        this.productAttributes().forEach(a => {
+        this.productAttributes().forEach((a) => {
           if (prodAttrs[a.id] === undefined) prodAttrs[a.id] = '';
         });
         this.newProduct.productAttributeValues = prodAttrs;
 
-        this.newProduct.variants.forEach(v => {
-          this.variantAttributes().forEach(a => {
+        this.newProduct.variants.forEach((v) => {
+          this.variantAttributes().forEach((a) => {
             if (v.variantAttributeValues[a.id] === undefined) v.variantAttributeValues[a.id] = '';
           });
         });
@@ -193,8 +198,8 @@ export class Products implements OnInit {
 
   resetNewProduct(): void {
     const prodAttrs: Record<string, string> = {};
-    if (this.attributes && this.attributes().length > 0) {
-      this.productAttributes().forEach(a => prodAttrs[a.id] = '');
+    if (this.attributes().length > 0) {
+      this.productAttributes().forEach((a) => (prodAttrs[a.id] = ''));
     }
 
     this.newProduct = {
@@ -203,12 +208,12 @@ export class Products implements OnInit {
       description: '',
       shortDescription: '',
       searchKeywords: '',
-      status: '' as any,
+      status: '' as 'draft' | 'active' | 'archived',
       isFeatured: false,
       weightGrams: null,
       categoryIds: [],
       productAttributeValues: prodAttrs,
-      variants: [this.createEmptyVariant()]
+      variants: [this.createEmptyVariant()],
     };
   }
 
@@ -238,7 +243,7 @@ export class Products implements OnInit {
       return;
     }
 
-    const isValid = this.newProduct.variants.every(v => v.price != null && v.price >= 0);
+    const isValid = this.newProduct.variants.every((v) => v.price != null && v.price >= 0);
     if (!isValid) {
       toast.error('All variants must have a valid non-negative price.');
       return;
@@ -246,20 +251,23 @@ export class Products implements OnInit {
 
     this.isSubmitting.set(true);
 
-    const apiVariants: CreateProductVariantDto[] = this.newProduct.variants.map(v => {
-      const attributeValueIds = Object.values(v.variantAttributeValues).filter(val => !!val);
+    const apiVariants: CreateProductVariantDto[] = this.newProduct.variants.map((v) => {
+      const attributeValueIds = Object.values(v.variantAttributeValues).filter((val) => !!val);
 
       return {
         sku: v.sku,
-        priceAmount: Math.round((v.price || 0) * 100), // convert to minor units
-        compareAtAmount: v.compareAtAmount != null ? Math.round(v.compareAtAmount * 100) : undefined,
-        stockQuantity: v.stock || 0,
-        lowStockThreshold: v.lowStockThreshold || 0,
-        attributeValueIds: attributeValueIds.length > 0 ? attributeValueIds : undefined
+        priceAmount: Math.round((v.price ?? 0) * 100), // convert to minor units
+        compareAtAmount:
+          v.compareAtAmount != null ? Math.round(v.compareAtAmount * 100) : undefined,
+        stockQuantity: v.stock ?? 0,
+        lowStockThreshold: v.lowStockThreshold ?? 0,
+        attributeValueIds: attributeValueIds.length > 0 ? attributeValueIds : undefined,
       };
     });
 
-    const rootAttributeValueIds = Object.values(this.newProduct.productAttributeValues).filter(val => !!val);
+    const rootAttributeValueIds = Object.values(this.newProduct.productAttributeValues).filter(
+      (val) => !!val,
+    );
 
     const payload: CreateProductDto = {
       title: this.newProduct.title,
@@ -271,8 +279,11 @@ export class Products implements OnInit {
       weightGrams: this.newProduct.weightGrams || undefined,
       categoryIds: this.newProduct.categoryIds.length > 0 ? this.newProduct.categoryIds : undefined,
       attributeValueIds: rootAttributeValueIds.length > 0 ? rootAttributeValueIds : undefined,
-      variants: apiVariants
+      variants: apiVariants,
     };
+
+    this.productService.createProduct(payload).subscribe({
+      next: () => {
         toast.success('Product created successfully');
         this.isSubmitting.set(false);
         this.toggleDrawer();
@@ -309,14 +320,14 @@ export class Products implements OnInit {
     if (this.isAllSelected()) {
       this.selectedProductIds.set([]);
     } else {
-      this.selectedProductIds.set(this.products().map(p => p.id));
+      this.selectedProductIds.set(this.products().map((p) => p.id));
     }
   }
 
   toggleSelect(id: string): void {
     const selected = this.selectedProductIds();
     if (selected.includes(id)) {
-      this.selectedProductIds.set(selected.filter(sId => sId !== id));
+      this.selectedProductIds.set(selected.filter((sId) => sId !== id));
     } else {
       this.selectedProductIds.set([...selected, id]);
     }
@@ -333,7 +344,7 @@ export class Products implements OnInit {
     if (selected.length === 0) return;
 
     this.isBulkActing.set(true);
-    const requests = selected.map(id => this.productService.deleteProduct(id));
+    const requests = selected.map((id) => this.productService.deleteProduct(id));
 
     forkJoin(requests).subscribe({
       next: () => {
@@ -349,7 +360,7 @@ export class Products implements OnInit {
         this.isBulkActing.set(false);
         this.isBulkDeleteModalOpen.set(false);
         this.fetchProducts();
-      }
+      },
     });
   }
 
@@ -358,7 +369,7 @@ export class Products implements OnInit {
     if (selected.length === 0) return;
 
     this.isBulkActing.set(true);
-    const requests = selected.map(id => this.productService.updateProduct(id, { status }));
+    const requests = selected.map((id) => this.productService.updateProduct(id, { status }));
 
     forkJoin(requests).subscribe({
       next: () => {
@@ -372,11 +383,7 @@ export class Products implements OnInit {
         toast.error('Failed to update status for some or all products.');
         this.isBulkActing.set(false);
         this.fetchProducts();
-      }
+      },
     });
-  }
-
-  viewDetails(id: string): void {
-    this.router.navigate(['/products', id]);
   }
 }

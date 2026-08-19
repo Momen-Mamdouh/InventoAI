@@ -71,7 +71,12 @@ export default defineConfig([
         {
           patterns: [
             {
-              group: ['@/*', '@invento/user-site/*', '@invento/site-builder/*', '@invento/invento/*'],
+              group: [
+                '@/*',
+                '@invento/user-site/*',
+                '@invento/site-builder/*',
+                '@invento/invento/*',
+              ],
               message:
                 'Libraries must not import from applications. Move the shared code into libs/core or libs/shared and import it from there.',
             },
