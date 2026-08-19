@@ -3,6 +3,7 @@ import { HlmDialogImports } from '@spartan/helm/dialog';
 import { BrnDialogContent } from '@spartan-ng/brain/dialog';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { SkeletonBlock } from '@invento/shared';
+import { TranslatePipe } from '@invento/core';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -62,6 +63,7 @@ import {
     HlmButtonImports,
     NgIconComponent,
     FormatOrderDatePipe,
+    TranslatePipe,
   ],
 
   providers: [

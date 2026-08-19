@@ -1,7 +1,11 @@
-<app-navbar />
+@if (showStorefrontChrome()) {
+  <app-navbar />
+}
 <router-outlet></router-outlet>
-<app-footer />
-<div class="right-5 bottom-5 fixed">
-  <app-chatbot />
-</div>
+@if (showStorefrontChrome()) {
+  <app-footer />
+  <div class="end-5 bottom-5 fixed">
+    <app-chatbot />
+  </div>
+}
 <hlm-toaster position="bottom-right" richColors closeButton [duration]="4000" />

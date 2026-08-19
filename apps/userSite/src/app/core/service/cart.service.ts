@@ -1,13 +1,14 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '@invento/user-site/environments/environment';
+import { StoreSlugService } from './store-slug.service';
 import type {
   CartItem,
   CreateOrderPayload,
   PlacedOrderResponse,
   PrefillCustomerInfo,
-} from '../interface/cart.interface';
+} from '@invento/user-site/app/core/interface/cart.interface';
 
 const CART_STORAGE_KEY = 'invento_user_cart';
 const PREFILL_STORAGE_KEY = 'invento_user_checkout_prefill';
@@ -19,6 +20,11 @@ const LAST_ORDER_STORAGE_KEY = 'invento_last_placed_order';
 export class CartService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
+
+  /**
+   * Resolved from the URL/host, never a build-time constant — see {@link storageKey}.
+   */
+  private readonly storeSlug = inject(StoreSlugService).slug;
 
   // Cart state signals
   readonly items = signal<CartItem[]>(this.loadStoredItems());
@@ -132,7 +138,7 @@ export class CartService {
   clearPrefill(): void {
     this.prefilledCustomer.set(null);
     if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(PREFILL_STORAGE_KEY);
+      localStorage.removeItem(this.storageKey(PREFILL_STORAGE_KEY));
     }
   }
 
@@ -152,14 +158,53 @@ export class CartService {
   clearLastPlacedOrder(): void {
     this.lastPlacedOrder.set(null);
     if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(LAST_ORDER_STORAGE_KEY);
+      localStorage.removeItem(this.storageKey(LAST_ORDER_STORAGE_KEY));
     }
+  }
+
+  /**
+   * Namespaces a storage key with the active store's slug.
+   *
+   * The storefront is multi-tenant: in production each store is its own subdomain, so origin
+   * isolation keeps carts apart for free, but in development every store shares
+   * `localhost:4300` — add to cart on `/emberbean`, switch to `/fokhar`, and store A's items
+   * would appear (and could be submitted) in store B's cart under a single global key. Falls
+   * back to the bare key when no slug has resolved (e.g. off-storefront routes) since there is
+   * no tenant to namespace by.
+   */
+  private storageKey(base: string): string {
+    const slug = this.storeSlug();
+    return slug ? `${base}:${slug}` : base;
+  }
+
+  /**
+   * Reads a namespaced key, migrating a pre-existing unscoped value into it on first read.
+   *
+   * Namespacing alone would make every existing visitor's cart/prefill/last-order vanish the
+   * next time they load the site, since it now looks for a key that never existed. Adopting
+   * the legacy value once (and removing it) keeps that from happening while still landing on
+   * the namespaced key for every read/write after.
+   */
+  private readMigrated(base: string): string | null {
+    const namespacedKey = this.storageKey(base);
+    const existing = localStorage.getItem(namespacedKey);
+    if (existing !== null) return existing;
+
+    // No slug resolved yet, so the "namespaced" key is the bare key — nothing to migrate.
+    if (namespacedKey === base) return null;
+
+    const legacy = localStorage.getItem(base);
+    if (legacy === null) return null;
+
+    localStorage.setItem(namespacedKey, legacy);
+    localStorage.removeItem(base);
+    return legacy;
   }
 
   private loadStoredItems(): CartItem[] {
     if (typeof localStorage === 'undefined') return [];
     try {
-      const raw = localStorage.getItem(CART_STORAGE_KEY);
+      const raw = this.readMigrated(CART_STORAGE_KEY);
       return raw ? JSON.parse(raw) : [];
     } catch {
       return [];
@@ -169,7 +214,7 @@ export class CartService {
   private saveStoredItems(items: CartItem[]): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+      localStorage.setItem(this.storageKey(CART_STORAGE_KEY), JSON.stringify(items));
     } catch {
       // Ignore storage write errors
     }
@@ -178,7 +223,7 @@ export class CartService {
   private loadStoredPrefill(): PrefillCustomerInfo | null {
     if (typeof localStorage === 'undefined') return null;
     try {
-      const raw = localStorage.getItem(PREFILL_STORAGE_KEY);
+      const raw = this.readMigrated(PREFILL_STORAGE_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
@@ -188,7 +233,7 @@ export class CartService {
   private saveStoredPrefill(prefill: PrefillCustomerInfo): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      localStorage.setItem(PREFILL_STORAGE_KEY, JSON.stringify(prefill));
+      localStorage.setItem(this.storageKey(PREFILL_STORAGE_KEY), JSON.stringify(prefill));
     } catch {
       // Ignore storage write errors
     }
@@ -197,7 +242,7 @@ export class CartService {
   private loadStoredLastOrder(): PlacedOrderResponse | null {
     if (typeof localStorage === 'undefined') return null;
     try {
-      const raw = localStorage.getItem(LAST_ORDER_STORAGE_KEY);
+      const raw = this.readMigrated(LAST_ORDER_STORAGE_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
@@ -207,7 +252,7 @@ export class CartService {
   private saveStoredLastOrder(order: PlacedOrderResponse): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      localStorage.setItem(LAST_ORDER_STORAGE_KEY, JSON.stringify(order));
+      localStorage.setItem(this.storageKey(LAST_ORDER_STORAGE_KEY), JSON.stringify(order));
     } catch {
       // Ignore storage write errors
     }

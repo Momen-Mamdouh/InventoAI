@@ -1,7 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import type { StorePublic } from '../interface/store.interface';
+import { Observable, catchError, finalize, of, shareReplay, tap, throwError } from 'rxjs';
+import { environment } from '@invento/user-site/environments/environment';
+import type { StorePublic } from '@invento/user-site/app/core/interface/store.interface';
 
 /**
  * Resolves the branding for the store currently being viewed.
@@ -20,6 +21,7 @@ export class StoreService {
   private readonly apiUrl = environment.apiUrl;
 
   private readonly cache = new Map<string, StorePublic>();
+  private readonly inFlightRequests = new Map<string, Observable<StorePublic>>();
   private readonly _store = signal<StorePublic | null>(null);
   private readonly _isLoading = signal(false);
   private readonly _error = signal<string | null>(null);
@@ -95,5 +97,63 @@ export class StoreService {
   retry(slug: string): void {
     this._error.set(null);
     this.load(slug);
+  }
+
+  /**
+   * Awaitable form of `load()`, for the route guard: it needs to know whether the slug
+   * resolves before deciding whether to activate the route, which `load()`'s fire-and-forget
+   * signal cannot answer.
+   *
+   * Reuses `cache` (a hit resolves synchronously via `of()`, no request) and de-dupes
+   * concurrent callers for the same slug against a single shared HTTP request. Runs on the
+   * server too, so a bad slug 404s in the SSR render rather than after hydration.
+   */
+  resolve(slug: string): Observable<StorePublic> {
+    const cached = this.cache.get(slug);
+    if (cached) {
+      // Must publish to the signal, not just hand back the value. The chrome in `app.ts` only
+      // renders once `store()` is non-null, and the navbar's `load()` effect is what used to
+      // populate it — so a silent cache hit would strand the app: visit a bad slug (which nulls
+      // `_store`), come back to a cached good one, and the navbar would never render, meaning
+      // nothing would ever call `load()` to fix it.
+      this.requestedSlug = slug;
+      this._store.set(cached);
+      this._error.set(null);
+      this._isLoading.set(false);
+      return of(cached);
+    }
+
+    const inFlight = this.inFlightRequests.get(slug);
+    if (inFlight) return inFlight;
+
+    const request$ = this.http.get<StorePublic>(`${this.apiUrl}/site/${slug}`).pipe(
+      tap((store) => {
+        this.cache.set(slug, store);
+        // Keep the signal-driven consumers (e.g. the navbar) in sync if this is still the
+        // slug they're on, so resolving via the guard doesn't cause a second fetch from load().
+        if (this.requestedSlug === slug || this.requestedSlug === null) {
+          this.requestedSlug = slug;
+          this._store.set(store);
+          this._error.set(null);
+          this._isLoading.set(false);
+        }
+      }),
+      catchError((err: unknown) => {
+        // Mirrors load()'s error branch: drop a stale previous tenant's branding rather than
+        // leaving it rendered under a slug that just failed to resolve (e.g. on /store-not-found).
+        if (this.requestedSlug === slug || this.requestedSlug === null) {
+          this.requestedSlug = slug;
+          this._store.set(null);
+          this._error.set('store.load_failed');
+          this._isLoading.set(false);
+        }
+        return throwError(() => err);
+      }),
+      finalize(() => this.inFlightRequests.delete(slug)),
+      shareReplay(1),
+    );
+
+    this.inFlightRequests.set(slug, request$);
+    return request$;
   }
 }

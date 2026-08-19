@@ -1,16 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  afterNextRender,
+  ElementRef,
   inject,
   signal,
   effect,
   OnInit,
+  viewChildren,
 } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import gsap from 'gsap';
+import { LocaleService } from '@invento/core';
 
 // Spartan UI & Icons
 import { HlmLabel } from '@spartan/helm/label';
@@ -42,6 +44,7 @@ import { OrdersDataService, type OrderDetail } from '@invento/user-site/app/feat
 import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
 import type { CreateOrderPayload } from '@invento/user-site/app/core/interface/cart.interface';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
+import { animateElementsOnRender } from '@invento/user-site/app/core/utils/animation.utils';
 
 @Component({
   selector: 'app-checkout',
@@ -85,6 +88,7 @@ export class CheckoutComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly locale = inject(LocaleService);
   protected readonly cartService = inject(CartService);
   protected readonly authService = inject(AuthService);
   protected readonly ordersService = inject(OrdersDataService);
@@ -115,6 +119,16 @@ export class CheckoutComponent implements OnInit {
     customerNote: ['', [Validators.maxLength(500)]],
     paymentMethod: ['cod', [Validators.required]],
   });
+
+  /**
+   * Scoped view queries instead of `document.querySelectorAll`.
+   *
+   * The global lookups matched `.fade-in-left`/`.fade-in-right` anywhere in the document, so
+   * they could pick up elements belonging to another component; these resolve only within
+   * this template.
+   */
+  private readonly fadeInLeftItems = viewChildren<ElementRef<HTMLElement>>('fadeInLeft');
+  private readonly fadeInRightItems = viewChildren<ElementRef<HTMLElement>>('fadeInRight');
 
   constructor() {
     effect(() => {
@@ -152,30 +166,42 @@ export class CheckoutComponent implements OnInit {
       }
     });
 
-    afterNextRender(() => {
-      const leftElements = document.querySelectorAll('.fade-in-left');
-      const rightElements = document.querySelectorAll('.fade-in-right');
+    /**
+     * `afterRenderEffect` (via `animateElementsOnRender`), not `afterNextRender`.
+     *
+     * The previous `afterNextRender` + `document.querySelectorAll` pair fired once with no
+     * cleanup, so both tweens leaked when this component was destroyed.
+     * `animateElementsOnRender` disposes each via `onCleanup`.
+     *
+     * The original built one `gsap.timeline()` so the right column could start 0.4s before
+     * the left column's 0.6s entrance finished; splitting them into two independent
+     * `animateElementsOnRender` calls reproduces the same overlap with an explicit
+     * `delay: 0.2` on the right tween (0.6 - 0.4 = 0.2), since both columns are always
+     * present together and never animate without each other in practice.
+     *
+     * RTL: `x: -30`/`x: 30` are physical directions, so the entrance slid in from the wrong
+     * side in Arabic. `LocaleService.isRtl` mirrors the sign so the left column still enters
+     * from its (now right-hand) leading edge.
+     */
+    animateElementsOnRender(this.fadeInLeftItems, (items) =>
+      gsap.from(items, {
+        x: this.locale.isRtl() ? 30 : -30,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power3.out',
+      }),
+    );
 
-      if (leftElements.length > 0 || rightElements.length > 0) {
-        const tl = gsap.timeline();
-        if (leftElements.length > 0) {
-          tl.from(leftElements, {
-            x: -30,
-            opacity: 0,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: 'power3.out',
-          });
-        }
-        if (rightElements.length > 0) {
-          tl.from(
-            rightElements,
-            { x: 30, opacity: 0, duration: 0.6, ease: 'power3.out' },
-            leftElements.length > 0 ? '-=0.4' : 0,
-          );
-        }
-      }
-    });
+    animateElementsOnRender(this.fadeInRightItems, (items) =>
+      gsap.from(items, {
+        x: this.locale.isRtl() ? -30 : 30,
+        opacity: 0,
+        duration: 0.6,
+        delay: 0.2,
+        ease: 'power3.out',
+      }),
+    );
   }
 
   ngOnInit(): void {

@@ -25,10 +25,10 @@ import { HlmPopoverImports } from '@spartan/helm/popover';
 import { BrnPopoverContent } from '@spartan-ng/brain/popover';
 import { LangSwitcher, ThemeSwitcher } from '@invento/shared';
 import { TranslatePipe } from '@invento/core';
-import { CartService } from '../../../core/service/cart.service';
-import { StoreService } from '../../../core/service/store.service';
-import { StoreSlugService } from '../../../core/service/store-slug.service';
-import { AuthService } from '../../../core/service/auth.service';
+import { CartService } from '@invento/user-site/app/core/service/cart.service';
+import { StoreService } from '@invento/user-site/app/core/service/store.service';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
+import { AuthService } from '@invento/user-site/app/core/service/auth.service';
 
 interface NavLink {
   /** Translation key resolved in the template via TranslatePipe. */

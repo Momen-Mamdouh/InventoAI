@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { provideIcons } from '@ng-icons/core';
+import { lucideStore } from '@ng-icons/lucide';
 import { EmptyState } from '@invento/shared';
 import { TranslatePipe } from '@invento/core';
 
@@ -19,6 +21,9 @@ import { TranslatePipe } from '@invento/core';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [EmptyState, TranslatePipe],
+  // `EmptyState` renders an `ng-icon` but registers no icons itself, so the consumer must
+  // provide them — without this the icon silently rendered as nothing.
+  providers: [provideIcons({ lucideStore })],
   template: `
     <div class="bg-background text-foreground flex min-h-screen items-center justify-center px-4">
       <app-empty-state

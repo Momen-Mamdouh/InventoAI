@@ -4,8 +4,8 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideFacebook, lucideInstagram, lucideTwitter, lucideMail } from '@ng-icons/lucide';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { TranslatePipe } from '@invento/core';
-import { StoreService } from '../../../core/service/store.service';
-import { StoreSlugService } from '../../../core/service/store-slug.service';
+import { StoreService } from '@invento/user-site/app/core/service/store.service';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
   selector: 'app-footer',

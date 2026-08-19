@@ -18,6 +18,7 @@
             formControlName="currentPassword"
             autocomplete="current-password"
             placeholder="Enter current password"
+            [attr.disabled]="isLoading() ? true : null"
           />
           <button
             hlmBtn
@@ -46,6 +47,7 @@
               formControlName="newPassword"
               autocomplete="new-password"
               placeholder="Min. 8 characters"
+              [attr.disabled]="isLoading() ? true : null"
             />
             <button
               hlmBtn
@@ -63,6 +65,12 @@
             form.controls.newPassword.touched && form.controls.newPassword.hasError('minlength')
           ) {
             <p hlmSmall class="text-destructive text-xs">Password must be at least 8 characters.</p>
+          } @else if (
+            form.controls.newPassword.touched && form.controls.newPassword.hasError('pattern')
+          ) {
+            <p hlmSmall class="text-destructive text-xs">
+              Password must contain at least one letter and one number.
+            </p>
           }
         </div>
 
@@ -77,6 +85,7 @@
               formControlName="confirmPassword"
               autocomplete="new-password"
               placeholder="Repeat new password"
+              [attr.disabled]="isLoading() ? true : null"
             />
             <button
               hlmBtn
@@ -96,9 +105,9 @@
         </div>
       </div>
 
-      <button hlmBtn type="submit" [disabled]="form.invalid" class="gap-2 w-fit">
+      <button hlmBtn type="submit" [disabled]="form.invalid || isLoading()" class="gap-2 w-fit">
         <ng-icon name="lucideLock" size="16" />
-        Update Password
+        {{ isLoading() ? 'Updating…' : 'Update Password' }}
       </button>
     </form>
   </section>

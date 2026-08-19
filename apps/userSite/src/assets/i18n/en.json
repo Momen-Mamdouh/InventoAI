@@ -49,6 +49,13 @@
       "delivered": "Delivered",
       "cancelled": "Cancelled"
     },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
     "search_placeholder": "Search order # or item...",
     "search_aria": "Search orders",
     "filter_aria": "Filter orders by status"
@@ -86,5 +93,10 @@
   "no_store": {
     "title": "No store selected",
     "description": "This address does not point to a store. Open a storefront by its own web address, or add the store name to the URL."
+  },
+  "store_not_found": {
+    "title": "Store not found",
+    "description": "We couldn't find a store at this address. It may have been renamed or removed, or the link you followed may be out of date.",
+    "retry": "Try again"
   }
 }

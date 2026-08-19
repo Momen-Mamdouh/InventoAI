@@ -9,11 +9,14 @@ import {
 } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideEye, lucideEyeOff, lucideLock } from '@ng-icons/lucide';
+import { toast } from '@spartan/helm/sonner';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmTypographyImports } from '@spartan/helm/typography';
+import { AuthService } from '@invento/user-site/app/core/service/auth.service';
+import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
 
 function passwordsMatchValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
@@ -41,15 +44,27 @@ function passwordsMatchValidator(): ValidatorFn {
 })
 export class AccountSettingsSecurityComponent {
   private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
 
   readonly showCurrent = signal(false);
   readonly showNew = signal(false);
   readonly showConfirm = signal(false);
+  readonly isLoading = signal(false);
 
   readonly form = this.fb.nonNullable.group(
     {
       currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      // Mirrors the backend's ChangePasswordDto: MinLength(8) plus PASSWORD_PATTERN
+      // (at least one letter and one digit). Without the pattern here the server rejects the
+      // submission and the shopper only learns why after a round trip.
+      newPassword: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/),
+        ],
+      ],
       confirmPassword: ['', Validators.required],
     },
     { validators: passwordsMatchValidator() },
@@ -60,7 +75,22 @@ export class AccountSettingsSecurityComponent {
       this.form.markAllAsTouched();
       return;
     }
-    console.log('Updating password', this.form.getRawValue());
-    this.form.reset();
+
+    const { currentPassword, newPassword, confirmPassword } = this.form.getRawValue();
+
+    this.isLoading.set(true);
+    this.authService
+      .changePassword({ oldPassword: currentPassword, newPassword, confirmPassword })
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          toast.success('Password updated successfully');
+          this.form.reset();
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+          toast.error(extractErrorMessage(err, 'Failed to update password. Please try again.'));
+        },
+      });
   }
 }

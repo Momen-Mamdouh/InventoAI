@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { formatOrderDate } from '../utils/date.utils';
+import { formatOrderDate } from '@invento/user-site/app/core/utils/date.utils';
 
 @Pipe({
   name: 'formatOrderDate',

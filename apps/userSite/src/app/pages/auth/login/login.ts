@@ -2,13 +2,13 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
-import { AuthService } from '../../../core/service/auth.service';
+import { AuthService } from '@invento/user-site/app/core/service/auth.service';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 
-import { extractErrorMessage } from '../../../core/utils/error.utils';
+import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
