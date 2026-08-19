@@ -107,7 +107,7 @@ export class Preview {
   readonly navTabs = this.previewDataClientService.navTabs;
   readonly isLoading = this.previewDataClientService.isLoading;
   readonly themeError = this.previewDataClientService.themeError;
-  readonly usingFallbackThemes = this.previewDataClientService.usingFallbackThemes;
+  readonly themesUnavailable = this.previewDataClientService.themesUnavailable;
   readonly logoUrl = this.builderState.logoUrl;
 
   readonly previewUrl = computed(() => {
@@ -250,9 +250,10 @@ export class Preview {
     // flips isLoading), so the loader vanished the instant Preview mounted and
     // the skeleton showed through instead.
     effect(() => {
-      const settled = !this.previewDataClientService.isLoading();
-      const hasThemes = this.themeSuggestions().length > 0;
-      if (settled && hasThemes) {
+      // `loaded` covers the empty and failed outcomes too — gating on themes
+      // alone would leave the navigation loader spinning forever whenever the
+      // store has none.
+      if (this.previewDataClientService.loaded()) {
         this.builderState.isNavigating.set(false);
       }
     });
@@ -265,6 +266,10 @@ export class Preview {
         this.selectedTheme.set(firstTheme);
       }
     });
+  }
+
+  retryThemes(): void {
+    this.previewDataClientService.reload();
   }
 
   selectTheme(theme: ThemeSuggestion): void {
@@ -314,10 +319,7 @@ export class Preview {
       return;
     }
 
-    // The sample themes carry slugs like `midnight-edge`, not the store's
-    // theme UUIDs, so publishing one came back as "themeId must be a UUID".
-    // Say why up front instead of forwarding an id the backend cannot accept.
-    if (this.usingFallbackThemes()) {
+    if (this.themesUnavailable()) {
       toast.error(this._localeService.translate('preview_themes_unavailable'));
       return;
     }

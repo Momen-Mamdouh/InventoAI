@@ -5,7 +5,11 @@ import {
   BuilderStepId,
   MIN_BRAINSTORM_LENGTH,
 } from '@/app/features/builder/constants/builder-steps';
-import { INTERVIEW_QUESTIONS } from '@/app/features/builder/constants/interview-questions';
+import {
+  INTERVIEW_QUESTIONS,
+  InterviewQuestionConfig,
+} from '@/app/features/builder/constants/interview-questions';
+import { QuestionsApi } from '@/app/features/builder/services/questions-api';
 
 export type AnswerValue = string | number | string[] | number[];
 
@@ -37,6 +41,7 @@ interface PersistedState {
 @Injectable({ providedIn: 'root' })
 export class BuilderState {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly questionsApi = inject(QuestionsApi);
 
   readonly isNavigating = signal(false);
 
@@ -66,6 +71,14 @@ export class BuilderState {
   readonly domain = signal<string>('');
   readonly themes = signal<ThemeItem[]>([]);
 
+  /**
+   * The questionnaire the backend serves. Seeded with the bundled catalog so
+   * nothing ever renders empty, then replaced by GET /site-builder/questions —
+   * the backend validates answers against its own list, so that list has to
+   * win over anything compiled into the bundle.
+   */
+  readonly questions = signal<InterviewQuestionConfig[]>(INTERVIEW_QUESTIONS);
+
   readonly hasBrainstormInput = computed(
     () => this.brainstorm().trim().length >= MIN_BRAINSTORM_LENGTH,
   );
@@ -83,11 +96,13 @@ export class BuilderState {
     const answers = this.aiAnswers();
     if (Object.keys(answers).length === 0) return false;
 
-    return INTERVIEW_QUESTIONS.filter((q) => q.required).every((q) => {
-      const value = answers[q.id];
-      if (value === undefined || value === null) return false;
-      return Array.isArray(value) ? value.length > 0 : String(value).trim() !== '';
-    });
+    return this.questions()
+      .filter((q) => q.required)
+      .every((q) => {
+        const value = answers[q.id];
+        if (value === undefined || value === null) return false;
+        return Array.isArray(value) ? value.length > 0 : String(value).trim() !== '';
+      });
   });
 
   readonly isAiInterviewComplete = computed(
@@ -122,6 +137,7 @@ export class BuilderState {
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.restore();
+    this.loadQuestions();
 
     // Persist on every change so a refresh mid-wizard doesn't drop the user's
     // work (and get bounced back to step 1 by the guards).
@@ -192,6 +208,17 @@ export class BuilderState {
     }
   }
 
+  /**
+   * Primes the questionnaire from the backend once per session. Called early
+   * so the catalog has landed well before the interview step opens; the
+   * bundled list stands in until then and if the request fails.
+   */
+  private loadQuestions(): void {
+    this.questionsApi.getQuestions().subscribe((response) => {
+      if (response?.questions?.length) this.questions.set(response.questions);
+    });
+  }
+
   private restore(): void {
     const saved = this.readSnapshot();
     if (!saved) return;
@@ -209,7 +236,6 @@ export class BuilderState {
       this.brainstormAnalyzed.set(saved.brainstormAnalyzed);
     if (typeof saved.aiInterviewSubmitted === 'boolean')
       this.aiInterviewSubmitted.set(saved.aiInterviewSubmitted);
-    if (typeof saved.domainConfirmed === 'boolean')
-      this.domainConfirmed.set(saved.domainConfirmed);
+    if (typeof saved.domainConfirmed === 'boolean') this.domainConfirmed.set(saved.domainConfirmed);
   }
 }

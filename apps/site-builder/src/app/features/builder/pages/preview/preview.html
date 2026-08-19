@@ -43,6 +43,22 @@
                   <span class="block bg-foreground/10 rounded w-24 h-3"></span>
                 </div>
               }
+            } @else if (themesUnavailable()) {
+              <!--
+                Deliberately no sample themes here. They used to fill this list and
+                looked selectable, but their ids are slugs rather than the store's
+                theme UUIDs, so the failure only surfaced at Deploy.
+              -->
+              <div
+                class="col-span-full flex flex-col items-start gap-2 rounded-lg border border-border border-dashed p-4"
+              >
+                <p class="text-muted-foreground text-xs" [class]="hlmP">
+                  {{ 'preview_themes_unavailable' | translate }}
+                </p>
+                <button hlmBtn variant="outline" size="sm" (click)="retryThemes()">
+                  {{ 'preview_themes_retry' | translate }}
+                </button>
+              </div>
             } @else {
               @for (theme of themeSuggestions(); track theme.id) {
                 <button

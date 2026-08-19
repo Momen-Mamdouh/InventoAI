@@ -31,7 +31,6 @@ import { HlmInputImports } from '@spartan/helm/input';
 import { SpartanStepperImports } from '@/spartan/stepper';
 import { TranslatePipe, LocaleService } from '@invento/core';
 import { toast } from '@spartan/helm/sonner';
-import { INTERVIEW_QUESTIONS } from '../../constants/interview-questions';
 import { AiInterviewApi, SubmitAnswersPayload } from '../../services/ai-interview-api';
 import { decodeAnswer, encodeAnswer, isAnswered } from '../../utils/answer-codec';
 import { toastApiError } from '@/app/shared/utils/toast-api-error';
@@ -84,7 +83,9 @@ export class AiInterview implements OnInit {
 
   readonly visibleQuestions = computed(() => {
     const hasLogo = this.builderState.hasLogo();
-    return INTERVIEW_QUESTIONS.filter((q) => q.showWhen !== 'logoUploaded' || hasLogo);
+    // The catalog comes from GET /site-builder/questions; BuilderState primes
+    // it at startup and falls back to the bundled list only when offline.
+    return this.builderState.questions().filter((q) => q.showWhen !== 'logoUploaded' || hasLogo);
   });
 
   form = new FormGroup({});
