@@ -33,6 +33,7 @@ export class InsightsComponent implements OnInit {
 
   stats = signal<ChatStats | null>(null);
   isLoading = signal<boolean>(true);
+  errorState = signal<boolean>(false);
   
   daysFilter = signal<number>(30);
   
@@ -48,12 +49,14 @@ export class InsightsComponent implements OnInit {
 
   loadStats() {
     this.isLoading.set(true);
+    this.errorState.set(false);
     this.chatService.getChatStats(this.daysFilter()).subscribe({
       next: (data) => {
         this.stats.set(data);
         this.isLoading.set(false);
       },
       error: () => {
+        this.errorState.set(true);
         this.isLoading.set(false);
       }
     });

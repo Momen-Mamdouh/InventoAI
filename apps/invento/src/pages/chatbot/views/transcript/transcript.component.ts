@@ -43,6 +43,7 @@ export class TranscriptComponent implements OnInit {
 
   transcript = signal<ChatTranscript | null>(null);
   isLoading = signal<boolean>(true);
+  errorState = signal<boolean>(false);
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -55,12 +56,14 @@ export class TranscriptComponent implements OnInit {
 
   loadTranscript(id: string) {
     this.isLoading.set(true);
+    this.errorState.set(false);
     this.chatService.getChatTranscript(id).subscribe({
       next: (data) => {
         this.transcript.set(data);
         this.isLoading.set(false);
       },
       error: () => {
+        this.errorState.set(true);
         this.isLoading.set(false);
       }
     });

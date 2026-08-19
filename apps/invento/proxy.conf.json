@@ -8,5 +8,6 @@
   "/orders": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/faqs": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/advisor": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
-  "/chatbot": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true }
+  "/chat": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
+  "/knowledge": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true }
 }

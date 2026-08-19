@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild, ElementRef, effect } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBotMessageSquare,
@@ -15,9 +15,11 @@ import { FormsModule } from '@angular/forms';
 import { ChatService, ChatMessage } from './service/chat.service';
 import { RouterModule } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
   selector: 'app-chatbot',
+  standalone: true,
   imports: [
     NgIcon,
     HlmPopoverImports,
@@ -36,6 +38,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
       lucideSendHorizonal,
       lucidePlus,
       lucideHistory,
+      lucideMessageSquare,
     }),
   ],
 })
@@ -43,6 +46,7 @@ export class Chatbot implements OnInit {
   inputMessage = '';
 
   private readonly chatService = inject(ChatService);
+  private readonly storeSlugService = inject(StoreSlugService);
   readonly messages = signal<ChatMessage[]>([]);
   readonly isLoading = signal<boolean>(false);
   readonly isSending = signal<boolean>(false);
@@ -53,30 +57,53 @@ export class Chatbot implements OnInit {
 
   private sessionId?: string;
   private initialGreeting = 'How can I help you today?';
-  protected readonly storeSlug = 'layali';
+  protected readonly storeSlug = this.storeSlugService.slug;
 
   // Mock conversation data removed per user request
+
+  private hasLoadedSettings = false;
+
+  constructor() {
+    effect(() => {
+      const slug = this.storeSlug();
+      if (slug && !this.hasLoadedSettings) {
+        this.hasLoadedSettings = true;
+        this.loadChatSettings(slug);
+      }
+    });
+  }
 
   ngOnInit() {
     this.loadHistory();
     this.sessionId = localStorage.getItem('chatbot_session_id') || undefined;
-    this.chatService.getChatSettings(this.storeSlug).subscribe({
+  }
+
+  private loadChatSettings(slug: string) {
+    this.chatService.getChatSettings(slug).subscribe({
       next: (settings) => {
         if (settings.isEnabled) {
           this.showWidget.set(true);
           if (settings.storeName) {
             this.storeName.set(settings.storeName);
           }
-          this.initialGreeting = settings.greeting || 'How can I help you today?';
+          this.initialGreeting = settings.effectiveGreeting || settings.greeting || 'How can I help you today?';
           this.loadConversation(this.initialGreeting);
         }
       },
       error: (err) => {
         console.warn('Settings API not ready, using mock settings.', err);
         this.showWidget.set(true);
-        this.storeName.set('Store'); // Fallback if API fails
+        
+        // Use the slug to create a decent fallback name if the API fails
+        const slug = this.storeSlug() || 'Store';
+        const formattedName = slug
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+          
+        this.storeName.set(formattedName);
         this.loadConversation(
-          "Hi! I'm Layali Abayas's assistant — ask me about our products, an order or our policies.",
+          `Hi! I'm ${formattedName}'s assistant — ask me about our products, an order or our policies.`,
         );
       },
     });
@@ -99,7 +126,7 @@ export class Chatbot implements OnInit {
       return;
     }
 
-    this.chatService.getChatConversation(this.storeSlug, this.sessionId).subscribe({
+    this.chatService.getChatConversation(this.storeSlug(), this.sessionId).subscribe({
       next: (conversation) => {
         this.messages.set([greetingMsg, ...conversation.messages]);
         this.isLoading.set(false);
@@ -153,48 +180,64 @@ export class Chatbot implements OnInit {
     this.isSending.set(true);
     this.scrollToElement('typing-indicator');
 
-    this.chatService.sendChatMessage(this.storeSlug, userText, this.sessionId).subscribe({
-      next: (res) => {
-        if (res.sessionId && res.sessionId !== this.sessionId) {
-          this.sessionId = res.sessionId;
-          localStorage.setItem('chatbot_session_id', this.sessionId);
-        }
+    const trySend = (retryWithoutSession = false) => {
+      const activeSessionId = retryWithoutSession ? undefined : this.sessionId;
+      
+      this.chatService.sendChatMessage(this.storeSlug(), userText, activeSessionId).subscribe({
+        next: (res) => {
+          if (res.sessionId && res.sessionId !== this.sessionId) {
+            this.sessionId = res.sessionId;
+            localStorage.setItem('chatbot_session_id', this.sessionId);
+          }
 
-        this.saveCurrentSessionToHistory();
+          this.saveCurrentSessionToHistory();
 
-        const assistantMsg: ChatMessage = {
-          id: res.message.id,
-          role: 'assistant',
-          text: res.message.text,
-          resolution: res.resolution,
-          createdAt: res.message.createdAt,
-          products: res.products,
-          faqs: res.faqs,
-          order: res.order,
-          requiresLogin: res.requiresLogin,
-        };
-
-        this.messages.update((msgs) => [...msgs, assistantMsg]);
-        this.isSending.set(false);
-        this.scrollToElement('msg-' + assistantMsg.id);
-      },
-      error: (err) => {
-        console.warn('API send message failed, using mock response.', err);
-        const mockMsgId = crypto.randomUUID();
-        this.messages.update((msgs) => [
-          ...msgs,
-          {
-            id: mockMsgId,
+          const assistantMsg: ChatMessage = {
+            id: res.message.id,
             role: 'assistant',
-            text: "Sorry, I couldn't get that right now — please try again in a moment. (Mock response: backend not implemented)",
-            resolution: 'error',
-            createdAt: new Date().toISOString(),
-          },
-        ]);
-        this.isSending.set(false);
-        this.scrollToElement('msg-' + mockMsgId);
-      },
-    });
+            text: res.message.text,
+            resolution: res.resolution,
+            createdAt: res.message.createdAt,
+            products: res.products,
+            faqs: res.faqs,
+            order: res.order,
+            requiresLogin: res.requiresLogin,
+          };
+
+          this.messages.update((msgs) => [...msgs, assistantMsg]);
+          this.isSending.set(false);
+          this.scrollToElement('msg-' + assistantMsg.id);
+        },
+        error: (err) => {
+          // If the backend returns 404 (Conversation Not Found), the session expired or was deleted.
+          // Clear the session ID and silently retry the request as a brand new conversation.
+          if (err.status === 404 && !retryWithoutSession) {
+            console.warn('Chat session expired or not found. Retrying as a new session...');
+            this.sessionId = undefined;
+            localStorage.removeItem('chatbot_session_id');
+            trySend(true);
+            return;
+          }
+
+          console.warn('API send message failed, using fallback response.', err);
+          const mockMsgId = crypto.randomUUID();
+          this.messages.update((msgs) => [
+            ...msgs,
+            {
+              id: mockMsgId,
+              role: 'assistant',
+              text: "I'm currently unable to connect to the store's knowledge base. Please try again later or contact support if you need immediate assistance.",
+              resolution: 'error',
+              createdAt: new Date().toISOString(),
+            },
+          ]);
+          this.isSending.set(false);
+          this.scrollToElement('msg-' + mockMsgId);
+        },
+      });
+    };
+
+    trySend();
   }
 
   startNewChat() {

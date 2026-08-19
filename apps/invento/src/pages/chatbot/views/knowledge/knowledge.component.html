@@ -3,6 +3,19 @@
     <div class="flex justify-center items-center py-12">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
+  } @else if (errorState()) {
+    <div class="flex flex-col items-center justify-center py-16 text-center">
+      <div class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4">
+        <ng-icon name="lucideAlertCircle" size="24" />
+      </div>
+      <h3 class="text-lg font-semibold">Failed to Load Status</h3>
+      <p class="text-muted-foreground max-w-md mt-2">
+        We couldn't retrieve the knowledge base status. Ensure the backend server is running and your database connections are healthy.
+      </p>
+      <button hlmBtn variant="outline" class="mt-6 gap-2" (click)="loadStatus()">
+        Try Again
+      </button>
+    </div>
   } @else if (status()) {
     
     @if (!status()!.vectorSearchAvailable) {

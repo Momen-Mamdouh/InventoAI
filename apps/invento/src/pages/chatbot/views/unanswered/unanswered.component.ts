@@ -28,6 +28,7 @@ export class UnansweredComponent implements OnInit {
 
   data = signal<UnansweredResponse | null>(null);
   isLoading = signal<boolean>(true);
+  errorState = signal<boolean>(false);
   
   // Filters
   page = signal<number>(1);
@@ -47,6 +48,7 @@ export class UnansweredComponent implements OnInit {
 
   loadThemes() {
     this.isLoading.set(true);
+    this.errorState.set(false);
     this.chatService.getUnansweredQuestions({
       page: this.page(),
       limit: this.limit(),
@@ -58,6 +60,7 @@ export class UnansweredComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: () => {
+        this.errorState.set(true);
         this.isLoading.set(false);
       }
     });

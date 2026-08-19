@@ -19,7 +19,8 @@ export interface ChatMessage {
 
 export interface ChatSettings {
   isEnabled: boolean;
-  greeting: string;
+  greeting?: string | null;
+  effectiveGreeting?: string;
   storeName?: string;
 }
 

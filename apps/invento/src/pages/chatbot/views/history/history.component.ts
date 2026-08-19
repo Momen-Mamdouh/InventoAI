@@ -34,6 +34,7 @@ export class HistoryComponent implements OnInit {
 
   data = signal<ChatSessionsResponse | null>(null);
   isLoading = signal<boolean>(true);
+  errorState = signal<boolean>(false);
 
   // Filters
   page = signal<number>(1);
@@ -54,6 +55,7 @@ export class HistoryComponent implements OnInit {
 
   loadSessions() {
     this.isLoading.set(true);
+    this.errorState.set(false);
     this.chatService.getChatSessions({
       page: this.page(),
       limit: this.limit(),
@@ -66,6 +68,7 @@ export class HistoryComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: () => {
+        this.errorState.set(true);
         this.isLoading.set(false);
       }
     });

@@ -244,7 +244,7 @@ export class FaqComponent {
   }
 
   /** True for the question a `#fragment` or `?q=` deep link points at. */
-  protected isDeepLinked(item: FaqItem): boolean {
+  isDeepLinked(item: FaqItem): boolean {
     const identifier = this.openFaqIdentifier();
     return identifier !== null && (item.id === identifier || item.question === identifier);
   }

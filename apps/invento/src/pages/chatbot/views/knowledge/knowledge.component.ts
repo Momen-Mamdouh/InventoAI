@@ -31,9 +31,11 @@ export class KnowledgeComponent implements OnInit {
 
   status = signal<KnowledgeStatus | null>(null);
   isLoading = signal<boolean>(true);
+  errorState = signal<boolean>(false);
+  
   isRebuilding = signal<boolean>(false);
-  rebuildError = signal<string | null>(null);
   rebuildSuccess = signal<boolean>(false);
+  rebuildError = signal<string | null>(null);
 
   ngOnInit() {
     this.loadStatus();
@@ -41,12 +43,14 @@ export class KnowledgeComponent implements OnInit {
 
   loadStatus() {
     this.isLoading.set(true);
+    this.errorState.set(false);
     this.chatService.getKnowledgeStatus().subscribe({
       next: (data) => {
         this.status.set(data);
         this.isLoading.set(false);
       },
       error: () => {
+        this.errorState.set(true);
         this.isLoading.set(false);
       }
     });
