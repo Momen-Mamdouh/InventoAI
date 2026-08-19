@@ -1,8 +1,16 @@
-<div class="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-4 md:p-8">
+<div class="min-h-screen flex items-center justify-center bg-background relative p-4 md:p-8">
+  <!-- Subtle Grid Pattern -->
+  <div class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] opacity-60 pointer-events-none"></div>
+
   <div
-    class="w-full max-w-[480px] bg-white dark:bg-zinc-950 rounded-[2rem] shadow-2xl overflow-hidden"
+    class="w-full max-w-[480px] bg-card text-card-foreground border border-border/60 rounded-[2rem] shadow-xl overflow-hidden relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out"
   >
-    <div class="flex flex-col p-8 md:p-12">
+    <div class="flex flex-col p-8 md:p-10">
+      <!-- Logo -->
+      <div class="flex justify-center mb-8">
+        <img src="/light-logo.png" alt="Store Logo" class="h-10 object-contain dark:hidden" />
+        <img src="/logo.png" alt="Store Logo" class="h-10 object-contain hidden dark:block" />
+      </div>
       <router-outlet></router-outlet>
     </div>
   </div>

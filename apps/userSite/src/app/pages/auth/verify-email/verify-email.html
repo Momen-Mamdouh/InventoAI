@@ -1,9 +1,9 @@
-<div class="flex flex-col h-full text-left">
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">
+<div class="flex flex-col h-full">
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold tracking-tight mb-2">
       Verify your email
     </h1>
-    <p class="text-sm text-slate-500 dark:text-zinc-400">
+    <p class="text-sm text-muted-foreground">
       We've sent a verification code to <strong>{{ userEmail }}</strong
       >.
     </p>
@@ -11,7 +11,7 @@
 
   <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="space-y-5 flex-1">
     <div class="space-y-1.5">
-      <label hlmLabel for="otp1" class="text-sm font-semibold text-slate-700 dark:text-white"
+      <label hlmLabel for="otp1" class="text-sm font-semibold"
         >Verification Code</label
       >
       <div class="flex justify-between gap-2 my-4">
@@ -20,7 +20,7 @@
           (input)="onOtpInput(0, $event, 'otp2')"
           (keydown)="onOtpKeyDown($event)"
           type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl border border-input bg-transparent shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           maxlength="1"
         />
         <input
@@ -28,7 +28,7 @@
           (input)="onOtpInput(1, $event, 'otp3')"
           (keydown)="onOtpKeyDown($event, 'otp1')"
           type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl border border-input bg-transparent shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           maxlength="1"
         />
         <input
@@ -36,7 +36,7 @@
           (input)="onOtpInput(2, $event, 'otp4')"
           (keydown)="onOtpKeyDown($event, 'otp2')"
           type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl border border-input bg-transparent shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           maxlength="1"
         />
         <input
@@ -44,7 +44,7 @@
           (input)="onOtpInput(3, $event, 'otp5')"
           (keydown)="onOtpKeyDown($event, 'otp3')"
           type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl border border-input bg-transparent shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           maxlength="1"
         />
         <input
@@ -52,7 +52,7 @@
           (input)="onOtpInput(4, $event, 'otp6')"
           (keydown)="onOtpKeyDown($event, 'otp4')"
           type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl border border-input bg-transparent shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           maxlength="1"
         />
         <input
@@ -60,18 +60,18 @@
           (input)="onOtpInput(5, $event)"
           (keydown)="onOtpKeyDown($event, 'otp5')"
           type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl border border-input bg-transparent shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           maxlength="1"
         />
       </div>
       @if (verifyForm.get('otp')?.touched && verifyForm.get('otp')?.invalid) {
-        <div class="text-xs text-red-500 mt-1">Verification code must be 6 digits.</div>
+        <div class="text-xs text-destructive mt-1">Verification code must be 6 digits.</div>
       }
     </div>
 
     <button
       hlmBtn
-      class="w-full mt-8 !rounded-full !bg-blue-600 hover:!bg-blue-700 !py-6 text-base"
+      class="w-full mt-8 !py-6 text-base font-semibold !rounded-full hover:scale-[1.02] hover:shadow-md active:scale-[0.98] transition-all duration-200"
       type="submit"
       [disabled]="isLoading()"
     >
@@ -83,12 +83,12 @@
     </button>
   </form>
 
-  <p class="text-center text-sm text-slate-500 mt-8">
+  <p class="text-center text-sm text-muted-foreground mt-8">
     Didn't receive the code?
     <button
       (click)="resendCode()"
       [disabled]="isResending()"
-      class="font-bold text-blue-500 hover:underline disabled:opacity-50 disabled:no-underline"
+      class="font-medium text-primary hover:underline disabled:opacity-50 disabled:no-underline"
     >
       @if (!isResending()) {
         <span>Resend code</span>

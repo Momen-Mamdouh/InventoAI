@@ -79,6 +79,10 @@
       @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
         <div class="text-xs text-destructive pl-2 mt-1">Password is required.</div>
       }
+      
+      <div class="flex justify-end mt-1">
+        <a routerLink="/auth/forgot-password" class="text-sm font-medium text-primary hover:underline" tabindex="-1">Forgot password?</a>
+      </div>
     </div>
 
     <!-- Submit Button -->
