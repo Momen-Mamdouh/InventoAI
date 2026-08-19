@@ -29,6 +29,7 @@ interface PersistedState {
   businessType: string;
   targetAudience: string;
   domain: string;
+  domainConfirmed: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -36,6 +37,14 @@ export class BuilderState {
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly isNavigating = signal(false);
+
+  /**
+   * True only once Validation's Finish button has actually round-tripped to
+   * the backend (domain confirmed + themes generated). The three text fields
+   * it sits beside are pre-filled from Brainstorm and the AI interview, so
+   * they cannot tell us whether that call ever happened.
+   */
+  readonly domainConfirmed = signal(false);
   readonly brainstorm = signal<string>('');
   readonly hasLogo = signal<boolean>(false);
   readonly logoUrl = signal<string | null>(null);
@@ -71,7 +80,10 @@ export class BuilderState {
     () =>
       this.businessName().trim() !== '' &&
       this.businessType().trim() !== '' &&
-      this.targetAudience().trim() !== '',
+      this.targetAudience().trim() !== '' &&
+      // Without this the step counted as done the moment the fields were
+      // populated, so Preview was reachable without ever calling the backend.
+      this.domainConfirmed(),
   );
 
   readonly isPreviewComplete = computed(() => this.selectedTheme() !== '');
@@ -105,6 +117,7 @@ export class BuilderState {
         businessType: this.businessType(),
         targetAudience: this.targetAudience(),
         domain: this.domain(),
+        domainConfirmed: this.domainConfirmed(),
       };
       this.persist(snapshot);
     });
@@ -121,6 +134,7 @@ export class BuilderState {
     this.targetAudience.set('');
     this.domain.set('');
     this.themes.set([]);
+    this.domainConfirmed.set(false);
     if (isPlatformBrowser(this.platformId)) {
       try {
         sessionStorage.removeItem(STORAGE_KEY);
@@ -168,5 +182,7 @@ export class BuilderState {
     if (typeof saved.businessType === 'string') this.businessType.set(saved.businessType);
     if (typeof saved.targetAudience === 'string') this.targetAudience.set(saved.targetAudience);
     if (typeof saved.domain === 'string') this.domain.set(saved.domain);
+    if (typeof saved.domainConfirmed === 'boolean')
+      this.domainConfirmed.set(saved.domainConfirmed);
   }
 }

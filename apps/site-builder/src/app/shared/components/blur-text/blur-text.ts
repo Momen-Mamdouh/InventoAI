@@ -4,12 +4,13 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
   computed,
   inject,
   input,
   signal,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { NgClass, isPlatformBrowser } from '@angular/common';
 import { LocaleService } from '@invento/core';
 import { gsap } from 'gsap';
 
@@ -66,7 +67,14 @@ export class BlurText implements OnInit, OnDestroy {
     }));
   });
 
+  private readonly _isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   ngOnInit() {
+    // GSAP needs a real DOM. On the server its CSSPlugin is absent, so every
+    // tween logged "Invalid property y/opacity/filter ... Missing plugin?" and
+    // the rotation interval ran for nothing during prerender.
+    if (!this._isBrowser) return;
+
     this._startInterval();
     setTimeout(() => {
       this._animateIn();
