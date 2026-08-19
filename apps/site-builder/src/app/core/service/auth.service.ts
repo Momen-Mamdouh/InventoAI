@@ -1,8 +1,9 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, Injector, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { TokenService } from './token.service';
 import { ApiConfig } from '../config/api-config';
+import { BuilderState } from '@/app/features/builder/services/builder-state';
 import {
   AuthResponse,
   MessageResponse,
@@ -15,20 +16,30 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private tokenService = inject(TokenService);
-  private config = inject(ApiConfig);
+  private readonly http = inject(HttpClient);
+  private readonly tokenService = inject(TokenService);
+  private readonly config = inject(ApiConfig);
+  private readonly injector = inject(Injector);
+
+  private get builderState(): BuilderState {
+    return this.injector.get(BuilderState);
+  }
 
   // State for the current user
   currentUser = signal<User | null>(null);
 
   register(data: Record<string, unknown>): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(this.config.url('/users/register/owner'), data);
+    return this.http.post<RegisterResponse>(this.config.url('/users/register/owner'), data).pipe(
+      tap(() => {
+        this.builderState.reset();
+      }),
+    );
   }
 
   login(credentials: Record<string, unknown>): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.config.url('/users/login/owner'), credentials).pipe(
       tap((response) => {
+        this.builderState.reset();
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
         this.currentUser.set(response.user);
       }),
@@ -75,7 +86,7 @@ export class AuthService {
   logout(): void {
     this.tokenService.clearTokens();
     this.currentUser.set(null);
-    // Handle router redirect via a component or router injection if needed
+    this.builderState.reset();
   }
 
   isAuthenticated(): boolean {

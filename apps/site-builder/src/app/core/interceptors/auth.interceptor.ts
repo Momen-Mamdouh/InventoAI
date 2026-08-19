@@ -1,5 +1,5 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { Injector, inject } from '@angular/core';
 import { throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { TokenService } from '../service/token.service';
@@ -10,7 +10,7 @@ const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
-  const authService = inject(AuthService);
+  const injector = inject(Injector);
 
   // Add auth header if token exists
   const token = tokenService.getAccessToken();
@@ -26,6 +26,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // If error is 401 (Unauthorized) and we are not already trying to refresh token
       if (error.status === 401 && token) {
+        const authService = injector.get(AuthService);
+
         // Don't intercept the refresh token request itself to avoid infinite loops
         if (req.url.includes('/users/refresh-token')) {
           authService.logout();
