@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BuilderState } from '@/app/features/builder/services/builder-state';
@@ -7,27 +6,28 @@ import {
   MOCK_PREVIEW_TABS,
   MOCK_PREVIEW_PRODUCTS,
 } from '@/app/shared/mock/mock-preview';
-import { ThemeSuggestion, PreviewProduct, ThemeApiResponse } from '@/app/core/interface/Preview';
-import { toThemeSuggestion } from '@/app/core/utils/theme-suggestion-converter';
+import { ThemeSuggestion, PreviewProduct } from '@/app/core/interface/Preview';
+import { parseThemeCss } from '@/app/core/utils/Preview-css-parser';
 import { extractPalette, extractRadius } from '@/app/core/utils/palette';
-import { ThemeItem } from '@/app/features/builder/services/themes-api';
-import { ApiConfig } from '@/app/core/config/api-config';
-import { MIN_BRAINSTORM_LENGTH } from '@/app/features/builder/constants/builder-steps';
+import { ThemeItem, ThemesApi } from '@/app/features/builder/services/themes-api';
 
-const DEFAULT_PROMPT =
-  'Create a modern portfolio website for a frontend developer with projects, skills, experience, and a contact form.';
-
+/**
+ * Supplies the Preview step with the store's themes.
+ *
+ * Themes come from `GET /site-builder/themes`, the only endpoint that serves
+ * them. An earlier version posted to `/generate-theme`, which does not exist on
+ * the backend — every call 404'd, the error handler swapped in MOCK_THEMES, and
+ * the preview therefore showed the same four hardcoded themes for every store.
+ * Worse, their ids are slugs like `midnight-edge`, so deploying one failed with
+ * "themeId must be a UUID". `usingFallbackThemes` now makes that state explicit
+ * instead of letting mocks pass for real data.
+ */
 @Injectable({ providedIn: 'root' })
 export class PreviewDataClient {
-  private readonly http = inject(HttpClient);
   private readonly builderState = inject(BuilderState);
-  private readonly config = inject(ApiConfig);
+  private readonly themesApi = inject(ThemesApi);
   private readonly destroyRef = inject(DestroyRef);
 
-  // Starts empty, not seeded with MOCK_THEMES: the preview must show its
-  // loading state until the backend has actually answered. Seeding meant the
-  // mock brand rendered instantly on every visit, so the fallback appeared
-  // before anyone had checked whether a real theme was coming.
   private readonly _themeSuggestions = signal<ThemeSuggestion[]>([]);
   private readonly _products = signal<PreviewProduct[]>(MOCK_PREVIEW_PRODUCTS);
   private readonly _navTabs = signal<string[]>(MOCK_PREVIEW_TABS);
@@ -35,6 +35,7 @@ export class PreviewDataClient {
   private readonly _isLoading = signal<boolean>(false);
   private readonly _themeError = signal<string | null>(null);
   private readonly _loaded = signal(false);
+  private readonly _usingFallbackThemes = signal(false);
 
   readonly themeSuggestions = this._themeSuggestions.asReadonly();
   readonly products = this._products.asReadonly();
@@ -42,13 +43,19 @@ export class PreviewDataClient {
   readonly isLoading = this._isLoading.asReadonly();
   readonly themeError = this._themeError.asReadonly();
 
+  /**
+   * True when the list on screen is the hardcoded sample set rather than this
+   * store's themes. Nothing in it can be deployed — the ids are not real.
+   */
+  readonly usingFallbackThemes = this._usingFallbackThemes.asReadonly();
+
   loadThemes(): void {
     if (this._loaded()) return;
 
     // Themes fetched by the Validation step take precedence — no second call.
-    const apiThemes = this.builderState.themes();
-    if (apiThemes.length > 0) {
-      this._themeSuggestions.set(apiThemes.map((t) => this.convertThemeItemToSuggestion(t)));
+    const cached = this.builderState.themes();
+    if (cached.length > 0) {
+      this.publishThemes(cached);
       this._loaded.set(true);
       return;
     }
@@ -56,28 +63,29 @@ export class PreviewDataClient {
     this._isLoading.set(true);
     this._themeError.set(null);
 
-    this.http
-      .post<ThemeApiResponse>(this.config.url('/generate-theme'), { text: this.buildPrompt() })
+    this.themesApi
+      .getThemes()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
-          this._isLoading.set(false);
+          const themes = response?.themes ?? [];
 
-          if (!response?.rawCss) {
-            this._themeSuggestions.set(MOCK_THEMES);
-            this._themeError.set('Theme generation returned no data.');
+          if (themes.length > 0) {
+            // Cache them so returning to Preview does not refetch.
+            this.builderState.themes.set(themes);
+            this.publishThemes(themes);
           } else {
-            this._themeSuggestions.set([toThemeSuggestion(response), ...MOCK_THEMES.slice(1)]);
+            this.useFallbackThemes('No themes have been generated for this store yet.');
           }
 
+          this._isLoading.set(false);
           // Marked loaded on every settled outcome: re-entering Preview should
           // reuse whatever we ended up with rather than silently refiring.
           this._loaded.set(true);
         },
-        error: (err) => {
+        error: (err: { message?: string }) => {
           this._isLoading.set(false);
-          this._themeSuggestions.set(MOCK_THEMES);
-          this._themeError.set(err?.message ?? 'Failed to load theme. Please try again.');
+          this.useFallbackThemes(err?.message ?? 'Failed to load themes. Please try again.');
           this._loaded.set(true);
         },
       });
@@ -88,38 +96,40 @@ export class PreviewDataClient {
     this._loaded.set(false);
   }
 
-  /** Flattens the user's brainstorm text and interview answers into one prompt. */
-  private buildPrompt(): string {
-    const brainstorm = this.builderState.brainstorm();
-    const aiAnswers = this.builderState.aiAnswers();
-    const hasUserData =
-      brainstorm.length >= MIN_BRAINSTORM_LENGTH && Object.keys(aiAnswers).length > 0;
+  private publishThemes(themes: ThemeItem[]): void {
+    this._themeSuggestions.set(themes.map((theme) => this.convertThemeItemToSuggestion(theme)));
+    this._usingFallbackThemes.set(false);
+  }
 
-    if (!hasUserData) return DEFAULT_PROMPT;
-
-    return [
-      brainstorm,
-      ...Object.entries(aiAnswers).map(
-        ([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`,
-      ),
-    ].join('\n');
+  private useFallbackThemes(message: string): void {
+    this._themeSuggestions.set(MOCK_THEMES);
+    this._usingFallbackThemes.set(true);
+    this._themeError.set(message);
   }
 
   /**
    * Converts a ThemeItem (from /site-builder/themes) into the ThemeSuggestion
    * format used by the Preview page, mapping both light and dark palettes.
+   *
+   * The backend sends the palettes structurally *and* as a derived stylesheet;
+   * the structured form wins, with rawCss parsed as a fallback so a response
+   * carrying only the stylesheet still renders.
    */
   private convertThemeItemToSuggestion(item: ThemeItem): ThemeSuggestion {
+    const parsed = item.light || item.dark ? null : parseThemeCss(item.css?.rawCss ?? '');
+    const light = item.light ?? parsed?.light;
+    const dark = item.dark ?? parsed?.dark;
+
     return {
       id: item.id,
       name: item.name ?? item.css?.name ?? 'generated-theme',
       description: item.description ?? item.css?.description ?? '',
-      radius: extractRadius(item.light, item.radius),
-      colors: extractPalette(item.light),
-      // Same guard as toThemeSuggestion: an absent `dark` block must stay
-      // undefined so the preview can derive a real dark palette, rather than
-      // become the light defaults wearing a dark label.
-      darkColors: item.dark ? extractPalette(item.dark) : undefined,
+      radius: extractRadius(light, item.radius),
+      colors: extractPalette(light),
+      // An absent dark palette must stay undefined so the preview can derive a
+      // real dark surface, rather than become the light defaults wearing a
+      // dark label.
+      darkColors: dark && Object.keys(dark).length > 0 ? extractPalette(dark) : undefined,
     };
   }
 }

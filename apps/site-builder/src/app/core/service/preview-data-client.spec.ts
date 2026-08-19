@@ -2,7 +2,24 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { PreviewDataClient } from './preview-data-client';
 import { BuilderState } from '@/app/features/builder/services/builder-state';
-import { ThemeApiResponse } from '@/app/core/interface/Preview';
+import { ThemeItem } from '@/app/features/builder/services/themes-api';
+
+const THEMES_ENDPOINT = '/site-builder/themes';
+
+function themeItem(id: string, name = 'Backend Theme'): ThemeItem {
+  return {
+    id,
+    name,
+    description: 'from the backend',
+    style: 'default',
+    font: 'inter',
+    radius: '0.5rem',
+    light: { background: '#ffffff', primary: '#111111' },
+    dark: { background: '#000000', primary: '#eeeeee' },
+    isSelected: false,
+    css: { basePreset: 'default', name, description: '', rawCss: '' },
+  } as unknown as ThemeItem;
+}
 
 describe('PreviewDataClient', () => {
   let service: PreviewDataClient;
@@ -31,77 +48,64 @@ describe('PreviewDataClient', () => {
     service.loadThemes();
     expect(service.isLoading()).toBe(true);
 
-    const req = httpMock.expectOne('/generate-theme');
-    req.flush({
-      rawCss: ':root { --primary: #000; }',
-      name: 'Test',
-      description: '',
-      basePreset: 'test',
-    });
+    httpMock.expectOne(THEMES_ENDPOINT).flush({ themes: [themeItem('uuid-1')] });
     expect(service.isLoading()).toBe(false);
   });
 
-  it('uses user data from BuilderState when available', () => {
-    builderState.brainstorm.set('A business about cool sneakers for urban youth.');
-    builderState.aiAnswers.set({
-      business_type: 'E-Commerce (Physical)',
-      target: 'Millennials',
-    });
-
+  it('publishes the backend themes and keeps their real ids', () => {
     service.loadThemes();
-    const req = httpMock.expectOne('/generate-theme');
-    const body = req.request.body as { text: string };
-    expect(body.text).toContain('cool sneakers');
-    expect(body.text).toContain('Millennials');
-    req.flush({
-      rawCss: ':root { --primary: #000; }',
-      name: 'Test',
-      description: '',
-      basePreset: 'test',
-    });
+    httpMock.expectOne(THEMES_ENDPOINT).flush({ themes: [themeItem('uuid-1', 'Ocean')] });
+
+    const suggestions = service.themeSuggestions();
+    expect(suggestions.length).toBe(1);
+    // The id must survive untouched — publish sends it as themeId, and the
+    // backend rejects anything that is not the store theme's UUID.
+    expect(suggestions[0].id).toBe('uuid-1');
+    expect(service.usingFallbackThemes()).toBe(false);
   });
 
-  it('falls back to default prompt when no user data', () => {
+  it('reuses themes already fetched by Validation without calling the network', () => {
+    builderState.themes.set([themeItem('uuid-cached')]);
+
     service.loadThemes();
-    const req = httpMock.expectOne('/generate-theme');
-    const body = req.request.body as { text: string };
-    expect(body.text).toContain('Create a modern portfolio website');
-    req.flush({
-      rawCss: ':root { --primary: #000; }',
-      name: 'Test',
-      description: '',
-      basePreset: 'test',
-    });
+
+    httpMock.expectNone(THEMES_ENDPOINT);
+    expect(service.themeSuggestions()[0].id).toBe('uuid-cached');
+    expect(service.usingFallbackThemes()).toBe(false);
   });
 
-  it('sets themeError on HTTP error and preserves mock themes', () => {
+  it('caches fetched themes on BuilderState', () => {
     service.loadThemes();
-    const req = httpMock.expectOne('/generate-theme');
-    req.flush('Network error', { status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(THEMES_ENDPOINT).flush({ themes: [themeItem('uuid-1')] });
 
+    expect(builderState.themes().length).toBe(1);
+  });
+
+  it('flags fallback themes when the store has none yet', () => {
+    service.loadThemes();
+    httpMock.expectOne(THEMES_ENDPOINT).flush({ themes: [] });
+
+    expect(service.usingFallbackThemes()).toBe(true);
     expect(service.themeError()).toBeTruthy();
     expect(service.themeSuggestions().length).toBeGreaterThan(0);
   });
 
-  it('sets themeError when response has no rawCss', () => {
+  it('flags fallback themes on a transport failure', () => {
     service.loadThemes();
-    const req = httpMock.expectOne('/generate-theme');
-    req.flush({ name: 'Empty' } as ThemeApiResponse);
+    httpMock
+      .expectOne(THEMES_ENDPOINT)
+      .flush('Network error', { status: 500, statusText: 'Server Error' });
 
-    expect(service.themeError()).toBe('Theme generation returned no data.');
+    expect(service.usingFallbackThemes()).toBe(true);
+    expect(service.themeError()).toBeTruthy();
+    expect(service.themeSuggestions().length).toBeGreaterThan(0);
   });
 
   it('sets _loaded flag and skips second call', () => {
     service.loadThemes();
-    const req = httpMock.expectOne('/generate-theme');
-    req.flush({
-      rawCss: ':root { --primary: #000; }',
-      name: 'Test',
-      description: '',
-      basePreset: 'test',
-    });
+    httpMock.expectOne(THEMES_ENDPOINT).flush({ themes: [themeItem('uuid-1')] });
 
     service.loadThemes();
-    httpMock.expectNone('/generate-theme');
+    httpMock.expectNone(THEMES_ENDPOINT);
   });
 });
