@@ -24,9 +24,7 @@
             "input": "apps/site-builder/public"
           }
         ],
-        "styles": [
-          "apps/site-builder/src/styles.css"
-        ],
+        "styles": ["apps/site-builder/src/styles.css"],
         "server": "apps/site-builder/src/main.server.ts",
         "outputMode": "server",
         "ssr": {
@@ -63,9 +61,7 @@
         }
       },
       "defaultConfiguration": "production",
-      "outputs": [
-        "{options.outputPath}"
-      ]
+      "outputs": ["{options.outputPath}"]
     },
     "serve": {
       "executor": "@angular/build:dev-server",
@@ -92,18 +88,10 @@
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "options": {
-        "lintFilePatterns": [
-          "apps/site-builder/src/**/*.ts",
-          "apps/site-builder/src/**/*.html"
-        ]
+        "lintFilePatterns": ["apps/site-builder/src/**/*.ts", "apps/site-builder/src/**/*.html"]
       },
-      "outputs": [
-        "{options.outputFile}"
-      ]
+      "outputs": ["{options.outputFile}"]
     }
   },
-  "tags": [
-    "type:app",
-    "scope:site-builder"
-  ]
+  "tags": ["type:app", "scope:site-builder"]
 }

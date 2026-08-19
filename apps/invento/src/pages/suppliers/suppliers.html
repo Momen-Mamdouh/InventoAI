@@ -470,7 +470,6 @@
   ══════════════════════════════════════════════════════════ -->
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      
       <h1 class="font-bold text-foreground text-2xl sm:text-3xl tracking-tight">Suppliers</h1>
       <p class="text-muted-foreground text-sm">
         Manage supplier relationships and AI-assisted outreach
@@ -594,11 +593,11 @@
     <div class="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
       <!-- Search -->
       <div class="relative w-full sm:w-72 md:w-96">
-      <ng-icon
-        name="lucideSearch"
-        size="15"
-        class="top-1/2 absolute text-muted-foreground -translate-y-1/2 pointer-events-none start-3"
-      />
+        <ng-icon
+          name="lucideSearch"
+          size="15"
+          class="top-1/2 absolute text-muted-foreground -translate-y-1/2 pointer-events-none start-3"
+        />
         <input
           hlmInput
           class="bg-card shadow-sm ps-9 border-border rounded-full focus:ring-2 focus:ring-primary/20 w-full h-9"
@@ -611,78 +610,86 @@
 
       <!-- Dropdowns Row -->
       <div class="sm:flex items-center gap-2 grid grid-cols-2 w-full sm:w-auto">
-      <!-- Rating dropdown -->
-      <div class="relative w-full sm:w-auto">
+        <!-- Rating dropdown -->
+        <div class="relative w-full sm:w-auto">
           <button
             hlmBtn
             variant="outline"
             class="justify-between gap-2 w-full sm:w-[130px] bg-card h-9"
             (click)="ratingsOpen.set(!ratingsOpen())"
           >
-          <span class="truncate">{{ getRatingFilterLabel() }}</span>
-          <ng-icon name="lucideChevronDown" size="14" class="flex-shrink-0 text-muted-foreground" />
-        </button>
-        @if (ratingsOpen()) {
-          <div
-            class="top-[calc(100%+4px)] z-30 absolute bg-popover shadow-lg py-1 border border-border rounded-md w-full sm:min-w-[130px] overflow-hidden start-0"
-          >
-            @for (
-              option of [
-                ['', 'All Ratings'],
-                ['excellent', 'Excellent'],
-                ['good', 'Good'],
-                ['fair', 'Fair'],
-                ['poor', 'Poor'],
-              ];
-              track option[0]
-            ) {
-              <button
-                class="hover:bg-muted px-3 py-2 w-full text-sm text-start transition-colors"
-                [ngClass]="ratingFilter() === option[0] ? 'bg-muted font-semibold' : ''"
-                (click)="selectRating($any(option[0]))"
-              >
-                {{ option[1] }}
-              </button>
-            }
-          </div>
-        }
-      </div>
+            <span class="truncate">{{ getRatingFilterLabel() }}</span>
+            <ng-icon
+              name="lucideChevronDown"
+              size="14"
+              class="flex-shrink-0 text-muted-foreground"
+            />
+          </button>
+          @if (ratingsOpen()) {
+            <div
+              class="top-[calc(100%+4px)] z-30 absolute bg-popover shadow-lg py-1 border border-border rounded-md w-full sm:min-w-[130px] overflow-hidden start-0"
+            >
+              @for (
+                option of [
+                  ['', 'All Ratings'],
+                  ['excellent', 'Excellent'],
+                  ['good', 'Good'],
+                  ['fair', 'Fair'],
+                  ['poor', 'Poor'],
+                ];
+                track option[0]
+              ) {
+                <button
+                  class="hover:bg-muted px-3 py-2 w-full text-sm text-start transition-colors"
+                  [ngClass]="ratingFilter() === option[0] ? 'bg-muted font-semibold' : ''"
+                  (click)="selectRating($any(option[0]))"
+                >
+                  {{ option[1] }}
+                </button>
+              }
+            </div>
+          }
+        </div>
 
-      <!-- Category dropdown -->
-      <div class="relative w-full sm:w-auto">
+        <!-- Category dropdown -->
+        <div class="relative w-full sm:w-auto">
           <button
             hlmBtn
             variant="outline"
             class="justify-between gap-2 w-full sm:w-[148px] bg-card h-9"
             (click)="categoriesOpen.set(!categoriesOpen())"
           >
-          <span class="truncate">{{ getCategoryFilterLabel() }}</span>
-          <ng-icon name="lucideChevronDown" size="14" class="flex-shrink-0 text-muted-foreground" />
-        </button>
-        @if (categoriesOpen()) {
-          <div
-            class="top-[calc(100%+4px)] z-30 absolute bg-popover shadow-lg py-1 border border-border rounded-md w-full sm:min-w-[160px] max-h-64 overflow-y-auto start-0"
-          >
-            <button
-              class="hover:bg-muted px-3 py-2 w-full text-sm text-start transition-colors"
-              [ngClass]="categoryFilter() === '' ? 'bg-muted font-semibold' : ''"
-              (click)="selectCategory('')"
+            <span class="truncate">{{ getCategoryFilterLabel() }}</span>
+            <ng-icon
+              name="lucideChevronDown"
+              size="14"
+              class="flex-shrink-0 text-muted-foreground"
+            />
+          </button>
+          @if (categoriesOpen()) {
+            <div
+              class="top-[calc(100%+4px)] z-30 absolute bg-popover shadow-lg py-1 border border-border rounded-md w-full sm:min-w-[160px] max-h-64 overflow-y-auto start-0"
             >
-              All Categories
-            </button>
-            @for (cat of allCategories; track cat) {
               <button
                 class="hover:bg-muted px-3 py-2 w-full text-sm text-start transition-colors"
-                [ngClass]="categoryFilter() === cat ? 'bg-muted font-semibold' : ''"
-                (click)="selectCategory(cat)"
+                [ngClass]="categoryFilter() === '' ? 'bg-muted font-semibold' : ''"
+                (click)="selectCategory('')"
               >
-                {{ cat }}
+                All Categories
               </button>
-            }
-          </div>
-        }
+              @for (cat of allCategories; track cat) {
+                <button
+                  class="hover:bg-muted px-3 py-2 w-full text-sm text-start transition-colors"
+                  [ngClass]="categoryFilter() === cat ? 'bg-muted font-semibold' : ''"
+                  (click)="selectCategory(cat)"
+                >
+                  {{ cat }}
+                </button>
+              }
+            </div>
+          }
+        </div>
       </div>
-    </div>
     </div>
 
     <div class="self-end sm:self-auto font-medium text-muted-foreground text-sm shrink-0">
@@ -694,7 +701,10 @@
        SUPPLIER LIST
   ══════════════════════════════════════════════════════════ -->
   <div>
-    <div hlmCard class="bg-card shadow-sm border-border rounded-xl divide-y divide-border overflow-hidden">
+    <div
+      hlmCard
+      class="bg-card shadow-sm border-border rounded-xl divide-y divide-border overflow-hidden"
+    >
       @for (supplier of filteredSuppliers(); track supplier.id) {
         <div class="group relative hover:bg-muted/30 transition-colors duration-200">
           <!-- Main row -->

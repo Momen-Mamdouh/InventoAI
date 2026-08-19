@@ -2,7 +2,6 @@
   <!-- Header & Breadcrumbs -->
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      
       <h1 class="font-bold text-foreground text-2xl sm:text-3xl tracking-tight">Products</h1>
       <p class="text-muted-foreground text-sm">
         Manage your store catalog — {{ totalProducts() }} products total
@@ -199,7 +198,7 @@
                     </div>
                     <div>
                       <button
-                        (click)="viewDetails(product.id)"
+                        (click)="viewProductDetails(product.id)"
                         class="font-semibold text-foreground line-clamp-1 text-left hover:underline hover:text-primary transition-colors"
                       >
                         {{ product.title }}
@@ -366,7 +365,6 @@
             </div>
           </div>
         </div>
-        <<<<<<< HEAD
 
         <!-- SECTION: Variants -->
         <div class="space-y-4">

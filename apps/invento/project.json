@@ -4,10 +4,7 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/invento/src",
-  "tags": [
-    "type:app",
-    "scope:invento"
-  ],
+  "tags": ["type:app", "scope:invento"],
   "implicitDependencies": [
     "spartan-ui",
     "spartan-stepper",
@@ -18,9 +15,7 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/invento",
@@ -32,9 +27,7 @@
             "input": "apps/invento/public"
           }
         ],
-        "styles": [
-          "apps/invento/src/styles.css"
-        ],
+        "styles": ["apps/invento/src/styles.css"],
         "server": "apps/invento/src/main.server.ts",
         "ssr": {
           "entry": "apps/invento/src/server.ts"

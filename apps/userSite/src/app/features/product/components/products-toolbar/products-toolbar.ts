@@ -20,7 +20,12 @@ import { ProductApiService } from '@invento/user-site/app/features/product';
 import { Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HlmInputImports } from '@spartan/helm/input';
-import { GenericSelectImports, GenericSelectOption, SearchInput, SkeletonBlock } from '@invento/shared';
+import {
+  GenericSelectImports,
+  GenericSelectOption,
+  SearchInput,
+  SkeletonBlock,
+} from '@invento/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideInfo, lucideSearchX } from '@ng-icons/lucide';
 import { HlmTypographyImports } from '@spartan/helm/typography';

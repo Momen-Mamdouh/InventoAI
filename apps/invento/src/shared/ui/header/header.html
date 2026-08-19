@@ -7,7 +7,9 @@
         @for (bc of breadcrumbs(); track bc.route; let last = $last) {
           <li hlmBreadcrumbItem>
             @if (last) {
-              <span hlmBreadcrumbPage class="font-semibold text-foreground">{{ bc.label | translate }}</span>
+              <span hlmBreadcrumbPage class="font-semibold text-foreground">{{
+                bc.label | translate
+              }}</span>
             } @else {
               <a hlmBreadcrumbLink [routerLink]="bc.route">{{ bc.label | translate }}</a>
             }

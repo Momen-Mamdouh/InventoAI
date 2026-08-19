@@ -1,7 +1,6 @@
 <div class="space-y-6 w-full p-4 md:p-6 lg:p-8">
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      
       <h1 class="font-bold text-foreground text-2xl sm:text-3xl tracking-tight">FAQ</h1>
       <p class="text-muted-foreground text-sm">
         Drag to reorder. {{ store.entries().length }}/100 entries.
@@ -11,7 +10,13 @@
     <!-- Action Buttons -->
     <div class="flex items-center self-start sm:self-auto gap-2 sm:gap-3 flex-wrap">
       <hlm-sheet side="right">
-        <button hlmSheetTrigger hlmBtn type="button" [disabled]="store.isFull()" class="flex items-center gap-2">
+        <button
+          hlmSheetTrigger
+          hlmBtn
+          type="button"
+          [disabled]="store.isFull()"
+          class="flex items-center gap-2"
+        >
           <ng-icon name="lucidePlus" size="16" />
           <span>Add FAQ</span>
         </button>

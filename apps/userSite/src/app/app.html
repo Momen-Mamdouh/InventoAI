@@ -8,4 +8,12 @@
     <app-chatbot />
   </div>
 }
-<hlm-toaster position="bottom-right" richColors closeButton [duration]="4000" />
+<hlm-toaster
+  [position]="toasterPosition()"
+  [theme]="toasterTheme()"
+  richColors
+  closeButton
+  expand
+  [visibleToasts]="4"
+  [duration]="5000"
+/>

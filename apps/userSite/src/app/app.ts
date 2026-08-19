@@ -9,6 +9,7 @@ import { StoreSeoService } from '@invento/user-site/app/core/service/store-seo.s
 import { StoreThemeService } from '@invento/user-site/app/core/service/store-theme.service';
 import { StoreService } from '@invento/user-site/app/core/service/store.service';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
+import { LocaleService, ThemeService } from '@invento/core';
 
 @Component({
   imports: [RouterModule, Chatbot, Navbar, Footer, HlmToasterImports],
@@ -31,6 +32,21 @@ export class App {
   private readonly router = inject(Router);
   private readonly storeSlugService = inject(StoreSlugService);
   private readonly storeService = inject(StoreService);
+  private readonly themeService = inject(ThemeService);
+  private readonly localeService = inject(LocaleService);
+
+  /**
+   * HlmToaster's `theme` input defaults to 'light' and never consults the app,
+   * so in dark mode every toast came up as a white card over a dark page.
+   */
+  protected readonly toasterTheme = computed<'light' | 'dark'>(() =>
+    this.themeService.isDark() ? 'dark' : 'light',
+  );
+
+  /** `position` is physical, so a fixed bottom-right lands on the wrong side in Arabic. */
+  protected readonly toasterPosition = computed<'bottom-left' | 'bottom-right'>(() =>
+    this.localeService.isRtl() ? 'bottom-left' : 'bottom-right',
+  );
 
   /** Same `NavigationEnd` + `toSignal` pattern as `StoreSlugService.currentUrl`. */
   private readonly currentUrl = toSignal(
