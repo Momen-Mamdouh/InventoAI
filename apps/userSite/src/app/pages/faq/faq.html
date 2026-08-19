@@ -271,8 +271,15 @@
 
               <hlm-accordion class="space-y-3.5">
                 @for (item of activeFaqItems(); track item.question; let i = $index) {
+                  <!--
+                    `id` is what expandFaqCategory scrolls to, and `isOpened`
+                    makes a deep-linked question open itself rather than just
+                    scrolling a collapsed row into view.
+                  -->
                   <div
                     hlmAccordionItem
+                    [id]="item.id || 'faq-' + i"
+                    [isOpened]="isDeepLinked(item)"
                     class="faq-item bg-card hover:bg-card/90 border-border/80 overflow-hidden rounded-2xl border shadow-sm transition-all duration-200 not-last:border-b"
                   >
                     <hlm-accordion-trigger

@@ -1,5 +1,7 @@
 import {
   Component,
+  Injector,
+  PLATFORM_ID,
   afterNextRender,
   computed,
   inject,
@@ -9,7 +11,8 @@ import {
   ElementRef,
   viewChildren,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import gsap from 'gsap';
 
@@ -90,6 +93,8 @@ export class FaqComponent {
   private readonly faqDataService = inject(FaqDataService);
   private readonly route = inject(ActivatedRoute);
   protected readonly storeService = inject(StoreService);
+  private readonly injector = inject(Injector);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly activeCategory = signal<string>('general');
   readonly searchQuery = signal<string>('');
@@ -210,44 +215,72 @@ export class FaqComponent {
         ease: 'power3.out',
       }),
     );
-    this.route.fragment.subscribe((fragment) => {
-      if (fragment) {
-        this.openFaqIdentifier.set(fragment);
-        this.expandFaqCategory(fragment);
-      }
+    // `/faq#some-id` and `/faq?q=some-id` both deep-link to a single question.
+    // takeUntilDestroyed because route observables outlive this component.
+    this.route.fragment.pipe(takeUntilDestroyed()).subscribe((fragment) => {
+      if (fragment) this.openFaqIdentifier.set(fragment);
     });
 
-    this.route.queryParams.subscribe((params) => {
-      if (params['q']) {
-        this.openFaqIdentifier.set(params['q']);
-        this.expandFaqCategory(params['q']);
-      }
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((params) => {
+      if (params['q']) this.openFaqIdentifier.set(params['q']);
     });
 
+    // The target's category is only knowable once the FAQs have loaded, and the
+    // identifier can arrive before or after them — so this reacts to both rather
+    // than being called from each subscription.
     effect(() => {
-      const allFaqs = this.faqs();
       const identifier = this.openFaqIdentifier();
-      if (allFaqs.length > 0 && identifier) {
+      if (this.faqs().length > 0 && identifier) {
         this.expandFaqCategory(identifier);
-      }
-    });
-
-    afterNextRender(() => {
-      const heroAnim = document.querySelectorAll('.faq-hero-anim');
-      if (heroAnim.length > 0) {
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-        tl.from(heroAnim, {
-          y: 25,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.1,
-        });
       }
     });
   }
 
   setCategory(categoryId: string): void {
     this.activeCategory.set(categoryId);
+    // A deep-linked question belongs to the category we just left; clearing it
+    // stops that item from staying force-opened in every category afterwards.
+    this.openFaqIdentifier.set(null);
+  }
+
+  /** True for the question a `#fragment` or `?q=` deep link points at. */
+  protected isDeepLinked(item: FaqItem): boolean {
+    const identifier = this.openFaqIdentifier();
+    return identifier !== null && (item.id === identifier || item.question === identifier);
+  }
+
+  /**
+   * Reveals the question a deep link names: switches to its category, then
+   * scrolls it into view.
+   *
+   * Matches on id or question text because both forms appear in links — the
+   * chatbot cites questions by text, while the dashboard links by id.
+   */
+  private expandFaqCategory(identifier: string): void {
+    const item = this.faqs().find((f) => f.id === identifier || f.question === identifier);
+    if (!item) return;
+
+    this.activeCategory.set(item.category?.trim().toLowerCase() || 'general');
+
+    // Browser-only: this runs from an effect, which also executes during SSR,
+    // where `document` does not exist.
+    if (!this.isBrowser) return;
+
+    // The category switch has to render before the target element exists.
+    afterNextRender(
+      {
+        read: () => {
+          const index = this.activeFaqItems().findIndex(
+            (f) => f.id === identifier || f.question === identifier,
+          );
+          if (index < 0) return;
+          document
+            .getElementById(item.id || `faq-${index}`)
+            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        },
+      },
+      { injector: this.injector },
+    );
   }
 
   onSearchChange(value: string): void {

@@ -13,7 +13,6 @@ import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmInputImports } from '@spartan/helm/input';
 import { FormsModule } from '@angular/forms';
 import { ChatService, ChatMessage } from './service/chat.service';
-import { ProductCard } from '../product/components/product-card/product-card';
 import { RouterModule } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 
@@ -25,7 +24,6 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
     HlmButtonImports,
     HlmInputImports,
     FormsModule,
-    ProductCard,
     RouterModule,
     CurrencyPipe,
     DatePipe,
