@@ -27,6 +27,9 @@ export interface FilterTab<T extends string = string> {
       .filter-tabs-scroller {
         scrollbar-color: var(--primary) transparent;
         scrollbar-width: thin;
+        /* Reserves the scrollbar's track space up front so a variant swap that nudges a tab's
+           width across the overflow threshold doesn't make the scrollbar flash in and out. */
+        scrollbar-gutter: stable;
       }
       .filter-tabs-scroller::-webkit-scrollbar {
         height: 6px;
@@ -47,7 +50,7 @@ export interface FilterTab<T extends string = string> {
   ],
   template: `
     <div
-      class="filter-tabs-scroller flex min-w-0 items-center gap-2 overflow-x-auto pb-2 lg:pb-0"
+      class="filter-tabs-scroller flex min-w-0 items-center gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0"
       role="tablist"
       [attr.aria-label]="ariaLabel()"
     >

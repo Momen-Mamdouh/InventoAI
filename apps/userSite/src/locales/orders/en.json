@@ -30,6 +30,7 @@
   "search_placeholder": "Search order # or item...",
   "search_aria": "Search orders",
   "filter_aria": "Filter orders by status",
+  "result_count": "Showing {{count}} of {{total}} orders",
   "hero": {
     "badge": "Account • Order History",
     "title": "My Orders",

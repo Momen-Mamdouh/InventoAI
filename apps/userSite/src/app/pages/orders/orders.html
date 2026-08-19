@@ -117,6 +117,28 @@
           }
         </div>
       } @else {
+        <!-- Result-count feedback: filtering/search is a client-side `computed` over orders
+             already in memory, so there is no fetch and a spinner would be fake. But the only
+             other trace of "did my search do anything" lives INSIDE app-pagination, whose whole
+             template is gated on `totalPages() > 1` (see pagination.html) - narrow a search to
+             a handful of results and that summary disappears along with it. This line is the
+             feedback that survives regardless of how many results remain. `orders().length` (not
+             `totalCount()`) is deliberate: `totalCount` is the server's total across all pages,
+             which can exceed what `ORDERS_SERVER_LOAD_LIMIT` actually pulled into memory, while
+             `orders()` is exactly what's loaded and being searched/filtered against here. -->
+        @if (ordersService.searchQuery().trim() || ordersService.selectedFilter() !== 'all') {
+          <p class="text-muted-foreground text-xs font-medium tabular-nums">
+            {{
+              'orders.result_count'
+                | translate
+                  : {
+                      count: ordersService.filteredOrders().length,
+                      total: ordersService.orders().length,
+                    }
+            }}
+          </p>
+        }
+
         <!-- Order Cards List -->
         <div class="flex flex-col space-y-6">
           @for (order of ordersService.pagedOrders(); track order.id) {

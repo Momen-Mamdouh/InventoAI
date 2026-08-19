@@ -30,6 +30,7 @@
   "search_placeholder": "ابحث برقم الطلب أو المنتج...",
   "search_aria": "البحث في الطلبات",
   "filter_aria": "تصفية الطلبات حسب الحالة",
+  "result_count": "عرض {{count}} من أصل {{total}} طلب",
   "hero": {
     "badge": "الحساب • سجل الطلبات",
     "title": "طلباتي",
