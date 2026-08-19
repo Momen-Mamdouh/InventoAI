@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Preview } from './preview';
 import { PreviewDataClient } from '@/app/core/service/preview-data-client';
 import { BuilderState } from '@/app/features/builder/services/builder-state';
+import { ThemeItem } from '@/app/features/builder/services/themes-api';
 import { LocaleService } from '@invento/core';
 import {
   MOCK_THEMES,
@@ -59,9 +60,35 @@ describe('Preview', () => {
       ],
     }).compileComponents();
 
+    builderState = TestBed.inject(BuilderState);
+
+    // Preview's constructor calls loadThemes(), which short-circuits to
+    // whatever Validation already fetched. Seeding here mirrors the real
+    // navigation path and keeps the tests off the network — PreviewDataClient
+    // no longer seeds itself with MOCK_THEMES, so without this the theme list
+    // renders empty.
+    builderState.themes.set(
+      MOCK_THEMES.map((theme) => ({
+        id: theme.id,
+        name: theme.name,
+        description: theme.description,
+        style: 'default',
+        font: 'inter',
+        radius: theme.radius,
+        light: theme.colors as unknown as Record<string, string>,
+        dark: {},
+        isSelected: false,
+        css: {
+          basePreset: theme.id,
+          name: theme.name,
+          description: theme.description,
+          rawCss: '',
+        },
+      })) as unknown as ThemeItem[],
+    );
+
     fixture = TestBed.createComponent(Preview);
     component = fixture.componentInstance;
-    builderState = TestBed.inject(BuilderState);
   });
 
   it('creates the component', () => {
@@ -80,7 +107,7 @@ describe('Preview', () => {
     if (themeButtons.length > 1) {
       themeButtons[1].click();
       fixture.detectChanges();
-      expect(component.selectedTheme().id).toBe(MOCK_THEMES[1].id);
+      expect(component.activeTheme().id).toBe(MOCK_THEMES[1].id);
     }
   });
 
@@ -118,13 +145,13 @@ describe('Preview', () => {
 
     const chosen = MOCK_THEMES[1];
     component.selectTheme(chosen);
-    expect(component.selectedTheme().id).toBe(chosen.id);
+    expect(component.activeTheme().id).toBe(chosen.id);
 
     // A late theme load must not silently reset the user's choice.
     TestBed.inject(PreviewDataClient).invalidate();
     fixture.detectChanges();
 
-    expect(component.selectedTheme().id).toBe(chosen.id);
+    expect(component.activeTheme().id).toBe(chosen.id);
   });
 
   it('computes brandName from BuilderState', () => {

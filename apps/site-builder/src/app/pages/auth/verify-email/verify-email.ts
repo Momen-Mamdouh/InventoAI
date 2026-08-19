@@ -66,8 +66,10 @@ export class VerifyEmail implements OnInit {
       return;
     }
 
-    // Fallback: check if user navigated with router state
-    const nav = history.state;
+    // Fallback: check if user navigated with router state. `history` does not
+    // exist on the server; reading it bare crashed this route's prerender with
+    // "ReferenceError: history is not defined".
+    const nav = typeof history === 'undefined' ? null : history.state;
     if (nav?.email) {
       this.userEmail = nav.email;
       return;

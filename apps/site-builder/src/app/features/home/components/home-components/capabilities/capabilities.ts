@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideTerminal, lucideLayers, lucideDatabase, lucideGlobe } from '@ng-icons/lucide';
-import { HlmCard, HlmCardContent, HlmCardTitle, HlmCardDescription } from '@spartan/helm/card';
 import { ScrollAnimateDirective } from '@/app/shared/directives/scroll-animate.directive';
 import { hlmH3, hlmP } from '@spartan/helm/typography';
-import { DoubleSlash } from '@invento/shared';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@invento/core';
 
@@ -21,12 +19,7 @@ interface Capability {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     NgIcon,
-    HlmCard,
-    HlmCardContent,
-    HlmCardTitle,
-    HlmCardDescription,
     ScrollAnimateDirective,
-    DoubleSlash,
     RouterLink,
     TranslatePipe,
   ],

@@ -93,7 +93,9 @@ export class ResetPassword implements OnInit {
     if (emailFromQuery) {
       this.userEmail = emailFromQuery;
     } else {
-      const nav = history.state;
+      // `history` does not exist on the server; reading it bare crashed the
+      // prerender of this route with "ReferenceError: history is not defined".
+      const nav = typeof history === 'undefined' ? null : history.state;
       if (nav?.email) {
         this.userEmail = nav.email;
       }

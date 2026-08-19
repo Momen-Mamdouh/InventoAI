@@ -24,7 +24,11 @@ export class PreviewDataClient {
   private readonly config = inject(ApiConfig);
   private readonly destroyRef = inject(DestroyRef);
 
-  private readonly _themeSuggestions = signal<ThemeSuggestion[]>(MOCK_THEMES);
+  // Starts empty, not seeded with MOCK_THEMES: the preview must show its
+  // loading state until the backend has actually answered. Seeding meant the
+  // mock brand rendered instantly on every visit, so the fallback appeared
+  // before anyone had checked whether a real theme was coming.
+  private readonly _themeSuggestions = signal<ThemeSuggestion[]>([]);
   private readonly _products = signal<PreviewProduct[]>(MOCK_PREVIEW_PRODUCTS);
   private readonly _navTabs = signal<string[]>(MOCK_PREVIEW_TABS);
 
@@ -112,7 +116,10 @@ export class PreviewDataClient {
       description: item.description ?? item.css?.description ?? '',
       radius: extractRadius(item.light, item.radius),
       colors: extractPalette(item.light),
-      darkColors: extractPalette(item.dark),
+      // Same guard as toThemeSuggestion: an absent `dark` block must stay
+      // undefined so the preview can derive a real dark palette, rather than
+      // become the light defaults wearing a dark label.
+      darkColors: item.dark ? extractPalette(item.dark) : undefined,
     };
   }
 }
