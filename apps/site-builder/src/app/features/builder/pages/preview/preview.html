@@ -49,8 +49,8 @@
                   #themeButton
                   hlmBtn
                   class="justify-start! w-full theme-color-btn"
-                  [class.ring-2]="selectedTheme().id === theme.id"
-                  [class.ring-primary]="selectedTheme().id === theme.id"
+                  [class.ring-2]="activeTheme().id === theme.id"
+                  [class.ring-primary]="activeTheme().id === theme.id"
                   (click)="selectTheme(theme)"
                 >
                   <div class="flex gap-1 shrink-0 theme-color">
@@ -441,7 +441,7 @@
 
       <p hlmDialogDescription [class]="hlmP">
         {{ 'preview_confirm_desc' | translate }}
-        <strong>{{ selectedTheme().name | translate }}</strong
+        <strong>{{ activeTheme().name | translate }}</strong
         >.
       </p>
     </hlm-dialog-header>
@@ -450,18 +450,18 @@
       <div class="p-4 border border-border rounded-lg">
         <div class="flex items-start gap-3">
           <div class="flex gap-1 shrink-0">
-            <span class="color-dot" [style.background]="selectedTheme().colors.background"></span>
+            <span class="color-dot" [style.background]="activeTheme().colors.background"></span>
 
-            <span class="color-dot" [style.background]="selectedTheme().colors.primary"></span>
+            <span class="color-dot" [style.background]="activeTheme().colors.primary"></span>
           </div>
 
           <div class="space-y-1">
             <h4 class="font-semibold" [class]="hlmH4">
-              {{ selectedTheme().name | translate }}
+              {{ activeTheme().name | translate }}
             </h4>
 
             <p class="text-muted-foreground text-sm" [class]="hlmP">
-              {{ selectedTheme().description | translate }}
+              {{ activeTheme().description | translate }}
             </p>
           </div>
         </div>

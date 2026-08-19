@@ -5,12 +5,14 @@ import {
   NgZone,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
   ViewChild,
   computed,
   signal,
   effect,
   inject,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export interface DriftWallItem {
   image: string;
@@ -215,6 +217,7 @@ export class DriftWallComponent implements OnInit, OnDestroy {
 
   private ngZone = inject(NgZone);
   private el = inject(ElementRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor() {
     effect(() => {
@@ -226,6 +229,11 @@ export class DriftWallComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.reduced.set(false);
+
+    // ResizeObserver and requestAnimationFrame are browser-only. The auth
+    // layout renders this wall, so without the guard every prerendered auth
+    // route threw "ReferenceError: ResizeObserver is not defined".
+    if (!this.isBrowser) return;
 
     this.ro = new ResizeObserver(([entry]) => {
       this.containerHeight.set(entry.contentRect.height || 600);

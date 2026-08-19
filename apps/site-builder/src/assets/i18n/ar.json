@@ -108,6 +108,8 @@
   "toast_required_questions": "يرجى الإجابة على جميع الأسئلة المطلوبة قبل الإرسال.",
   "preview_shop_now": "تسوق الآن",
   "preview_theme": "القالب",
+  "preview_theme_pending": "جارٍ تجهيز القالب",
+  "preview_theme_not_ready": "لا يزال القالب قيد التجهيز. برجاء الانتظار لحظة.",
   "preview_products": "المنتجات",
   "preview_variants": "الخيارات",
   "preview_pages": "الصفحات",

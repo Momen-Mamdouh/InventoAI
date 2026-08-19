@@ -166,10 +166,12 @@ export class Validation {
         // once the domain is confirmed.
         switchMap(() => this.themesApi.generateThemes()),
         switchMap(() => this.themesApi.getThemes()),
-        finalize(() => {
-          this.isSubmitting.set(false);
-          this.builderState.isNavigating.set(false);
-        }),
+        // isNavigating is deliberately NOT cleared here. Clearing it on
+        // completion tore the loader down at the same instant we navigated, so
+        // Preview mounted bare and the shopper saw its skeleton instead of the
+        // loader. Preview now clears it once it actually has themes to show;
+        // the error path below clears it for the case where we never navigate.
+        finalize(() => this.isSubmitting.set(false)),
       )
       .subscribe({
         next: (themesRes) => {
@@ -179,6 +181,7 @@ export class Validation {
           this.router.navigate(['/build/preview']);
         },
         error: (err) => {
+          this.builderState.isNavigating.set(false);
           this.currentStep.set('INPUT');
           if (err?.error?.suggestions) {
             this.domainSuggestions.set(err.error.suggestions);

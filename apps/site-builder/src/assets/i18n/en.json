@@ -108,6 +108,8 @@
   "toast_required_questions": "Please answer all required questions before submitting.",
   "preview_shop_now": "SHOP NOW",
   "preview_theme": "THEME",
+  "preview_theme_pending": "Preparing your theme",
+  "preview_theme_not_ready": "Your theme is still being prepared. Please wait a moment.",
   "preview_products": "PRODUCTS",
   "preview_variants": "VARIANTS",
   "preview_pages": "PAGES",

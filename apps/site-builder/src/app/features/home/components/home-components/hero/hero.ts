@@ -11,8 +11,6 @@ import {
 import { HlmButton } from '@spartan/helm/button';
 import { BlurText } from '@/app/shared/components/blur-text/blur-text';
 import { ScrollAnimateDirective } from '@/app/shared/directives/scroll-animate.directive';
-import { PageHeader } from '@/app/shared/components/page-header/page-header';
-import { DoubleSlash } from '@invento/shared';
 import { hlmH1, hlmP } from '@spartan/helm/typography';
 import { TranslatePipe } from '@invento/core';
 
@@ -27,8 +25,6 @@ import { TranslatePipe } from '@invento/core';
     HlmButton,
     ScrollAnimateDirective,
     BlurText,
-    PageHeader,
-    DoubleSlash,
     TranslatePipe,
   ],
   providers: [

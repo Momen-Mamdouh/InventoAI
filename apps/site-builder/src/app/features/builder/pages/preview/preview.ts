@@ -42,8 +42,23 @@ import { DoubleSlash } from '@invento/shared';
 import { LocaleService, TranslatePipe } from '@invento/core';
 import { toast } from '@spartan/helm/sonner';
 import { ApiConfig } from '@/app/core/config/api-config';
-import { PALETTE_DEFAULTS, DEFAULT_RADIUS } from '@/app/core/utils/palette';
+import { PALETTE_DEFAULTS, DEFAULT_RADIUS, deriveDarkPalette } from '@/app/core/utils/palette';
 import { toastApiError } from '@/app/shared/utils/toast-api-error';
+
+/**
+ * Neutral stand-in rendered while themes are still in flight.
+ *
+ * The preview frame reads a dozen theme fields directly, so it needs a
+ * non-null theme at all times. Using this instead of MOCK_THEMES[0] keeps a
+ * mock brand from flashing on screen before the backend has answered.
+ */
+const PLACEHOLDER_THEME: ThemeSuggestion = {
+  id: '',
+  name: 'preview_theme_pending',
+  description: '',
+  colors: PALETTE_DEFAULTS,
+  radius: DEFAULT_RADIUS,
+};
 
 @Component({
   selector: 'app-preview',
@@ -105,7 +120,11 @@ export class Preview {
 
   readonly skeletonThemes = Array(4);
   readonly skeletonProducts = Array(3);
-  readonly selectedTheme = signal<ThemeSuggestion>(this.themeSuggestions()[0]);
+  /** Null until themes have arrived and one has been chosen. */
+  readonly selectedTheme = signal<ThemeSuggestion | null>(null);
+
+  /** Never null — what the template and preview frame render against. */
+  readonly activeTheme = computed<ThemeSuggestion>(() => this.selectedTheme() ?? PLACEHOLDER_THEME);
   readonly selectedViewport = signal<PreviewViewport>('desktop');
   readonly selectedSize = signal<PreviewSize>('M');
   readonly themeMode = signal<'light' | 'dark'>('light');
@@ -127,9 +146,13 @@ export class Preview {
   ] as const;
 
   readonly previewCssVars = computed<Record<string, string>>(() => {
-    const theme = this.selectedTheme();
+    const theme = this.activeTheme();
     const isDark = this.themeMode() === 'dark';
-    const c = (isDark ? theme?.darkColors : theme?.colors) ?? theme?.colors ?? PALETTE_DEFAULTS;
+    const light = theme?.colors ?? PALETTE_DEFAULTS;
+    // A theme with no dark palette used to fall through to its light one, so
+    // the toggle changed nothing. Derive a dark surface from the light brand
+    // instead — every theme now has a visibly different dark mode.
+    const c = isDark ? (theme?.darkColors ?? deriveDarkPalette(light)) : light;
     const r = theme?.radius ?? DEFAULT_RADIUS;
 
     return {
@@ -199,7 +222,7 @@ export class Preview {
   );
 
   readonly buildSummary = computed(() => [
-    { label: 'preview_theme', value: this._localeService.translate(this.selectedTheme().name) },
+    { label: 'preview_theme', value: this._localeService.translate(this.activeTheme().name) },
     {
       label: 'preview_products',
       value: this._localeService.translate('build_items', { n: this.products().length }),
@@ -220,8 +243,15 @@ export class Preview {
   constructor() {
     this.previewDataClientService.loadThemes();
 
+    // Hold the navigation loader up until there is something real to show.
+    // Clearing it on `!isLoading()` alone fired immediately whenever Validation
+    // had already fetched the themes (loadThemes() returns early and never
+    // flips isLoading), so the loader vanished the instant Preview mounted and
+    // the skeleton showed through instead.
     effect(() => {
-      if (!this.previewDataClientService.isLoading()) {
+      const settled = !this.previewDataClientService.isLoading();
+      const hasThemes = this.themeSuggestions().length > 0;
+      if (settled && hasThemes) {
         this.builderState.isNavigating.set(false);
       }
     });
@@ -274,15 +304,24 @@ export class Preview {
 
   confirmDeployment(): void {
     if (this.isDeploying()) return;
+
+    // Never publish the placeholder: its id is empty, which the backend would
+    // reject anyway, and it is not a theme the user ever chose.
+    const theme = this.selectedTheme();
+    if (!theme) {
+      toast.error(this._localeService.translate('preview_theme_not_ready'));
+      return;
+    }
+
     this.isDeploying.set(true);
 
     const toastId = toast.loading(this._localeService.translate('toast_deploying_site'));
 
-    this.publishApi.publishSite({ themeId: this.selectedTheme().id }).subscribe({
+    this.publishApi.publishSite({ themeId: theme.id }).subscribe({
       next: () => {
         this.isDeploying.set(false);
         this.closeDeployDialog();
-        this.builderState.selectedTheme.set(this.selectedTheme().id);
+        this.builderState.selectedTheme.set(theme.id);
 
         toast.success(this._localeService.translate('toast_deploy_success'), { id: toastId });
 
@@ -301,7 +340,7 @@ export class Preview {
   cancelDeployment(): void {
     this.closeDeployDialog();
     queueMicrotask(() => {
-      const index = this.themeSuggestions().findIndex((t) => t.id === this.selectedTheme().id);
+      const index = this.themeSuggestions().findIndex((t) => t.id === this.activeTheme().id);
       this.themeButtons()[index]?.nativeElement.focus();
     });
   }
