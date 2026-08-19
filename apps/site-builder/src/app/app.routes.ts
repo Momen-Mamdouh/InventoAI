@@ -23,6 +23,7 @@ import { VerifyEmail } from './pages/auth/verify-email/verify-email';
 // Guards
 import { stepGuard } from './core/guards/step-guard';
 import { authGuard } from './core/guards/auth.guard';
+import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
   {
@@ -70,6 +71,7 @@ export const routes: Routes = [
   {
     path: 'auth',
     component: AuthLayout,
+    canActivate: [guestGuard],
     children: [
       { path: 'login', component: Login },
       { path: 'register', component: Register },
