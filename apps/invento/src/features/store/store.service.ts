@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface HeroSectionResponse {
   imageUrl: string;
@@ -56,7 +57,7 @@ export class StoreService {
   private readonly apiBaseUrl =
     (typeof window !== 'undefined' &&
       (window as unknown as { __ENV__?: { API_BASE_URL?: string } }).__ENV__?.API_BASE_URL) ||
-    'http://localhost:3000';
+    environment.apiUrl;
 
   private getAuthHeaders(): HttpHeaders {
     let headers = new HttpHeaders();

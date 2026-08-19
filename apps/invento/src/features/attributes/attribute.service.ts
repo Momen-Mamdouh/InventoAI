@@ -9,15 +9,15 @@ import {
   AddAttributeValueDto,
   UpdateAttributeValueDto,
 } from './attribute.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AttributeService {
   private readonly http = inject(HttpClient);
-  // Assuming the API base URL is http://localhost:3000 for local development.
   // In a real app, this might come from an environment file.
-  private readonly apiUrl = 'http://localhost:3000/product-attributes';
+  private readonly apiUrl = `${environment.apiUrl}/product-attributes`;
 
   getAttributes(): Observable<ProductAttribute[]> {
     return this.http.get<ProductAttribute[]>(this.apiUrl);

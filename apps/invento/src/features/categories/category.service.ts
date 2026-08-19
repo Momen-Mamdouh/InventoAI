@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Category, CategoryListResponse, ReorderPayloadItem } from './category.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ import { Category, CategoryListResponse, ReorderPayloadItem } from './category.m
 export class CategoriesService {
   private readonly http = inject(HttpClient);
   // Auth is handled by the existing HTTP interceptor — never set Authorization headers manually here.
-  private readonly base = 'http://localhost:3000/categories';
+  private readonly base = `${environment.apiUrl}/categories`;
 
   list(params?: {
     page?: number;
