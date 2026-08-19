@@ -91,14 +91,12 @@ export class AiInterview implements OnInit {
   selectedChannels = signal<Record<string, string[]>>({});
 
   constructor() {
+    // Focus the first question as soon as the stepper has rendered, so the
+    // page opens ready to type. `write` rather than `read`, because focusing
+    // mutates the document; the old `read` callback also queried the whole
+    // component and could land on a control belonging to another step.
     afterNextRender({
-      read: () => {
-        document
-          .querySelector<
-            HTMLInputElement | HTMLTextAreaElement
-          >('app-ai-interview input, app-ai-interview textarea')
-          ?.focus();
-      },
+      write: () => this.focusStepInput(this.stepper()?.selectedIndex ?? 0),
     });
   }
 
@@ -123,12 +121,23 @@ export class AiInterview implements OnInit {
     });
   }
 
+  /**
+   * Focuses the first control of a step without moving the viewport, so it
+   * can be paired with an explicit scroll rather than fighting it.
+   */
+  private focusStepInput(index: number): void {
+    const step = document.querySelectorAll('[cdkstepcontent], cdk-step')[index];
+    step
+      ?.querySelector<HTMLElement>('input, textarea, button, [tabindex="0"]')
+      ?.focus({ preventScroll: true });
+  }
+
   scrollToStep(index: number) {
     const step = document.querySelectorAll('[cdkstepcontent], cdk-step')[index];
     if (!step) return;
 
     step.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    step.querySelector<HTMLElement>('input, textarea, button, [tabindex="0"]')?.focus();
+    this.focusStepInput(index);
   }
 
   onSelectionChange(event: StepperSelectionEvent) {
@@ -269,6 +278,9 @@ export class AiInterview implements OnInit {
           toast.success(this._localeService.translate('toast_answers_success'), { id: toastId });
         }
 
+        // Answers alone never complete this step — the wizard guards require
+        // that submitAnswers actually reached the backend.
+        this.builderState.aiInterviewSubmitted.set(true);
         this.router.navigate(['/build/validation']);
       },
       error: (err) => {
