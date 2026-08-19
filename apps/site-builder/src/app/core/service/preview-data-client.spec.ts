@@ -38,6 +38,13 @@ describe('PreviewDataClient', () => {
     service = TestBed.inject(PreviewDataClient);
     httpMock = TestBed.inject(HttpTestingController);
     builderState = TestBed.inject(BuilderState);
+
+    // BuilderState primes the question catalog from the backend the moment it
+    // is constructed. Settle that request here so each test only reasons about
+    // theme traffic, and afterEach's verify() stays meaningful.
+    httpMock
+      .match('/site-builder/questions')
+      .forEach((req) => req.flush({ questions: [] }));
   });
 
   afterEach(() => {
@@ -61,7 +68,7 @@ describe('PreviewDataClient', () => {
     // The id must survive untouched — publish sends it as themeId, and the
     // backend rejects anything that is not the store theme's UUID.
     expect(suggestions[0].id).toBe('uuid-1');
-    expect(service.usingFallbackThemes()).toBe(false);
+    expect(service.themesUnavailable()).toBe(false);
   });
 
   it('reuses themes already fetched by Validation without calling the network', () => {
@@ -71,7 +78,7 @@ describe('PreviewDataClient', () => {
 
     httpMock.expectNone(THEMES_ENDPOINT);
     expect(service.themeSuggestions()[0].id).toBe('uuid-cached');
-    expect(service.usingFallbackThemes()).toBe(false);
+    expect(service.themesUnavailable()).toBe(false);
   });
 
   it('caches fetched themes on BuilderState', () => {
@@ -81,24 +88,39 @@ describe('PreviewDataClient', () => {
     expect(builderState.themes().length).toBe(1);
   });
 
-  it('flags fallback themes when the store has none yet', () => {
+  it('offers nothing when the store has no themes yet', () => {
     service.loadThemes();
     httpMock.expectOne(THEMES_ENDPOINT).flush({ themes: [] });
 
-    expect(service.usingFallbackThemes()).toBe(true);
+    expect(service.themesUnavailable()).toBe(true);
     expect(service.themeError()).toBeTruthy();
-    expect(service.themeSuggestions().length).toBeGreaterThan(0);
+    // No sample themes: an undeployable theme must never look selectable.
+    expect(service.themeSuggestions().length).toBe(0);
   });
 
-  it('flags fallback themes on a transport failure', () => {
+  it('offers nothing on a transport failure', () => {
     service.loadThemes();
     httpMock
       .expectOne(THEMES_ENDPOINT)
       .flush('Network error', { status: 500, statusText: 'Server Error' });
 
-    expect(service.usingFallbackThemes()).toBe(true);
+    expect(service.themesUnavailable()).toBe(true);
     expect(service.themeError()).toBeTruthy();
-    expect(service.themeSuggestions().length).toBeGreaterThan(0);
+    expect(service.themeSuggestions().length).toBe(0);
+  });
+
+  it('refetches on reload() after a failure', () => {
+    service.loadThemes();
+    httpMock
+      .expectOne(THEMES_ENDPOINT)
+      .flush('Network error', { status: 500, statusText: 'Server Error' });
+    expect(service.themesUnavailable()).toBe(true);
+
+    service.reload();
+    httpMock.expectOne(THEMES_ENDPOINT).flush({ themes: [themeItem('uuid-2')] });
+
+    expect(service.themesUnavailable()).toBe(false);
+    expect(service.themeSuggestions()[0].id).toBe('uuid-2');
   });
 
   it('sets _loaded flag and skips second call', () => {

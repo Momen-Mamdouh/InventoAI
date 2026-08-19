@@ -1,11 +1,7 @@
 import { Injectable, inject, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BuilderState } from '@/app/features/builder/services/builder-state';
-import {
-  MOCK_THEMES,
-  MOCK_PREVIEW_TABS,
-  MOCK_PREVIEW_PRODUCTS,
-} from '@/app/shared/mock/mock-preview';
+import { MOCK_PREVIEW_TABS, MOCK_PREVIEW_PRODUCTS } from '@/app/shared/mock/mock-preview';
 import { ThemeSuggestion, PreviewProduct } from '@/app/core/interface/Preview';
 import { parseThemeCss } from '@/app/core/utils/Preview-css-parser';
 import { extractPalette, extractRadius } from '@/app/core/utils/palette';
@@ -15,12 +11,16 @@ import { ThemeItem, ThemesApi } from '@/app/features/builder/services/themes-api
  * Supplies the Preview step with the store's themes.
  *
  * Themes come from `GET /site-builder/themes`, the only endpoint that serves
- * them. An earlier version posted to `/generate-theme`, which does not exist on
- * the backend — every call 404'd, the error handler swapped in MOCK_THEMES, and
- * the preview therefore showed the same four hardcoded themes for every store.
- * Worse, their ids are slugs like `midnight-edge`, so deploying one failed with
- * "themeId must be a UUID". `usingFallbackThemes` now makes that state explicit
- * instead of letting mocks pass for real data.
+ * them — the AI-generated set the backend persisted for this store. An earlier
+ * version posted to `/generate-theme`, which does not exist on the backend:
+ * every call 404'd, the error handler swapped in MOCK_THEMES, and the preview
+ * showed the same hardcoded themes for every store. Their ids are slugs like
+ * `midnight-edge`, so choosing one only failed at the very end with "themeId
+ * must be a UUID".
+ *
+ * There is deliberately no sample-theme fallback now. A theme that cannot be
+ * deployed is not an option worth offering; when none can be loaded the list
+ * stays empty and `themeError` says why, which is the honest state.
  */
 @Injectable({ providedIn: 'root' })
 export class PreviewDataClient {
@@ -35,7 +35,7 @@ export class PreviewDataClient {
   private readonly _isLoading = signal<boolean>(false);
   private readonly _themeError = signal<string | null>(null);
   private readonly _loaded = signal(false);
-  private readonly _usingFallbackThemes = signal(false);
+  private readonly _themesUnavailable = signal(false);
 
   readonly themeSuggestions = this._themeSuggestions.asReadonly();
   readonly products = this._products.asReadonly();
@@ -43,11 +43,11 @@ export class PreviewDataClient {
   readonly isLoading = this._isLoading.asReadonly();
   readonly themeError = this._themeError.asReadonly();
 
-  /**
-   * True when the list on screen is the hardcoded sample set rather than this
-   * store's themes. Nothing in it can be deployed — the ids are not real.
-   */
-  readonly usingFallbackThemes = this._usingFallbackThemes.asReadonly();
+  /** True once a load attempt has settled, whatever the outcome. */
+  readonly loaded = this._loaded.asReadonly();
+
+  /** Settled with nothing to show — the page must explain itself, not guess. */
+  readonly themesUnavailable = this._themesUnavailable.asReadonly();
 
   loadThemes(): void {
     if (this._loaded()) return;
@@ -75,7 +75,7 @@ export class PreviewDataClient {
             this.builderState.themes.set(themes);
             this.publishThemes(themes);
           } else {
-            this.useFallbackThemes('No themes have been generated for this store yet.');
+            this.markUnavailable('No themes have been generated for this store yet.');
           }
 
           this._isLoading.set(false);
@@ -85,7 +85,7 @@ export class PreviewDataClient {
         },
         error: (err: { message?: string }) => {
           this._isLoading.set(false);
-          this.useFallbackThemes(err?.message ?? 'Failed to load themes. Please try again.');
+          this.markUnavailable(err?.message ?? 'Failed to load themes. Please try again.');
           this._loaded.set(true);
         },
       });
@@ -96,14 +96,23 @@ export class PreviewDataClient {
     this._loaded.set(false);
   }
 
-  private publishThemes(themes: ThemeItem[]): void {
-    this._themeSuggestions.set(themes.map((theme) => this.convertThemeItemToSuggestion(theme)));
-    this._usingFallbackThemes.set(false);
+  /** Drops the cached themes and refetches — used by the retry affordance. */
+  reload(): void {
+    this.builderState.themes.set([]);
+    this._themesUnavailable.set(false);
+    this._themeError.set(null);
+    this._loaded.set(false);
+    this.loadThemes();
   }
 
-  private useFallbackThemes(message: string): void {
-    this._themeSuggestions.set(MOCK_THEMES);
-    this._usingFallbackThemes.set(true);
+  private publishThemes(themes: ThemeItem[]): void {
+    this._themeSuggestions.set(themes.map((theme) => this.convertThemeItemToSuggestion(theme)));
+    this._themesUnavailable.set(false);
+  }
+
+  private markUnavailable(message: string): void {
+    this._themeSuggestions.set([]);
+    this._themesUnavailable.set(true);
     this._themeError.set(message);
   }
 
