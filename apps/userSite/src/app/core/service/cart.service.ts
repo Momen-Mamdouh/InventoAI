@@ -178,33 +178,28 @@ export class CartService {
   }
 
   /**
-   * Reads a namespaced key, migrating a pre-existing unscoped value into it on first read.
+   * Reads a namespaced key ONLY — no adoption of the legacy unscoped key.
    *
-   * Namespacing alone would make every existing visitor's cart/prefill/last-order vanish the
-   * next time they load the site, since it now looks for a key that never existed. Adopting
-   * the legacy value once (and removing it) keeps that from happening while still landing on
-   * the namespaced key for every read/write after.
+   * This used to migrate a pre-existing unscoped value (e.g. bare `invento_user_cart`) into the
+   * namespaced one on first read, on the theory that namespacing alone would make an existing
+   * visitor's cart vanish. In practice that legacy value has unknowable provenance: it may have
+   * been built while browsing a completely different — or since-deleted — store, so its
+   * `variantId`s are foreign to whichever store the shopper opens next. The backend then rejects
+   * checkout with a generic "one of these products is no longer available" (see
+   * `BACKEND/src/orders/checkout.service.ts` `describeUnavailable()`), and there was no way for
+   * the shopper to tell which line item was actually the problem, or why. A cart silently
+   * reappearing under the wrong store is worse than one that doesn't reappear at all, so
+   * adoption was removed outright rather than made "smarter" — there's no reliable way to tell
+   * a legacy cart's true store from the stored value alone.
    */
-  private readMigrated(base: string): string | null {
-    const namespacedKey = this.storageKey(base);
-    const existing = localStorage.getItem(namespacedKey);
-    if (existing !== null) return existing;
-
-    // No slug resolved yet, so the "namespaced" key is the bare key — nothing to migrate.
-    if (namespacedKey === base) return null;
-
-    const legacy = localStorage.getItem(base);
-    if (legacy === null) return null;
-
-    localStorage.setItem(namespacedKey, legacy);
-    localStorage.removeItem(base);
-    return legacy;
+  private readNamespaced(base: string): string | null {
+    return localStorage.getItem(this.storageKey(base));
   }
 
   private loadStoredItems(): CartItem[] {
     if (typeof localStorage === 'undefined') return [];
     try {
-      const raw = this.readMigrated(CART_STORAGE_KEY);
+      const raw = this.readNamespaced(CART_STORAGE_KEY);
       return raw ? JSON.parse(raw) : [];
     } catch {
       return [];
@@ -223,7 +218,7 @@ export class CartService {
   private loadStoredPrefill(): PrefillCustomerInfo | null {
     if (typeof localStorage === 'undefined') return null;
     try {
-      const raw = this.readMigrated(PREFILL_STORAGE_KEY);
+      const raw = this.readNamespaced(PREFILL_STORAGE_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
@@ -242,7 +237,7 @@ export class CartService {
   private loadStoredLastOrder(): PlacedOrderResponse | null {
     if (typeof localStorage === 'undefined') return null;
     try {
-      const raw = this.readMigrated(LAST_ORDER_STORAGE_KEY);
+      const raw = this.readNamespaced(LAST_ORDER_STORAGE_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;

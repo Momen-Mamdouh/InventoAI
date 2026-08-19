@@ -12,12 +12,14 @@ import {
   lucideChevronLeft,
   lucideChevronRight,
   lucideShoppingBag,
+  lucideSearch,
 } from '@ng-icons/lucide';
 import {
   OrdersDataService,
   OrdersHeroComponent,
   OrdersFilterBarComponent,
   OrderCardComponent,
+  ORDERS_SERVER_LOAD_LIMIT,
 } from '@invento/user-site/app/features/orders';
 import { EmptyState, ErrorState, Pagination, SkeletonBlock } from '@invento/shared';
 import { TranslatePipe } from '@invento/core';
@@ -51,6 +53,7 @@ import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug
       lucideChevronLeft,
       lucideChevronRight,
       lucideShoppingBag,
+      lucideSearch,
     }),
   ],
   templateUrl: './orders.html',
@@ -65,7 +68,10 @@ export class OrdersComponent implements OnInit {
   protected readonly storeSlug = inject(StoreSlugService).slug;
 
   ngOnInit(): void {
-    this.ordersService.loadOrders(this.storeSlug());
+    // Generous limit: filtering/search/pagination below the fetch are all client-side (see
+    // OrdersDataService.filteredOrders), so this one load has to cover the whole order history
+    // a shopper might filter or search across.
+    this.ordersService.loadOrders(this.storeSlug(), 1, ORDERS_SERVER_LOAD_LIMIT);
   }
 
   protected resetFilters(): void {
@@ -74,11 +80,11 @@ export class OrdersComponent implements OnInit {
   }
 
   protected reload(): void {
-    this.ordersService.loadOrders(this.storeSlug());
+    this.ordersService.loadOrders(this.storeSlug(), 1, ORDERS_SERVER_LOAD_LIMIT);
   }
 
   protected onPageChange(page: number): void {
-    this.ordersService.setPage(page);
+    this.ordersService.setClientPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

@@ -17,6 +17,22 @@ import { environment } from '@invento/user-site/environments/environment';
 
 const RECIPIENT_OVERRIDES_KEY = 'invento_order_recipients';
 
+/**
+ * Server-side page size for the one-time full load of a shopper's orders per store visit.
+ * Filtering, search and pagination all run client-side against whatever this call returns
+ * (see the comment above `filteredOrders`), so the whole history a shopper might filter or
+ * search across has to already be in memory.
+ *
+ * 100 is not arbitrary: it is `MAX_PAGE_SIZE` in
+ * `BACKEND/src/common/dto/pagination-query.dto.ts`, whose `@Max(100)` rejects anything larger
+ * with a 400. So this is the most the API will hand over in one request, and raising it
+ * requires a backend change rather than a bigger number here.
+ */
+export const ORDERS_SERVER_LOAD_LIMIT = 100;
+
+/** Client-side page size for `pagedOrders`. Small because order cards are tall. */
+export const ORDERS_CLIENT_PAGE_SIZE = 5;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -42,6 +58,13 @@ export class OrdersDataService {
   private readonly _limit = signal<number>(20);
   private readonly _totalPages = signal<number>(1);
   private readonly _totalCount = signal<number>(0);
+
+  /**
+   * Client-side page the shopper is viewing within `filteredOrders()`. Separate from
+   * `_currentPage`, which tracks the SERVER page fetched by `loadOrders`/`setPage`. See the
+   * comment above `filteredOrders` for why pagination moved to the client.
+   */
+  private readonly _clientPage = signal<number>(1);
   /** Seeded from the URL, not a constant — a stale fallback would fetch another tenant's orders. */
   private readonly _urlSlug = inject(StoreSlugService).slug;
   private readonly _activeStoreSlug = signal<string>('');
@@ -61,7 +84,22 @@ export class OrdersDataService {
   readonly totalPages = this._totalPages.asReadonly();
   readonly totalCount = this._totalCount.asReadonly();
   readonly activeStoreSlug = this._activeStoreSlug.asReadonly();
+  readonly clientPage = this._clientPage.asReadonly();
+  readonly clientPageSize = ORDERS_CLIENT_PAGE_SIZE;
 
+  /**
+   * Filtering, search, and pagination below (`filteredOrders`, `pagedOrders`,
+   * `clientTotalPages`) all run CLIENT-SIDE, over the single generously-sized server page
+   * fetched by `loadOrders`. That is because `GET /site/:slug/orders/me` accepts only `page`
+   * and `limit` — no status filter, no search (see
+   * `BACKEND/src/orders/customer-orders.controller.ts`, which takes a bare
+   * `PaginationQueryDto`). Filtering against one server page only ever "worked" by accident
+   * when a store had few enough orders to fit in it.
+   *
+   * This stops being appropriate once a shopper's order history grows past
+   * `ORDERS_SERVER_LOAD_LIMIT`: at that point results silently go missing from filters/search
+   * again, and the fix is a real backend filter/search query param, not a bigger limit.
+   */
   readonly filteredOrders = computed(() => {
     const filter = this._selectedFilter();
     const query = this._searchQuery().trim().toLowerCase();
@@ -88,6 +126,18 @@ export class OrdersDataService {
 
       return orderNumberMatch || !!contactMatch || !!itemMatch;
     });
+  });
+
+  /** Total client-side pages over `filteredOrders()`, at `ORDERS_CLIENT_PAGE_SIZE` per page. */
+  readonly clientTotalPages = computed(() =>
+    Math.max(1, Math.ceil(this.filteredOrders().length / ORDERS_CLIENT_PAGE_SIZE)),
+  );
+
+  /** The slice of `filteredOrders()` for the current client page — what the template renders. */
+  readonly pagedOrders = computed(() => {
+    const page = this._clientPage();
+    const start = (page - 1) * ORDERS_CLIENT_PAGE_SIZE;
+    return this.filteredOrders().slice(start, start + ORDERS_CLIENT_PAGE_SIZE);
   });
 
   readonly statusCounts = computed(() => {
@@ -156,29 +206,22 @@ export class OrdersDataService {
   }
 
   /**
-   * Reads the namespaced recipient-overrides map, migrating a pre-existing unscoped value
-   * into it on first read so nobody's already-saved override silently vanishes.
+   * Reads the namespaced recipient-overrides map ONLY — no adoption of the legacy unscoped key.
+   *
+   * This used to migrate a pre-existing unscoped value into the namespaced one on first read.
+   * Removed for the same reason as `CartService`'s equivalent (see its `readNamespaced` doc): a
+   * value under the unscoped key has unknowable provenance — it may have been saved while
+   * browsing a different store entirely — so silently adopting it into whichever store the
+   * shopper opens first can attach the wrong recipient name to that store's orders.
    */
-  private readMigratedRecipientOverrides(): string | null {
-    const namespacedKey = this.storageKey(RECIPIENT_OVERRIDES_KEY);
-    const existing = localStorage.getItem(namespacedKey);
-    if (existing !== null) return existing;
-
-    // No slug resolved yet, so the "namespaced" key is the bare key — nothing to migrate.
-    if (namespacedKey === RECIPIENT_OVERRIDES_KEY) return null;
-
-    const legacy = localStorage.getItem(RECIPIENT_OVERRIDES_KEY);
-    if (legacy === null) return null;
-
-    localStorage.setItem(namespacedKey, legacy);
-    localStorage.removeItem(RECIPIENT_OVERRIDES_KEY);
-    return legacy;
+  private readRecipientOverrides(): string | null {
+    return localStorage.getItem(this.storageKey(RECIPIENT_OVERRIDES_KEY));
   }
 
   saveRecipientOverride(orderNumber: number, contactName: string): void {
     if (typeof localStorage === 'undefined' || !orderNumber || !contactName) return;
     try {
-      const raw = this.readMigratedRecipientOverrides();
+      const raw = this.readRecipientOverrides();
       const map: Record<number, string> = raw ? JSON.parse(raw) : {};
       map[orderNumber] = contactName;
       localStorage.setItem(this.storageKey(RECIPIENT_OVERRIDES_KEY), JSON.stringify(map));
@@ -190,7 +233,7 @@ export class OrdersDataService {
   getRecipientOverride(orderNumber: number): string | null {
     if (typeof localStorage === 'undefined' || !orderNumber) return null;
     try {
-      const raw = this.readMigratedRecipientOverrides();
+      const raw = this.readRecipientOverrides();
       if (!raw) return null;
       const map: Record<number, string> = JSON.parse(raw);
       return map[orderNumber] || null;
@@ -337,12 +380,29 @@ export class OrdersDataService {
 
   setFilter(filter: OrderFilter): void {
     this._selectedFilter.set(filter);
+    // A shopper on client page 3 who narrows the filter to 4 results must not land on a
+    // blank page — always snap back to page 1 when the result set changes shape.
+    this._clientPage.set(1);
   }
 
   setSearchQuery(query: string): void {
     this._searchQuery.set(query);
+    this._clientPage.set(1);
   }
 
+  /** Changes the CLIENT page over `filteredOrders()`. Drives `pagedOrders`. */
+  setClientPage(page: number): void {
+    if (page >= 1 && page <= this.clientTotalPages()) {
+      this._clientPage.set(page);
+    }
+  }
+
+  /**
+   * Kept for the underlying server-paged fetch (`loadOrders` itself), but no longer used to
+   * drive the visible pagination control — see the comment above `filteredOrders`. Left intact
+   * in case the backend later grows real filter/search query params and this becomes the
+   * server-driven path again.
+   */
   setPage(page: number): void {
     if (page >= 1 && page <= this._totalPages()) {
       this.loadOrders(this._activeStoreSlug(), page, this._limit());

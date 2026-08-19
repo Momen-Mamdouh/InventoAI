@@ -20,7 +20,8 @@
     "low_stock": "تبقى {{count}} فقط في المخزون",
     "in_stock": "متوفر",
     "out_of_stock": "نفدت الكمية",
-    "add_to_cart": "أضف إلى السلة"
+    "add_to_cart": "أضف إلى السلة",
+    "toast_added": "تمت إضافة {{quantity}} × \"{{title}}\" إلى السلة!"
   },
   "recommended": {
     "title": "موصى به لك",

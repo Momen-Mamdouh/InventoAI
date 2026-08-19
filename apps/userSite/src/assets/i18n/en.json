@@ -30,7 +30,11 @@
   "pagination": {
     "showing": "Showing {{from}}–{{to}} of {{total}}",
     "aria": "Product pages",
-    "go_to_page": "Go to page {{page}}"
+    "go_to_page": "Go to page {{page}}",
+    "previous": "Previous",
+    "next": "Next",
+    "go_to_previous": "Go to previous page",
+    "go_to_next": "Go to next page"
   },
   "faq": {
     "title": "Frequently Asked Questions",

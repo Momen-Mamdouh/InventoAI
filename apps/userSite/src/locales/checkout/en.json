@@ -85,6 +85,8 @@
     "guest_sign_in_prompt": "Please sign in to place your order. Your entered details have been saved.",
     "validation_error": "Please complete all required delivery details.",
     "order_placed": "Order #{{orderNumber}} placed successfully!",
-    "order_failed": "Failed to place your order. Please check your details and try again."
+    "order_failed": "Failed to place your order. Please check your details and try again.",
+    "unavailable_items": "Some items in your cart are no longer available in this store. Clear your cart to continue.",
+    "clear_cart_action": "Clear Cart"
   }
 }

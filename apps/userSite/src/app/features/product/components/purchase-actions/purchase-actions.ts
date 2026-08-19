@@ -10,7 +10,7 @@ import { HlmButton } from '@spartan/helm/button';
 import { toast } from '@spartan/helm/sonner';
 import { flyToCart } from '@invento/user-site/app/features/product';
 
-import { TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/core';
 import { QuantityStepper } from '@invento/user-site/app/features/product/components/quantity-stepper/quantity-stepper';
 import { CartService } from '@invento/user-site/app/core/service/cart.service';
 import { ProductStore } from '@invento/user-site/app/features/product';
@@ -27,6 +27,8 @@ import { ProductStore } from '@invento/user-site/app/features/product';
 export class PurchaseActions {
   protected readonly store = inject(ProductStore);
   private readonly cartService = inject(CartService);
+  // Toast copy is data, not template text, so it's translated here rather than by the pipe.
+  private readonly locale = inject(LocaleService);
 
   protected addToCart(event: MouseEvent): void {
     const product = this.store.product();
@@ -57,7 +59,9 @@ export class PurchaseActions {
       quantity,
     });
 
-    toast.success(`Added ${quantity} × "${product.title}" to cart!`);
+    toast.success(
+      this.locale.translate('product.actions.toast_added', { quantity, title: product.title }),
+    );
     flyToCart(event);
   }
 }
