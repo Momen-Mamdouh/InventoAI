@@ -241,6 +241,9 @@ export class Brainstorm implements OnInit {
 
         this.builderState.aiAnswers.set(prefill);
         this.isSubmitting.set(false);
+        // Marks the step done for the wizard guards; only a successful
+        // analyzePrompt round trip may open the next step.
+        this.builderState.brainstormAnalyzed.set(true);
         this.router.navigate(['/build/ai-interview']);
       },
       error: (err) => {

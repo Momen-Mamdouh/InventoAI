@@ -85,7 +85,10 @@ export class Validation {
     () =>
       !!this.businessName() &&
       !!this.domain() &&
-      this.builderState.isValidationComplete() &&
+      // hasValidationInputs, NOT isValidationComplete: the latter also requires
+      // domainConfirmed, which only this button can set — gating on it here
+      // left the button permanently disabled.
+      this.builderState.hasValidationInputs() &&
       this.isFormatValid() &&
       !this.isSubmitting(),
   );

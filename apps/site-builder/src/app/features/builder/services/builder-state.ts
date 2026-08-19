@@ -29,6 +29,8 @@ interface PersistedState {
   businessType: string;
   targetAudience: string;
   domain: string;
+  brainstormAnalyzed: boolean;
+  aiInterviewSubmitted: boolean;
   domainConfirmed: boolean;
 }
 
@@ -39,11 +41,19 @@ export class BuilderState {
   readonly isNavigating = signal(false);
 
   /**
-   * True only once Validation's Finish button has actually round-tripped to
-   * the backend (domain confirmed + themes generated). The three text fields
-   * it sits beside are pre-filled from Brainstorm and the AI interview, so
-   * they cannot tell us whether that call ever happened.
+   * Each step is finished only when its own submit button has successfully
+   * round-tripped to the backend — never merely because its fields hold
+   * values. Answers are pre-filled and restored from sessionStorage, so the
+   * field contents cannot tell us whether the call ever happened, and
+   * without these flags the wizard could be walked end to end without
+   * talking to the backend once.
+   *
+   * These gate *leaving* a step. They must never gate the submit button
+   * itself, or the step would deadlock: use the has*Inputs computeds for
+   * that.
    */
+  readonly brainstormAnalyzed = signal(false);
+  readonly aiInterviewSubmitted = signal(false);
   readonly domainConfirmed = signal(false);
   readonly brainstorm = signal<string>('');
   readonly hasLogo = signal<boolean>(false);
@@ -56,8 +66,12 @@ export class BuilderState {
   readonly domain = signal<string>('');
   readonly themes = signal<ThemeItem[]>([]);
 
-  readonly isBrainstormComplete = computed(
+  readonly hasBrainstormInput = computed(
     () => this.brainstorm().trim().length >= MIN_BRAINSTORM_LENGTH,
+  );
+
+  readonly isBrainstormComplete = computed(
+    () => this.hasBrainstormInput() && this.brainstormAnalyzed(),
   );
 
   /**
@@ -65,7 +79,7 @@ export class BuilderState {
    * would block users who leave the optional colour question (q7) blank, since
    * the brainstorm step pre-fills a key for it either way.
    */
-  readonly isAiInterviewComplete = computed(() => {
+  readonly hasAiInterviewAnswers = computed(() => {
     const answers = this.aiAnswers();
     if (Object.keys(answers).length === 0) return false;
 
@@ -76,14 +90,19 @@ export class BuilderState {
     });
   });
 
-  readonly isValidationComplete = computed(
+  readonly isAiInterviewComplete = computed(
+    () => this.hasAiInterviewAnswers() && this.aiInterviewSubmitted(),
+  );
+
+  readonly hasValidationInputs = computed(
     () =>
       this.businessName().trim() !== '' &&
       this.businessType().trim() !== '' &&
-      this.targetAudience().trim() !== '' &&
-      // Without this the step counted as done the moment the fields were
-      // populated, so Preview was reachable without ever calling the backend.
-      this.domainConfirmed(),
+      this.targetAudience().trim() !== '',
+  );
+
+  readonly isValidationComplete = computed(
+    () => this.hasValidationInputs() && this.domainConfirmed(),
   );
 
   readonly isPreviewComplete = computed(() => this.selectedTheme() !== '');
@@ -117,6 +136,8 @@ export class BuilderState {
         businessType: this.businessType(),
         targetAudience: this.targetAudience(),
         domain: this.domain(),
+        brainstormAnalyzed: this.brainstormAnalyzed(),
+        aiInterviewSubmitted: this.aiInterviewSubmitted(),
         domainConfirmed: this.domainConfirmed(),
       };
       this.persist(snapshot);
@@ -134,6 +155,8 @@ export class BuilderState {
     this.targetAudience.set('');
     this.domain.set('');
     this.themes.set([]);
+    this.brainstormAnalyzed.set(false);
+    this.aiInterviewSubmitted.set(false);
     this.domainConfirmed.set(false);
     if (isPlatformBrowser(this.platformId)) {
       try {
@@ -182,6 +205,10 @@ export class BuilderState {
     if (typeof saved.businessType === 'string') this.businessType.set(saved.businessType);
     if (typeof saved.targetAudience === 'string') this.targetAudience.set(saved.targetAudience);
     if (typeof saved.domain === 'string') this.domain.set(saved.domain);
+    if (typeof saved.brainstormAnalyzed === 'boolean')
+      this.brainstormAnalyzed.set(saved.brainstormAnalyzed);
+    if (typeof saved.aiInterviewSubmitted === 'boolean')
+      this.aiInterviewSubmitted.set(saved.aiInterviewSubmitted);
     if (typeof saved.domainConfirmed === 'boolean')
       this.domainConfirmed.set(saved.domainConfirmed);
   }
