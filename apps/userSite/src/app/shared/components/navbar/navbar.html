@@ -30,7 +30,7 @@
               [routerLink]="link.path"
               variant="ghost"
               class="w-fit justify-start py-2"
-              routerLinkActive="bg-secondary"
+              routerLinkActive="bg-primary/10 text-primary font-semibold"
               [routerLinkActiveOptions]="{ exact: true }"
             >
               {{ link.labelKey | translate }}
@@ -115,7 +115,15 @@
             #rla="routerLinkActive"
             [routerLinkActiveOptions]="{ exact: true }"
             [active]="rla.isActive"
-            class="hover:bg-accent hover:text-accent-foreground transition-colors"
+            class="hover:bg-accent/60 hover:text-foreground relative transition-colors"
+            [class.text-primary]="rla.isActive"
+            [class.font-semibold]="rla.isActive"
+            [class.after:absolute]="rla.isActive"
+            [class.after:inset-x-2]="rla.isActive"
+            [class.after:-bottom-0.5]="rla.isActive"
+            [class.after:h-0.5]="rla.isActive"
+            [class.after:bg-primary]="rla.isActive"
+            [class.after:rounded-full]="rla.isActive"
           >
             {{ link.labelKey | translate }}
           </a>

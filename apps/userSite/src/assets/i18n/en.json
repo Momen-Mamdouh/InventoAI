@@ -24,12 +24,6 @@
     "cart": "Cart",
     "customer_service": "Customer Service",
     "faq": "FAQ",
-    "shipping_info": "Shipping Info",
-    "returns": "Returns",
-    "contact_us": "Contact Us",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "terms": "Terms of Service",
     "rights": "All rights reserved."
   },
   "pagination": {

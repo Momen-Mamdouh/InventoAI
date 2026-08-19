@@ -37,6 +37,8 @@ export class StoreService {
   readonly hero = computed(() => this._store()?.hero ?? null);
   readonly featuredCategories = computed(() => this._store()?.featuredCategories ?? []);
   readonly featuredProducts = computed(() => this._store()?.featuredProducts ?? []);
+  readonly contactEmail = computed(() => this._store()?.contactEmail?.trim() || null);
+  readonly social = computed(() => this._store()?.social ?? null);
 
   /**
    * Initials shown when the owner has no uploaded logo (backend `LogoSource.Monogram`)
@@ -83,7 +85,7 @@ export class StoreService {
         if (this.requestedSlug !== slug) return;
         // Drop the previous tenant rather than leaving its branding on this URL.
         this._store.set(null);
-        this._error.set("store.load_failed");
+        this._error.set('store.load_failed');
         this._isLoading.set(false);
       },
     });

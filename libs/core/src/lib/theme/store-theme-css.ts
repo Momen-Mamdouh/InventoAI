@@ -85,6 +85,16 @@ const DERIVED_SURFACE_TOKENS: readonly (readonly [string, StorePaletteKey])[] = 
   ['switch-background', 'muted'],
 ];
 
+/**
+ * Alpha-derived from the palette's primary, so `DERIVED_SURFACE_TOKENS` (a straight copy)
+ * cannot express them. `spartan-theme.css` declares these as frozen literals matching the
+ * default primary, which left the scrollbar blue on every store.
+ */
+const SCROLLBAR_ALPHA_TOKENS: readonly (readonly [string, number])[] = [
+  ['scrollbar-thumb', 35],
+  ['scrollbar-thumb-hover', 65],
+];
+
 function isThemeFont(value: string): value is StoreThemeFont {
   return value === 'sans' || value === 'serif' || value === 'mono';
 }
@@ -107,6 +117,12 @@ function paletteDeclarations(palette: StorePalette): string[] {
   for (const [token, source] of [...SIDEBAR_TOKENS, ...DERIVED_SURFACE_TOKENS]) {
     const value = palette[source];
     if (value) out.push(declaration(token, value));
+  }
+  const primary = palette.primary;
+  if (primary) {
+    for (const [token, alphaPercent] of SCROLLBAR_ALPHA_TOKENS) {
+      out.push(declaration(token, `color-mix(in oklch, ${primary} ${alphaPercent}%, transparent)`));
+    }
   }
   return out;
 }

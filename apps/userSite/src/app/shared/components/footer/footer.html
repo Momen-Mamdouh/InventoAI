@@ -1,6 +1,6 @@
 <footer class="bg-muted/20 border-border/60 mt-16 border-t">
   <div
-    class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-12 sm:px-8 md:grid-cols-4 md:px-16 lg:px-24"
+    class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-12 sm:px-8 md:grid-cols-3 md:px-16 lg:px-24"
   >
     <!-- Brand -->
     <div class="flex flex-col gap-3">
@@ -20,53 +20,92 @@
         <span>{{ storeService.displayName() }}</span>
       </a>
       <p hlmMuted class="max-w-xs text-sm">
-        {{
-          storeService.store()?.description ||
-            ('footer.tagline' | translate)
-        }}
+        {{ storeService.store()?.description || ('footer.tagline' | translate) }}
       </p>
-      <div class="mt-2 flex items-center gap-3">
-        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors" aria-label="Facebook">
-          <ng-icon name="lucideFacebook" size="18" />
-        </a>
-        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors" aria-label="Instagram">
-          <ng-icon name="lucideInstagram" size="18" />
-        </a>
-        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
-          <ng-icon name="lucideTwitter" size="18" />
-        </a>
-        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email us">
-          <ng-icon name="lucideMail" size="18" />
-        </a>
-      </div>
+      @if (hasSocialLinks()) {
+        <div class="mt-2 flex items-center gap-3">
+          @if (storeService.social()?.facebook; as url) {
+            <a
+              [href]="url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Facebook"
+            >
+              <ng-icon name="lucideFacebook" size="18" />
+            </a>
+          }
+          @if (storeService.social()?.instagram; as url) {
+            <a
+              [href]="url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Instagram"
+            >
+              <ng-icon name="lucideInstagram" size="18" />
+            </a>
+          }
+          @if (storeService.social()?.twitter; as url) {
+            <a
+              [href]="url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Twitter"
+            >
+              <ng-icon name="lucideTwitter" size="18" />
+            </a>
+          }
+          @if (storeService.contactEmail(); as email) {
+            <a
+              [href]="'mailto:' + email"
+              class="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Email us"
+            >
+              <ng-icon name="lucideMail" size="18" />
+            </a>
+          }
+        </div>
+      }
     </div>
 
     <!-- Quick links -->
     <nav class="flex flex-col gap-3" aria-labelledby="footer-shop">
       <h3 id="footer-shop" class="text-sm font-bold">{{ 'footer.shop' | translate }}</h3>
-      <a [routerLink]="['/', activeStoreSlug(), 'products']" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.all_products' | translate }}</a>
-      <a [routerLink]="['/', activeStoreSlug(), 'orders']" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.my_orders' | translate }}</a>
-      <a [routerLink]="['/', activeStoreSlug(), 'checkout']" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.cart' | translate }}</a>
+      <a
+        [routerLink]="['/', activeStoreSlug(), 'products']"
+        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors"
+        >{{ 'footer.all_products' | translate }}</a
+      >
+      <a
+        [routerLink]="['/', activeStoreSlug(), 'orders']"
+        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors"
+        >{{ 'footer.my_orders' | translate }}</a
+      >
+      <a
+        [routerLink]="['/', activeStoreSlug(), 'checkout']"
+        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors"
+        >{{ 'footer.cart' | translate }}</a
+      >
     </nav>
 
     <!-- Customer service -->
     <nav class="flex flex-col gap-3" aria-labelledby="footer-care">
-      <h3 id="footer-care" class="text-sm font-bold">{{ 'footer.customer_service' | translate }}</h3>
-      <a [routerLink]="['/', activeStoreSlug(), 'faq']" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.faq' | translate }}</a>
-      <a href="#" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.shipping_info' | translate }}</a>
-      <a href="#" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.returns' | translate }}</a>
-      <a href="#" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.contact_us' | translate }}</a>
-    </nav>
-
-    <!-- Legal -->
-    <nav class="flex flex-col gap-3" aria-labelledby="footer-legal">
-      <h3 id="footer-legal" class="text-sm font-bold">{{ 'footer.legal' | translate }}</h3>
-      <a href="#" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.privacy' | translate }}</a>
-      <a href="#" class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors">{{ 'footer.terms' | translate }}</a>
+      <h3 id="footer-care" class="text-sm font-bold">
+        {{ 'footer.customer_service' | translate }}
+      </h3>
+      <a
+        [routerLink]="['/', activeStoreSlug(), 'faq']"
+        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors"
+        >{{ 'footer.faq' | translate }}</a
+      >
     </nav>
   </div>
 
   <div class="border-border/60 border-t px-4 py-5 sm:px-8 md:px-16 lg:px-24">
-    <p hlmMuted class="text-center text-xs">&copy; {{ year }} {{ storeService.displayName() }}. {{ 'footer.rights' | translate }}</p>
+    <p hlmMuted class="text-center text-xs">
+      &copy; {{ year }} {{ storeService.displayName() }}. {{ 'footer.rights' | translate }}
+    </p>
   </div>
 </footer>

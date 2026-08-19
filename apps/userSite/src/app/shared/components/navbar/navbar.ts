@@ -86,10 +86,10 @@ export class Navbar {
   protected readonly links = computed<NavLink[]>(() => {
     const slug = this.activeStoreSlug();
     return [
-      { labelKey: 'nav.faq', path: `/${slug}/faq` },
-      { labelKey: 'nav.orders', path: `/${slug}/orders` },
-      { labelKey: 'nav.shop', path: `/${slug}/products` },
       { labelKey: 'nav.home', path: `/${slug}` },
+      { labelKey: 'nav.shop', path: `/${slug}/products` },
+      { labelKey: 'nav.orders', path: `/${slug}/orders` },
+      { labelKey: 'nav.faq', path: `/${slug}/faq` },
     ];
   });
 

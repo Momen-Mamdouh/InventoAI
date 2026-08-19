@@ -30,7 +30,7 @@ export function flyToCart(
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: #3b82f6;
+      background: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -40,7 +40,7 @@ export function flyToCart(
       top: ${startY - 18}px;
     `;
     flyer.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-      fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      fill="none" style="stroke: var(--primary-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
       <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
     </svg>`;
@@ -87,17 +87,4 @@ export function updateCartBadge(cartIconId = 'cart-icon'): void {
   setTimeout(() => {
     cartIcon.style.transform = 'scale(1)';
   }, 200);
-
-  const countEl = document.getElementById('cart-count');
-  if (countEl) {
-    const current = parseInt(countEl.textContent || '0', 10);
-    const newCount = current + 1;
-    countEl.textContent = String(newCount);
-    countEl.classList.remove('hidden');
-    countEl.style.transition = 'transform 0.15s ease';
-    countEl.style.transform = 'scale(1.5)';
-    setTimeout(() => {
-      countEl.style.transform = 'scale(1)';
-    }, 150);
-  }
 }
