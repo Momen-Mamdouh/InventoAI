@@ -35,14 +35,42 @@
       </p>
 
       <div appScrollAnimate="zoom-in" [animDelay]="300" class="mt-8">
-        <a
-          hlmBtn
-          routerLink="/build"
-          class="gap-3 !rounded-full !px-10 !py-8 text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl shadow-primary/25 hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+        <div
+          class="btn-wrapper w-full sm:w-auto hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-2xl shadow-primary/25"
         >
-          <ng-icon name="lucideBolt" size="24" />
-          {{ 'cta_btn' | translate }}
-        </a>
+          <div class="btn-light"></div>
+          <div class="gradient-layer" style="animation-delay: 0s; animation-duration: 25s"></div>
+          <div
+            class="gradient-layer"
+            style="animation-delay: 0.15s; animation-duration: 15.9s"
+          ></div>
+          <div
+            class="gradient-layer"
+            style="animation-delay: 0.53s; animation-duration: 26.4s"
+          ></div>
+          <div
+            class="gradient-layer"
+            style="animation-delay: 0.45s; animation-duration: 17.8s"
+          ></div>
+          <div
+            class="gradient-layer"
+            style="animation-delay: 1.6s; animation-duration: 19.2s"
+          ></div>
+          <div
+            class="gradient-layer"
+            style="animation-delay: 1.6s; animation-duration: 29.2s"
+          ></div>
+          <div
+            class="gradient-layer"
+            style="animation-delay: 1.6s; animation-duration: 20.2s"
+          ></div>
+          <a hlmBtn routerLink="/build" class="gradient-btn">
+            {{ 'cta_btn' | translate }}
+          </a>
+          <div class="text-overlay">
+            {{ 'cta_btn' | translate }}
+          </div>
+        </div>
       </div>
     </div>
   </div>

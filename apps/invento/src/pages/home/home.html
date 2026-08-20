@@ -425,13 +425,51 @@
                     {{ heroSubtitle() }}
                   </p>
                   <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                    <button
-                      type="button"
-                      class="bg-primary hover:bg-primary/90 shadow-sm px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-lg font-medium text-[11px] text-primary-foreground sm:text-sm transition-colors cursor-pointer"
-                      (click)="openHeroCta()"
+                    <div
+                      class="btn-wrapper w-full sm:w-auto transition-all hover:shadow-md shadow-sm rounded-lg hover:scale-[1.02]"
                     >
-                      {{ heroCtaLabel() }}
-                    </button>
+                      <div class="btn-light"></div>
+                      <div
+                        class="gradient-layer"
+                        style="animation-delay: 0s; animation-duration: 25s"
+                      ></div>
+                      <div
+                        class="gradient-layer"
+                        style="animation-delay: 0.15s; animation-duration: 15.9s"
+                      ></div>
+                      <div
+                        class="gradient-layer"
+                        style="animation-delay: 0.53s; animation-duration: 26.4s"
+                      ></div>
+                      <div
+                        class="gradient-layer"
+                        style="animation-delay: 0.45s; animation-duration: 17.8s"
+                      ></div>
+                      <div
+                        class="gradient-layer"
+                        style="animation-delay: 1.6s; animation-duration: 19.2s"
+                      ></div>
+                      <div
+                        class="gradient-layer"
+                        style="animation-delay: 1.6s; animation-duration: 29.2s"
+                      ></div>
+                      <div
+                        class="gradient-layer"
+                        style="animation-delay: 1.6s; animation-duration: 20.2s"
+                      ></div>
+                      <button
+                        type="button"
+                        class="gradient-btn font-medium text-[11px] sm:text-sm !px-3 !sm:px-5 !py-1.5 !sm:py-2.5 !rounded-lg"
+                        (click)="openHeroCta()"
+                      >
+                        {{ heroCtaLabel() }}
+                      </button>
+                      <div
+                        class="text-overlay font-medium text-[11px] sm:text-sm !px-3 !sm:px-5 !py-1.5 !sm:py-2.5 !rounded-lg"
+                      >
+                        {{ heroCtaLabel() }}
+                      </div>
+                    </div>
                     <button
                       type="button"
                       class="bg-background/90 hover:bg-background shadow-xs px-3 sm:px-5 py-1.5 sm:py-2.5 border border-border rounded-lg font-medium text-[11px] text-foreground sm:text-sm transition-colors cursor-pointer"

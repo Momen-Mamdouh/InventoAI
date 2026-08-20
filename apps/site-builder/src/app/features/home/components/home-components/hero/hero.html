@@ -45,15 +45,24 @@
       [animDelay]="400"
       class="flex flex-col sm:flex-row items-center gap-4 mt-6"
     >
-      <a
-        hlmBtn
-        routerLink="/build"
-        class="justify-center gap-2 w-full sm:w-auto !rounded-full !px-8 !py-6 text-base font-semibold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+      <div
+        class="btn-wrapper w-full sm:w-auto hover:scale-105 transition-transform !rounded-full shadow-lg shadow-primary/20"
       >
-        <ng-icon name="lucideBolt" />
-        {{ 'hero_btn' | translate }}
-        <ng-icon name="lucideChevronRight" />
-      </a>
+        <div class="btn-light"></div>
+        <div class="gradient-layer" style="animation-delay: 0s; animation-duration: 25s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.15s; animation-duration: 15.9s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.53s; animation-duration: 26.4s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.45s; animation-duration: 17.8s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 19.2s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 29.2s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 20.2s"></div>
+        <a hlmBtn routerLink="/build" class="gradient-btn">
+          {{ 'hero_btn' | translate }}
+        </a>
+        <div class="text-overlay">
+          {{ 'hero_btn' | translate }}
+        </div>
+      </div>
     </div>
   </div>
 

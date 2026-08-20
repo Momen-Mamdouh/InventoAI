@@ -1,0 +1,239 @@
+/* From Uiverse.io by dexter-st */ 
+.btn-wrapper {
+  --rad: 32px;
+  
+  /* Light Mode Default Variables (Soft, pastel, light colors with no dark shapes) */
+  --color-wrapper-border: var(--primary);
+  --color-btn-bg: #ffffff;
+  --color-btn-text: transparent;
+  --color-btn-text-shadow: var(--primary);
+  --color-btn-inset-shadow: oklch(0.95 0.03 250 / 0.8);
+  --color-layer-a: #ffffff;
+  --color-layer-b: var(--primary);
+  --color-overlay-text: var(--foreground);
+  --color-overlay-glow: oklch(1 1 1 / 0.6);
+  --color-overlay-shadow: transparent;
+  --color-overlay-highlight: oklch(1 1 1 / 0.2);
+  
+  --layer-blend-a: normal;
+  --layer-blend-b: normal;
+  --layer-opacity: 0.2;
+  --btn-blend-mode: normal;
+  --btn-after-blend: normal;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: clip;
+  overflow-clip-margin: 4px;
+
+  border: 2px solid var(--color-wrapper-border);
+  border-radius: var(--rad);
+
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+
+  filter: saturate(0.9) brightness(1.1);
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .btn-wrapper {
+    width: auto;
+  }
+}
+
+/* Dark Mode Variable Overrides (Strictly dark/neon colors with no white flashes) */
+.dark .btn-wrapper {
+  --color-wrapper-border: var(--primary);
+  --color-btn-bg: oklch(0.12 0.06 250); /* Deep space-blue */
+  --color-btn-text: transparent;
+  --color-btn-text-shadow: oklch(1 1 1 / 0.3);
+  --color-btn-inset-shadow: oklch(0.2 0.1 250 / 0.6);
+  --color-layer-a: oklch(0.15 0.08 270); /* Deep indigo (no white/light shapes) */
+  --color-layer-b: var(--primary); /* Neon purple/blue */
+  --color-overlay-text: #ffffff;
+  --color-overlay-glow: var(--primary);
+  --color-overlay-shadow: oklch(0 0 0 / 0.4);
+  --color-overlay-highlight: oklch(1 1 1 / 0.1);
+  
+  --layer-blend-a: difference;
+  --layer-blend-b: color-dodge;
+  --layer-opacity: 1;
+  --btn-blend-mode: color-dodge;
+  --btn-after-blend: difference;
+}
+
+.gradient-btn.gradient-btn {
+  position: relative;
+  z-index: -1;
+
+  padding: 12px 36px !important;
+  border: none !important;
+  border-radius: var(--rad) !important;
+
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  letter-spacing: 0.1rem !important;
+
+  color: var(--color-btn-text) !important;
+  background-color: var(--color-btn-bg) !important;
+  background-size: 200% 200% !important;
+  box-shadow: inset 0 0 10px 9px var(--color-btn-inset-shadow) !important;
+  text-shadow: 0 1px 3px var(--color-btn-text-shadow) !important;
+
+  cursor: pointer !important;
+  mix-blend-mode: var(--btn-blend-mode) !important;
+  transition:
+    color 0.3s ease,
+    text-shadow 0.3s ease !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  white-space: nowrap !important;
+}
+
+.gradient-btn::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  border-radius: var(--rad);
+  background-size: 200% 200%;
+  mix-blend-mode: var(--btn-after-blend);
+  z-index: 1;
+}
+
+.gradient-layer {
+  position: absolute;
+  pointer-events: none;
+
+  left: -160px;
+  width: 500%;
+  aspect-ratio: 1;
+
+  background: radial-gradient(
+    ellipse at 65% 180%,
+    var(--color-layer-a),
+    var(--color-layer-b),
+    var(--color-layer-a),
+    var(--color-layer-b),
+    var(--color-layer-a),
+    var(--color-layer-b),
+    var(--color-layer-a),
+    var(--color-layer-b),
+    var(--color-layer-a),
+    var(--color-layer-b),
+    var(--color-layer-a)
+  );
+
+  mix-blend-mode: var(--layer-blend-a);
+  opacity: var(--layer-opacity);
+  animation: rotate 8s linear infinite;
+}
+
+.gradient-layer:last-child {
+  mix-blend-mode: var(--layer-blend-b);
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.text-overlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+
+  padding: 12px 36px;
+  border-radius: var(--rad);
+
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: 0.1rem;
+
+  color: var(--color-overlay-text);
+  text-shadow: 0 0 4px var(--color-overlay-glow);
+  box-shadow:
+    inset 0 -4px 4px 0 var(--color-overlay-shadow),
+    inset 0 4px 4px 0 var(--color-overlay-highlight);
+
+  mix-blend-mode: normal;
+  transition: transform 0.3s ease;
+  animation: opacityPulse 5s ease infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  white-space: nowrap !important;
+}
+
+.btn-wrapper:hover .text-overlay {
+  transform: scale(1.1);
+}
+
+.btn-wrapper:hover .gradient-btn {
+  color: transparent;
+  text-shadow: 0 0 0 transparent;
+}
+
+.btn-wrapper:active .text-overlay {
+  transform: scale(0.95);
+}
+
+.btn-wrapper:active .gradient-btn {
+  color: transparent;
+  text-shadow: 0 0 0 transparent;
+}
+
+.btn-light {
+  position: absolute;
+
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 50px;
+  width: 80%;
+  height: 1.9rem;
+  aspect-ratio: 1;
+  background-color: var(--color-overlay-highlight);
+  filter: blur(5px);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+@keyframes opacityPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

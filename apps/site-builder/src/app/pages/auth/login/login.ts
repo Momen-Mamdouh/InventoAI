@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
+import { LocaleService } from '@invento/core';
 import { AuthService } from '../../../core/service/auth.service';
 
 import { HlmInput } from '@spartan/helm/input';
@@ -20,6 +21,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private readonly _localeService = inject(LocaleService);
 
   isLoading = signal(false);
 
@@ -30,7 +32,7 @@ export class Login {
 
   onSubmit() {
     if (this.loginForm.invalid) {
-      toast.error('Please enter valid email and password.');
+      toast.error(this._localeService.translate('auth_login_empty'));
       this.loginForm.markAllAsTouched();
       return;
     }
@@ -39,7 +41,7 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
         this.isLoading.set(false);
-        toast.success('Logged in successfully');
+        toast.success(this._localeService.translate('auth_login_success'));
         this.router.navigate(['/']); // Redirect to home or dashboard
       },
       error: (err) => {
@@ -52,6 +54,6 @@ export class Login {
 
   // Placeholder for Google Login
   loginWithGoogle() {
-    toast.info('Google authentication will be available soon.');
+    toast.info(this._localeService.translate('auth_google_soon'));
   }
 }
