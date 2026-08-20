@@ -88,10 +88,24 @@
         <div
           class="col-span-3 rounded-xl border border-border/40 bg-card/30 flex flex-col gap-3 p-4"
         >
-          <div class="w-full h-8 rounded-lg bg-primary/20 animate-pulse"></div>
-          <div class="w-3/4 h-4 rounded-md bg-muted/50 mt-4"></div>
-          <div class="w-1/2 h-4 rounded-md bg-muted/50"></div>
-          <div class="w-2/3 h-4 rounded-md bg-muted/50"></div>
+          <div class="w-full flex items-center gap-2 mb-2">
+            <div class="w-6 h-6 rounded-md bg-primary/20 flex items-center justify-center">
+              <ng-icon name="lucideBox" size="14" class="text-primary"></ng-icon>
+            </div>
+            <span class="font-bold text-sm text-foreground">Invento</span>
+          </div>
+          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md bg-muted/50 mt-2">
+            <span class="text-xs font-medium text-foreground">Overview</span>
+          </div>
+          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted/30">
+            <span class="text-xs font-medium text-muted-foreground">Inventory</span>
+          </div>
+          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted/30">
+            <span class="text-xs font-medium text-muted-foreground">Suppliers</span>
+          </div>
+          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted/30">
+            <span class="text-xs font-medium text-muted-foreground">AI Settings</span>
+          </div>
         </div>
 
         <!-- Main Content Mock -->
@@ -101,40 +115,88 @@
             <div
               class="col-span-1 rounded-xl border border-border/40 bg-card/30 flex items-center p-4"
             >
-              <div class="w-10 h-10 rounded-full bg-blue-500/20 flex-shrink-0"></div>
-              <div class="ml-3 flex flex-col gap-2 w-full">
-                <div class="w-1/2 h-3 rounded bg-muted/60"></div>
-                <div class="w-3/4 h-2 rounded bg-muted/40"></div>
+              <div
+                class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0"
+              >
+                <ng-icon name="lucideTrendingUp" size="18" class="text-blue-500"></ng-icon>
+              </div>
+              <div class="ml-3 flex flex-col w-full">
+                <span
+                  class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                  >Monthly Sales</span
+                >
+                <span class="text-sm font-bold text-foreground">$14,250</span>
               </div>
             </div>
             <div
               class="col-span-1 rounded-xl border border-border/40 bg-card/30 flex items-center p-4"
             >
-              <div class="w-10 h-10 rounded-full bg-green-500/20 flex-shrink-0"></div>
-              <div class="ml-3 flex flex-col gap-2 w-full">
-                <div class="w-1/2 h-3 rounded bg-muted/60"></div>
-                <div class="w-3/4 h-2 rounded bg-muted/40"></div>
+              <div
+                class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0"
+              >
+                <ng-icon name="lucideUsers" size="18" class="text-green-500"></ng-icon>
+              </div>
+              <div class="ml-3 flex flex-col w-full">
+                <span
+                  class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                  >Active Suppliers</span
+                >
+                <span class="text-sm font-bold text-foreground">4 Connected</span>
               </div>
             </div>
             <div
               class="col-span-1 rounded-xl border border-border/40 bg-card/30 flex items-center p-4"
             >
-              <div class="w-10 h-10 rounded-full bg-primary/20 flex-shrink-0"></div>
-              <div class="ml-3 flex flex-col gap-2 w-full">
-                <div class="w-1/2 h-3 rounded bg-muted/60"></div>
-                <div class="w-3/4 h-2 rounded bg-muted/40"></div>
+              <div
+                class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0"
+              >
+                <ng-icon name="lucideAlertCircle" size="18" class="text-red-500"></ng-icon>
+              </div>
+              <div class="ml-3 flex flex-col w-full">
+                <span
+                  class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                  >Low Stock</span
+                >
+                <span class="text-sm font-bold text-red-500">2 Items</span>
               </div>
             </div>
           </div>
           <!-- Hero Mock inside Preview -->
           <div
-            class="flex-1 rounded-xl border border-border/40 bg-card/30 p-6 flex items-center justify-center overflow-hidden relative"
+            class="flex-1 rounded-xl border border-border/40 bg-card/30 p-6 flex flex-col justify-center overflow-hidden relative"
           >
             <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
-            <div class="text-center z-10 flex flex-col items-center gap-4">
-              <div class="w-48 h-8 rounded-lg bg-foreground/10"></div>
-              <div class="w-64 h-4 rounded-md bg-muted/50"></div>
-              <div class="w-32 h-10 rounded-full bg-primary/20 mt-2"></div>
+            <div class="z-10 flex items-start gap-4 w-full">
+              <div
+                class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-1"
+              >
+                <ng-icon name="lucideSparkles" size="14" class="text-primary"></ng-icon>
+              </div>
+              <div class="flex flex-col gap-2 w-full">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-foreground">AI Advisor</span>
+                  <span
+                    class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-primary/10 text-primary uppercase"
+                    >Recommendation</span
+                  >
+                </div>
+                <p class="text-xs text-muted-foreground">
+                  Demand for <strong class="text-foreground">Wireless Headphones</strong> is
+                  surging. You will stock out in 4 days.
+                </p>
+                <div class="mt-2 flex items-center gap-2">
+                  <button
+                    class="px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[10px] font-bold shadow-sm"
+                  >
+                    Draft Supplier Email
+                  </button>
+                  <button
+                    class="px-3 py-1.5 rounded-md bg-muted text-muted-foreground text-[10px] font-bold"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

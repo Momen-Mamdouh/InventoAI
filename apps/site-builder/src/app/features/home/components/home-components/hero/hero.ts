@@ -7,6 +7,11 @@ import {
   lucideChevronRight,
   lucideCode,
   lucideTerminal,
+  lucideBox,
+  lucideTrendingUp,
+  lucideUsers,
+  lucideAlertCircle,
+  lucideSparkles,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
 import { BlurText } from '@/app/shared/components/blur-text/blur-text';
@@ -19,16 +24,20 @@ import { TranslatePipe } from '@invento/core';
   templateUrl: './hero.html',
   styleUrl: './hero.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    RouterLink,
-    NgIcon,
-    HlmButton,
-    ScrollAnimateDirective,
-    BlurText,
-    TranslatePipe,
-  ],
+  imports: [RouterLink, NgIcon, HlmButton, ScrollAnimateDirective, BlurText, TranslatePipe],
   providers: [
-    provideIcons({ lucideBolt, lucideCode, lucideChevronRight, lucideCheck, lucideTerminal }),
+    provideIcons({
+      lucideBolt,
+      lucideCode,
+      lucideChevronRight,
+      lucideCheck,
+      lucideTerminal,
+      lucideBox,
+      lucideTrendingUp,
+      lucideUsers,
+      lucideAlertCircle,
+      lucideSparkles,
+    }),
   ],
 })
 export class Hero {
