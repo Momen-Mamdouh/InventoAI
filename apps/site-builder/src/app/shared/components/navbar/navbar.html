@@ -20,15 +20,15 @@
       @if (isAuthenticated()) {
         <a [href]="dashboardUrl" hlmBtn variant="outline" class="gap-2">
           <ng-icon name="lucideLayoutDashboard" class="text-sm"></ng-icon>
-          Dashboard
+          {{ 'nav_dashboard' | translate }}
         </a>
         <button hlmBtn variant="ghost" class="gap-2" (click)="signOut()">
           <ng-icon name="lucideLogOut" class="text-sm"></ng-icon>
-          Sign Out
+          {{ 'nav_sign_out' | translate }}
         </button>
       } @else {
-        <a routerLink="/auth/login" hlmBtn variant="ghost">Login</a>
-        <a routerLink="/auth/register" hlmBtn>Sign Up</a>
+        <a routerLink="/auth/login" hlmBtn variant="ghost">{{ 'nav_login' | translate }}</a>
+        <a routerLink="/auth/register" hlmBtn>{{ 'nav_sign_up' | translate }}</a>
       }
     </div>
   </div>

@@ -17,7 +17,9 @@
         </h1>
         <p class="text-muted-foreground text-sm">
           {{ 'home.editor_subtitle' | translate }}
-          <a [href]="storeUrl()" target="_blank" class="font-medium text-primary hover:underline">{{ storeUrl() }}</a>
+          <a [href]="storeUrl()" target="_blank" class="font-medium text-primary hover:underline">{{
+            storeUrl()
+          }}</a>
         </p>
       </div>
       <div class="flex items-center self-start sm:self-auto gap-3">
@@ -96,7 +98,9 @@
                 >
                   <ng-icon name="lucideUpload" size="18" class="text-primary" />
                 </div>
-                <span class="font-semibold text-primary text-xs tracking-wide">{{ 'home.replace_image' | translate }}</span>
+                <span class="font-semibold text-primary text-xs tracking-wide">{{
+                  'home.replace_image' | translate
+                }}</span>
               </div>
             </button>
           </div>
@@ -109,9 +113,9 @@
             </p>
 
             <div class="space-y-1.5">
-              <label for="hero-title-input" class="font-medium text-foreground text-xs"
-                >{{ 'home.headline' | translate }}</label
-              >
+              <label for="hero-title-input" class="font-medium text-foreground text-xs">{{
+                'home.headline' | translate
+              }}</label>
               <input
                 id="hero-title-input"
                 type="text"
@@ -123,9 +127,9 @@
             </div>
 
             <div class="space-y-1.5">
-              <label for="hero-subtitle-input" class="font-medium text-foreground text-xs"
-                >{{ 'home.subtitle' | translate }}</label
-              >
+              <label for="hero-subtitle-input" class="font-medium text-foreground text-xs">{{
+                'home.subtitle' | translate
+              }}</label>
               <textarea
                 id="hero-subtitle-input"
                 class="flex bg-transparent shadow-xs px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full min-h-[70px] placeholder:text-muted-foreground text-xs transition-colors resize-none"
@@ -136,9 +140,9 @@
             </div>
 
             <div class="space-y-1.5">
-              <label for="hero-cta-label-input" class="font-medium text-foreground text-xs"
-                >{{ 'home.button_label' | translate }}</label
-              >
+              <label for="hero-cta-label-input" class="font-medium text-foreground text-xs">{{
+                'home.button_label' | translate
+              }}</label>
               <input
                 id="hero-cta-label-input"
                 type="text"
@@ -150,9 +154,9 @@
             </div>
 
             <div class="space-y-1.5">
-              <label for="hero-cta-href-input" class="font-medium text-foreground text-xs"
-                >{{ 'home.button_link' | translate }}</label
-              >
+              <label for="hero-cta-href-input" class="font-medium text-foreground text-xs">{{
+                'home.button_link' | translate
+              }}</label>
               <input
                 id="hero-cta-href-input"
                 type="url"
@@ -185,7 +189,9 @@
             <ng-icon name="lucideCheckCircle2" size="18" class="text-primary" />
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-xs sm:text-sm truncate">{{ 'home.featured_products' | translate }}</h3>
+            <h3 class="font-semibold text-xs sm:text-sm truncate">
+              {{ 'home.featured_products' | translate }}
+            </h3>
             <p class="mt-0.5 text-[11px] text-muted-foreground sm:text-xs truncate">
               {{ 'home.featured_products_desc' | translate }}
             </p>
@@ -282,7 +288,9 @@
                 }
               </div>
             } @else {
-              <p class="text-muted-foreground text-xs italic">{{ 'home.no_products' | translate }}</p>
+              <p class="text-muted-foreground text-xs italic">
+                {{ 'home.no_products' | translate }}
+              </p>
             }
           </div>
         }
@@ -352,10 +360,7 @@
         <div class="flex justify-center w-full">
           <div
             class="bg-background shadow-xl border border-border rounded-2xl w-full overflow-hidden transition-all duration-300"
-            [ngClass]="[
-              viewMode() === 'desktop' ? 'max-w-[720px]' : 'max-w-[360px]',
-              themeClass()
-            ]"
+            [ngClass]="[viewMode() === 'desktop' ? 'max-w-[720px]' : 'max-w-[360px]', themeClass()]"
             [ngStyle]="themeStyles()"
           >
             <!-- STORE NAVBAR -->
@@ -363,9 +368,9 @@
               class="top-0 z-20 sticky flex justify-between items-center bg-background/95 backdrop-blur-xs px-3 sm:px-5 py-2.5 sm:py-3 border-border border-b"
             >
               <div class="flex items-center gap-1.5">
-                <span class="font-bold text-foreground text-xs sm:text-base tracking-tight"
-                  >{{ storeName() }}</span
-                >
+                <span class="font-bold text-foreground text-xs sm:text-base tracking-tight">{{
+                  storeName()
+                }}</span>
               </div>
 
               <div
@@ -530,9 +535,9 @@
                 [ngClass]="viewMode() === 'mobile' ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-3'"
               >
                 <div>
-                  <span class="font-extrabold text-foreground text-xs sm:text-sm tracking-tight"
-                    >{{ storeName() }}</span
-                  >
+                  <span class="font-extrabold text-foreground text-xs sm:text-sm tracking-tight">{{
+                    storeName()
+                  }}</span>
                   <p
                     class="mt-1 sm:mt-2 text-[10px] text-muted-foreground sm:text-[11px] leading-relaxed"
                   >
