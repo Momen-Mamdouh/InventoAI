@@ -17,6 +17,8 @@ import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteConfirmDialog {
+  @Input() title = 'Delete item';
+  @Input() description?: string;
   @Input() name = '';
   @Output() confirmed = new EventEmitter<void>();
   @Output() canceled = new EventEmitter<void>();

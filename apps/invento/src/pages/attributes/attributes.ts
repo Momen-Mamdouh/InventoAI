@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { toast } from '@spartan/helm/sonner';
+import { extractErrorMessage } from '../../core/utils/error.utils';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -19,11 +21,13 @@ import {
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
 
 import { ProductAttribute, ProductAttributeValue } from '../../features/attributes/attribute.model';
 import { AttributeService } from '../../features/attributes/attribute.service';
 import { AttributeDisplayStyle } from '../../features/attributes/attribute.model';
 import { AttributeSearchPipe } from '../../features/attributes/attribute-search.pipe';
+import { DeleteConfirmDialog } from '../categories/delete-confirm-dialog';
 
 @Component({
   selector: 'app-attributes',
@@ -36,6 +40,8 @@ import { AttributeSearchPipe } from '../../features/attributes/attribute-search.
     HlmInputImports,
     DragDropModule,
     AttributeSearchPipe,
+    DeleteConfirmDialog,
+    HlmSkeleton,
   ],
   providers: [
     provideIcons({
@@ -81,6 +87,13 @@ export class AttributesComponent implements OnInit {
   // Value Form Models
   newValueName = signal('');
   newValueSlug = signal('');
+
+  // Delete Modal State
+  readonly isDeleteAttributeModalOpen = signal(false);
+  readonly attributeToDelete = signal<ProductAttribute | null>(null);
+
+  readonly isDeleteValueModalOpen = signal(false);
+  readonly valueToDelete = signal<{ attrId: string; valueId: string; name: string } | null>(null);
 
   ngOnInit(): void {
     this.fetchAttributes();
@@ -166,13 +179,38 @@ export class AttributesComponent implements OnInit {
     }
   }
 
-  deleteAttribute(id: string): void {
-    if (confirm('Are you sure you want to delete this attribute?')) {
-      this.attributeService.deleteAttribute(id).subscribe({
-        next: () => this.fetchAttributes(),
-        error: (err) => console.error('Failed to delete attribute', err),
-      });
-    }
+  deleteAttribute(attr: ProductAttribute): void {
+    this.attributeToDelete.set(attr);
+    this.isDeleteAttributeModalOpen.set(true);
+  }
+
+  confirmDeleteAttribute(): void {
+    const attr = this.attributeToDelete();
+    if (!attr) return;
+
+    this.attributeService.deleteAttribute(attr.id).subscribe({
+      next: () => {
+        this.fetchAttributes();
+        this.isDeleteAttributeModalOpen.set(false);
+        this.attributeToDelete.set(null);
+        toast.success('Attribute deleted successfully');
+      },
+      error: (err) => {
+        console.error('Failed to delete attribute', err);
+        this.isDeleteAttributeModalOpen.set(false);
+        
+        if (err.status === 409) {
+          toast.error(err.error?.message || 'Cannot delete this attribute because it is in use.');
+        } else {
+          toast.error(extractErrorMessage(err, 'Failed to delete attribute'));
+        }
+      },
+    });
+  }
+
+  cancelDeleteAttribute(): void {
+    this.isDeleteAttributeModalOpen.set(false);
+    this.attributeToDelete.set(null);
   }
 
   // --- Value CRUD ---
@@ -209,20 +247,44 @@ export class AttributesComponent implements OnInit {
       });
   }
 
-  deleteValue(valueId: string): void {
+  deleteValue(val: ProductAttributeValue): void {
     const attr = this.activeAttributeForValues();
     if (!attr) return;
 
-    this.attributeService.deleteAttributeValue(attr.id, valueId).subscribe({
+    this.valueToDelete.set({ attrId: attr.id, valueId: val.id, name: val.value });
+    this.isDeleteValueModalOpen.set(true);
+  }
+
+  confirmDeleteValue(): void {
+    const toDelete = this.valueToDelete();
+    if (!toDelete) return;
+
+    this.attributeService.deleteAttributeValue(toDelete.attrId, toDelete.valueId).subscribe({
       next: () => {
         this.attributeService.getAttributes().subscribe((attrs) => {
           this.attributes.set(attrs);
-          const updatedAttr = attrs.find((a) => a.id === attr.id) || null;
+          const updatedAttr = attrs.find((a) => a.id === toDelete.attrId) || null;
           this.activeAttributeForValues.set(updatedAttr);
+          this.isDeleteValueModalOpen.set(false);
+          this.valueToDelete.set(null);
+          toast.success('Value deleted successfully');
         });
       },
-      error: (err) => console.error('Failed to delete value', err),
+      error: (err) => {
+        console.error('Failed to delete value', err);
+        this.isDeleteValueModalOpen.set(false);
+        if (err.status === 409) {
+          toast.error(err.error?.message || 'Cannot delete this value because it is in use.');
+        } else {
+          toast.error(extractErrorMessage(err, 'Failed to delete value'));
+        }
+      },
     });
+  }
+
+  cancelDeleteValue(): void {
+    this.isDeleteValueModalOpen.set(false);
+    this.valueToDelete.set(null);
   }
 
   dropAttribute(event: CdkDragDrop<ProductAttribute[]>): void {

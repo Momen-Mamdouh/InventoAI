@@ -1,6 +1,8 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { TranslatePipe } from '@invento/core';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideImage,
@@ -46,7 +48,7 @@ interface Product {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgIcon],
+  imports: [CommonModule, NgIcon, TranslatePipe, HlmSkeleton],
   templateUrl: './home.html',
   styleUrl: './home.css',
   providers: [
@@ -87,6 +89,45 @@ export class HomeComponent implements OnInit {
   isLoadingStore = signal<boolean>(true);
   storeLoadError = signal<string | null>(null);
   storeData = signal<StoreResponse | null>(null);
+  storeUrl = computed(() => {
+    const slug = this.storeData()?.slug || 'yourbrand';
+    return `https://${slug}.inventoai.com`;
+  });
+  storeDomain = computed(() => {
+    const slug = this.storeData()?.slug || 'yourbrand';
+    return `${slug}.inventoai.com`;
+  });
+  storeName = computed(() => {
+    return this.storeData()?.name || 'YourBrand';
+  });
+
+  themeStyles = computed(() => {
+    const theme = this.storeData()?.theme as any;
+    if (!theme) return {};
+
+    // Default to dark palette to match preview image, fallback to light
+    const palette = theme.dark || theme.light;
+    if (!palette) return {};
+
+    const styles: Record<string, string> = {};
+    for (const [key, value] of Object.entries(palette)) {
+      const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      styles[`--${cssKey}`] = value as string;
+      styles[`--color-${cssKey}`] = value as string;
+    }
+
+    if (theme.radius) {
+      styles['--radius'] = theme.radius;
+    }
+
+    return styles;
+  });
+
+  themeClass = computed(() => {
+    const theme = this.storeData()?.theme as any;
+    // Return dark class to ensure text/bg contrast correctly applies if using dark theme
+    return theme?.dark ? 'dark' : '';
+  });
 
   // Hero Section State
   heroImageUrl = signal<string>(
@@ -392,7 +433,7 @@ export class HomeComponent implements OnInit {
   }
 
   openLive() {
-    window.open('https://yourbrand.com', '_blank');
+    window.open(this.storeUrl(), '_blank');
   }
 
   saveChanges() {

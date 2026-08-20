@@ -64,14 +64,15 @@
           class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           <hlm-avatar class="h-8 w-8 rounded-lg">
-            <img src="https://i.pravatar.cc/40?u=admin" alt="spartan" hlmAvatarImage />
-            <span hlmAvatarFallback class="rounded-lg">SP</span>
+            <span hlmAvatarFallback class="rounded-lg bg-primary/20 text-primary font-bold">{{
+              userInitials()
+            }}</span>
           </hlm-avatar>
           <div
             class="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden"
           >
-            <span class="truncate font-semibold">spartan</span>
-            <span class="truncate text-xs">hello@spartan.com</span>
+            <span class="truncate font-semibold">{{ user().name }}</span>
+            <span class="truncate text-xs">{{ user().email }}</span>
           </div>
           <ng-icon
             name="lucideChevronUp"
@@ -95,35 +96,40 @@
     <hlm-dropdown-menu-label class="p-0 font-normal">
       <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
         <hlm-avatar class="h-8 w-8 rounded-lg">
-          <img src="https://i.pravatar.cc/40?u=admin" alt="spartan" hlmAvatarImage />
-          <span hlmAvatarFallback class="rounded-lg">SP</span>
+          <span hlmAvatarFallback class="rounded-lg bg-primary/20 text-primary font-bold">{{
+            userInitials()
+          }}</span>
         </hlm-avatar>
         <div class="grid flex-1 text-left text-sm leading-tight">
-          <span class="truncate font-semibold text-foreground">spartan</span>
-          <span class="truncate text-xs text-muted-foreground">hello@spartan.com</span>
+          <span class="truncate font-semibold text-foreground">{{ user().name }}</span>
+          <span class="truncate text-xs text-muted-foreground">{{ user().email }}</span>
         </div>
       </div>
     </hlm-dropdown-menu-label>
     <hlm-dropdown-menu-separator />
     <hlm-dropdown-menu-group>
-      <button hlmDropdownMenuItem routerLink="/billing" class="cursor-pointer gap-2">
-        <ng-icon hlm name="lucideSparkles" />
-        <span>Upgrade to Pro</span>
+      <button hlmDropdownMenuItem routerLink="/stores" class="cursor-pointer gap-2">
+        <ng-icon hlm name="lucideStore" />
+        <span>My Stores</span>
       </button>
     </hlm-dropdown-menu-group>
     <hlm-dropdown-menu-separator />
     <hlm-dropdown-menu-group>
       <button hlmDropdownMenuItem routerLink="/profile" class="cursor-pointer gap-2">
-        <ng-icon hlm name="lucideBadgeCheck" />
-        <span>Account</span>
+        <ng-icon hlm name="lucideUser" />
+        <span>Profile</span>
       </button>
-      <button hlmDropdownMenuItem routerLink="/billing" class="cursor-pointer gap-2">
-        <ng-icon hlm name="lucideCreditCard" />
-        <span>Billing</span>
+      <button hlmDropdownMenuItem routerLink="/security" class="cursor-pointer gap-2">
+        <ng-icon hlm name="lucideLock" />
+        <span>Security</span>
       </button>
       <button hlmDropdownMenuItem routerLink="/notifications" class="cursor-pointer gap-2">
         <ng-icon hlm name="lucideBell" />
         <span>Notifications</span>
+      </button>
+      <button hlmDropdownMenuItem routerLink="/billing" class="cursor-pointer gap-2">
+        <ng-icon hlm name="lucideCreditCard" />
+        <span>Billing & Plan</span>
       </button>
     </hlm-dropdown-menu-group>
     <hlm-dropdown-menu-separator />

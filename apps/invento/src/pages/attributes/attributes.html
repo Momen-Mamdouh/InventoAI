@@ -61,14 +61,18 @@
           (cdkDropListDropped)="dropAttribute($event)"
         >
           @if (isLoading()) {
-            <tr>
-              <td colspan="8" class="p-12 text-center">
-                <div class="flex flex-col items-center justify-center gap-3 text-muted-foreground">
-                  <ng-icon name="lucideLoader2" size="28" class="animate-spin text-primary" />
-                  <p class="font-medium text-sm">Loading attributes...</p>
-                </div>
-              </td>
-            </tr>
+            @for (item of [1,2,3,4,5]; track item) {
+              <tr>
+                <td class="px-2 md:px-3 align-middle w-10 text-center"><hlm-skeleton class="h-4 w-4 mx-auto" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-16" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-8" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-8" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-5 w-16 rounded-full" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-6" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end"><hlm-skeleton class="h-8 w-24 ml-auto" /></td>
+              </tr>
+            }
           } @else {
             @for (attr of attributes() | attributeSearch: searchQuery(); track attr.id) {
               <tr class="group hover:bg-muted/40 transition-colors bg-card" cdkDrag>
@@ -129,7 +133,7 @@
                       variant="ghost"
                       size="icon"
                       class="h-8 w-8 text-muted-foreground hover:text-destructive"
-                      (click)="deleteAttribute(attr.id)"
+                      (click)="deleteAttribute(attr)"
                       title="Delete Attribute"
                     >
                       <ng-icon name="lucideTrash2" size="16" />
@@ -309,7 +313,7 @@
               variant="ghost"
               size="icon"
               class="text-muted-foreground hover:text-destructive shrink-0"
-              (click)="deleteValue(val.id)"
+              (click)="deleteValue(val)"
             >
               <ng-icon name="lucideTrash2" size="16" />
             </button>
@@ -355,4 +359,23 @@
       </div>
     </div>
   </div>
+}
+
+<!-- DELETE MODALS -->
+@if (isDeleteAttributeModalOpen()) {
+  <app-delete-confirm-dialog
+    title="Delete Attribute"
+    [name]="attributeToDelete()?.name || ''"
+    (confirmed)="confirmDeleteAttribute()"
+    (canceled)="cancelDeleteAttribute()"
+  ></app-delete-confirm-dialog>
+}
+
+@if (isDeleteValueModalOpen()) {
+  <app-delete-confirm-dialog
+    title="Delete Value"
+    [name]="valueToDelete()?.name || ''"
+    (confirmed)="confirmDeleteValue()"
+    (canceled)="cancelDeleteValue()"
+  ></app-delete-confirm-dialog>
 }

@@ -2,7 +2,6 @@
   <!-- Header & Breadcrumbs -->
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      
       <h1 class="font-bold text-foreground text-2xl sm:text-3xl tracking-tight">Categories</h1>
       <p class="text-muted-foreground text-sm">
         Organize how products are grouped and displayed in the storefront.
@@ -115,14 +114,23 @@
           class="divide-y divide-border/60 text-sm"
         >
           @if (loading() && categories().length === 0) {
-            <tr>
-              <td colspan="5" class="p-12 text-center">
-                <div class="flex flex-col items-center justify-center gap-3 text-muted-foreground">
-                  <ng-icon name="lucideLoader2" size="28" class="animate-spin text-primary" />
-                  <p class="font-medium text-sm">Loading categories...</p>
-                </div>
-              </td>
-            </tr>
+            @for (item of [1,2,3,4,5]; track item) {
+              <tr>
+                <td class="px-2 md:px-3 align-middle w-10 text-center"><hlm-skeleton class="h-4 w-4 mx-auto" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
+                  <div class="flex items-center gap-3">
+                    <hlm-skeleton class="w-10 h-10 sm:w-12 sm:h-12 rounded-md shrink-0" />
+                    <div class="space-y-1.5 flex-1">
+                      <hlm-skeleton class="h-4 w-24" />
+                      <hlm-skeleton class="h-3 w-32" />
+                    </div>
+                  </div>
+                </td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-5 w-20 rounded-full" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end"><hlm-skeleton class="h-4 w-8 ml-auto" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end"><hlm-skeleton class="h-8 w-24 ml-auto" /></td>
+              </tr>
+            }
           } @else if (categories().length === 0) {
             <tr>
               <td colspan="5" class="p-16 text-center">

@@ -8,11 +8,15 @@
           <ng-icon name="lucideTrash2" size="1.1rem" />
         </div>
         <div class="space-y-1">
-          <h2 hlmAlertDialogTitle>Delete category</h2>
+          <h2 hlmAlertDialogTitle>{{ title }}</h2>
           <p hlmAlertDialogDescription>
-            Are you sure you want to delete
-            <span class="font-semibold text-foreground">"{{ name }}"</span>? This action cannot be
-            undone.
+            @if(description) {
+              {{ description }}
+            } @else {
+              Are you sure you want to delete
+              <span class="font-semibold text-foreground">"{{ name }}"</span>? This action cannot be
+              undone.
+            }
           </p>
         </div>
       </div>

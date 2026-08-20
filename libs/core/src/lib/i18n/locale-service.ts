@@ -59,14 +59,20 @@ export class LocaleService {
 
   translate(key: string, params?: Record<string, string | number>): string {
     let resolvedValue: any = this._translations();
-    const parts = key.split('.');
-
-    for (const part of parts) {
-      if (resolvedValue && typeof resolvedValue === 'object') {
-        resolvedValue = resolvedValue[part];
-      } else {
-        resolvedValue = undefined;
-        break;
+    
+    // First try flat key
+    if (resolvedValue && resolvedValue[key] !== undefined) {
+      resolvedValue = resolvedValue[key];
+    } else {
+      // Fallback to nested resolution
+      const parts = key.split('.');
+      for (const part of parts) {
+        if (resolvedValue && typeof resolvedValue === 'object') {
+          resolvedValue = resolvedValue[part];
+        } else {
+          resolvedValue = undefined;
+          break;
+        }
       }
     }
 

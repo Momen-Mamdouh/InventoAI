@@ -3,11 +3,17 @@
   "/stores": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/site": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/products": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
-  "/product-attributes": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
+  "/product-attributes": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true
+  },
   "/categories": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/orders": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/faqs": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/advisor": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/chat": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
-  "/knowledge": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true }
+  "/knowledge": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
+  "/chatbot": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
+  "/catalog": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true }
 }
