@@ -101,14 +101,14 @@ export class Brainstorm implements OnInit {
   isFocused = signal<boolean>(false);
   readonly isSubmitting = signal(false);
 
-  readonly descriptionControl = new FormControl('', {
+  readonly descriptionControl = new FormControl(this.builderState.brainstorm() || '', {
     nonNullable: true,
     validators: [Validators.required, Validators.minLength(MIN_BRAINSTORM_LENGTH)],
   });
 
   /** Mirrors the control's value so validation is computed once per change, not per CD cycle. */
   private readonly description = toSignal(this.descriptionControl.valueChanges, {
-    initialValue: this.descriptionControl.value,
+    initialValue: this.builderState.brainstorm() || '',
   });
 
   protected readonly backdropClass = computed(() =>
@@ -144,8 +144,8 @@ export class Brainstorm implements OnInit {
 
   ngOnInit() {
     const saved = this.builderState.brainstorm();
-    if (saved) {
-      this.descriptionControl.setValue(saved, { emitEvent: false });
+    if (saved && this.descriptionControl.value !== saved) {
+      this.descriptionControl.setValue(saved);
     }
 
     this.descriptionControl.valueChanges

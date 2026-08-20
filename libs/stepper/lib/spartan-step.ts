@@ -8,6 +8,7 @@ import {
 	effect,
 	inject,
 	input,
+	signal,
 	untracked,
 	ViewContainerRef,
 } from '@angular/core';
@@ -31,7 +32,7 @@ import { SpartanStepLabel } from './spartan-step-label';
 	template: `
 		<ng-template>
 			<ng-content></ng-content>
-			<ng-template [cdkPortalOutlet]="portal"></ng-template>
+			<ng-template [cdkPortalOutlet]="portal()"></ng-template>
 		</ng-template>
 	`,
 })
@@ -48,7 +49,7 @@ export class SpartanStep extends CdkStep {
 	private readonly _lazyContent = contentChild(SpartanStepContent);
 
 	/** Currently-attached portal containing the lazy content. */
-	public portal: TemplatePortal | null = null;
+	public readonly portal = signal<TemplatePortal | null>(null);
 
 	constructor() {
 		super();
@@ -58,15 +59,16 @@ export class SpartanStep extends CdkStep {
 			const lazyContent = this._lazyContent();
 
 			untracked(() => {
-				if (isSelected && lazyContent && !this.portal) {
-					this.portal = new TemplatePortal(lazyContent.template, this._viewContainerRef);
+				if (isSelected && lazyContent && !this.portal()) {
+					this.portal.set(new TemplatePortal(lazyContent.template, this._viewContainerRef));
 				}
 			});
 		});
 
 		this._destroyRef.onDestroy(() => {
-			if (this.portal?.isAttached) {
-				this.portal.detach();
+			const portal = this.portal();
+			if (portal?.isAttached) {
+				portal.detach();
 			}
 		});
 	}

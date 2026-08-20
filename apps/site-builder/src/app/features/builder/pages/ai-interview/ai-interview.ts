@@ -88,16 +88,28 @@ export class AiInterview implements OnInit {
     return this.builderState.questions().filter((q) => q.showWhen !== 'logoUploaded' || hasLogo);
   });
 
+  readonly currentStepIndex = computed(() => {
+    const total = this.visibleQuestions().length;
+    if (total === 0) return 0;
+    const saved = this.builderState.aiInterviewStepIndex();
+    return Math.min(Math.max(0, saved), total - 1);
+  });
+
   form = new FormGroup({});
   selectedChannels = signal<Record<string, string[]>>({});
 
   constructor() {
-    // Focus the first question as soon as the stepper has rendered, so the
-    // page opens ready to type. `write` rather than `read`, because focusing
-    // mutates the document; the old `read` callback also queried the whole
-    // component and could land on a control belonging to another step.
+    // Focus the active question as soon as the stepper has rendered, so the
+    // page opens ready to type at the user's last visited question.
     afterNextRender({
-      write: () => this.focusStepInput(this.stepper()?.selectedIndex ?? 0),
+      write: () => {
+        const index = this.currentStepIndex();
+        const stepper = this.stepper();
+        if (stepper && stepper.selectedIndex !== index) {
+          stepper.selectedIndex = index;
+        }
+        this.scrollToStep(index);
+      },
     });
   }
 
@@ -122,26 +134,42 @@ export class AiInterview implements OnInit {
     });
   }
 
+  private getStepElement(index: number): HTMLElement | null {
+    const stepper = this.stepper();
+    if (stepper) {
+      const contentId = stepper._getStepContentId(index);
+      const section = document.getElementById(contentId);
+      if (section) return section;
+    }
+    const sections = document.querySelectorAll('spartan-stepper section[role="region"]');
+    return (sections[index] as HTMLElement) ?? null;
+  }
+
   /**
    * Focuses the first control of a step without moving the viewport, so it
    * can be paired with an explicit scroll rather than fighting it.
    */
   private focusStepInput(index: number): void {
-    const step = document.querySelectorAll('[cdkstepcontent], cdk-step')[index];
-    step
-      ?.querySelector<HTMLElement>('input, textarea, button, [tabindex="0"]')
-      ?.focus({ preventScroll: true });
+    const step = this.getStepElement(index);
+    if (!step) return;
+
+    const target =
+      step.querySelector<HTMLElement>('textarea, input:not([type="hidden"]), [tabindex="0"]') ??
+      step.querySelector<HTMLElement>('button');
+    target?.focus({ preventScroll: true });
   }
 
   scrollToStep(index: number) {
-    const step = document.querySelectorAll('[cdkstepcontent], cdk-step')[index];
+    const step = this.getStepElement(index);
     if (!step) return;
 
-    step.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    this.focusStepInput(index);
+    const container = step.closest('.flex.flex-col.gap-2') || step;
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setTimeout(() => this.focusStepInput(index), 50);
   }
 
   onSelectionChange(event: StepperSelectionEvent) {
+    this.builderState.aiInterviewStepIndex.set(event.selectedIndex);
     this.scrollToStep(event.selectedIndex);
   }
 
@@ -154,8 +182,10 @@ export class AiInterview implements OnInit {
       this.router.navigate(['/build/brainstorm']);
       return;
     }
-    stepper.selectedIndex = stepper.selectedIndex - 1;
-    this.scrollToStep(stepper.selectedIndex);
+    const prevIndex = stepper.selectedIndex - 1;
+    stepper.selectedIndex = prevIndex;
+    this.builderState.aiInterviewStepIndex.set(prevIndex);
+    this.scrollToStep(prevIndex);
   }
 
   onNextStep() {
@@ -174,8 +204,10 @@ export class AiInterview implements OnInit {
     }
 
     this.invalidQuestionId.set(null);
-    stepper.selectedIndex = stepper.selectedIndex + 1;
-    this.scrollToStep(stepper.selectedIndex);
+    const nextIndex = stepper.selectedIndex + 1;
+    stepper.selectedIndex = nextIndex;
+    this.builderState.aiInterviewStepIndex.set(nextIndex);
+    this.scrollToStep(nextIndex);
   }
 
   isQuestionCompleted(questionId: string): boolean {
@@ -239,6 +271,7 @@ export class AiInterview implements OnInit {
 
       const stepper = this.stepper();
       if (stepper) stepper.selectedIndex = invalidIndex;
+      this.builderState.aiInterviewStepIndex.set(invalidIndex);
       this.scrollToStep(invalidIndex);
       toast.error(this._localeService.translate('toast_required_questions'));
       return;
@@ -270,7 +303,7 @@ export class AiInterview implements OnInit {
     };
 
     this.aiInterviewApi.submitAnswers(payload).subscribe({
-      next: (res) => {
+      next: () => {
         this.isSubmitting.set(false);
 
         toast.success(this._localeService.translate('toast_answers_success'), { id: toastId });
@@ -291,7 +324,7 @@ export class AiInterview implements OnInit {
     const keyboardEvent = event as KeyboardEvent;
     if (!keyboardEvent.shiftKey) {
       keyboardEvent.preventDefault();
-      this.stepper()?.next();
+      this.onNextStep();
     }
   }
 }
