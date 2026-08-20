@@ -21,23 +21,23 @@
           appScrollAnimate="fade-up"
           [animDelay]="i * 120"
           routerLink="/build"
-          class="relative flex flex-col pt-8 hover:shadow-2xl hover:shadow-primary/5 border border-border/40 bg-card/40 backdrop-blur-md overflow-hidden text-center no-underline transition-all duration-500 cursor-pointer pipeline-card group rounded-2xl"
+          class="relative flex flex-col pt-8 hover:shadow-2xl hover:shadow-primary/5 border border-border/40 bg-card/40 backdrop-blur-md text-center no-underline transition-all duration-500 cursor-pointer pipeline-card group rounded-2xl"
           (mousemove)="onMouseMove($event)"
           (mouseleave)="onMouseLeave($event)"
         >
           <!-- Glow layer -->
           <div
-            class="absolute inset-0 opacity-0 rounded-2xl transition-opacity duration-300 pointer-events-none pipeline-glow"
+            class="absolute inset-0 opacity-0 rounded-2xl transition-opacity duration-300 pointer-events-none pipeline-glow overflow-hidden"
           ></div>
 
           <!-- Number Indicator -->
           <div
-            class="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-background border border-border/50 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-primary/50 transition-all duration-300 z-20"
+            class="absolute -top-6 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 w-16 h-16 rounded-full bg-background border border-border/50 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:border-primary/50 transition-all duration-300 z-20"
           >
             <span
               class="font-mono font-bold text-transparent bg-clip-text bg-gradient-to-br from-foreground to-foreground/50 text-2xl group-hover:from-primary group-hover:to-primary/50 transition-all"
             >
-              {{ step.number }}
+              {{ step.number | translate }}
             </span>
           </div>
 

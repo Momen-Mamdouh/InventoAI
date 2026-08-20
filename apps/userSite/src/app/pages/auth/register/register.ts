@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@invento/core';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -20,7 +21,7 @@ import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

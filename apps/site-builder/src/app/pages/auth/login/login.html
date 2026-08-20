@@ -1,6 +1,6 @@
 <div class="flex flex-col h-full text-center">
   <div class="mb-10 stagger-1">
-    <h1 class="text-3xl font-bold tracking-tight mb-2">Welcome back</h1>
+    <h1 class="text-3xl font-bold tracking-tight mb-2">{{ 'auth_login_title' | translate }}</h1>
   </div>
 
   <form
@@ -35,7 +35,7 @@
             fill="#EA4335"
           />
         </svg>
-        Continue with Google
+        {{ 'auth_login_google' | translate }}
       </button>
     </div>
 
@@ -45,7 +45,9 @@
         <span class="w-full border-t border-border"></span>
       </div>
       <div class="relative flex justify-center text-xs font-normal">
-        <span class="bg-background px-4 text-muted-foreground uppercase">or continue with</span>
+        <span class="bg-background px-4 text-muted-foreground uppercase">{{
+          'auth_login_or' | translate
+        }}</span>
       </div>
     </div>
 
@@ -57,12 +59,12 @@
           id="email"
           type="email"
           formControlName="email"
-          placeholder="Enter email address"
+          [placeholder]="'auth_email_placeholder' | translate"
           class="w-full px-4 !py-6 text-base"
         />
       </div>
       @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
-        <div class="text-xs text-destructive pl-2 mt-1">Please enter a valid email address.</div>
+        <div class="text-xs text-destructive pl-2 mt-1">{{ 'auth_email_error' | translate }}</div>
       }
 
       <!-- Password Input -->
@@ -72,16 +74,23 @@
           id="password"
           type="password"
           formControlName="password"
-          placeholder="Enter password"
+          [placeholder]="'auth_password_placeholder' | translate"
           class="w-full px-4 !py-6 text-base"
         />
       </div>
       @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
-        <div class="text-xs text-destructive pl-2 mt-1">Password is required.</div>
+        <div class="text-xs text-destructive pl-2 mt-1">
+          {{ 'auth_password_error' | translate }}
+        </div>
       }
-      
+
       <div class="flex justify-end mt-1">
-        <a routerLink="/auth/forgot-password" class="text-sm font-medium text-primary hover:underline" tabindex="-1">Forgot password?</a>
+        <a
+          routerLink="/auth/forgot-password"
+          class="text-sm font-medium text-primary hover:underline"
+          tabindex="-1"
+          >{{ 'auth_login_forgot' | translate }}</a
+        >
       </div>
     </div>
 
@@ -94,7 +103,7 @@
         [disabled]="isLoading()"
       >
         @if (!isLoading()) {
-          <span>Continue</span>
+          <span>{{ 'auth_btn_continue' | translate }}</span>
         } @else {
           <span class="flex items-center gap-2">
             <svg
@@ -124,8 +133,10 @@
     </div>
 
     <div class="mt-8 stagger-5 text-sm text-muted-foreground">
-      Don't have an account?
-      <a routerLink="/auth/register" class="font-medium text-primary hover:underline">Sign up</a>
+      {{ 'auth_login_no_account' | translate }}
+      <a routerLink="/auth/register" class="font-medium text-primary hover:underline">{{
+        'auth_login_signup' | translate
+      }}</a>
     </div>
   </form>
 </div>

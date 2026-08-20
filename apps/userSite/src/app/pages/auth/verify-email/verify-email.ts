@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@invento/core';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,7 +14,7 @@ import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [ReactiveFormsModule, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, HlmLabel, HlmButton],
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.css',
 })

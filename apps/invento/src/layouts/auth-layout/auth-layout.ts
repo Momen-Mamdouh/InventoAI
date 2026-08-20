@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@invento/core';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
@@ -6,7 +7,7 @@ import { DriftWallComponent } from '../../shared/ui/drift-wall/drift-wall.compon
 @Component({
   selector: 'app-auth-layout',
   standalone: true,
-  imports: [RouterOutlet, DriftWallComponent],
+  imports: [TranslatePipe, RouterOutlet, DriftWallComponent],
   templateUrl: './auth-layout.html',
   styleUrl: './auth-layout.css',
 })
