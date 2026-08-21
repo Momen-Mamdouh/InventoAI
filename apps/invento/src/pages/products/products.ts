@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideDownload,
@@ -19,6 +19,8 @@ import {
   lucideAlertCircle,
   lucideLoader2,
   lucideCheck,
+  lucideFolderOpen,
+  lucideImage,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
@@ -72,6 +74,7 @@ interface FormVariant {
     DeleteConfirmDialog,
     SearchPipe,
     HlmSkeleton,
+    RouterLink,
   ],
   providers: [
     provideIcons({
@@ -83,6 +86,8 @@ interface FormVariant {
       lucideAlertCircle,
       lucideLoader2,
       lucideCheck,
+      lucideFolderOpen,
+      lucideImage,
     }),
   ],
   templateUrl: './products.html',
@@ -157,7 +162,10 @@ export class Products implements OnInit {
   createEmptyVariant(): FormVariant {
     const variantAttributeValues: Record<string, string> = {};
     if (this.attributes().length > 0) {
-      this.variantAttributes().forEach((a) => (variantAttributeValues[a.id] = ''));
+      this.variantAttributes().forEach((a) => {
+        const firstVal = a.values && a.values.length > 0 ? a.values[0].id : '';
+        variantAttributeValues[a.id] = firstVal;
+      });
     }
     return {
       sku: '',
@@ -198,17 +206,23 @@ export class Products implements OnInit {
   fetchAttributes(): void {
     this.attributeService.getAttributes().subscribe({
       next: (attrs) => {
-        this.attributes.set(attrs);
+        this.attributes.set(attrs || []);
 
         const prodAttrs = { ...this.newProduct.productAttributeValues };
         this.productAttributes().forEach((a) => {
-          if (prodAttrs[a.id] === undefined) prodAttrs[a.id] = '';
+          const firstVal = a.values && a.values.length > 0 ? a.values[0].id : '';
+          if (!prodAttrs[a.id]) {
+            prodAttrs[a.id] = firstVal;
+          }
         });
         this.newProduct.productAttributeValues = prodAttrs;
 
         this.newProduct.variants.forEach((v) => {
           this.variantAttributes().forEach((a) => {
-            if (v.variantAttributeValues[a.id] === undefined) v.variantAttributeValues[a.id] = '';
+            const firstVal = a.values && a.values.length > 0 ? a.values[0].id : '';
+            if (!v.variantAttributeValues[a.id]) {
+              v.variantAttributeValues[a.id] = firstVal;
+            }
           });
         });
       },
@@ -232,17 +246,36 @@ export class Products implements OnInit {
     });
   }
 
+  goToAttributes(): void {
+    this.router.navigate(['/attributes']);
+  }
+
   toggleDrawer(): void {
+    if (!this.isDrawerOpen() && this.attributes().length === 0) {
+      toast.warning('Please define at least one product attribute before creating products.', {
+        action: {
+          label: 'Go to Attributes',
+          onClick: () => this.router.navigate(['/attributes']),
+        },
+      });
+      return;
+    }
+
     this.isDrawerOpen.update((v) => !v);
     if (!this.isDrawerOpen()) {
       this.resetNewProduct();
+    } else {
+      this.fetchAttributes();
     }
   }
 
   resetNewProduct(): void {
     const prodAttrs: Record<string, string> = {};
     if (this.attributes().length > 0) {
-      this.productAttributes().forEach((a) => (prodAttrs[a.id] = ''));
+      this.productAttributes().forEach((a) => {
+        const firstVal = a.values && a.values.length > 0 ? a.values[0].id : '';
+        prodAttrs[a.id] = firstVal;
+      });
     }
 
     this.newProduct = {
@@ -251,7 +284,7 @@ export class Products implements OnInit {
       description: '',
       shortDescription: '',
       searchKeywords: '',
-      status: '' as 'draft' | 'active' | 'archived',
+      status: 'draft',
       isFeatured: false,
       weightGrams: null,
       categoryIds: [],
@@ -271,6 +304,11 @@ export class Products implements OnInit {
   }
 
   submitProduct(): void {
+    if (this.attributes().length === 0) {
+      toast.error('You must define at least one attribute before creating products.');
+      return;
+    }
+
     if (!this.newProduct.title.trim()) {
       toast.error('Product title is required.');
       return;

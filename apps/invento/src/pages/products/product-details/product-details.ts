@@ -494,10 +494,12 @@ export class ProductDetails implements OnInit {
   toggleGenerateDrawer(): void {
     const currentOpen = this.isGenerateDrawerOpen();
     if (!currentOpen) {
+      const defaultAxisId =
+        this.activeVariantAxes().length > 0 ? this.activeVariantAxes()[0].id : '';
       this.generateVariantsForm = {
         priceAmount: 0,
         stockQuantity: 0,
-        axes: [{ attributeId: '', valueIds: [] }],
+        axes: [{ attributeId: defaultAxisId, valueIds: [] }],
       };
     }
     this.isGenerateDrawerOpen.set(!currentOpen);
@@ -505,7 +507,8 @@ export class ProductDetails implements OnInit {
 
   addAxis(): void {
     if (this.generateVariantsForm.axes.length >= 3) return;
-    this.generateVariantsForm.axes.push({ attributeId: '', valueIds: [] });
+    const defaultAxisId = this.activeVariantAxes().length > 0 ? this.activeVariantAxes()[0].id : '';
+    this.generateVariantsForm.axes.push({ attributeId: defaultAxisId, valueIds: [] });
   }
 
   removeAxis(index: number): void {

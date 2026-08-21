@@ -38,6 +38,7 @@ import { CategoriesService } from '../../features/categories/category.service';
 import { ProductService } from '../../features/products/product.service';
 import { AuthService } from '../../core/service/auth.service';
 import { environment } from '../../environments/environment';
+import { HlmButtonImports } from '@spartan/helm/button';
 
 interface Category {
   id: string;
@@ -58,7 +59,7 @@ interface Product {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgIcon, TranslatePipe, HlmSkeleton, EmptyState],
+  imports: [CommonModule, NgIcon, TranslatePipe, HlmSkeleton, EmptyState, HlmButtonImports],
   templateUrl: './home.html',
   styleUrl: './home.css',
   providers: [

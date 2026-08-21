@@ -86,48 +86,13 @@
             #heroItem
             class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center md:gap-4"
           >
-            <div
-              class="btn-wrapper w-full sm:w-auto transition-all hover:shadow-md shadow-sm rounded-lg hover:scale-[1.02]"
+            <a
+              hlmBtn
+              [routerLink]="heroCtaLink()"
+              class="w-full sm:w-auto rounded-lg px-6 py-3 text-sm font-bold md:px-8 md:py-4 md:text-base"
             >
-              <div class="btn-light"></div>
-              <div
-                class="gradient-layer"
-                style="animation-delay: 0s; animation-duration: 25s"
-              ></div>
-              <div
-                class="gradient-layer"
-                style="animation-delay: 0.15s; animation-duration: 15.9s"
-              ></div>
-              <div
-                class="gradient-layer"
-                style="animation-delay: 0.53s; animation-duration: 26.4s"
-              ></div>
-              <div
-                class="gradient-layer"
-                style="animation-delay: 0.45s; animation-duration: 17.8s"
-              ></div>
-              <div
-                class="gradient-layer"
-                style="animation-delay: 1.6s; animation-duration: 19.2s"
-              ></div>
-              <div
-                class="gradient-layer"
-                style="animation-delay: 1.6s; animation-duration: 29.2s"
-              ></div>
-              <div
-                class="gradient-layer"
-                style="animation-delay: 1.6s; animation-duration: 20.2s"
-              ></div>
-              <a
-                [routerLink]="heroCtaLink()"
-                class="gradient-btn text-sm font-bold md:px-8 md:py-4 md:text-base !rounded-lg"
-              >
-                {{ heroCtaLabel() }}
-              </a>
-              <div class="text-overlay text-sm font-bold md:px-8 md:py-4 md:text-base !rounded-lg">
-                {{ heroCtaLabel() }}
-              </div>
-            </div>
+              {{ heroCtaLabel() }}
+            </a>
             <a
               hlmBtn
               variant="outline"

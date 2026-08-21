@@ -177,8 +177,40 @@
             }
           } @else if (products().length === 0) {
             <tr>
-              <td colspan="8" class="p-8 text-center text-muted-foreground">
-                No products found in the catalog.
+              <td colspan="8" class="p-16 text-center">
+                <div class="flex flex-col items-center justify-center gap-3">
+                  <div
+                    class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
+                  >
+                    <ng-icon name="lucideFolderOpen" size="20" />
+                  </div>
+                  <div class="space-y-1">
+                    <p class="font-medium text-sm text-foreground">No products found</p>
+                    <p class="text-muted-foreground text-sm">
+                      @if (attributes().length === 0) {
+                        Get started by defining your product attributes first.
+                      } @else {
+                        Get started by creating your first product or generating with AI.
+                      }
+                    </p>
+                  </div>
+                  @if (attributes().length === 0) {
+                    <button
+                      hlmBtn
+                      (click)="goToAttributes()"
+                      class="gap-1.5 mt-2"
+                      variant="outline"
+                    >
+                      <ng-icon name="lucidePlus" size="16" />
+                      Define Attributes First
+                    </button>
+                  } @else {
+                    <button hlmBtn (click)="toggleDrawer()" class="gap-1.5 mt-2" variant="outline">
+                      <ng-icon name="lucidePlus" size="16" />
+                      Add Product
+                    </button>
+                  }
+                </div>
               </td>
             </tr>
           } @else {
@@ -262,17 +294,8 @@
                   }
                 </td>
 
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right">
-                  <span
-                    class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium"
-                    [ngClass]="
-                      product.totalStock > 0
-                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
-                        : 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400'
-                    "
-                  >
-                    {{ product.totalStock }}
-                  </span>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right text-muted-foreground">
+                  {{ product.totalStock }}
                 </td>
 
                 <td class="px-2.5 sm:px-3 md:px-4 py-3">
@@ -301,6 +324,33 @@
 
                 <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ product.createdAt | date: 'MMM d, y' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="p-16 text-center">
+                  <div class="flex flex-col items-center justify-center gap-3">
+                    <div
+                      class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
+                    >
+                      <ng-icon name="lucideSearch" size="20" />
+                    </div>
+                    <div class="space-y-1">
+                      <p class="font-medium text-sm text-foreground">No matching products</p>
+                      <p class="text-muted-foreground text-sm">
+                        No products match "{{ searchTerm() }}". Try adjusting your search query.
+                      </p>
+                    </div>
+                    <button
+                      hlmBtn
+                      (click)="searchTerm.set('')"
+                      class="gap-1.5 mt-2"
+                      variant="outline"
+                    >
+                      <ng-icon name="lucideX" size="16" />
+                      Clear Search
+                    </button>
+                  </div>
                 </td>
               </tr>
             }
@@ -342,6 +392,23 @@
 
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-8">
+        @if (attributes().length === 0) {
+          <div
+            class="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-700 dark:text-amber-300 text-xs flex items-center justify-between gap-2"
+          >
+            <div class="flex items-center gap-2">
+              <ng-icon name="lucideAlertCircle" size="16" class="text-amber-500 shrink-0" />
+              <span
+                >No product attributes defined yet. Products require attributes for catalog
+                classification.</span
+              >
+            </div>
+            <a routerLink="/attributes" class="font-bold underline hover:opacity-80 shrink-0">
+              Add Attributes
+            </a>
+          </div>
+        }
+
         <!-- SECTION: Basic Information -->
         <div class="space-y-4">
           <h3
@@ -387,6 +454,52 @@
             </div>
           </div>
         </div>
+
+        <!-- SECTION: Product Attributes & Specifications -->
+        @if (productAttributes().length > 0) {
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-border pb-2">
+              <h3
+                class="text-xs font-bold text-foreground uppercase tracking-widest text-muted-foreground"
+              >
+                Attributes & Specifications
+              </h3>
+              <a routerLink="/attributes" class="text-xs text-primary hover:underline font-medium">
+                Manage Attributes
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              @for (attr of productAttributes(); track attr.id) {
+                <div>
+                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground">{{
+                    attr.name
+                  }}</label>
+                  <hlm-select
+                    [(value)]="newProduct.productAttributeValues[attr.id]"
+                    [itemToString]="makeAttributeItemToString(attr.id)"
+                    class="w-full"
+                  >
+                    <hlm-select-trigger class="w-full h-9 bg-transparent">
+                      <hlm-select-value [placeholder]="'Select ' + attr.name" />
+                    </hlm-select-trigger>
+                    <hlm-select-content *hlmSelectPortal>
+                      @if (attr.values.length === 0) {
+                        <div class="p-2 text-xs text-muted-foreground text-center italic">
+                          No values defined yet
+                        </div>
+                      } @else {
+                        @for (val of attr.values; track val.id) {
+                          <hlm-select-item [value]="val.id">{{ val.value }}</hlm-select-item>
+                        }
+                      }
+                    </hlm-select-content>
+                  </hlm-select>
+                </div>
+              }
+            </div>
+          </div>
+        }
 
         <!-- SECTION: Variants -->
         <div class="space-y-4">
@@ -438,8 +551,14 @@
                           <hlm-select-value [placeholder]="'Select ' + attr.name" />
                         </hlm-select-trigger>
                         <hlm-select-content *hlmSelectPortal>
-                          @for (val of attr.values; track val.id) {
-                            <hlm-select-item [value]="val.id">{{ val.value }}</hlm-select-item>
+                          @if (attr.values.length === 0) {
+                            <div class="p-2 text-xs text-muted-foreground text-center italic">
+                              No values defined yet
+                            </div>
+                          } @else {
+                            @for (val of attr.values; track val.id) {
+                              <hlm-select-item [value]="val.id">{{ val.value }}</hlm-select-item>
+                            }
                           }
                         </hlm-select-content>
                       </hlm-select>
@@ -526,40 +645,6 @@
           >
             Optional Details
           </h3>
-
-          <!-- Descriptive Attributes (Product Level) -->
-          @if (productAttributes().length > 0) {
-            <div
-              class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card"
-            >
-              <div class="sm:col-span-2">
-                <p class="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                  Descriptive Attributes
-                </p>
-              </div>
-              @for (attr of productAttributes(); track attr.id) {
-                <div>
-                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground">{{
-                    attr.name
-                  }}</label>
-                  <hlm-select
-                    [(value)]="newProduct.productAttributeValues[attr.id]"
-                    [itemToString]="makeAttributeItemToString(attr.id)"
-                    class="w-full"
-                  >
-                    <hlm-select-trigger class="w-full h-9 bg-transparent">
-                      <hlm-select-value [placeholder]="'Select ' + attr.name" />
-                    </hlm-select-trigger>
-                    <hlm-select-content *hlmSelectPortal>
-                      @for (val of attr.values; track val.id) {
-                        <hlm-select-item [value]="val.id">{{ val.value }}</hlm-select-item>
-                      }
-                    </hlm-select-content>
-                  </hlm-select>
-                </div>
-              }
-            </div>
-          }
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">

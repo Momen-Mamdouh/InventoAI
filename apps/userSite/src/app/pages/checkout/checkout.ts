@@ -144,18 +144,10 @@ export class CheckoutComponent implements OnInit {
 
       if (user) {
         const patch: Record<string, string> = {};
-        if (
-          !this.checkoutForm.get('firstName')?.dirty &&
-          !this.checkoutForm.get('firstName')?.value &&
-          user.firstName
-        ) {
+        if (user.firstName) {
           patch['firstName'] = user.firstName;
         }
-        if (
-          !this.checkoutForm.get('lastName')?.dirty &&
-          !this.checkoutForm.get('lastName')?.value &&
-          user.lastName
-        ) {
+        if (user.lastName) {
           patch['lastName'] = user.lastName;
         }
         if (user.email) {
@@ -280,23 +272,44 @@ export class CheckoutComponent implements OnInit {
     const prefill = this.cartService.prefilledCustomer();
     const currentUser = this.authService.currentUser();
 
-    let firstName = prefill?.firstName || '';
-    let lastName = prefill?.lastName || '';
+    let firstName =
+      (isAuth && currentUser?.firstName ? currentUser.firstName : '') ||
+      currentUser?.firstName ||
+      prefill?.firstName ||
+      '';
+    let lastName =
+      (isAuth && currentUser?.lastName ? currentUser.lastName : '') ||
+      currentUser?.lastName ||
+      prefill?.lastName ||
+      '';
 
     if (!firstName && !lastName && prefill?.contactName) {
-      const parts = prefill.contactName.trim().split(' ');
+      const parts = prefill.contactName.trim().split(/\s+/);
       firstName = parts[0] || '';
       lastName = parts.slice(1).join(' ') || '';
     }
 
-    if (!firstName && currentUser?.firstName) {
-      firstName = currentUser.firstName;
-    }
-    if (!lastName && currentUser?.lastName) {
-      lastName = currentUser.lastName;
+    const email =
+      (isAuth && currentUser?.email ? currentUser.email : '') ||
+      currentUser?.email ||
+      prefill?.contactEmail ||
+      '';
+
+    // If still missing firstName, derive from email handle
+    if (!firstName && email) {
+      const handle = email.split('@')[0];
+      const parts = handle.split(/[._-]/);
+      if (parts.length >= 2 && parts[0] && parts[1]) {
+        firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+        lastName = parts
+          .slice(1)
+          .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+          .join(' ');
+      } else if (parts.length === 1 && parts[0]) {
+        firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+      }
     }
 
-    const email = prefill?.contactEmail || currentUser?.email || '';
     let phone = prefill?.contactPhone || '';
     let address = prefill?.shippingAddress;
 

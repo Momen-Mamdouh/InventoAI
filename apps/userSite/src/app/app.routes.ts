@@ -40,7 +40,6 @@ export const routes: Routes = [
       },
       {
         path: 'checkout',
-        canActivate: [authGuard],
         loadComponent: () =>
           import('@invento/user-site/app/pages/checkout').then((m) => m.CheckoutComponent),
       },
