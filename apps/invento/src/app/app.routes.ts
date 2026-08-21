@@ -60,6 +60,20 @@ export const appRoutes: Routes = [
         loadComponent: () =>
           import('@invento/invento/pages/suppliers/suppliers').then((c) => c.Suppliers),
       },
+      {
+        path: 'suppliers/:id',
+        loadComponent: () =>
+          import('@invento/invento/pages/suppliers/supplier-details/supplier-details').then(
+            (c) => c.SupplierDetails,
+          ),
+      },
+      {
+        path: 'purchase-requests',
+        loadComponent: () =>
+          import('@invento/invento/pages/purchase-requests/purchase-requests').then(
+            (c) => c.PurchaseRequests,
+          ),
+      },
 
       {
         path: 'ai-advisor',
@@ -212,6 +226,16 @@ export const appRoutes: Routes = [
       },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
+  },
+  {
+    path: 'mailbox/callback',
+    loadComponent: () =>
+      import('@invento/invento/pages/mailbox-callback/mailbox-callback').then((c) => c.MailboxCallback),
+  },
+  {
+    path: 'dashboard/mailbox/callback',
+    loadComponent: () =>
+      import('@invento/invento/pages/mailbox-callback/mailbox-callback').then((c) => c.MailboxCallback),
   },
   {
     path: 'not-found',

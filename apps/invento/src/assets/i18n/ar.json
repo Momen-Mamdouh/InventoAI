@@ -123,5 +123,6 @@
   "orders.final_status_notice": "هذا الطلب في حالة نهائية ولا يمكن تعديل حالته.",
   "orders.loading": "جارٍ تحميل الطلبات...",
   "orders.view": "عرض",
-  "orders.close": "إغلاق"
+  "orders.close": "إغلاق",
+  "nav_purchase_requests": "طلبات الشراء"
 }

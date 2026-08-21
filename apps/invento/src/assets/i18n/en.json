@@ -123,5 +123,6 @@
   "orders.final_status_notice": "This order is finalized and cannot be modified further.",
   "orders.loading": "Loading orders...",
   "orders.view": "View",
-  "orders.close": "Close"
+  "orders.close": "Close",
+  "nav_purchase_requests": "Purchase Requests"
 }

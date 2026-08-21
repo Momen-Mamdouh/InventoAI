@@ -10,6 +10,17 @@
   },
   "/categories": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/orders": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
+  "/suppliers": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
+  "/purchase-requests": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/mailbox": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true
+  },
   "/faqs": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/advisor": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },
   "/chat": { "target": "http://localhost:3000", "secure": false, "changeOrigin": true },

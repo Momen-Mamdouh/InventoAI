@@ -1,0 +1,106 @@
+<hlm-dialog [state]="'open'" (stateChanged)="onStateChanged($event)">
+  <hlm-dialog-content
+    *brnDialogContent="let ctx"
+    class="flex flex-col gap-0 p-0 sm:max-w-lg max-h-[100dvh] sm:max-h-[85dvh] overflow-hidden"
+  >
+    <form (ngSubmit)="submit()" [formGroup]="form" class="flex flex-col min-h-0 overflow-hidden">
+      <hlm-dialog-header class="p-6 pb-4">
+        <h3 hlmDialogTitle>{{ supplier ? 'Edit Supplier' : 'Add Supplier' }}</h3>
+        <p hlmDialogDescription>
+          {{
+            supplier
+              ? "Update this supplier's details."
+              : "Add a contact to your store's supplier book."
+          }}
+        </p>
+      </hlm-dialog-header>
+
+      <div class="flex-1 space-y-5 px-6 py-1 min-h-0 overflow-y-auto">
+        <div hlmField>
+          <label hlmFieldLabel for="sup-name">Company Name</label>
+          <input
+            hlmInput
+            id="sup-name"
+            formControlName="name"
+            placeholder="e.g. Nile Textiles"
+            [forceInvalid]="form.controls.name.invalid && form.controls.name.touched"
+          />
+          @if (form.controls.name.invalid && form.controls.name.touched) {
+            <hlm-field-error>Name must be between 2 and 120 characters.</hlm-field-error>
+          }
+        </div>
+
+        <div hlmField>
+          <label hlmFieldLabel for="sup-email">Contact Email</label>
+          <input
+            hlmInput
+            id="sup-email"
+            type="email"
+            formControlName="contactEmail"
+            placeholder="sales@supplier.test"
+            [forceInvalid]="
+              form.controls.contactEmail.invalid && form.controls.contactEmail.touched
+            "
+          />
+          @if (form.controls.contactEmail.invalid && form.controls.contactEmail.touched) {
+            <hlm-field-error>A valid email is required.</hlm-field-error>
+          }
+          <p hlmFieldDescription>One supplier per email per store. Nothing is emailed here.</p>
+        </div>
+
+        <div class="gap-4 grid grid-cols-1 sm:grid-cols-2">
+          <div hlmField>
+            <label hlmFieldLabel for="sup-phone">Phone</label>
+            <input hlmInput id="sup-phone" formControlName="phone" placeholder="+20 100 555 0134" />
+          </div>
+          <div hlmField>
+            <label hlmFieldLabel for="sup-lead">Lead Time (days)</label>
+            <input
+              hlmInput
+              id="sup-lead"
+              type="number"
+              min="1"
+              max="365"
+              formControlName="leadTimeDays"
+              [forceInvalid]="
+                form.controls.leadTimeDays.invalid && form.controls.leadTimeDays.touched
+              "
+            />
+            @if (form.controls.leadTimeDays.invalid && form.controls.leadTimeDays.touched) {
+              <hlm-field-error>Enter a lead time between 1 and 365 days.</hlm-field-error>
+            }
+          </div>
+        </div>
+
+        <div hlmField>
+          <label hlmFieldLabel for="sup-notes">Notes</label>
+          <textarea
+            hlmTextarea
+            id="sup-notes"
+            formControlName="notes"
+            rows="3"
+            placeholder="Your own memory of this supplier — e.g. usually a week late on silk"
+          ></textarea>
+          <p hlmFieldDescription>Shown only on your dashboard. Never sent to the supplier.</p>
+        </div>
+
+        <label hlmLabel class="flex items-center gap-2 pb-1" for="sup-is-active">
+          <hlm-switch id="sup-is-active" formControlName="isActive" />
+          Active — eligible to receive purchase requests
+        </label>
+      </div>
+
+      <hlm-dialog-footer class="p-6 pt-4 border-t">
+        <button type="button" hlmBtn variant="ghost" (click)="close()">Cancel</button>
+        <button type="submit" hlmBtn [disabled]="submitting()" class="gap-1.5">
+          @if (submitting()) {
+            <hlm-spinner class="size-4" />
+          } @else {
+            <ng-icon name="lucideCheck" size="1rem" />
+          }
+          {{ submitting() ? 'Saving…' : supplier ? 'Save Changes' : 'Add Supplier' }}
+        </button>
+      </hlm-dialog-footer>
+    </form>
+  </hlm-dialog-content>
+</hlm-dialog>

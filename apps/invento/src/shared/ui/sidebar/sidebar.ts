@@ -8,6 +8,7 @@ import {
   lucideUsers,
   lucideShoppingCart,
   lucideTruck,
+  lucideClipboardList,
   lucideBarChart3,
   lucideBot,
   lucideFolderTree,
@@ -57,6 +58,7 @@ interface NavItem {
       lucideUsers,
       lucideShoppingCart,
       lucideTruck,
+      lucideClipboardList,
       lucideBarChart3,
       lucideBot,
       lucideFolderTree,
@@ -92,6 +94,7 @@ export class Sidebar {
     { label: 'nav_orders', icon: 'lucideShoppingCart', route: '/orders' },
     { label: 'nav_faq', icon: 'lucideMessageCircleQuestionMark', route: '/faq' },
     { label: 'nav_suppliers', icon: 'lucideTruck', route: '/suppliers' },
+    { label: 'nav_purchase_requests', icon: 'lucideClipboardList', route: '/purchase-requests' },
     { label: 'nav_ai_advisor', icon: 'lucideBot', route: '/ai-advisor' },
     { label: 'nav_chatbot', icon: 'lucideBotMessageSquare', route: '/chatbot' },
   ];
