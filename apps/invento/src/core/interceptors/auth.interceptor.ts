@@ -12,9 +12,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
   const authService = inject(AuthService);
 
-  const token =
-    tokenService.getAccessToken() ||
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWRhNjRhMC1lZTVlLTQ0NGUtODFiNC1jNjlmOTY0NjRmNmUiLCJlbWFpbCI6Im93bmVyLmxheWFsaUBpbnZlbnRvYWkudGVzdCIsInJvbGUiOiJPV05FUiIsInN0b3JlSWQiOm51bGwsImlhdCI6MTc4Njg4NDUzNiwiZXhwIjoxNzg2OTI3NzM2fQ.uOf9gaIMA5h81eElSQLhD9FVIxX2iKGV2ZixGFpRE4I';
+  const token = tokenService.getAccessToken();
   let authReq = req;
 
   if (token) {

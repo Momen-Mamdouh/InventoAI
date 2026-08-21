@@ -8,4 +8,5 @@ export const environment = {
    * API's CORS_ORIGINS does not list port 4400.
    */
   apiUrl: '',
+  googleClientId: '774402300388-8enjhnd4qm40jremiu216eb6cn5jeqe6.apps.googleusercontent.com',
 };

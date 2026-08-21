@@ -129,6 +129,15 @@ export class AuthService {
     );
   }
 
+  googleLogin(idToken: string, storeSlug: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/users/google`, { idToken, storeSlug }).pipe(
+      tap((response) => {
+        this.tokenService.setTokens(response.accessToken, response.refreshToken);
+        this.setCurrentUser(response.user);
+      }),
+    );
+  }
+
   setCurrentUser(user: User | null): void {
     this.currentUser.set(user);
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {

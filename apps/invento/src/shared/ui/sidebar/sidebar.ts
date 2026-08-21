@@ -29,6 +29,7 @@ import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
 import { HlmAvatar, HlmAvatarImage, HlmAvatarFallback } from '@spartan/helm/avatar';
 import { TranslatePipe, LocaleService } from '@invento/core';
 import { BrandLogo } from '@invento/shared';
+import { toast } from '@spartan/helm/sonner';
 import { AuthService } from '../../../core/service/auth.service';
 
 interface NavItem {
@@ -126,4 +127,9 @@ export class Sidebar {
     }
     return name.substring(0, 2).toUpperCase();
   });
+
+  protected logout(): void {
+    this.authService.logout();
+    toast.success('Logged out successfully');
+  }
 }

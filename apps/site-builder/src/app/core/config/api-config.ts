@@ -19,6 +19,11 @@ export class ApiConfig {
   readonly baseUrl = this.resolveBaseUrl();
   // readonly apiKey = this.resolve('API_KEY', 'INVENTO_API_KEY', environment.apiKey);
   readonly dashboardUrl = this.resolveDashboardUrl();
+  readonly googleClientId = this.resolve(
+    'GOOGLE_CLIENT_ID',
+    'INVENTO_GOOGLE_CLIENT_ID',
+    environment.googleClientId || '',
+  );
 
   /**
    * Builds a full endpoint URL. Pass a leading-slash path, e.g. '/site-builder/publish'.

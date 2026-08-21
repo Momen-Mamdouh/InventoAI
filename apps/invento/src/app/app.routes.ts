@@ -1,11 +1,14 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from '@invento/invento/layouts/main-layout/main-layout';
 import { AuthLayout } from '@invento/invento/layouts/auth-layout/auth-layout';
+import { authGuard } from '../core/guards/auth.guard';
+import { guestGuard } from '../core/guards/guest.guard';
 
 export const appRoutes: Routes = [
   {
     path: '',
     component: MainLayout,
+    canActivate: [authGuard],
     children: [
       { path: '', redirectTo: '/auth', pathMatch: 'full' },
       {
@@ -16,7 +19,9 @@ export const appRoutes: Routes = [
       {
         path: 'catalog-ai',
         loadComponent: () =>
-          import('../features/catalog-ai/ui/catalog-ai-review/catalog-ai-review.component').then((c) => c.CatalogAiReviewComponent),
+          import('../features/catalog-ai/ui/catalog-ai-review/catalog-ai-review.component').then(
+            (c) => c.CatalogAiReviewComponent,
+          ),
       },
       {
         path: 'products',
@@ -159,40 +164,53 @@ export const appRoutes: Routes = [
           {
             path: 'insights',
             loadComponent: () =>
-              import('../pages/chatbot/views/insights/insights.component').then((c) => c.InsightsComponent),
+              import('../pages/chatbot/views/insights/insights.component').then(
+                (c) => c.InsightsComponent,
+              ),
           },
           {
             path: 'settings',
             loadComponent: () =>
-              import('../pages/chatbot/views/settings/settings.component').then((c) => c.SettingsComponent),
+              import('../pages/chatbot/views/settings/settings.component').then(
+                (c) => c.SettingsComponent,
+              ),
           },
           {
             path: 'knowledge',
             loadComponent: () =>
-              import('../pages/chatbot/views/knowledge/knowledge.component').then((c) => c.KnowledgeComponent),
+              import('../pages/chatbot/views/knowledge/knowledge.component').then(
+                (c) => c.KnowledgeComponent,
+              ),
           },
           {
             path: 'history',
             loadComponent: () =>
-              import('../pages/chatbot/views/history/history.component').then((c) => c.HistoryComponent),
+              import('../pages/chatbot/views/history/history.component').then(
+                (c) => c.HistoryComponent,
+              ),
           },
           {
             path: 'history/:id',
             loadComponent: () =>
-              import('../pages/chatbot/views/transcript/transcript.component').then((c) => c.TranscriptComponent),
+              import('../pages/chatbot/views/transcript/transcript.component').then(
+                (c) => c.TranscriptComponent,
+              ),
           },
           {
             path: 'unanswered',
             loadComponent: () =>
-              import('../pages/chatbot/views/unanswered/unanswered.component').then((c) => c.UnansweredComponent),
-          }
-        ]
+              import('../pages/chatbot/views/unanswered/unanswered.component').then(
+                (c) => c.UnansweredComponent,
+              ),
+          },
+        ],
       },
     ],
   },
   {
     path: 'auth',
     component: AuthLayout,
+    canActivate: [guestGuard],
     children: [
       {
         path: 'login',

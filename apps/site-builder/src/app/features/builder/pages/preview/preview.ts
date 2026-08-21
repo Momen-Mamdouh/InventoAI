@@ -41,9 +41,8 @@ import { hlmH2, hlmH3, hlmH4, hlmP } from '@spartan/helm/typography';
 import { DoubleSlash } from '@invento/shared';
 import { LocaleService, TranslatePipe } from '@invento/core';
 import { toast } from '@spartan/helm/sonner';
-import { ApiConfig } from '@/app/core/config/api-config';
-import { PALETTE_DEFAULTS, DEFAULT_RADIUS, deriveDarkPalette } from '@/app/core/utils/palette';
 import { toastApiError } from '@/app/shared/utils/toast-api-error';
+import { PALETTE_DEFAULTS, DEFAULT_RADIUS, deriveDarkPalette } from '@/app/core/utils/palette';
 
 /**
  * Neutral stand-in rendered while themes are still in flight.
@@ -100,7 +99,6 @@ export class Preview {
   private readonly _localeService = inject(LocaleService);
   private readonly previewDataClientService = inject(PreviewDataClient);
   private readonly publishApi = inject(PublishApi);
-  private readonly apiConfig = inject(ApiConfig);
 
   readonly themeSuggestions = this.previewDataClientService.themeSuggestions;
   readonly products = this.previewDataClientService.products;
@@ -336,7 +334,8 @@ export class Preview {
 
         toast.success(this._localeService.translate('toast_deploy_success'), { id: toastId });
 
-        const redirectUrl = this.apiConfig.dashboardUrl;
+        const domain = this.builderState.domain();
+        const redirectUrl = `http://localhost:4300/${domain}`;
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 1000);
