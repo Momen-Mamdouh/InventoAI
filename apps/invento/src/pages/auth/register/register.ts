@@ -1,9 +1,18 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { toast } from '@spartan/helm/sonner';
 import { AuthService } from '../../../core/service/auth.service';
+import { GoogleAuthService } from '../../../core/service/google-auth.service';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
@@ -17,12 +26,16 @@ import { extractErrorMessage } from '../../../core/utils/error.utils';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-export class Register implements OnInit {
+export class Register implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private googleAuthService = inject(GoogleAuthService);
   private router = inject(Router);
 
+  googleBtnContainer = viewChild<ElementRef<HTMLDivElement>>('googleBtnContainer');
+
   isLoading = signal(false);
+  isGoogleLoading = signal(false);
 
   registerForm = this.fb.group(
     {
@@ -77,6 +90,25 @@ export class Register implements OnInit {
     }
   }
 
+  async ngAfterViewInit() {
+    await this.initGoogleAuth();
+  }
+
+  private async initGoogleAuth() {
+    const initialized = await this.googleAuthService.initialize((idToken) => {
+      this.handleGoogleSignIn(idToken);
+    });
+
+    if (initialized) {
+      const container = this.googleBtnContainer();
+      if (container?.nativeElement) {
+        this.googleAuthService.renderButton(container.nativeElement, {
+          width: Math.min(Math.max(container.nativeElement.offsetWidth || 350, 200), 400),
+        });
+      }
+    }
+  }
+
   passwordMatchValidator(g: AbstractControl) {
     return g.get('password')?.value === g.get('confirmPassword')?.value ? null : { mismatch: true };
   }
@@ -102,6 +134,33 @@ export class Register implements OnInit {
       error: (err) => {
         this.isLoading.set(false);
         const errorMsg = extractErrorMessage(err, 'Registration failed.');
+        toast.error(errorMsg);
+      },
+    });
+  }
+
+  loginWithGoogle() {
+    if (!this.googleAuthService.hasClientId()) {
+      toast.error(
+        'Google Client ID is not configured. Please add your Google Client ID to environment.ts or .env',
+      );
+      return;
+    }
+
+    this.googleAuthService.prompt();
+  }
+
+  handleGoogleSignIn(idToken: string) {
+    this.isGoogleLoading.set(true);
+    this.authService.googleLoginOwner(idToken).subscribe({
+      next: () => {
+        this.isGoogleLoading.set(false);
+        toast.success('Signed in with Google successfully');
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.isGoogleLoading.set(false);
+        const errorMsg = extractErrorMessage(err, 'Google sign-in failed. Please try again.');
         toast.error(errorMsg);
       },
     });

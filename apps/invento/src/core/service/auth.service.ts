@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { TokenService } from './token.service';
@@ -17,6 +18,7 @@ import {
 export class AuthService {
   private http = inject(HttpClient);
   private tokenService = inject(TokenService);
+  private router = inject(Router);
 
   private apiUrl = environment.apiUrl;
 
@@ -28,6 +30,15 @@ export class AuthService {
 
   login(credentials: Record<string, unknown>): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/users/login/owner`, credentials).pipe(
+      tap((response) => {
+        this.tokenService.setTokens(response.accessToken, response.refreshToken);
+        this.currentUser.set(response.user);
+      }),
+    );
+  }
+
+  googleLoginOwner(idToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/users/google/owner`, { idToken }).pipe(
       tap((response) => {
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
         this.currentUser.set(response.user);
@@ -73,6 +84,7 @@ export class AuthService {
   logout(): void {
     this.tokenService.clearTokens();
     this.currentUser.set(null);
+    this.router.navigate(['/auth/login']);
   }
 
   isAuthenticated(): boolean {

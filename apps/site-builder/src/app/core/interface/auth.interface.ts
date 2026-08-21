@@ -5,9 +5,14 @@ export interface User {
   image: string | null;
   email: string;
   role: string;
+  storeId?: string | null;
   isEmailVerified: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface GoogleAuthPayload {
+  idToken: string;
 }
 
 export interface AuthResponse {

@@ -42,6 +42,18 @@ export class AuthService {
         this.builderState.reset();
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
         this.currentUser.set(response.user);
+        this.builderState.loadQuestions();
+      }),
+    );
+  }
+
+  googleLoginOwner(idToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(this.config.url('/users/google/owner'), { idToken }).pipe(
+      tap((response) => {
+        this.builderState.reset();
+        this.tokenService.setTokens(response.accessToken, response.refreshToken);
+        this.currentUser.set(response.user);
+        this.builderState.loadQuestions();
       }),
     );
   }

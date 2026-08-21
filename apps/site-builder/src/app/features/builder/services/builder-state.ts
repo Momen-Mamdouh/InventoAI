@@ -139,7 +139,6 @@ export class BuilderState {
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.restore();
-    this.loadQuestions();
 
     // Persist on every change so a refresh mid-wizard doesn't drop the user's
     // work (and get bounced back to step 1 by the guards).
@@ -213,11 +212,13 @@ export class BuilderState {
   }
 
   /**
-   * Primes the questionnaire from the backend once per session. Called early
-   * so the catalog has landed well before the interview step opens; the
-   * bundled list stands in until then and if the request fails.
+   * Primes the questionnaire from the backend. Must be called after the auth
+   * token has been set (i.e. after a successful login/register) so that the
+   * authenticated GET /site-builder/questions request does not get a 401.
+   * The bundled INTERVIEW_QUESTIONS list stands in until this resolves and
+   * also acts as the fallback if the request fails.
    */
-  private loadQuestions(): void {
+  loadQuestions(): void {
     this.questionsApi.getQuestions().subscribe((response) => {
       if (response?.questions?.length) this.questions.set(response.questions);
     });
