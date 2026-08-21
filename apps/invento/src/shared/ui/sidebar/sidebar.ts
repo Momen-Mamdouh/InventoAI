@@ -26,7 +26,7 @@ import {
   lucideStore,
 } from '@ng-icons/lucide';
 import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
-import { HlmAvatar, HlmAvatarImage, HlmAvatarFallback } from '@spartan/helm/avatar';
+import { HlmAvatar, HlmAvatarFallback } from '@spartan/helm/avatar';
 import { TranslatePipe, LocaleService } from '@invento/core';
 import { BrandLogo } from '@invento/shared';
 import { toast } from '@spartan/helm/sonner';
@@ -49,7 +49,6 @@ interface NavItem {
     BrandLogo,
     HlmDropdownMenuImports,
     HlmAvatar,
-    HlmAvatarImage,
     HlmAvatarFallback,
   ],
   providers: [
@@ -105,9 +104,11 @@ export class Sidebar {
   protected readonly user = computed(() => {
     const currentUser = this.authService.currentUser();
     if (currentUser) {
+      const fullName = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim();
+      const fallbackName = currentUser.email ? currentUser.email.split('@')[0] : 'Owner';
       return {
-        name: `${currentUser.firstName} ${currentUser.lastName}`.trim(),
-        email: currentUser.email,
+        name: fullName || fallbackName,
+        email: currentUser.email || 'owner@inventoai.com',
         image: currentUser.image,
       };
     }
@@ -120,12 +121,30 @@ export class Sidebar {
   });
 
   protected readonly userInitials = computed(() => {
-    const name = this.user().name;
-    const names = name.split(' ');
-    if (names.length >= 2) {
-      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+    const currentUser = this.authService.currentUser();
+    const first = currentUser?.firstName?.trim();
+    const last = currentUser?.lastName?.trim();
+
+    if (first && last) {
+      return `${first[0]}${last[0]}`.toUpperCase();
     }
-    return name.substring(0, 2).toUpperCase();
+    if (first && first.length >= 2) {
+      return first.substring(0, 2).toUpperCase();
+    }
+    if (first) {
+      return first.toUpperCase();
+    }
+
+    const name = this.user().name.trim();
+    if (name) {
+      const parts = name.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) {
+        return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+      }
+      return name.substring(0, 2).toUpperCase();
+    }
+
+    return 'OW';
   });
 
   protected logout(): void {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -18,6 +18,7 @@ import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/service/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -42,17 +43,22 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent {
+  private readonly authService = inject(AuthService);
+
   // Navigation tab state
   activeTab = signal<string>('profile');
 
   // Form State initial values
-  private initialFullName = 'Clara Morin';
-  private initialEmail = 'clara@luminarygoods.com';
+  private readonly currentUser = this.authService.currentUser();
+  private initialFullName = this.currentUser
+    ? `${this.currentUser.firstName} ${this.currentUser.lastName}`.trim()
+    : 'Owner';
+  private initialEmail = this.currentUser ? this.currentUser.email : 'owner@inventoai.com';
   private initialPhone = '+1 503 441 9900';
   private initialCompany = 'Luminary Goods LLC';
   private initialTimeZone = 'America/Los_Angeles (UTC-8)';
   private initialLanguage = 'English (US)';
-  private initialAvatarUrl: string | null = null;
+  private initialAvatarUrl: string | null = this.currentUser?.image || null;
 
   // Signals
   fullName = signal<string>(this.initialFullName);
