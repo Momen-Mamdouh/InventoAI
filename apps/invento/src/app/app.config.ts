@@ -12,7 +12,6 @@ import ar from '@invento/invento/assets/i18n/ar.json';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(),
     provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),

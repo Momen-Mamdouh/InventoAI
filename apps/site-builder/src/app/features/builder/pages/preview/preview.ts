@@ -334,8 +334,8 @@ export class Preview {
 
         toast.success(this._localeService.translate('toast_deploy_success'), { id: toastId });
 
-        const domain = this.builderState.domain();
-        const redirectUrl = `http://localhost:4300/${domain}`;
+        // const domain = this.builderState.domain();
+        const redirectUrl = `http://localhost:4400`;
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 1000);
