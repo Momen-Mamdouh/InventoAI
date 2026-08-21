@@ -299,23 +299,22 @@
               <label for="modalStoreStatus" class="font-medium text-foreground text-xs sm:text-sm"
                 >Status</label
               >
-              <div class="relative">
-                <select
-                  id="modalStoreStatus"
-                  [value]="formStatus()"
-                  (change)="formStatus.set($any($event.target).value)"
-                  class="flex bg-background shadow-2xs px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-10 appearance-none text-xs sm:text-sm cursor-pointer pe-8"
-                >
-                  <option value="Live">Live</option>
-                  <option value="Draft">Draft</option>
-                  <option value="Maintenance">Maintenance</option>
-                </select>
-                <ng-icon
-                  name="lucideChevronDown"
-                  size="16"
-                  class="top-1/2 absolute text-muted-foreground -translate-y-1/2 pointer-events-none end-2.5"
-                />
-              </div>
+              <hlm-select
+                id="modalStoreStatus"
+                [value]="formStatus()"
+                (valueChange)="formStatus.set($any($event))"
+                [itemToString]="statusItemToString"
+                class="w-full"
+              >
+                <hlm-select-trigger class="w-full h-10 bg-background">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content *hlmSelectPortal>
+                  <hlm-select-item value="Live">Live</hlm-select-item>
+                  <hlm-select-item value="Draft">Draft</hlm-select-item>
+                  <hlm-select-item value="Maintenance">Maintenance</hlm-select-item>
+                </hlm-select-content>
+              </hlm-select>
             </div>
 
             <!-- Image URL -->

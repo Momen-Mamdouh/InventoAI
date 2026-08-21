@@ -82,7 +82,7 @@ export class BuilderState {
   readonly questions = signal<InterviewQuestionConfig[]>(INTERVIEW_QUESTIONS);
 
   readonly hasBrainstormInput = computed(
-    () => this.brainstorm().trim().length >= MIN_BRAINSTORM_LENGTH,
+    () => this.brainstorm().trim().length >= MIN_BRAINSTORM_LENGTH && this.hasLogo(),
   );
 
   readonly isBrainstormComplete = computed(

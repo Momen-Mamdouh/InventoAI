@@ -23,6 +23,7 @@ import {
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
+import { HlmSelectImports } from '@spartan/helm/select';
 
 export interface StoreItem {
   id: string;
@@ -37,7 +38,16 @@ export interface StoreItem {
 @Component({
   selector: 'app-my-stores',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NgIcon, HlmCard, HlmButton, HlmInput],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    NgIcon,
+    HlmCard,
+    HlmButton,
+    HlmInput,
+    HlmSelectImports,
+  ],
   providers: [
     provideIcons({
       lucideZap,
@@ -117,6 +127,10 @@ export class MyStoresComponent {
   formDomain = signal<string>('');
   formStatus = signal<'Live' | 'Draft' | 'Maintenance'>('Live');
   formImage = signal<string>('');
+
+  readonly statusItemToString = (value: unknown): string => {
+    return String(value) || 'Live';
+  };
 
   // Actions
   openCreateModal() {

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmSelectImports } from '@spartan/helm/select';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideWand2, lucideLoader2, lucideAlertCircle, lucideCheck } from '@ng-icons/lucide';
 import { CatalogAiService } from '../../data-access/catalog-ai.service';
@@ -15,13 +16,17 @@ import {
 
 type WizardStatus = 'idle' | 'generating' | 'review' | 'applying' | 'success' | 'error';
 
-interface SelectableCategory extends GeneratedCategory { selected?: boolean; }
-interface SelectableAttribute extends GeneratedAttribute { selected?: boolean; }
+interface SelectableCategory extends GeneratedCategory {
+  selected?: boolean;
+}
+interface SelectableAttribute extends GeneratedAttribute {
+  selected?: boolean;
+}
 
 @Component({
   selector: 'app-catalog-ai-review',
   standalone: true,
-  imports: [CommonModule, FormsModule, HlmButtonImports, HlmInputImports, NgIcon],
+  imports: [CommonModule, FormsModule, HlmButtonImports, HlmInputImports, HlmSelectImports, NgIcon],
   providers: [provideIcons({ lucideWand2, lucideLoader2, lucideAlertCircle, lucideCheck })],
   templateUrl: './catalog-ai-review.component.html',
 })
@@ -36,6 +41,17 @@ export class CatalogAiReviewComponent {
   categories = signal<SelectableCategory[]>([]);
   attributes = signal<SelectableAttribute[]>([]);
 
+  private readonly displayStyleLabels: Record<string, string> = {
+    list: 'List',
+    chip: 'Chip',
+    dropdown: 'Dropdown',
+    swatch: 'Swatch',
+  };
+
+  readonly displayStyleItemToString = (value: unknown): string => {
+    return this.displayStyleLabels[String(value).toLowerCase()] ?? 'List';
+  };
+
   generateCatalog() {
     this.status.set('generating');
     this.errorMessage.set('');
@@ -44,12 +60,14 @@ export class CatalogAiReviewComponent {
 
     this.catalogAiService.generateCatalog(payload).subscribe({
       next: (response) => {
-        this.categories.set((response.categories || []).map(c => ({...c, selected: true})));
-        this.attributes.set((response.attributes || []).map(a => ({...a, selected: true})));
+        this.categories.set((response.categories || []).map((c) => ({ ...c, selected: true })));
+        this.attributes.set((response.attributes || []).map((a) => ({ ...a, selected: true })));
         this.status.set('review');
       },
       error: (err) => {
-        this.errorMessage.set(err.error?.message || 'Failed to generate catalog. Please try again.');
+        this.errorMessage.set(
+          err.error?.message || 'Failed to generate catalog. Please try again.',
+        );
         this.status.set('error');
       },
     });
@@ -60,17 +78,21 @@ export class CatalogAiReviewComponent {
     this.errorMessage.set('');
 
     const request: CatalogApplyRequest = {
-      categories: this.categories().filter(c => c.selected !== false).map(({ selected, ...c }) => ({
-        ...c,
-        description: c.description === null ? undefined : c.description
-      })),
-      attributes: this.attributes().filter(a => a.selected !== false).map(({ selected, ...a }) => ({
-        ...a,
-        values: a.values.map(v => ({
-          ...v,
-          swatchHex: v.swatchHex === null ? undefined : v.swatchHex
-        }))
-      })),
+      categories: this.categories()
+        .filter((c) => c.selected !== false)
+        .map(({ selected, ...c }) => ({
+          ...c,
+          description: c.description === null ? undefined : c.description,
+        })),
+      attributes: this.attributes()
+        .filter((a) => a.selected !== false)
+        .map(({ selected, ...a }) => ({
+          ...a,
+          values: a.values.map((v) => ({
+            ...v,
+            swatchHex: v.swatchHex === null ? undefined : v.swatchHex,
+          })),
+        })),
     };
 
     this.catalogAiService.applyCatalog(request).subscribe({
@@ -78,7 +100,9 @@ export class CatalogAiReviewComponent {
         this.status.set('success');
       },
       error: (err) => {
-        this.errorMessage.set(err.error?.message || 'Failed to apply catalog. Please check your data.');
+        this.errorMessage.set(
+          err.error?.message || 'Failed to apply catalog. Please check your data.',
+        );
         this.status.set('error');
       },
     });

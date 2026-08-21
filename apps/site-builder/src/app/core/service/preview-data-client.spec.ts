@@ -42,9 +42,7 @@ describe('PreviewDataClient', () => {
     // BuilderState primes the question catalog from the backend the moment it
     // is constructed. Settle that request here so each test only reasons about
     // theme traffic, and afterEach's verify() stays meaningful.
-    httpMock
-      .match('/site-builder/questions')
-      .forEach((req) => req.flush({ questions: [] }));
+    httpMock.match('/site-builder/questions').forEach((req) => req.flush({ questions: [] }));
   });
 
   afterEach(() => {

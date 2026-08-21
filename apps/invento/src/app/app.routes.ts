@@ -3,14 +3,21 @@ import { MainLayout } from '@invento/invento/layouts/main-layout/main-layout';
 import { AuthLayout } from '@invento/invento/layouts/auth-layout/auth-layout';
 import { authGuard } from '../core/guards/auth.guard';
 import { guestGuard } from '../core/guards/guest.guard';
+import { storeGuard } from '../core/guards/store.guard';
+import { noStoreGuard } from '../core/guards/no-store.guard';
 
 export const appRoutes: Routes = [
   {
+    path: 'no-store',
+    canActivate: [authGuard, noStoreGuard],
+    loadComponent: () => import('@invento/invento/pages/no-store').then((c) => c.NoStoreComponent),
+  },
+  {
     path: '',
     component: MainLayout,
-    canActivate: [authGuard],
+    canActivate: [authGuard, storeGuard],
     children: [
-      { path: '', redirectTo: '/auth', pathMatch: 'full' },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
         path: 'home',
         loadComponent: () =>
@@ -248,12 +255,16 @@ export const appRoutes: Routes = [
   {
     path: 'mailbox/callback',
     loadComponent: () =>
-      import('@invento/invento/pages/mailbox-callback/mailbox-callback').then((c) => c.MailboxCallback),
+      import('@invento/invento/pages/mailbox-callback/mailbox-callback').then(
+        (c) => c.MailboxCallback,
+      ),
   },
   {
     path: 'dashboard/mailbox/callback',
     loadComponent: () =>
-      import('@invento/invento/pages/mailbox-callback/mailbox-callback').then((c) => c.MailboxCallback),
+      import('@invento/invento/pages/mailbox-callback/mailbox-callback').then(
+        (c) => c.MailboxCallback,
+      ),
   },
   {
     path: 'not-found',

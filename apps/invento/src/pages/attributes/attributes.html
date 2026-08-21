@@ -61,16 +61,22 @@
           (cdkDropListDropped)="dropAttribute($event)"
         >
           @if (isLoading()) {
-            @for (item of [1,2,3,4,5]; track item) {
+            @for (item of [1, 2, 3, 4, 5]; track item) {
               <tr>
-                <td class="px-2 md:px-3 align-middle w-10 text-center"><hlm-skeleton class="h-4 w-4 mx-auto" /></td>
+                <td class="px-2 md:px-3 align-middle w-10 text-center">
+                  <hlm-skeleton class="h-4 w-4 mx-auto" />
+                </td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-16" /></td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-8" /></td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-8" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-5 w-16 rounded-full" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                  <hlm-skeleton class="h-5 w-16 rounded-full" />
+                </td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-6" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end"><hlm-skeleton class="h-8 w-24 ml-auto" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                  <hlm-skeleton class="h-8 w-24 ml-auto" />
+                </td>
               </tr>
             }
           } @else {
@@ -215,11 +221,22 @@
             <label for="attr-style" class="text-sm font-semibold mb-2 block text-foreground"
               >Display Style</label
             >
-            <select id="attr-style" hlmInput [(ngModel)]="attrStyle" class="w-full bg-card">
-              <option value="list">List</option>
-              <option value="dropdown">Dropdown</option>
-              <option value="swatch">Swatch</option>
-            </select>
+            <hlm-select
+              id="attr-style"
+              [value]="attrStyle()"
+              (valueChange)="attrStyle.set($any($event))"
+              [itemToString]="styleItemToString"
+              class="w-full"
+            >
+              <hlm-select-trigger class="w-full bg-card">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content *hlmSelectPortal>
+                <hlm-select-item value="list">List</hlm-select-item>
+                <hlm-select-item value="dropdown">Dropdown</hlm-select-item>
+                <hlm-select-item value="swatch">Swatch</hlm-select-item>
+              </hlm-select-content>
+            </hlm-select>
           </div>
         </div>
 

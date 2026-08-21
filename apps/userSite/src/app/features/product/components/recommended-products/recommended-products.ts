@@ -7,9 +7,9 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { HlmCarouselImports } from '@spartan/helm/carousel';
-import { ProductCard } from '@invento/user-site/app/features/product/components/product-card/product-card';
-import { ProductApiService } from '@invento/user-site/app/features/product';
-import { ProductListItem } from '@invento/user-site/app/features/product/types/product';
+import { ProductCard } from '../product-card/product-card';
+import { ProductApiService } from '../../services';
+import { ProductListItem } from '../../types';
 import { Subscription } from 'rxjs';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 

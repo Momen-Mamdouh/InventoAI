@@ -17,8 +17,8 @@ declare const process: { env?: Record<string, string | undefined> };
 export class ApiConfig {
   /** Base URL with any trailing slashes stripped. Empty string means "use relative paths". */
   readonly baseUrl = this.resolveBaseUrl();
-  // readonly apiKey = this.resolve('API_KEY', 'INVENTO_API_KEY', environment.apiKey);
   readonly dashboardUrl = this.resolveDashboardUrl();
+  readonly inventoLoginUrl = this.resolveLoginUrl();
   readonly googleClientId = this.resolve(
     'GOOGLE_CLIENT_ID',
     'INVENTO_GOOGLE_CLIENT_ID',
@@ -47,12 +47,26 @@ export class ApiConfig {
     const configured = this.resolve(
       'INVENTO_DASHBOARD_URL',
       'INVENTO_DASHBOARD_URL',
-      environment.inventoDashboardUrl,
+      (environment as { inventoDashboardUrl?: string }).inventoDashboardUrl ?? '',
     );
     if (configured) return configured;
     return environment.production
       ? 'https://invento-ai.vercel.app/home'
       : 'http://localhost:4400/home';
+  }
+
+  private resolveLoginUrl(): string {
+    const configured = this.resolve(
+      'INVENTO_LOGIN_URL',
+      'INVENTO_LOGIN_URL',
+      (environment as { inventoLoginUrl?: string }).inventoLoginUrl ?? '',
+    );
+    if (configured) {
+      return configured;
+    }
+    return environment.production
+      ? 'https://invento-ai.vercel.app/auth/login'
+      : 'http://localhost:4400/auth/login';
   }
 
   private isLocalhost(): boolean {

@@ -97,6 +97,12 @@ export class AuthService {
             }
           }
 
+          const storeSlug = (payload['storeSlug'] ??
+            payload['store_slug'] ??
+            payload['storSlug'] ??
+            payload['slug'] ??
+            null) as string | null;
+
           if (email || firstName || lastName) {
             return {
               id: (payload['id'] || payload['sub'] || payload['userId'] || '') as string,
@@ -105,6 +111,8 @@ export class AuthService {
               image: (payload['image'] || null) as string | null,
               email: email || 'owner@inventoai.com',
               role: (payload['role'] || 'owner') as string,
+              storeId: (payload['storeId'] || payload['store_id'] || null) as string | null,
+              storeSlug,
               isEmailVerified: Boolean(payload['isEmailVerified']),
               createdAt: (payload['createdAt'] || new Date().toISOString()) as string,
               updatedAt: (payload['updatedAt'] || new Date().toISOString()) as string,
@@ -148,6 +156,20 @@ export class AuthService {
             lastName: user.lastName || parts.slice(1).join(' ') || '',
           };
         }
+
+        const tokenPayload = decodeJwtPayload(response.accessToken);
+        const storeSlug = (tokenPayload?.['storeSlug'] ??
+          tokenPayload?.['store_slug'] ??
+          tokenPayload?.['storSlug'] ??
+          tokenPayload?.['slug'] ??
+          user.storeSlug ??
+          null) as string | null;
+
+        user = {
+          ...user,
+          storeSlug,
+        };
+
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
         this.setCurrentUser(user);
       }),
@@ -181,6 +203,19 @@ export class AuthService {
             image: user.image || picture,
           };
         }
+
+        const tokenPayload = decodeJwtPayload(response.accessToken);
+        const storeSlug = (tokenPayload?.['storeSlug'] ??
+          tokenPayload?.['store_slug'] ??
+          tokenPayload?.['storSlug'] ??
+          tokenPayload?.['slug'] ??
+          user.storeSlug ??
+          null) as string | null;
+
+        user = {
+          ...user,
+          storeSlug,
+        };
 
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
         this.setCurrentUser(user);
@@ -219,8 +254,42 @@ export class AuthService {
       .pipe(
         tap((response) => {
           this.tokenService.setTokens(response.accessToken, response.refreshToken);
+          const tokenPayload = decodeJwtPayload(response.accessToken);
+          const storeSlug = (tokenPayload?.['storeSlug'] ??
+            tokenPayload?.['store_slug'] ??
+            tokenPayload?.['storSlug'] ??
+            tokenPayload?.['slug'] ??
+            null) as string | null;
+
+          const current = this.currentUser();
+          if (current) {
+            this.setCurrentUser({
+              ...current,
+              storeSlug: storeSlug ?? current.storeSlug ?? null,
+            });
+          }
         }),
       );
+  }
+
+  getStoreSlug(): string | null {
+    const user = this.currentUser();
+    if (user?.storeSlug) {
+      return user.storeSlug;
+    }
+    const token = this.tokenService.getAccessToken();
+    if (token) {
+      const payload = decodeJwtPayload(token);
+      const slug = (payload?.['storeSlug'] ??
+        payload?.['store_slug'] ??
+        payload?.['storSlug'] ??
+        payload?.['slug'] ??
+        null) as string | null;
+      if (slug) {
+        return slug;
+      }
+    }
+    return null;
   }
 
   logout(): void {

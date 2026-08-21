@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ProductStore } from '@invento/user-site/app/features/product';
+import { ProductStore } from '../../services';
 import { TranslatePipe } from '@invento/core';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';

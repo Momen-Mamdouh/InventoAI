@@ -54,6 +54,7 @@ import {
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
+import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
@@ -75,6 +76,7 @@ import {
     NgIcon,
     HlmButton,
     HlmCardImports,
+    HlmDropdownMenuImports,
     HlmInputImports,
     HlmSelectImports,
     OrderStatCard,
@@ -128,7 +130,6 @@ import {
 export class Orders implements OnInit, OnDestroy {
   readonly store = inject(OrderStore);
 
-  readonly activeDropdownId = signal<string | null>(null);
   readonly isDetailsOpen = signal<boolean>(false);
   readonly isCancelModalOpen = signal<boolean>(false);
   readonly isBulkCancel = signal<boolean>(false);
@@ -223,42 +224,20 @@ export class Orders implements OnInit, OnDestroy {
     this.store.setRowsPerPage(Number(target.value));
   }
 
-  toggleRowMenu(orderId: string, event: Event): void {
-    event.stopPropagation();
-    if (this.activeDropdownId() === orderId) {
-      this.activeDropdownId.set(null);
-    } else {
-      this.activeDropdownId.set(orderId);
-    }
-  }
-
-  @HostListener('document:click')
-  closeRowMenu(): void {
-    this.activeDropdownId.set(null);
-  }
-
   // State machine actions
-  confirmOrder(orderId: string, event?: Event): void {
-    event?.stopPropagation();
-    this.closeRowMenu();
+  confirmOrder(orderId: string): void {
     this.store.updateOrderStatus(orderId, 'confirmed');
   }
 
-  shipOrder(orderId: string, event?: Event): void {
-    event?.stopPropagation();
-    this.closeRowMenu();
+  shipOrder(orderId: string): void {
     this.store.updateOrderStatus(orderId, 'shipped');
   }
 
-  deliverOrder(orderId: string, event?: Event): void {
-    event?.stopPropagation();
-    this.closeRowMenu();
+  deliverOrder(orderId: string): void {
     this.store.updateOrderStatus(orderId, 'delivered');
   }
 
-  openCancelModal(order: OrderListItem | OrderDetail, event?: Event): void {
-    event?.stopPropagation();
-    this.closeRowMenu();
+  openCancelModal(order: OrderListItem | OrderDetail): void {
     this.isBulkCancel.set(false);
     this.orderToCancel.set(order);
     this.cancelReason.set('');
@@ -302,7 +281,6 @@ export class Orders implements OnInit, OnDestroy {
 
   viewDetails(order: OrderListItem, event?: Event): void {
     event?.stopPropagation();
-    this.closeRowMenu();
     this.isDetailsOpen.set(true);
     this.store.loadOrderDetail(order.id);
   }

@@ -1,45 +1,71 @@
 <div class="space-y-6 pt-6">
   <!-- Filters Bar -->
-  <div hlmCard class="p-4 flex flex-col sm:flex-row gap-4 justify-between items-center bg-card text-card-foreground shadow-xs border-border rounded-xl">
-    
+  <div
+    hlmCard
+    class="p-4 flex flex-col sm:flex-row gap-4 justify-between items-center bg-card text-card-foreground shadow-xs border-border rounded-xl"
+  >
     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
       <!-- Search -->
       <form class="relative w-full sm:w-64" (ngSubmit)="onSearchSubmit()">
-        <ng-icon name="lucideSearch" size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-        <input 
-          hlmInput 
-          type="text" 
-          placeholder="Search name, email, or content..." 
+        <ng-icon
+          name="lucideSearch"
+          size="16"
+          class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+        />
+        <input
+          hlmInput
+          type="text"
+          placeholder="Search name, email, or content..."
           class="w-full pl-9 h-9 text-sm"
           name="search"
           [(ngModel)]="searchInput"
         />
         <button type="submit" class="hidden"></button>
       </form>
-      
+
       <!-- Unanswered Filter -->
-      <select 
-        (change)="onFilterUnanswered($event)"
-        class="bg-background shadow-2xs px-3 py-1.5 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 text-sm"
+      <hlm-select
+        [value]="unansweredFilterValue()"
+        (valueChange)="onUnansweredChange($event)"
+        [itemToString]="unansweredItemToString"
+        class="w-36"
       >
-        <option value="all">All Questions</option>
-        <option value="true">Has Unanswered</option>
-        <option value="false">Fully Answered</option>
-      </select>
+        <hlm-select-trigger class="bg-background shadow-2xs h-9 text-sm">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item value="all">All Questions</hlm-select-item>
+          <hlm-select-item value="true">Has Unanswered</hlm-select-item>
+          <hlm-select-item value="false">Fully Answered</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
 
       <!-- Account Filter -->
-      <select 
-        (change)="onFilterSignedIn($event)"
-        class="bg-background shadow-2xs px-3 py-1.5 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 text-sm"
+      <hlm-select
+        [value]="signedInFilterValue()"
+        (valueChange)="onSignedInChange($event)"
+        [itemToString]="signedInItemToString"
+        class="w-36"
       >
-        <option value="all">All Users</option>
-        <option value="true">Signed In</option>
-        <option value="false">Guests</option>
-      </select>
+        <hlm-select-trigger class="bg-background shadow-2xs h-9 text-sm">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item value="all">All Users</hlm-select-item>
+          <hlm-select-item value="true">Signed In</hlm-select-item>
+          <hlm-select-item value="false">Guests</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
     </div>
 
     <!-- Refresh -->
-    <button hlmBtn variant="outline" size="sm" class="h-9 gap-2 shrink-0 w-full sm:w-auto" (click)="loadSessions()">
+    <button
+      hlmBtn
+      variant="outline"
+      size="sm"
+      class="h-9 gap-2 shrink-0 w-full sm:w-auto"
+      (click)="loadSessions()"
+    >
       Refresh
     </button>
   </div>
@@ -52,7 +78,9 @@
       </div>
     } @else if (errorState()) {
       <div class="flex flex-col items-center justify-center py-16 text-center">
-        <div class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4">
+        <div
+          class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4"
+        >
           <ng-icon name="lucideAlertCircle" size="24" />
         </div>
         <h3 class="text-lg font-semibold">Failed to Load Sessions</h3>
@@ -84,17 +112,24 @@
                 <tr class="hover:bg-muted/50 transition-colors">
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                      <div
+                        class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0"
+                      >
                         <ng-icon name="lucideUser" size="14" class="text-muted-foreground" />
                       </div>
                       <div>
                         <div class="font-medium flex items-center gap-2">
                           {{ session.customerName || 'Guest User' }}
                           @if (!session.isSignedIn) {
-                            <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground font-normal tracking-wide uppercase">Guest</span>
+                            <span
+                              class="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground font-normal tracking-wide uppercase"
+                              >Guest</span
+                            >
                           }
                         </div>
-                        <div class="text-xs text-muted-foreground">{{ session.customerEmail || 'No email provided' }}</div>
+                        <div class="text-xs text-muted-foreground">
+                          {{ session.customerEmail || 'No email provided' }}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -105,21 +140,34 @@
                         <span>{{ session.messageCount }}</span>
                       </div>
                       @if (session.unansweredCount > 0) {
-                        <div class="flex items-center gap-1 text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/50 px-2 py-0.5 rounded-full text-xs font-medium">
+                        <div
+                          class="flex items-center gap-1 text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/50 px-2 py-0.5 rounded-full text-xs font-medium"
+                        >
                           <ng-icon name="lucideAlertCircle" size="12" />
                           <span>{{ session.unansweredCount }}</span>
                         </div>
                       }
                     </div>
                   </td>
-                  <td class="px-6 py-4 hidden md:table-cell max-w-xs truncate text-muted-foreground" [title]="session.preview">
+                  <td
+                    class="px-6 py-4 hidden md:table-cell max-w-xs truncate text-muted-foreground"
+                    [title]="session.preview"
+                  >
                     {{ session.preview || 'No preview available' }}
                   </td>
-                  <td class="px-6 py-4 hidden sm:table-cell whitespace-nowrap text-muted-foreground">
-                    {{ session.createdAt | date:'mediumDate' }}
+                  <td
+                    class="px-6 py-4 hidden sm:table-cell whitespace-nowrap text-muted-foreground"
+                  >
+                    {{ session.createdAt | date: 'mediumDate' }}
                   </td>
                   <td class="px-6 py-4 text-right">
-                    <a [routerLink]="['/chatbot/history', session.id]" hlmBtn variant="ghost" size="sm" class="h-8 gap-2 text-primary hover:text-primary">
+                    <a
+                      [routerLink]="['/chatbot/history', session.id]"
+                      hlmBtn
+                      variant="ghost"
+                      size="sm"
+                      class="h-8 gap-2 text-primary hover:text-primary"
+                    >
                       <ng-icon name="lucideEye" size="14" />
                       View
                     </a>
@@ -135,20 +183,28 @@
       @if (data() && data()!.totalPages > 1) {
         <div class="p-4 border-t border-border flex items-center justify-between">
           <p class="text-sm text-muted-foreground">
-            Showing <span class="font-medium">{{ ((data()!.page - 1) * data()!.limit) + 1 }}</span> to <span class="font-medium">{{ Math.min(data()!.page * data()!.limit, data()!.total) }}</span> of <span class="font-medium">{{ data()!.total }}</span> results
+            Showing <span class="font-medium">{{ (data()!.page - 1) * data()!.limit + 1 }}</span> to
+            <span class="font-medium">{{
+              Math.min(data()!.page * data()!.limit, data()!.total)
+            }}</span>
+            of <span class="font-medium">{{ data()!.total }}</span> results
           </p>
           <div class="flex gap-1">
-            <button 
-              hlmBtn variant="outline" size="sm" 
-              class="w-8 h-8 p-0" 
+            <button
+              hlmBtn
+              variant="outline"
+              size="sm"
+              class="w-8 h-8 p-0"
               [disabled]="data()!.page === 1"
               (click)="changePage(data()!.page - 1)"
             >
               <ng-icon name="lucideChevronLeft" size="16" />
             </button>
-            <button 
-              hlmBtn variant="outline" size="sm" 
-              class="w-8 h-8 p-0" 
+            <button
+              hlmBtn
+              variant="outline"
+              size="sm"
+              class="w-8 h-8 p-0"
               [disabled]="data()!.page === data()!.totalPages"
               (click)="changePage(data()!.page + 1)"
             >

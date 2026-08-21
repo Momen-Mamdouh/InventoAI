@@ -200,7 +200,7 @@
       </section>
 
       <!-- The store owner's own description: fetched since day one, never rendered until now. -->
-      @if (storeDescription(); as description) {
+      <!-- @if (storeDescription(); as description) {
         <section class="mb-12 md:mb-16">
           <h2 hlmH2 class="text-foreground mb-3 text-xl font-bold md:text-2xl border-none pb-0">
             {{ 'home.about' | translate }}
@@ -213,7 +213,7 @@
             {{ description }}
           </p>
         </section>
-      }
+      } -->
 
       @if (!hasFeaturedContent()) {
         <!-- Featured content is opt-in, so an unfeatured store still needs a way in. -->

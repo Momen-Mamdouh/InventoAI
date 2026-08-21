@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { HlmBadge } from '@spartan/helm/badge';
-import { ProductStore } from '@invento/user-site/app/features/product';
+import { ProductStore } from '../../services';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { TranslatePipe } from '@invento/core';
 

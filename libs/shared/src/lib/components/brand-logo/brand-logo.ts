@@ -13,7 +13,7 @@ export class BrandLogo {
   readonly iconName = input<string>();
   readonly logoSrc = input<string>();
   readonly logoSrcDark = input<string>();
-  readonly appName = input.required<string>();
+  readonly appName = input.required<string | undefined>();
   readonly size = input<LogoSize>('md');
   readonly showLabel = input(true);
 

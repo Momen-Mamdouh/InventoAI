@@ -9,14 +9,11 @@ import {
   OnInit,
 } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import {
-  SortOption,
-  ProductSuggestion,
-} from '@invento/user-site/app/features/product/types/product';
+import { SortOption, ProductSuggestion } from '../../types';
 import { HlmBadge } from '@spartan/helm/badge';
 import { Subscription } from 'rxjs';
 import { debounceTime, filter, switchMap, tap, distinctUntilChanged, delay } from 'rxjs/operators';
-import { ProductApiService } from '@invento/user-site/app/features/product';
+import { ProductApiService } from '../../services';
 import { Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HlmInputImports } from '@spartan/helm/input';

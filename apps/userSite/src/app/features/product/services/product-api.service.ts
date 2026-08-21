@@ -9,7 +9,7 @@ import {
   ProductQueryParams,
   ProductSuggestion,
   ProductDetail,
-} from '@invento/user-site/app/features/product';
+} from '../types';
 
 @Injectable({
   providedIn: 'root',

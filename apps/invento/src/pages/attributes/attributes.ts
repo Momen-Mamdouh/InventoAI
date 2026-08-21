@@ -21,6 +21,7 @@ import {
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 
 import { ProductAttribute, ProductAttributeValue } from '../../features/attributes/attribute.model';
@@ -31,13 +32,13 @@ import { DeleteConfirmDialog } from '../categories/delete-confirm-dialog';
 
 @Component({
   selector: 'app-attributes',
-  standalone: true,
   imports: [
     FormsModule,
     NgIcon,
     HlmButton,
     HlmCardImports,
     HlmInputImports,
+    HlmSelectImports,
     DragDropModule,
     AttributeSearchPipe,
     DeleteConfirmDialog,
@@ -79,6 +80,17 @@ export class AttributesComponent implements OnInit {
   attrStyle = signal<AttributeDisplayStyle>(AttributeDisplayStyle.List);
   attrIsFilterable = signal(true);
   attrShowOnProductPage = signal(true);
+
+  private readonly styleLabels: Record<string, string> = {
+    list: 'List',
+    dropdown: 'Dropdown',
+    swatch: 'Swatch',
+    chip: 'Chip',
+  };
+
+  readonly styleItemToString = (value: unknown): string => {
+    return this.styleLabels[String(value).toLowerCase()] ?? 'List';
+  };
 
   // Values Drawer State
   readonly isValuesDrawerOpen = signal(false);
@@ -198,7 +210,7 @@ export class AttributesComponent implements OnInit {
       error: (err) => {
         console.error('Failed to delete attribute', err);
         this.isDeleteAttributeModalOpen.set(false);
-        
+
         if (err.status === 409) {
           toast.error(err.error?.message || 'Cannot delete this attribute because it is in use.');
         } else {

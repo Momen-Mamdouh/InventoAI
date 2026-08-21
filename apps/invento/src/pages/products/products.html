@@ -147,9 +147,11 @@
         >
           <!-- Loading State -->
           @if (isLoading()) {
-            @for (item of [1,2,3,4,5]; track item) {
+            @for (item of [1, 2, 3, 4, 5]; track item) {
               <tr>
-                <td class="px-2 sm:px-3 md:px-4 py-3 text-center"><hlm-skeleton class="h-4 w-4 rounded mx-auto" /></td>
+                <td class="px-2 sm:px-3 md:px-4 py-3 text-center">
+                  <hlm-skeleton class="h-4 w-4 rounded mx-auto" />
+                </td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
                   <div class="flex items-center gap-3">
                     <hlm-skeleton class="w-10 h-10 sm:w-12 sm:h-12 rounded-md shrink-0" />
@@ -161,9 +163,15 @@
                 </td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-12" /></td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-20" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right"><hlm-skeleton class="h-4 w-16 ml-auto" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right"><hlm-skeleton class="h-4 w-12 ml-auto" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-5 w-16 rounded-full" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right">
+                  <hlm-skeleton class="h-4 w-16 ml-auto" />
+                </td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right">
+                  <hlm-skeleton class="h-4 w-12 ml-auto" />
+                </td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                  <hlm-skeleton class="h-5 w-16 rounded-full" />
+                </td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
               </tr>
             }
@@ -215,9 +223,6 @@
                       >
                         {{ product.title }}
                       </button>
-                      <p class="text-xs text-muted-foreground mt-0.5">
-                        {{ product.sku || 'No SKU' }}
-                      </p>
                     </div>
                   </div>
                 </td>
@@ -364,16 +369,21 @@
               <label for="product-status" class="text-sm font-semibold mb-2 block text-foreground"
                 >Status</label
               >
-              <select
+              <hlm-select
                 id="product-status"
-                [(ngModel)]="newProduct.status"
-                class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors"
+                [(value)]="newProduct.status"
+                [itemToString]="statusItemToString"
+                class="w-full"
               >
-                <option value="" disabled hidden>Select Status</option>
-                <option value="draft">Draft</option>
-                <option value="active">Active</option>
-                <option value="archived">Archived</option>
-              </select>
+                <hlm-select-trigger class="w-full h-9 bg-transparent">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content *hlmSelectPortal>
+                  <hlm-select-item value="draft">Draft</hlm-select-item>
+                  <hlm-select-item value="active">Active</hlm-select-item>
+                  <hlm-select-item value="archived">Archived</hlm-select-item>
+                </hlm-select-content>
+              </hlm-select>
             </div>
           </div>
         </div>
@@ -419,16 +429,20 @@
                       <label class="text-xs font-semibold mb-1.5 block text-muted-foreground">{{
                         attr.name
                       }}</label>
-                      <select
-                        class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors"
-                        [(ngModel)]="variant.variantAttributeValues[attr.id]"
-                        [name]="'attr_' + attr.id + '_' + $index"
+                      <hlm-select
+                        [(value)]="variant.variantAttributeValues[attr.id]"
+                        [itemToString]="makeAttributeItemToString(attr.id)"
+                        class="w-full"
                       >
-                        <option value="" disabled hidden>Select {{ attr.name }}</option>
-                        @for (val of attr.values; track val.id) {
-                          <option [value]="val.id">{{ val.value }}</option>
-                        }
-                      </select>
+                        <hlm-select-trigger class="w-full h-9 bg-transparent">
+                          <hlm-select-value [placeholder]="'Select ' + attr.name" />
+                        </hlm-select-trigger>
+                        <hlm-select-content *hlmSelectPortal>
+                          @for (val of attr.values; track val.id) {
+                            <hlm-select-item [value]="val.id">{{ val.value }}</hlm-select-item>
+                          }
+                        </hlm-select-content>
+                      </hlm-select>
                     </div>
                   }
                 </div>
@@ -528,16 +542,20 @@
                   <label class="text-xs font-semibold mb-1.5 block text-muted-foreground">{{
                     attr.name
                   }}</label>
-                  <select
-                    class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors"
-                    [(ngModel)]="newProduct.productAttributeValues[attr.id]"
-                    [name]="'prod_attr_' + attr.id"
+                  <hlm-select
+                    [(value)]="newProduct.productAttributeValues[attr.id]"
+                    [itemToString]="makeAttributeItemToString(attr.id)"
+                    class="w-full"
                   >
-                    <option value="" disabled hidden>Select {{ attr.name }}</option>
-                    @for (val of attr.values; track val.id) {
-                      <option [value]="val.id">{{ val.value }}</option>
-                    }
-                  </select>
+                    <hlm-select-trigger class="w-full h-9 bg-transparent">
+                      <hlm-select-value [placeholder]="'Select ' + attr.name" />
+                    </hlm-select-trigger>
+                    <hlm-select-content *hlmSelectPortal>
+                      @for (val of attr.values; track val.id) {
+                        <hlm-select-item [value]="val.id">{{ val.value }}</hlm-select-item>
+                      }
+                    </hlm-select-content>
+                  </hlm-select>
                 </div>
               }
             </div>
@@ -616,20 +634,32 @@
             </div>
 
             <div>
-              <label for="product-category" class="text-sm font-semibold mb-2 block text-foreground"
-                >Category</label
-              >
-              <select
-                id="product-category"
-                [(ngModel)]="newProduct.categoryIds"
-                multiple
-                class="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm min-h-[80px]"
+              <label class="text-sm font-semibold mb-2 block text-foreground">Categories</label>
+              <div
+                class="flex flex-wrap gap-2 p-3 border border-input rounded-md bg-transparent min-h-[80px]"
               >
                 @for (cat of categories(); track cat.id) {
-                  <option [value]="cat.id">{{ cat.name }}</option>
+                  <button
+                    type="button"
+                    (click)="toggleCategory(cat.id)"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer"
+                    [class.bg-primary]="isCategorySelected(cat.id)"
+                    [class.text-primary-foreground]="isCategorySelected(cat.id)"
+                    [class.border-primary]="isCategorySelected(cat.id)"
+                    [class.bg-muted/50]="!isCategorySelected(cat.id)"
+                    [class.text-foreground]="!isCategorySelected(cat.id)"
+                    [class.border-border]="!isCategorySelected(cat.id)"
+                  >
+                    @if (isCategorySelected(cat.id)) {
+                      <ng-icon name="lucideCheck" size="12" />
+                    }
+                    <span>{{ cat.name }}</span>
+                  </button>
                 }
-              </select>
-              <p class="text-[10px] text-muted-foreground mt-1">Hold Ctrl/Cmd to select multiple</p>
+              </div>
+              <p class="text-[10px] text-muted-foreground mt-1">
+                Click to select or deselect categories
+              </p>
             </div>
 
             <div class="flex items-center gap-2 mt-4 sm:col-span-2">

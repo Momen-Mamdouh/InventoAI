@@ -141,6 +141,18 @@ export class PurchaseRequests implements OnInit {
   createNote = '';
   createSupplierIds: string[] = [];
 
+  readonly productItemToString = (id: unknown): string => {
+    if (!id || typeof id !== 'string') return '';
+    const prod = this.createProducts().find((p) => p.id === id);
+    return prod ? prod.title : '';
+  };
+
+  readonly variantItemToString = (id: unknown): string => {
+    if (!id || typeof id !== 'string') return '';
+    const v = this.selectedVariantOptions().find((opt) => opt.id === id);
+    return v ? `${v.sku} — ${this.variantLabel(v.attributeValues)}` : '';
+  };
+
   editSubject = '';
   editBody = '';
   editQuantity = 1;

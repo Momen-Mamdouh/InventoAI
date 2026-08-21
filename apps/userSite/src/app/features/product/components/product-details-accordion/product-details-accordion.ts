@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideChevronDown } from '@ng-icons/lucide';
-import { ProductStore } from '@invento/user-site/app/features/product';
+import { ProductStore } from '../../services';
 
 import { HlmAccordionImports } from '@spartan/helm/accordion';
 

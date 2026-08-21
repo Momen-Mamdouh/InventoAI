@@ -114,9 +114,11 @@
           class="divide-y divide-border/60 text-sm"
         >
           @if (loading() && categories().length === 0) {
-            @for (item of [1,2,3,4,5]; track item) {
+            @for (item of [1, 2, 3, 4, 5]; track item) {
               <tr>
-                <td class="px-2 md:px-3 align-middle w-10 text-center"><hlm-skeleton class="h-4 w-4 mx-auto" /></td>
+                <td class="px-2 md:px-3 align-middle w-10 text-center">
+                  <hlm-skeleton class="h-4 w-4 mx-auto" />
+                </td>
                 <td class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
                   <div class="flex items-center gap-3">
                     <hlm-skeleton class="w-10 h-10 sm:w-12 sm:h-12 rounded-md shrink-0" />
@@ -126,9 +128,15 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-5 w-20 rounded-full" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end"><hlm-skeleton class="h-4 w-8 ml-auto" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end"><hlm-skeleton class="h-8 w-24 ml-auto" /></td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                  <hlm-skeleton class="h-5 w-20 rounded-full" />
+                </td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                  <hlm-skeleton class="h-4 w-8 ml-auto" />
+                </td>
+                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                  <hlm-skeleton class="h-8 w-24 ml-auto" />
+                </td>
               </tr>
             }
           } @else if (categories().length === 0) {

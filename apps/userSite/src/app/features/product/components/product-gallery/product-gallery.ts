@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, computed, signal } from '@angular/core';
-import { ProductStore } from '@invento/user-site/app/features/product';
+import { ProductStore } from '../../services';
 import { HlmCarouselImports } from '@spartan/helm/carousel';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';

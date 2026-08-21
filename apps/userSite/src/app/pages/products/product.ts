@@ -8,24 +8,23 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductApiService } from '@invento/user-site/app/features/product';
 import {
+  ProductApiService,
   SortOption,
   ProductListResponse,
   FilterResponse,
   ProductQueryParams,
-} from '@invento/user-site/app/features/product';
-import {
   FiltersSidebar,
   ProductsToolbar,
   ProductsGrid,
+  parseAttributes,
+  stringifyAttributes,
 } from '@invento/user-site/app/features/product';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { EmptyState, Pagination, SkeletonBlock } from '@invento/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSearchX, lucideInfo } from '@ng-icons/lucide';
-import { parseAttributes, stringifyAttributes } from '@invento/user-site/app/features/product';
 import { switchMap, catchError, combineLatest, tap } from 'rxjs';
 import { of, Subscription } from 'rxjs';
 import { TranslatePipe } from '@invento/core';

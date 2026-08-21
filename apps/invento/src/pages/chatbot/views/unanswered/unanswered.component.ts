@@ -2,23 +2,30 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule, DatePipe } from '@angular/common';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmSelectImports } from '@spartan/helm/select';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCheck, lucideMessageSquare, lucideAlertCircle, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
+import {
+  lucideCheck,
+  lucideMessageSquare,
+  lucideAlertCircle,
+  lucideChevronLeft,
+  lucideChevronRight,
+} from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
 import { UnansweredResponse } from '../../types/chat-admin.types';
 
 @Component({
   selector: 'app-chatbot-unanswered',
   standalone: true,
-  imports: [CommonModule, HlmCard, HlmButton, NgIcon, DatePipe],
+  imports: [CommonModule, HlmCard, HlmButton, HlmSelectImports, NgIcon, DatePipe],
   providers: [
     provideIcons({
       lucideCheck,
       lucideMessageSquare,
       lucideAlertCircle,
       lucideChevronLeft,
-      lucideChevronRight
-    })
+      lucideChevronRight,
+    }),
   ],
   templateUrl: './unanswered.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,16 +36,26 @@ export class UnansweredComponent implements OnInit {
   data = signal<UnansweredResponse | null>(null);
   isLoading = signal<boolean>(true);
   errorState = signal<boolean>(false);
-  
+
   // Filters
   page = signal<number>(1);
   limit = signal<number>(10);
   days = signal<number>(30);
   includeReviewed = signal<boolean>(false);
 
+  private readonly daysLabels: Record<number, string> = {
+    7: 'Last 7 Days',
+    30: 'Last 30 Days',
+    90: 'Last 90 Days',
+  };
+
+  readonly daysItemToString = (value: unknown): string => {
+    return this.daysLabels[Number(value)] ?? 'Last 30 Days';
+  };
+
   // Template Helpers
   Math = Math;
-  
+
   // Track loading state for individual review actions
   reviewingIds = signal<Set<string>>(new Set<string>());
 
@@ -49,21 +66,23 @@ export class UnansweredComponent implements OnInit {
   loadThemes() {
     this.isLoading.set(true);
     this.errorState.set(false);
-    this.chatService.getUnansweredQuestions({
-      page: this.page(),
-      limit: this.limit(),
-      days: this.days(),
-      includeReviewed: this.includeReviewed()
-    }).subscribe({
-      next: (res) => {
-        this.data.set(res);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorState.set(true);
-        this.isLoading.set(false);
-      }
-    });
+    this.chatService
+      .getUnansweredQuestions({
+        page: this.page(),
+        limit: this.limit(),
+        days: this.days(),
+        includeReviewed: this.includeReviewed(),
+      })
+      .subscribe({
+        next: (res) => {
+          this.data.set(res);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.errorState.set(true);
+          this.isLoading.set(false);
+        },
+      });
   }
 
   onIncludeReviewedChange(event: Event) {
@@ -73,8 +92,7 @@ export class UnansweredComponent implements OnInit {
     this.loadThemes();
   }
 
-  onDaysChange(event: Event) {
-    const val = (event.target as HTMLSelectElement).value;
+  onDaysChange(val: unknown) {
     this.days.set(Number(val));
     this.page.set(1);
     this.loadThemes();
@@ -83,9 +101,9 @@ export class UnansweredComponent implements OnInit {
   markAsReviewed(theme: any) {
     // The endpoint takes a messageId. We'll use the first messageId of the theme occurrences.
     if (!theme.messageIds || theme.messageIds.length === 0) return;
-    
+
     const messageId = theme.messageIds[0];
-    
+
     // Add to reviewing set
     const currentSet = new Set(this.reviewingIds());
     currentSet.add(theme.key);
@@ -97,7 +115,7 @@ export class UnansweredComponent implements OnInit {
         const updatedSet = new Set(this.reviewingIds());
         updatedSet.delete(theme.key);
         this.reviewingIds.set(updatedSet);
-        
+
         // Reload list to get updated status
         this.loadThemes();
       },
@@ -105,7 +123,7 @@ export class UnansweredComponent implements OnInit {
         const updatedSet = new Set(this.reviewingIds());
         updatedSet.delete(theme.key);
         this.reviewingIds.set(updatedSet);
-      }
+      },
     });
   }
 
@@ -113,7 +131,7 @@ export class UnansweredComponent implements OnInit {
     if (newPage < 1) return;
     const totalPages = this.data()?.totalPages || 1;
     if (newPage > totalPages) return;
-    
+
     this.page.set(newPage);
     this.loadThemes();
   }

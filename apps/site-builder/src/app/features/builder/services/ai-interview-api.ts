@@ -28,9 +28,6 @@ export class AiInterviewApi {
    * the failure to a later step where it surfaces as an unexplained 409.
    */
   submitAnswers(payload: SubmitAnswersPayload): Observable<SubmitAnswersResponse> {
-    return this.http.post<SubmitAnswersResponse>(
-      this.config.url('/site-builder/answers'),
-      payload,
-    );
+    return this.http.post<SubmitAnswersResponse>(this.config.url('/site-builder/answers'), payload);
   }
 }

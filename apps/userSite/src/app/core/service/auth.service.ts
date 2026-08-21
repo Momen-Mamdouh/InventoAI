@@ -51,66 +51,91 @@ export class AuthService {
    * showing the previous state. `setCurrentUser` is the single funnel for both, so deriving
    * from it keeps the menu honest.
    */
-  readonly isLoggedIn = computed(() => this.currentUser() !== null);
+  /**
+   * Reactive form of `isAuthenticated()`.
+   *
+   * The navbar is OnPush in a zoneless app, so a plain method call is only re-evaluated when
+   * something else happens to mark that view dirty — signing in or out left the account menu
+   * showing the previous state. `setCurrentUser` is the single funnel for both, so deriving
+   * from it keeps the menu honest.
+   */
+  readonly isLoggedIn = computed(() => this.currentUser() !== null && this.tokenService.hasToken());
 
   private loadStoredUser(): User | null {
     if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
       return null;
     }
 
+    const token = this.tokenService.getAccessToken();
+    if (!token) {
+      localStorage.removeItem(USER_STORAGE_KEY);
+      return null;
+    }
+
+    const payload = decodeJwtPayload(token);
+    if (!payload) {
+      localStorage.removeItem(USER_STORAGE_KEY);
+      return null;
+    }
+
+    // Verify token is not expired (exp is in seconds)
+    if (typeof payload['exp'] === 'number' && payload['exp'] * 1000 < Date.now()) {
+      localStorage.removeItem(USER_STORAGE_KEY);
+      this.tokenService.clearTokens();
+      return null;
+    }
+
+    // Role check: an owner token belongs to the invento app, not customer storefront
+    const role = (payload['role'] || '') as string;
+    if (role === 'owner') {
+      localStorage.removeItem(USER_STORAGE_KEY);
+      this.tokenService.clearTokens();
+      return null;
+    }
+
     try {
       const stored = localStorage.getItem(USER_STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored) as User;
+        const parsed = JSON.parse(stored) as User;
+        if (parsed && parsed.role !== 'owner') {
+          return parsed;
+        }
       }
     } catch {
       // ignore JSON parse error
     }
 
     // Fallback: parse from JWT access token if available
-    try {
-      const token = this.tokenService.getAccessToken();
-      if (token) {
-        const payload = decodeJwtPayload(token);
-        if (payload) {
-          const fullName = (payload['name'] || payload['fullName'] || '') as string;
-          let firstName = (payload['firstName'] ||
-            payload['first_name'] ||
-            payload['given_name'] ||
-            '') as string;
-          let lastName = (payload['lastName'] ||
-            payload['last_name'] ||
-            payload['family_name'] ||
-            '') as string;
+    const fullName = (payload['name'] || payload['fullName'] || '') as string;
+    let firstName = (payload['firstName'] ||
+      payload['first_name'] ||
+      payload['given_name'] ||
+      '') as string;
+    let lastName = (payload['lastName'] ||
+      payload['last_name'] ||
+      payload['family_name'] ||
+      '') as string;
 
-          if (!firstName && !lastName && fullName) {
-            const parts = fullName.trim().split(' ');
-            firstName = parts[0] || '';
-            lastName = parts.slice(1).join(' ') || '';
-          }
+    if (!firstName && !lastName && fullName) {
+      const parts = fullName.trim().split(' ');
+      firstName = parts[0] || '';
+      lastName = parts.slice(1).join(' ') || '';
+    }
 
-          const email = (payload['email'] ||
-            payload['user_email'] ||
-            payload['sub'] ||
-            '') as string;
+    const email = (payload['email'] || payload['user_email'] || payload['sub'] || '') as string;
 
-          if (email || firstName || lastName) {
-            return {
-              id: (payload['id'] || payload['sub'] || payload['userId'] || '') as string,
-              firstName,
-              lastName,
-              image: (payload['image'] || null) as string | null,
-              email,
-              role: (payload['role'] || 'customer') as string,
-              isEmailVerified: Boolean(payload['isEmailVerified']),
-              createdAt: (payload['createdAt'] || new Date().toISOString()) as string,
-              updatedAt: (payload['updatedAt'] || new Date().toISOString()) as string,
-            };
-          }
-        }
-      }
-    } catch {
-      // ignore
+    if (email || firstName || lastName) {
+      return {
+        id: (payload['id'] || payload['sub'] || payload['userId'] || '') as string,
+        firstName,
+        lastName,
+        image: (payload['image'] || null) as string | null,
+        email,
+        role: role || 'customer',
+        isEmailVerified: Boolean(payload['isEmailVerified']),
+        createdAt: (payload['createdAt'] || new Date().toISOString()) as string,
+        updatedAt: (payload['updatedAt'] || new Date().toISOString()) as string,
+      };
     }
 
     return null;
@@ -192,6 +217,21 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this.tokenService.hasToken();
+    const token = this.tokenService.getAccessToken();
+    if (!token) return false;
+
+    const payload = decodeJwtPayload(token);
+    if (!payload) return false;
+
+    if (typeof payload['exp'] === 'number' && payload['exp'] * 1000 < Date.now()) {
+      return false;
+    }
+
+    const role = (payload['role'] || '') as string;
+    if (role === 'owner') {
+      return false;
+    }
+
+    return true;
   }
 }

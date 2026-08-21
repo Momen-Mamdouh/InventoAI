@@ -33,9 +33,6 @@ export class DomainApi {
    * the failure to a later step where it surfaces as an unexplained 409.
    */
   confirmDomain(payload: ConfirmDomainPayload): Observable<ConfirmDomainResponse> {
-    return this.http.post<ConfirmDomainResponse>(
-      this.config.url('/site-builder/domain'),
-      payload,
-    );
+    return this.http.post<ConfirmDomainResponse>(this.config.url('/site-builder/domain'), payload);
   }
 }

@@ -16,25 +16,46 @@ export interface StoreFeaturedCategory {
   slug: string;
   description: string;
   imageUrl: string | null;
+  productCount?: number | null;
+}
+
+export interface StoreFeaturedProduct {
+  title: string;
+  slug: string;
+  shortDescription: string | null;
+  imageUrl: string | null;
+  imageAltText: string | null;
+  categories: readonly StoreFeaturedCategory[];
+  minPriceAmount: number;
+  maxPriceAmount: number;
+  inStock: boolean;
+  swatches?: readonly {
+    attributeKey: string;
+    attributeName: string;
+    value: string;
+    slug: string;
+    swatchHex: string | null;
+  }[];
 }
 
 export interface StoreResponse {
   name: string;
   slug: string;
-  description: string;
-  logoUrl: string;
-  logoSource: string;
+  description: string | null;
+  logoUrl: string | null;
+  logoSource: string | null;
   locale: string;
   currency: string;
   hero: {
-    imageUrl: string;
-    headline: string;
-    subtitle: string;
-    ctaLabel: string;
+    imageUrl: string | null;
+    headline: string | null;
+    subtitle: string | null;
+    ctaLabel: string | null;
     ctaHref: string | null;
   };
   theme?: unknown;
   featuredCategories: StoreFeaturedCategory[];
+  featuredProducts?: StoreFeaturedProduct[];
 }
 
 export interface StoreNotFoundResponse {

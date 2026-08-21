@@ -3,9 +3,15 @@
   @if (saveSuccess()) {
     <div
       class="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-950/40 p-4 border border-emerald-200 dark:border-emerald-800/80 rounded-xl text-emerald-800 dark:text-emerald-200 text-xs sm:text-sm transition-all duration-300 ease-in-out"
-      [ngClass]="isFadingOut() ? 'opacity-0 -translate-y-2 scale-95' : 'opacity-100 translate-y-0 scale-100 animate-in fade-in slide-in-from-top-2'"
+      [ngClass]="
+        isFadingOut()
+          ? 'opacity-0 -translate-y-2 scale-95'
+          : 'opacity-100 translate-y-0 scale-100 animate-in fade-in slide-in-from-top-2'
+      "
     >
-      <div class="flex flex-shrink-0 justify-center items-center bg-emerald-500/20 rounded-full w-6 h-6 text-emerald-600 dark:text-emerald-400">
+      <div
+        class="flex flex-shrink-0 justify-center items-center bg-emerald-500/20 rounded-full w-6 h-6 text-emerald-600 dark:text-emerald-400"
+      >
         <ng-icon name="lucideCheck" size="14" />
       </div>
       <span class="font-medium">Settings updated successfully!</span>
@@ -17,7 +23,10 @@
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
   } @else {
-    <div hlmCard class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground">
+    <div
+      hlmCard
+      class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground"
+    >
       <div class="px-4 sm:px-6 py-4 border-border border-b flex items-center justify-between">
         <div>
           <h2 class="font-semibold text-base sm:text-lg leading-tight">Chatbot Configuration</h2>
@@ -27,16 +36,15 @@
         </div>
         <div class="flex items-center gap-2">
           <label class="text-sm font-medium">Enable Chatbot</label>
-          <hlm-switch
-            [checked]="isEnabled()"
-            (checkedChange)="isEnabled.set($event)"
-          />
+          <hlm-switch [checked]="isEnabled()" (checkedChange)="isEnabled.set($event)" />
         </div>
       </div>
 
       <div class="space-y-5 p-4 sm:p-6">
         <div class="space-y-1.5">
-          <label for="greetingInput" class="font-medium text-foreground text-xs sm:text-sm">Custom Greeting Message</label>
+          <label for="greetingInput" class="font-medium text-foreground text-xs sm:text-sm"
+            >Custom Greeting Message</label
+          >
           <input
             id="greetingInput"
             hlmInput
@@ -47,33 +55,37 @@
             (input)="greeting.set($any($event.target).value)"
           />
           <p class="mt-1 text-[11px] text-muted-foreground">
-            Current effective greeting: <span class="italic">"{{ settings()?.effectiveGreeting }}"</span>
+            Current effective greeting:
+            <span class="italic">"{{ settings()?.effectiveGreeting }}"</span>
           </p>
         </div>
 
         <div class="space-y-1.5">
-          <label for="toneSelect" class="font-medium text-foreground text-xs sm:text-sm">Conversation Tone</label>
-          <div class="relative max-w-sm">
-            <select
-              id="toneSelect"
-              [value]="tone()"
-              (change)="tone.set($any($event.target).value)"
-              class="flex bg-background shadow-2xs px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-10 appearance-none text-xs sm:text-sm transition-colors cursor-pointer pe-9"
-            >
+          <label for="toneSelect" class="font-medium text-foreground text-xs sm:text-sm"
+            >Conversation Tone</label
+          >
+          <hlm-select
+            id="toneSelect"
+            [value]="tone()"
+            (valueChange)="tone.set($any($event))"
+            [itemToString]="toneItemToString"
+            class="max-w-sm w-full"
+          >
+            <hlm-select-trigger class="w-full h-10 bg-background">
+              <hlm-select-value />
+            </hlm-select-trigger>
+            <hlm-select-content *hlmSelectPortal>
               @for (t of tones; track t.value) {
-                <option [value]="t.value">{{ t.label }}</option>
+                <hlm-select-item [value]="t.value">{{ t.label }}</hlm-select-item>
               }
-            </select>
-            <ng-icon
-              name="lucideChevronDown"
-              size="16"
-              class="top-1/2 absolute text-muted-foreground -translate-y-1/2 pointer-events-none end-3"
-            />
-          </div>
+            </hlm-select-content>
+          </hlm-select>
         </div>
 
         <div class="space-y-1.5">
-          <label for="emailInput" class="font-medium text-foreground text-xs sm:text-sm">Contact Email / Handover Email</label>
+          <label for="emailInput" class="font-medium text-foreground text-xs sm:text-sm"
+            >Contact Email / Handover Email</label
+          >
           <input
             id="emailInput"
             hlmInput

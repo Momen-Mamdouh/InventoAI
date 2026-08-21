@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
+import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSwitchImports } from '@spartan/helm/switch';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideChevronDown, lucideSave } from '@ng-icons/lucide';
@@ -13,13 +14,22 @@ import { ChatbotSettings, UpdateChatbotSettingsDto } from '../../types/chat-admi
 @Component({
   selector: 'app-chatbot-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, HlmCard, HlmButton, HlmInput, HlmSwitchImports, NgIcon],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HlmCard,
+    HlmButton,
+    HlmInput,
+    HlmSelectImports,
+    HlmSwitchImports,
+    NgIcon,
+  ],
   providers: [
     provideIcons({
       lucideCheck,
       lucideChevronDown,
-      lucideSave
-    })
+      lucideSave,
+    }),
   ],
   templateUrl: './settings.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +55,11 @@ export class SettingsComponent implements OnInit {
     { value: 'playful', label: 'Playful & Casual' },
   ];
 
+  readonly toneItemToString = (value: unknown): string => {
+    const t = this.tones.find((item) => item.value === String(value));
+    return t ? t.label : 'Friendly & Helpful';
+  };
+
   ngOnInit() {
     this.loadSettings();
   }
@@ -62,7 +77,7 @@ export class SettingsComponent implements OnInit {
       },
       error: () => {
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -83,7 +98,7 @@ export class SettingsComponent implements OnInit {
       },
       error: () => {
         this.isSaving.set(false);
-      }
+      },
     });
   }
 

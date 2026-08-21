@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@invento/core';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { EmptyState } from '@invento/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideImage,
@@ -24,17 +25,26 @@ import {
   lucidePlus,
   lucideRefreshCw,
   lucideAlertTriangle,
+  lucideStore,
+  lucideSun,
+  lucideMoon,
 } from '@ng-icons/lucide';
 import {
   StoreService,
   HeroSectionResponse,
   StoreResponse,
 } from '../../features/store/store.service';
+import { CategoriesService } from '../../features/categories/category.service';
+import { ProductService } from '../../features/products/product.service';
+import { AuthService } from '../../core/service/auth.service';
+import { environment } from '../../environments/environment';
 
 interface Category {
   id: string;
   name: string;
-  icon: string;
+  icon?: string;
+  imageUrl?: string | null;
+  slug?: string;
 }
 
 interface Product {
@@ -48,7 +58,7 @@ interface Product {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgIcon, TranslatePipe, HlmSkeleton],
+  imports: [CommonModule, NgIcon, TranslatePipe, HlmSkeleton, EmptyState],
   templateUrl: './home.html',
   styleUrl: './home.css',
   providers: [
@@ -72,30 +82,44 @@ interface Product {
       lucidePlus,
       lucideRefreshCw,
       lucideAlertTriangle,
+      lucideStore,
+      lucideSun,
+      lucideMoon,
     }),
   ],
 })
 export class HomeComponent implements OnInit {
   private readonly storeService = inject(StoreService);
+  private readonly categoriesService = inject(CategoriesService);
+  private readonly productService = inject(ProductService);
+  private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
+
+  readonly siteBuilderUrl = signal<string>(
+    (environment as { siteBuilderUrl?: string }).siteBuilderUrl ||
+      (environment.production ? 'https://test-site-builder.vercel.app' : 'http://localhost:4200'),
+  );
 
   // View mode & UI States -> categoryPickerOpen is now false by default
   viewMode = signal<'desktop' | 'mobile'>('desktop');
+  previewThemeMode = signal<'light' | 'dark'>('light');
   categoryPickerOpen = signal<boolean>(false);
   productPickerOpen = signal<boolean>(false);
   isSaved = signal<boolean>(true);
 
   // Store Hydration State Signals
   isLoadingStore = signal<boolean>(true);
+  isLoadingCategories = signal<boolean>(true);
+  isLoadingProducts = signal<boolean>(true);
   storeLoadError = signal<string | null>(null);
   storeData = signal<StoreResponse | null>(null);
   storeUrl = computed(() => {
     const slug = this.storeData()?.slug || 'yourbrand';
-    return `https://${slug}.inventoai.com`;
+    return `http://localhost:4300/${slug}`;
   });
   storeDomain = computed(() => {
     const slug = this.storeData()?.slug || 'yourbrand';
-    return `${slug}.inventoai.com`;
+    return `http://localhost:4300/${slug}.com`;
   });
   storeName = computed(() => {
     return this.storeData()?.name || 'YourBrand';
@@ -105,16 +129,28 @@ export class HomeComponent implements OnInit {
     const theme = this.storeData()?.theme as any;
     if (!theme) return {};
 
-    // Default to dark palette to match preview image, fallback to light
-    const palette = theme.dark || theme.light;
-    if (!palette) return {};
+    const mode = this.previewThemeMode();
+    const palette = (mode === 'dark' ? theme.dark : theme.light) || theme.light || theme.dark || {};
 
     const styles: Record<string, string> = {};
     for (const [key, value] of Object.entries(palette)) {
-      const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      if (!value) continue;
+      const cssKey = key.replace(/([a-z])([A-Z0-9])/g, '$1-$2').toLowerCase();
       styles[`--${cssKey}`] = value as string;
       styles[`--color-${cssKey}`] = value as string;
     }
+
+    if (palette.card) styles['--sidebar'] = palette.card as string;
+    if (palette.foreground) styles['--sidebar-foreground'] = palette.foreground as string;
+    if (palette.primary) styles['--sidebar-primary'] = palette.primary as string;
+    if (palette.primaryForeground)
+      styles['--sidebar-primary-foreground'] = palette.primaryForeground as string;
+    if (palette.accent) styles['--sidebar-accent'] = palette.accent as string;
+    if (palette.accentForeground)
+      styles['--sidebar-accent-foreground'] = palette.accentForeground as string;
+    if (palette.border) styles['--sidebar-border'] = palette.border as string;
+    if (palette.card) styles['--input-background'] = palette.card as string;
+    if (palette.muted) styles['--switch-background'] = palette.muted as string;
 
     if (theme.radius) {
       styles['--radius'] = theme.radius;
@@ -124,15 +160,15 @@ export class HomeComponent implements OnInit {
   });
 
   themeClass = computed(() => {
-    const theme = this.storeData()?.theme as any;
-    // Return dark class to ensure text/bg contrast correctly applies if using dark theme
-    return theme?.dark ? 'dark' : '';
+    return this.previewThemeMode() === 'dark' ? 'dark' : '';
   });
 
+  togglePreviewTheme(): void {
+    this.previewThemeMode.set(this.previewThemeMode() === 'dark' ? 'light' : 'dark');
+  }
+
   // Hero Section State
-  heroImageUrl = signal<string>(
-    'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1000&auto=format&fit=crop',
-  );
+  heroImageUrl = signal<string>('');
   heroTitle = signal<string>('Elevate Your Daily Tech Setup');
   heroSubtitle = signal<string>(
     'Discover premium accessories designed for minimalist productivity & peak performance.',
@@ -153,8 +189,7 @@ export class HomeComponent implements OnInit {
     ctaLabel: string;
     ctaHref: string;
   }>({
-    imageUrl:
-      'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1000&auto=format&fit=crop',
+    imageUrl: '',
     title: 'Elevate Your Daily Tech Setup',
     subtitle:
       'Discover premium accessories designed for minimalist productivity & peak performance.',
@@ -164,47 +199,11 @@ export class HomeComponent implements OnInit {
 
   // Categories Section State
   categoriesTitle = signal<string>('Categories');
-  categories = signal<Category[]>([
-    { id: '1', name: 'Laptops', icon: '💻' },
-    { id: '2', name: 'Audio', icon: '🎧' },
-    { id: '3', name: 'Mobile', icon: '📱' },
-    { id: '4', name: 'Wearables', icon: '⌚' },
-    { id: '5', name: 'Cameras', icon: '📷' },
-    { id: '6', name: 'Networking', icon: '🌐' },
-  ]);
+  categories = signal<Category[]>([]);
 
   // Products Section State
   featuredTitle = signal<string>('Featured Products');
-  products = signal<Product[]>([
-    {
-      id: 'p1',
-      name: 'AuraX Pro ANC',
-      price: '$299',
-      img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop',
-      selected: true,
-    },
-    {
-      id: 'p2',
-      name: 'Nexus Book 16"',
-      price: '$1299',
-      img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=400&auto=format&fit=crop',
-      selected: true,
-    },
-    {
-      id: 'p3',
-      name: 'Chronos Smartwatch',
-      price: '$349',
-      img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=400&auto=format&fit=crop',
-      selected: true,
-    },
-    {
-      id: 'p4',
-      name: 'Tactile Pro Keyboard',
-      price: '$149',
-      img: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=400&auto=format&fit=crop',
-      selected: true,
-    },
-  ]);
+  products = signal<Product[]>([]);
 
   // Computed Properties
   selectedProducts = computed(() => this.products().filter((product) => product.selected));
@@ -219,13 +218,66 @@ export class HomeComponent implements OnInit {
       ctaHref: this.heroCtaHref(),
     });
 
-    // Resolve store slug (from query param -> localStorage -> fallback 'layali')
-    const slug =
-      this.route.snapshot.queryParamMap.get('slug') ||
-      (typeof localStorage !== 'undefined'
-        ? localStorage.getItem('current_store_slug') || localStorage.getItem('store_slug')
-        : null) ||
-      'layali';
+    // 1. Fetch featured categories (isFeatured=true, limit=3, isPublished=true)
+    this.isLoadingCategories.set(true);
+    this.categoriesService.list({ isFeatured: true, limit: 3, isPublished: true }).subscribe({
+      next: (res) => {
+        this.isLoadingCategories.set(false);
+        if (res.items && res.items.length > 0) {
+          const mapped: Category[] = res.items.map((cat, idx) => ({
+            id: cat.id || cat.slug || `cat-${idx}`,
+            name: cat.name,
+            icon: '📦',
+            imageUrl: cat.imageUrl || null,
+            slug: cat.slug,
+          }));
+          this.categories.set(mapped);
+        }
+      },
+      error: (err) => {
+        this.isLoadingCategories.set(false);
+        console.warn('Failed to fetch featured categories:', err);
+      },
+    });
+
+    // 2. Fetch featured products (isFeatured=true, limit=3, status=active)
+    this.isLoadingProducts.set(true);
+    this.productService.getProducts({ isFeatured: 'true', limit: 3, status: 'active' }).subscribe({
+      next: (res) => {
+        this.isLoadingProducts.set(false);
+        if (res.items && res.items.length > 0) {
+          const currencySymbol =
+            this.storeData()?.currency === 'USD' || !this.storeData()?.currency
+              ? '$'
+              : `${this.storeData()?.currency} `;
+          const mapped: Product[] = res.items.map((p, idx) => {
+            const price =
+              p.minPriceAmount != null ? `${currencySymbol}${p.minPriceAmount / 100}` : '$0';
+            return {
+              id: p.id || p.slug || `p-${idx}`,
+              name: p.title,
+              price: price,
+              img: p.imageUrl || '',
+              selected: true,
+            };
+          });
+          this.products.set(mapped);
+        }
+      },
+      error: (err) => {
+        this.isLoadingProducts.set(false);
+        console.warn('Failed to fetch featured products:', err);
+      },
+    });
+
+    // Resolve store slug strictly from auth token / current user
+    const slug = this.authService.getStoreSlug();
+
+    if (!slug) {
+      this.isLoadingStore.set(false);
+      this.storeData.set(null);
+      return;
+    }
 
     this.isLoadingStore.set(true);
     this.storeLoadError.set(null);
@@ -241,9 +293,10 @@ export class HomeComponent implements OnInit {
 
         if (data.hero) {
           const heroData = {
-            imageUrl: data.hero.imageUrl || this.heroImageUrl(),
-            headline: data.hero.headline || this.heroTitle(),
-            subtitle: data.hero.subtitle || this.heroSubtitle(),
+            imageUrl: data.hero.imageUrl || '',
+            headline:
+              data.hero.headline || (data.name ? `Welcome to ${data.name}` : this.heroTitle()),
+            subtitle: data.hero.subtitle || data.description || this.heroSubtitle(),
             ctaLabel: data.hero.ctaLabel || this.heroCtaLabel(),
             ctaHref: data.hero.ctaHref || '',
           };
@@ -265,17 +318,6 @@ export class HomeComponent implements OnInit {
             this.heroCtaLabel.set(heroData.ctaLabel);
             this.heroCtaHref.set(heroData.ctaHref);
           }
-        }
-
-        // Hydrate featured categories if available and user hasn't edited categories locally
-        if (isClean && data.featuredCategories && data.featuredCategories.length > 0) {
-          // TODO: API featuredCategories provides imageUrl, which needs reconciling with local emoji-icon Category model once a categories write endpoint exists.
-          const hydratedCategories: Category[] = data.featuredCategories.map((fc, idx) => ({
-            id: fc.slug || `cat-${idx}`,
-            name: fc.name,
-            icon: '📦',
-          }));
-          this.categories.set(hydratedCategories);
         }
 
         if (isClean) {
@@ -418,6 +460,10 @@ export class HomeComponent implements OnInit {
   fallbackImg(event: Event) {
     (event.target as HTMLImageElement).src =
       'https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=400&auto=format&fit=crop';
+  }
+
+  fallbackHeroImg(event: Event) {
+    this.heroImageUrl.set('');
   }
 
   discard() {

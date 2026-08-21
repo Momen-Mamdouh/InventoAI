@@ -20,7 +20,12 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { SupplierService } from '@invento/invento/features/suppliers/supplier.service';
 import { Supplier } from '@invento/invento/features/suppliers/supplier.model';
-import { PurchaseRequestDetail, PurchaseRequestService, PurchaseRequestStatus, SupplierOffer } from '@invento/invento/features/purchase-requests';
+import {
+  PurchaseRequestDetail,
+  PurchaseRequestService,
+  PurchaseRequestStatus,
+  SupplierOffer,
+} from '@invento/invento/features/purchase-requests';
 
 interface SupplierRequestHistory {
   request: PurchaseRequestDetail;
@@ -29,7 +34,17 @@ interface SupplierRequestHistory {
 
 @Component({
   selector: 'app-supplier-details',
-  imports: [CurrencyPipe, DatePipe, NgClass, TitleCasePipe, RouterLink, NgIcon, HlmButton, HlmCardImports, HlmSkeleton],
+  imports: [
+    CurrencyPipe,
+    DatePipe,
+    NgClass,
+    TitleCasePipe,
+    RouterLink,
+    NgIcon,
+    HlmButton,
+    HlmCardImports,
+    HlmSkeleton,
+  ],
   providers: [
     provideIcons({
       lucideArrowLeft,
@@ -68,23 +83,31 @@ export class SupplierDetails implements OnInit {
     this.historyLoading.set(true);
     this.error.set(null);
 
-    forkJoin({ supplier: this.supplierApi.getOne(id), requests: this.loadAllRequests() }).subscribe({
-      next: ({ supplier, requests }) => {
-        this.supplier.set(supplier);
-        const history = requests
-          .map((request) => ({ request, offer: request.offers.find((offer) => offer.supplierId === supplier.id) }))
-          .filter((item): item is SupplierRequestHistory => !!item.offer)
-          .sort((a, b) => new Date(b.request.createdAt).getTime() - new Date(a.request.createdAt).getTime());
-        this.history.set(history);
-        this.loading.set(false);
-        this.historyLoading.set(false);
+    forkJoin({ supplier: this.supplierApi.getOne(id), requests: this.loadAllRequests() }).subscribe(
+      {
+        next: ({ supplier, requests }) => {
+          this.supplier.set(supplier);
+          const history = requests
+            .map((request) => ({
+              request,
+              offer: request.offers.find((offer) => offer.supplierId === supplier.id),
+            }))
+            .filter((item): item is SupplierRequestHistory => !!item.offer)
+            .sort(
+              (a, b) =>
+                new Date(b.request.createdAt).getTime() - new Date(a.request.createdAt).getTime(),
+            );
+          this.history.set(history);
+          this.loading.set(false);
+          this.historyLoading.set(false);
+        },
+        error: (err) => {
+          this.error.set(err?.error?.message || 'Could not load supplier details.');
+          this.loading.set(false);
+          this.historyLoading.set(false);
+        },
       },
-      error: (err) => {
-        this.error.set(err?.error?.message || 'Could not load supplier details.');
-        this.loading.set(false);
-        this.historyLoading.set(false);
-      },
-    });
+    );
   }
 
   statusClass(status: PurchaseRequestStatus): string {
@@ -109,15 +132,23 @@ export class SupplierDetails implements OnInit {
   private loadAllRequests(): Observable<PurchaseRequestDetail[]> {
     return this.purchaseApi.list({ page: 1, limit: 100 }).pipe(
       switchMap((first) => {
-        const remaining = Array.from({ length: Math.max(0, first.totalPages - 1) }, (_, index) => index + 2)
-          .map((page) => this.purchaseApi.list({ page, limit: first.limit }));
+        const remaining = Array.from(
+          { length: Math.max(0, first.totalPages - 1) },
+          (_, index) => index + 2,
+        ).map((page) => this.purchaseApi.list({ page, limit: first.limit }));
         if (!remaining.length) return of(first.items);
-        return forkJoin(remaining).pipe(map((pages) => [...first.items, ...pages.flatMap((page) => page.items)]));
+        return forkJoin(remaining).pipe(
+          map((pages) => [...first.items, ...pages.flatMap((page) => page.items)]),
+        );
       }),
       switchMap((summaries) => {
-        const details = summaries.map((summary) => this.purchaseApi.get(summary.id).pipe(catchError(() => of(null))));
+        const details = summaries.map((summary) =>
+          this.purchaseApi.get(summary.id).pipe(catchError(() => of(null))),
+        );
         if (!details.length) return of([] as PurchaseRequestDetail[]);
-        return forkJoin(details).pipe(map((items) => items.filter((item): item is PurchaseRequestDetail => !!item)));
+        return forkJoin(details).pipe(
+          map((items) => items.filter((item): item is PurchaseRequestDetail => !!item)),
+        );
       }),
     );
   }

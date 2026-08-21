@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmBadge } from '@spartan/helm/badge';
@@ -15,6 +15,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HlmBreadcrumbImports } from '@spartan/helm/breadcrumb';
 import { TranslatePipe, LocaleService, ThemeService } from '@invento/core';
 import { BrandLogo } from '@invento/shared';
+
+import { BreadcrumbService } from '../../../core/service/breadcrumb.service';
 
 @Component({
   selector: 'app-header',
@@ -34,25 +36,15 @@ import { BrandLogo } from '@invento/shared';
 export class Header {
   protected readonly localeService = inject(LocaleService);
   private readonly themeService = inject(ThemeService);
-  protected readonly isDark = this.themeService.isDark;
-  protected readonly breadcrumbs = signal<{ label: string; route: string }[]>([]);
+  private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly router = inject(Router);
 
-  constructor() {
-    this.router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(),
-      )
-      .subscribe((event) => {
-        this.updateBreadcrumbs(event.urlAfterRedirects);
-      });
+  protected readonly isDark = this.themeService.isDark;
+  private readonly currentUrl = signal<string>(this.router.url);
 
-    // Initial breadcrumb generation
-    this.updateBreadcrumbs(this.router.url);
-  }
-
-  private updateBreadcrumbs(url: string): void {
+  protected readonly breadcrumbs = computed<{ label: string; route: string }[]>(() => {
+    const url = this.currentUrl();
+    const dynamicLabels = this.breadcrumbService.labels();
     const segments = url
       .split('?')[0]
       .split('/')
@@ -66,15 +58,35 @@ export class Header {
       for (const segment of segments) {
         currentRoute += `/${segment}`;
 
-        // Format label (e.g., 'acc-setting' -> 'Acc Setting', 'products' -> 'Products')
-        let label = segment.replace(/-/g, ' ');
-        label = label.charAt(0).toUpperCase() + label.slice(1);
+        let label = dynamicLabels[segment] || dynamicLabels[currentRoute];
+        if (!label) {
+          const isUuid =
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(segment) ||
+            /^[0-9a-f]{24}$/i.test(segment);
+          if (isUuid) {
+            label = 'Details';
+          } else {
+            label = segment.replace(/-/g, ' ');
+            label = label.charAt(0).toUpperCase() + label.slice(1);
+          }
+        }
 
         breadcrumbs.push({ label, route: currentRoute });
       }
     }
 
-    this.breadcrumbs.set(breadcrumbs);
+    return breadcrumbs;
+  });
+
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => {
+        this.currentUrl.set(event.urlAfterRedirects);
+      });
   }
 
   switchLocale(): void {

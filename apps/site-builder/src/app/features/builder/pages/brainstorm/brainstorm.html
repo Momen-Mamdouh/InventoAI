@@ -181,7 +181,10 @@
               <ng-icon name="lucideImagePlus" class="text-muted-foreground text-4xl" />
             </div>
             <div>
-              <p class="text-sm font-medium">{{ 'brainstorm_logo_upload' | translate }}</p>
+              <p class="text-sm font-medium">
+                {{ 'brainstorm_logo_upload' | translate }}
+                <span class="text-destructive font-bold">*</span>
+              </p>
               <p class="text-xs text-muted-foreground mt-1">
                 {{ 'brainstorm_logo_upload_desc' | translate }}
               </p>
@@ -193,7 +196,7 @@
       <button
         hlmBtn
         (click)="onNext()"
-        [disabled]="!isValidConcept() || isSubmitting()"
+        [disabled]="!canSubmit()"
         class="flex items-center gap-2 disabled:hover:bg-primary md:px-9 py-7 md:w-fit disabled:cursor-not-allowed disabled:pointer-events-auto"
       >
         @if (isSubmitting()) {

@@ -6,6 +6,7 @@ export interface User {
   email: string;
   role: string;
   storeId?: string | null;
+  storeSlug?: string | null;
   isEmailVerified: boolean;
   createdAt: string;
   updatedAt: string;

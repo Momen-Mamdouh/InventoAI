@@ -86,21 +86,22 @@ export class Chatbot implements OnInit {
           if (settings.storeName) {
             this.storeName.set(settings.storeName);
           }
-          this.initialGreeting = settings.effectiveGreeting || settings.greeting || 'How can I help you today?';
+          this.initialGreeting =
+            settings.effectiveGreeting || settings.greeting || 'How can I help you today?';
           this.loadConversation(this.initialGreeting);
         }
       },
       error: (err) => {
         console.warn('Settings API not ready, using mock settings.', err);
         this.showWidget.set(true);
-        
+
         // Use the slug to create a decent fallback name if the API fails
         const slug = this.storeSlug() || 'Store';
         const formattedName = slug
           .split('-')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
-          
+
         this.storeName.set(formattedName);
         this.loadConversation(
           `Hi! I'm ${formattedName}'s assistant — ask me about our products, an order or our policies.`,
@@ -182,7 +183,7 @@ export class Chatbot implements OnInit {
 
     const trySend = (retryWithoutSession = false) => {
       const activeSessionId = retryWithoutSession ? undefined : this.sessionId;
-      
+
       this.chatService.sendChatMessage(this.storeSlug(), userText, activeSessionId).subscribe({
         next: (res) => {
           if (res.sessionId && res.sessionId !== this.sessionId) {

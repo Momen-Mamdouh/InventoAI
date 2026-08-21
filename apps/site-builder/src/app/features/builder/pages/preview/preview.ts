@@ -43,6 +43,8 @@ import { LocaleService, TranslatePipe } from '@invento/core';
 import { toast } from '@spartan/helm/sonner';
 import { toastApiError } from '@/app/shared/utils/toast-api-error';
 import { PALETTE_DEFAULTS, DEFAULT_RADIUS, deriveDarkPalette } from '@/app/core/utils/palette';
+import { AuthService } from '@/app/core/service/auth.service';
+import { ApiConfig } from '@/app/core/config/api-config';
 
 /**
  * Neutral stand-in rendered while themes are still in flight.
@@ -99,6 +101,8 @@ export class Preview {
   private readonly _localeService = inject(LocaleService);
   private readonly previewDataClientService = inject(PreviewDataClient);
   private readonly publishApi = inject(PublishApi);
+  private readonly authService = inject(AuthService);
+  private readonly apiConfig = inject(ApiConfig);
 
   readonly themeSuggestions = this.previewDataClientService.themeSuggestions;
   readonly products = this.previewDataClientService.products;
@@ -334,8 +338,9 @@ export class Preview {
 
         toast.success(this._localeService.translate('toast_deploy_success'), { id: toastId });
 
-        // const domain = this.builderState.domain();
-        const redirectUrl = `http://localhost:4400`;
+        const redirectUrl = `${this.apiConfig.inventoLoginUrl}?forceLogout=true`;
+        this.authService.logout();
+
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 1000);

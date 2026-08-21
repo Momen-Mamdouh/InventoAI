@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { ProductCard } from '@invento/user-site/app/features/product/components/product-card/product-card';
-import { ProductListItem } from '@invento/user-site/app/features/product/types/product';
+import { ProductCard } from '../product-card/product-card';
+import { ProductListItem } from '../../types';
 
 @Component({
   selector: 'app-products-grid',

@@ -8,12 +8,12 @@ import {
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
 import { toast } from '@spartan/helm/sonner';
-import { flyToCart } from '@invento/user-site/app/features/product';
+import { flyToCart } from '../../utils';
 
 import { LocaleService, TranslatePipe } from '@invento/core';
-import { QuantityStepper } from '@invento/user-site/app/features/product/components/quantity-stepper/quantity-stepper';
+import { QuantityStepper } from '../quantity-stepper/quantity-stepper';
 import { CartService } from '@invento/user-site/app/core/service/cart.service';
-import { ProductStore } from '@invento/user-site/app/features/product';
+import { ProductStore } from '../../services';
 
 @Component({
   selector: 'app-purchase-actions',

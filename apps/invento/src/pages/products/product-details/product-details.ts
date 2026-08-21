@@ -29,6 +29,7 @@ import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmBadgeImports } from '@spartan/helm/badge';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmSelectImports } from '@spartan/helm/select';
 
 import {
   ApiProductDetail,
@@ -43,6 +44,8 @@ import { Category } from '../../../features/categories/category.model';
 import { toast } from '@spartan-ng/brain/sonner';
 import { DeleteConfirmDialog } from '../../categories/delete-confirm-dialog';
 
+import { BreadcrumbService } from '../../../core/service/breadcrumb.service';
+
 @Component({
   selector: 'app-product-details',
   standalone: true,
@@ -56,6 +59,7 @@ import { DeleteConfirmDialog } from '../../categories/delete-confirm-dialog';
     HlmCardImports,
     HlmBadgeImports,
     HlmInputImports,
+    HlmSelectImports,
     CdkDropList,
     CdkDrag,
     DeleteConfirmDialog,
@@ -85,6 +89,7 @@ export class ProductDetails implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly attributeService = inject(AttributeService);
   private readonly categoriesService = inject(CategoriesService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
 
   readonly product = signal<ApiProductDetail | null>(null);
   readonly isLoading = signal<boolean>(true);
@@ -111,6 +116,34 @@ export class ProductDetails implements OnInit {
     weightGrams: null as number | null,
     categoryIds: [] as string[],
     productAttributeValues: {} as Record<string, string>,
+  };
+
+  private readonly statusLabels: Record<string, string> = {
+    draft: 'Draft',
+    active: 'Active',
+    archived: 'Archived',
+  };
+
+  readonly statusItemToString = (value: unknown): string => {
+    return this.statusLabels[String(value).toLowerCase()] ?? 'Draft';
+  };
+
+  readonly getProductAttributeValueLabel = (attrId: string, valId: unknown): string => {
+    if (!valId) return '';
+    const attr = this.globalAttributes().find((a) => a.id === attrId);
+    if (!attr) return '';
+    const val = attr.values.find((v) => v.id === valId);
+    return val ? val.value : '';
+  };
+
+  readonly makeProductAttributeItemToString = (attrId: string) => {
+    return (valId: unknown): string => this.getProductAttributeValueLabel(attrId, valId);
+  };
+
+  readonly axisAttributeItemToString = (attrId: unknown): string => {
+    if (!attrId) return '';
+    const attr = this.activeVariantAxes().find((a) => a.id === attrId);
+    return attr ? attr.name : '';
   };
 
   readonly categories = signal<Category[]>([]);
@@ -186,6 +219,19 @@ export class ProductDetails implements OnInit {
     }
   }
 
+  toggleEditCategory(catId: string): void {
+    const ids = this.editProductForm.categoryIds || [];
+    if (ids.includes(catId)) {
+      this.editProductForm.categoryIds = ids.filter((id) => id !== catId);
+    } else {
+      this.editProductForm.categoryIds = [...ids, catId];
+    }
+  }
+
+  isEditCategorySelected(catId: string): boolean {
+    return (this.editProductForm.categoryIds || []).includes(catId);
+  }
+
   loadCategories(): void {
     this.categoriesService.list({ limit: 100 }).subscribe({
       next: (res) => this.categories.set(res.items),
@@ -205,6 +251,9 @@ export class ProductDetails implements OnInit {
     this.productService.getProductById(id).subscribe({
       next: (data) => {
         this.product.set(data);
+        if (data && data.title) {
+          this.breadcrumbService.setLabel(id, data.title);
+        }
         this.isLoading.set(false);
       },
       error: (err) => {

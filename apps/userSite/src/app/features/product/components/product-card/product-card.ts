@@ -12,20 +12,16 @@ import {
 } from '@spartan/helm/card';
 import { toast } from '@spartan/helm/sonner';
 import { LocaleService, TranslatePipe } from '@invento/core';
-import { flyToCart, ProductApiService } from '@invento/user-site/app/features/product';
+import { ProductApiService } from '../../services';
+import { flyToCart } from '../../utils';
 
 import { HlmButton } from '@spartan/helm/button';
 import { HlmTypographyImports } from '@spartan/helm/typography';
-import { ProductListItem } from '@invento/user-site/app/features/product/types/product';
+import { ProductListItem, ProductDetail, ProductVariant, ProductVariantOption } from '../../types';
 import { PageBadge, ColorSwatch } from '@invento/shared';
 import { CartService } from '@invento/user-site/app/core/service/cart.service';
 import { StoreService } from '@invento/user-site/app/core/service/store.service';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
-import {
-  ProductDetail,
-  ProductVariant,
-  ProductVariantOption,
-} from '@invento/user-site/app/features/product/types';
 @Component({
   selector: 'app-product-card',
   templateUrl: './product-card.html',

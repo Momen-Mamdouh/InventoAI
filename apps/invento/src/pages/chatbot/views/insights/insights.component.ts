@@ -1,9 +1,19 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmSelectImports } from '@spartan/helm/select';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideUsers, lucideMessageSquare, lucideHelpCircle, lucideAlertCircle, lucideChevronDown, lucideCheckCircle2, lucideXCircle, lucideMinusCircle, lucidePackage } from '@ng-icons/lucide';
+import {
+  lucideUsers,
+  lucideMessageSquare,
+  lucideHelpCircle,
+  lucideAlertCircle,
+  lucideChevronDown,
+  lucideCheckCircle2,
+  lucideXCircle,
+  lucideMinusCircle,
+  lucidePackage,
+} from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
 import { ChatStats } from '../../types/chat-admin.types';
 import { RouterLink } from '@angular/router';
@@ -11,7 +21,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-chatbot-insights',
   standalone: true,
-  imports: [CommonModule, FormsModule, HlmCard, NgIcon, DecimalPipe, RouterLink],
+  imports: [CommonModule, HlmCard, HlmSelectImports, NgIcon, DecimalPipe, RouterLink],
   providers: [
     provideIcons({
       lucideUsers,
@@ -22,8 +32,8 @@ import { RouterLink } from '@angular/router';
       lucideCheckCircle2,
       lucideXCircle,
       lucideMinusCircle,
-      lucidePackage
-    })
+      lucidePackage,
+    }),
   ],
   templateUrl: './insights.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,14 +44,19 @@ export class InsightsComponent implements OnInit {
   stats = signal<ChatStats | null>(null);
   isLoading = signal<boolean>(true);
   errorState = signal<boolean>(false);
-  
+
   daysFilter = signal<number>(30);
-  
+
   daysOptions = [
     { value: 7, label: 'Last 7 Days' },
     { value: 30, label: 'Last 30 Days' },
     { value: 90, label: 'Last 90 Days' },
   ];
+
+  readonly daysItemToString = (value: unknown): string => {
+    const opt = this.daysOptions.find((o) => o.value === Number(value));
+    return opt ? opt.label : 'Last 30 Days';
+  };
 
   ngOnInit() {
     this.loadStats();
@@ -58,12 +73,11 @@ export class InsightsComponent implements OnInit {
       error: () => {
         this.errorState.set(true);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
-  onDaysChange(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
+  onDaysChange(value: unknown) {
     this.daysFilter.set(Number(value));
     this.loadStats();
   }

@@ -39,6 +39,12 @@ export class Login implements AfterViewInit {
     password: ['', [Validators.required]],
   });
 
+  constructor() {
+    if (this.route.snapshot.queryParamMap.has('forceLogout')) {
+      this.authService.setCurrentUser(null);
+    }
+  }
+
   async ngAfterViewInit() {
     await this.initGoogleAuth();
   }
@@ -70,7 +76,8 @@ export class Login implements AfterViewInit {
       next: () => {
         this.isLoading.set(false);
         toast.success('Logged in successfully');
-        this.router.navigateByUrl(this.returnUrl);
+        const target = this.authService.getStoreSlug() ? this.returnUrl : '/no-store';
+        this.router.navigateByUrl(target);
       },
       error: (err) => {
         this.isLoading.set(false);
@@ -97,7 +104,8 @@ export class Login implements AfterViewInit {
       next: () => {
         this.isGoogleLoading.set(false);
         toast.success('Signed in with Google successfully');
-        this.router.navigateByUrl(this.returnUrl);
+        const target = this.authService.getStoreSlug() ? this.returnUrl : '/no-store';
+        this.router.navigateByUrl(target);
       },
       error: (err) => {
         this.isGoogleLoading.set(false);

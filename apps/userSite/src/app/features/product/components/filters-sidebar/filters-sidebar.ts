@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, input, output, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { HlmButton } from '@spartan/helm/button';
-import { FilterResponse } from '@invento/user-site/app/features/product/types/product';
+import { FilterResponse, FilterAttribute } from '../../types';
 import { ActivatedRoute } from '@angular/router';
-import { parseAttributes } from '@invento/user-site/app/features/product/utils/filter-parser';
+import { parseAttributes } from '../../utils';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { GenericSelectImports, GenericSelectOption, SkeletonBlock } from '@invento/shared';
 import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmSwitchImports } from '@spartan/helm/switch';
-import { FilterAttribute } from '@invento/user-site/app/features/product/types/product';
 
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideRotateCcw, lucideFilterX } from '@ng-icons/lucide';

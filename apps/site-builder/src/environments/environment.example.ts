@@ -10,5 +10,5 @@ export const environment = {
   apiUrl: 'http://localhost:3000',
   apiKey: '',
   googleClientId: '774402300388-8enjhnd4qm40jremiu216eb6cn5jeqe6.apps.googleusercontent.com',
-  inventoDashboardUrl: 'http://localhost:4300/home',
+  inventoDashboardUrl: 'http://localhost:4400/home',
 };

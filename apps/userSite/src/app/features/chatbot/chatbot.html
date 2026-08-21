@@ -48,40 +48,62 @@
         </div>
 
         @if (chatHistory().length > 0) {
-        <div class="flex justify-between items-center w-full bg-muted/30 rounded-lg px-2 py-1 mt-1 relative z-[60]">
-          <span class="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
-            <ng-icon name="lucideHistory" size="12" /> Past Chats
-          </span>
-          <div class="relative">
-            <!-- The Button -->
-            <button (click)="toggleHistory()" class="flex items-center justify-between text-[10px] h-6 pl-2 pr-1.5 rounded-md bg-background hover:bg-muted border border-border/60 text-foreground cursor-pointer outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all w-[130px] shadow-sm">
-              <span class="truncate">Select a session...</span>
-              <ng-icon name="lucideChevronDown" size="12" class="text-muted-foreground transition-transform duration-200" [class.rotate-180]="isHistoryOpen()" />
-            </button>
+          <div
+            class="flex justify-between items-center w-full bg-muted/30 rounded-lg px-2 py-1 mt-1 relative z-[60]"
+          >
+            <span class="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
+              <ng-icon name="lucideHistory" size="12" /> Past Chats
+            </span>
+            <div class="relative">
+              <!-- The Button -->
+              <button
+                (click)="toggleHistory()"
+                class="flex items-center justify-between text-[10px] h-6 pl-2 pr-1.5 rounded-md bg-background hover:bg-muted border border-border/60 text-foreground cursor-pointer outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all w-[130px] shadow-sm"
+              >
+                <span class="truncate">Select a session...</span>
+                <ng-icon
+                  name="lucideChevronDown"
+                  size="12"
+                  class="text-muted-foreground transition-transform duration-200"
+                  [class.rotate-180]="isHistoryOpen()"
+                />
+              </button>
 
-            <!-- The Dropdown -->
-            @if (isHistoryOpen()) {
-              <!-- Backdrop -->
-              <div class="fixed inset-0 z-40" (click)="closeHistory()"></div>
-              
-              <!-- Menu Box -->
-              <div class="absolute right-0 top-full mt-1 z-50 w-44 bg-popover/95 backdrop-blur-md border border-border shadow-lg rounded-xl overflow-hidden flex flex-col py-1 animate-in fade-in zoom-in-95 duration-200">
-                <div class="px-3 py-1.5 border-b border-border/50 bg-muted/20">
-                  <span class="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Your History</span>
+              <!-- The Dropdown -->
+              @if (isHistoryOpen()) {
+                <!-- Backdrop -->
+                <div class="fixed inset-0 z-40" (click)="closeHistory()"></div>
+
+                <!-- Menu Box -->
+                <div
+                  class="absolute right-0 top-full mt-1 z-50 w-44 bg-popover/95 backdrop-blur-md border border-border shadow-lg rounded-xl overflow-hidden flex flex-col py-1 animate-in fade-in zoom-in-95 duration-200"
+                >
+                  <div class="px-3 py-1.5 border-b border-border/50 bg-muted/20">
+                    <span
+                      class="text-[9px] font-bold text-muted-foreground uppercase tracking-wider"
+                      >Your History</span
+                    >
+                  </div>
+                  <div
+                    class="max-h-[160px] overflow-y-auto overflow-x-hidden flex flex-col py-1 custom-scrollbar"
+                  >
+                    @for (session of chatHistory(); track session.sessionId) {
+                      <button
+                        (click)="selectSession(session.sessionId)"
+                        class="text-left text-[11px] px-3 py-2 hover:bg-primary hover:text-primary-foreground text-foreground transition-colors cursor-pointer flex items-center gap-2 border-b border-border/40 last:border-0"
+                      >
+                        <ng-icon name="lucideMessageSquare" size="12" class="opacity-70 shrink-0" />
+                        <span class="truncate">{{
+                          session.updatedAt | date: 'MMM d, h:mm a'
+                        }}</span>
+                      </button>
+                    }
+                  </div>
                 </div>
-                <div class="max-h-[160px] overflow-y-auto overflow-x-hidden flex flex-col py-1 custom-scrollbar">
-                  @for (session of chatHistory(); track session.sessionId) {
-                    <button (click)="selectSession(session.sessionId)" class="text-left text-[11px] px-3 py-2 hover:bg-primary hover:text-primary-foreground text-foreground transition-colors cursor-pointer flex items-center gap-2 border-b border-border/40 last:border-0">
-                      <ng-icon name="lucideMessageSquare" size="12" class="opacity-70 shrink-0" />
-                      <span class="truncate">{{ session.updatedAt | date:'MMM d, h:mm a' }}</span>
-                    </button>
-                  }
-                </div>
-              </div>
-            }
+              }
+            </div>
           </div>
-        </div>
-      }
+        }
       </hlm-popover-header>
 
       <div
@@ -157,7 +179,11 @@
                   </p>
                   <div class="flex flex-col gap-2">
                     @for (faq of message.faqs; track faq.id) {
-                      <a [routerLink]="['/', storeSlug(), 'faq']" [queryParams]="{q: faq.question}" class="text-xs text-primary font-medium hover:underline inline-flex items-center gap-1 mt-1">
+                      <a
+                        [routerLink]="['/', storeSlug(), 'faq']"
+                        [queryParams]="{ q: faq.question }"
+                        class="text-xs text-primary font-medium hover:underline inline-flex items-center gap-1 mt-1"
+                      >
                         Read more in FAQ <ng-icon name="lucideExternalLink" size="10" />
                       </a>
                     }

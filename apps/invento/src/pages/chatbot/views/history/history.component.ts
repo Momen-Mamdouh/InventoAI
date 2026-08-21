@@ -5,15 +5,35 @@ import { RouterLink } from '@angular/router';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmSelectImports } from '@spartan/helm/select';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideSearch, lucideFilter, lucideEye, lucideUser, lucideMessageSquare, lucideAlertCircle, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
+import {
+  lucideSearch,
+  lucideFilter,
+  lucideEye,
+  lucideUser,
+  lucideMessageSquare,
+  lucideAlertCircle,
+  lucideChevronLeft,
+  lucideChevronRight,
+} from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
 import { ChatSessionPreview, ChatSessionsResponse } from '../../types/chat-admin.types';
 
 @Component({
   selector: 'app-chatbot-history',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, HlmCard, HlmInput, HlmButton, NgIcon, DatePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    HlmCard,
+    HlmInput,
+    HlmButton,
+    HlmSelectImports,
+    NgIcon,
+    DatePipe,
+  ],
   providers: [
     provideIcons({
       lucideSearch,
@@ -23,8 +43,8 @@ import { ChatSessionPreview, ChatSessionsResponse } from '../../types/chat-admin
       lucideMessageSquare,
       lucideAlertCircle,
       lucideChevronLeft,
-      lucideChevronRight
-    })
+      lucideChevronRight,
+    }),
   ],
   templateUrl: './history.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,35 +63,60 @@ export class HistoryComponent implements OnInit {
   hasUnanswered = signal<boolean | undefined>(undefined);
   isSignedIn = signal<boolean | undefined>(undefined);
 
+  readonly unansweredFilterValue = signal<string>('all');
+  readonly signedInFilterValue = signal<string>('all');
+
+  private readonly unansweredLabels: Record<string, string> = {
+    all: 'All Questions',
+    true: 'Has Unanswered',
+    false: 'Fully Answered',
+  };
+
+  private readonly signedInLabels: Record<string, string> = {
+    all: 'All Users',
+    true: 'Signed In',
+    false: 'Guests',
+  };
+
+  readonly unansweredItemToString = (val: unknown): string => {
+    return this.unansweredLabels[String(val)] ?? 'All Questions';
+  };
+
+  readonly signedInItemToString = (val: unknown): string => {
+    return this.signedInLabels[String(val)] ?? 'All Users';
+  };
+
   // Temp form models
   searchInput = '';
-  
+
   // Template helpers
   Math = Math;
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadSessions();
   }
 
   loadSessions() {
     this.isLoading.set(true);
     this.errorState.set(false);
-    this.chatService.getChatSessions({
-      page: this.page(),
-      limit: this.limit(),
-      search: this.search() || undefined,
-      hasUnanswered: this.hasUnanswered(),
-      isSignedIn: this.isSignedIn(),
-    }).subscribe({
-      next: (res) => {
-        this.data.set(res);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorState.set(true);
-        this.isLoading.set(false);
-      }
-    });
+    this.chatService
+      .getChatSessions({
+        page: this.page(),
+        limit: this.limit(),
+        search: this.search(),
+        hasUnanswered: this.hasUnanswered(),
+        isSignedIn: this.isSignedIn(),
+      })
+      .subscribe({
+        next: (res) => {
+          this.data.set(res);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.errorState.set(true);
+          this.isLoading.set(false);
+        },
+      });
   }
 
   onSearchSubmit() {
@@ -80,22 +125,30 @@ export class HistoryComponent implements OnInit {
     this.loadSessions();
   }
 
-  onFilterUnanswered(event: Event) {
-    const val = (event.target as HTMLSelectElement).value;
-    if (val === 'all') this.hasUnanswered.set(undefined);
-    else if (val === 'true') this.hasUnanswered.set(true);
-    else this.hasUnanswered.set(false);
-    
+  onUnansweredChange(val: string | null | undefined) {
+    const v = val || 'all';
+    this.unansweredFilterValue.set(v);
+    if (v === 'all') {
+      this.hasUnanswered.set(undefined);
+    } else if (v === 'true') {
+      this.hasUnanswered.set(true);
+    } else {
+      this.hasUnanswered.set(false);
+    }
     this.page.set(1);
     this.loadSessions();
   }
 
-  onFilterSignedIn(event: Event) {
-    const val = (event.target as HTMLSelectElement).value;
-    if (val === 'all') this.isSignedIn.set(undefined);
-    else if (val === 'true') this.isSignedIn.set(true);
-    else this.isSignedIn.set(false);
-    
+  onSignedInChange(val: string | null | undefined) {
+    const v = val || 'all';
+    this.signedInFilterValue.set(v);
+    if (v === 'all') {
+      this.isSignedIn.set(undefined);
+    } else if (v === 'true') {
+      this.isSignedIn.set(true);
+    } else {
+      this.isSignedIn.set(false);
+    }
     this.page.set(1);
     this.loadSessions();
   }
@@ -104,7 +157,7 @@ export class HistoryComponent implements OnInit {
     if (newPage < 1) return;
     const totalPages = this.data()?.totalPages || 1;
     if (newPage > totalPages) return;
-    
+
     this.page.set(newPage);
     this.loadSessions();
   }

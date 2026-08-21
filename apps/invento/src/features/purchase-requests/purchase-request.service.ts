@@ -21,7 +21,11 @@ export class PurchaseRequestService {
   private readonly base = `${environment.apiUrl}/purchase-requests`;
   private readonly mailboxBase = `${environment.apiUrl}/mailbox`;
 
-  list(params?: { page?: number; limit?: number; status?: PurchaseRequestStatus }): Observable<PurchaseRequestListResponse> {
+  list(params?: {
+    page?: number;
+    limit?: number;
+    status?: PurchaseRequestStatus;
+  }): Observable<PurchaseRequestListResponse> {
     let httpParams = new HttpParams();
     if (params?.page != null) httpParams = httpParams.set('page', params.page);
     if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
@@ -49,16 +53,30 @@ export class PurchaseRequestService {
     return this.http.post<PurchaseRequestDetail>(`${this.base}/${id}/cancel`, {});
   }
 
-  pasteReply(id: string, offerId: string, payload: PasteSupplierReplyDto): Observable<PurchaseRequestDetail> {
-    return this.http.post<PurchaseRequestDetail>(`${this.base}/${id}/offers/${offerId}/reply`, payload);
+  pasteReply(
+    id: string,
+    offerId: string,
+    payload: PasteSupplierReplyDto,
+  ): Observable<PurchaseRequestDetail> {
+    return this.http.post<PurchaseRequestDetail>(
+      `${this.base}/${id}/offers/${offerId}/reply`,
+      payload,
+    );
   }
 
-  correctOffer(id: string, offerId: string, payload: CorrectOfferDto): Observable<PurchaseRequestDetail> {
+  correctOffer(
+    id: string,
+    offerId: string,
+    payload: CorrectOfferDto,
+  ): Observable<PurchaseRequestDetail> {
     return this.http.patch<PurchaseRequestDetail>(`${this.base}/${id}/offers/${offerId}`, payload);
   }
 
   confirmOffer(id: string, offerId: string): Observable<PurchaseRequestDetail> {
-    return this.http.post<PurchaseRequestDetail>(`${this.base}/${id}/offers/${offerId}/confirm`, {});
+    return this.http.post<PurchaseRequestDetail>(
+      `${this.base}/${id}/offers/${offerId}/confirm`,
+      {},
+    );
   }
 
   mailboxStatus(): Observable<MailboxStatus> {

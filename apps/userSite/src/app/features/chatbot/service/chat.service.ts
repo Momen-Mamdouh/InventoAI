@@ -45,7 +45,7 @@ export interface ChatTurnResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatService {
   private readonly http = inject(HttpClient);
@@ -59,7 +59,11 @@ export class ChatService {
     return this.http.get<ChatSettings>(`${this.apiUrl}/site/${storeSlug}/chat/settings`);
   }
 
-  sendChatMessage(storeSlug: string, message: string, sessionId?: string): Observable<ChatTurnResponse> {
+  sendChatMessage(
+    storeSlug: string,
+    message: string,
+    sessionId?: string,
+  ): Observable<ChatTurnResponse> {
     const body = sessionId ? { message, sessionId } : { message };
     return this.http.post<ChatTurnResponse>(`${this.apiUrl}/site/${storeSlug}/chat`, body);
   }

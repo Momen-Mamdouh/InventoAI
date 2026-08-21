@@ -1,7 +1,10 @@
 <div class="space-y-6 pt-6">
   <!-- Top Navigation -->
   <div>
-    <a routerLink="/chatbot/history" class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+    <a
+      routerLink="/chatbot/history"
+      class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+    >
       <ng-icon name="lucideArrowLeft" size="14" />
       Back to History
     </a>
@@ -12,90 +15,131 @@
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
   } @else if (errorState()) {
-    <div class="flex flex-col items-center justify-center py-16 text-center border border-border rounded-xl bg-card">
-      <div class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4">
+    <div
+      class="flex flex-col items-center justify-center py-16 text-center border border-border rounded-xl bg-card"
+    >
+      <div
+        class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4"
+      >
         <ng-icon name="lucideAlertCircle" size="24" />
       </div>
       <h3 class="text-lg font-semibold">Transcript Not Found</h3>
       <p class="text-muted-foreground max-w-md mt-2">
-        We couldn't retrieve the transcript for this chat session. It may have been deleted or the server is unavailable.
+        We couldn't retrieve the transcript for this chat session. It may have been deleted or the
+        server is unavailable.
       </p>
     </div>
   } @else if (transcript()) {
-    
     <!-- Session Info Header -->
-    <div hlmCard class="bg-card shadow-xs p-4 sm:p-6 border border-border rounded-xl flex flex-col sm:flex-row justify-between gap-4">
+    <div
+      hlmCard
+      class="bg-card shadow-xs p-4 sm:p-6 border border-border rounded-xl flex flex-col sm:flex-row justify-between gap-4"
+    >
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+        <div
+          class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"
+        >
           <ng-icon name="lucideUser" size="24" />
         </div>
         <div>
           <h2 class="font-bold text-lg leading-tight flex items-center gap-2">
             {{ transcript()!.customerName || 'Guest User' }}
             @if (!transcript()!.isSignedIn) {
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-normal tracking-wide uppercase">Guest</span>
+              <span
+                class="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-normal tracking-wide uppercase"
+                >Guest</span
+              >
             }
           </h2>
-          <p class="text-sm text-muted-foreground">{{ transcript()!.customerEmail || 'No email provided' }}</p>
+          <p class="text-sm text-muted-foreground">
+            {{ transcript()!.customerEmail || 'No email provided' }}
+          </p>
         </div>
       </div>
-      
+
       <div class="flex flex-col sm:items-end gap-1 text-sm text-muted-foreground">
-        <p>Started: <span class="font-medium text-foreground">{{ transcript()!.createdAt | date:'medium' }}</span></p>
-        <p>Messages: <span class="font-medium text-foreground">{{ transcript()!.messageCount }}</span></p>
+        <p>
+          Started:
+          <span class="font-medium text-foreground">{{
+            transcript()!.createdAt | date: 'medium'
+          }}</span>
+        </p>
+        <p>
+          Messages:
+          <span class="font-medium text-foreground">{{ transcript()!.messageCount }}</span>
+        </p>
       </div>
     </div>
 
     <!-- Chat Messages -->
     <div class="space-y-6 mx-auto w-full max-w-4xl pb-10">
       @for (msg of transcript()!.messages; track msg.id) {
-        
         @if (msg.role === 'user') {
           <!-- User Message -->
           <div class="flex flex-col items-end gap-1">
-            <div class="bg-primary text-primary-foreground px-4 py-2.5 rounded-2xl rounded-tr-sm max-w-[85%] sm:max-w-[75%] shadow-sm">
+            <div
+              class="bg-primary text-primary-foreground px-4 py-2.5 rounded-2xl rounded-tr-sm max-w-[85%] sm:max-w-[75%] shadow-sm"
+            >
               <p class="text-sm whitespace-pre-wrap">{{ msg.text }}</p>
             </div>
-            <span class="text-[10px] text-muted-foreground px-1">{{ msg.createdAt | date:'shortTime' }}</span>
+            <span class="text-[10px] text-muted-foreground px-1">{{
+              msg.createdAt | date: 'shortTime'
+            }}</span>
           </div>
         } @else {
           <!-- Assistant Message -->
           <div class="flex flex-col items-start gap-1">
             <div class="flex items-end gap-2 max-w-[90%] sm:max-w-[80%]">
-              <div class="w-8 h-8 rounded-full bg-border flex items-center justify-center shrink-0 mb-1">
+              <div
+                class="w-8 h-8 rounded-full bg-border flex items-center justify-center shrink-0 mb-1"
+              >
                 <ng-icon name="lucideBot" size="16" class="text-foreground" />
               </div>
-              
+
               <div class="flex flex-col w-full gap-2">
-                <div class="bg-muted/50 border border-border px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm w-full">
-                  <p class="text-sm whitespace-pre-wrap text-foreground leading-relaxed">{{ msg.text }}</p>
+                <div
+                  class="bg-muted/50 border border-border px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm w-full"
+                >
+                  <p class="text-sm whitespace-pre-wrap text-foreground leading-relaxed">
+                    {{ msg.text }}
+                  </p>
                 </div>
-                
+
                 <!-- Assistant Metadata Row -->
                 <div class="flex flex-wrap items-center gap-3 px-1">
                   <!-- Resolution Badge -->
                   @if (msg.resolution === 'answered') {
-                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                    <span
+                      class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400"
+                    >
                       <ng-icon name="lucideCheckCircle2" size="12" /> Answered
                     </span>
                   } @else if (msg.resolution === 'unanswered') {
-                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-red-600 dark:text-red-400">
+                    <span
+                      class="inline-flex items-center gap-1 text-[10px] font-medium text-red-600 dark:text-red-400"
+                    >
                       <ng-icon name="lucideXCircle" size="12" /> Unanswered
                     </span>
                   } @else if (msg.resolution === 'needs_login') {
-                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 dark:text-blue-400">
+                    <span
+                      class="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 dark:text-blue-400"
+                    >
                       <ng-icon name="lucideAlertCircle" size="12" /> Requested Login
                     </span>
                   } @else if (msg.resolution === 'off_topic') {
-                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-amber-600 dark:text-amber-400">
+                    <span
+                      class="inline-flex items-center gap-1 text-[10px] font-medium text-amber-600 dark:text-amber-400"
+                    >
                       <ng-icon name="lucideMinusCircle" size="12" /> Off Topic
                     </span>
                   }
-                  
+
                   <!-- Sources -->
                   @if (msg.sources) {
                     <div class="flex items-center gap-2 text-[10px] text-muted-foreground">
-                      <span class="flex items-center gap-1"><ng-icon name="lucideInfo" size="12" /> Sources:</span>
+                      <span class="flex items-center gap-1"
+                        ><ng-icon name="lucideInfo" size="12" /> Sources:</span
+                      >
                       @if (msg.sources.productIds.length > 0) {
                         <span>{{ msg.sources.productIds.length }} Product(s)</span>
                       }
@@ -107,10 +151,12 @@
                       }
                     </div>
                   }
-                  
+
                   <!-- Latency -->
                   @if (msg.latencyMs) {
-                    <span class="inline-flex items-center gap-1 text-[10px] text-muted-foreground ml-auto">
+                    <span
+                      class="inline-flex items-center gap-1 text-[10px] text-muted-foreground ml-auto"
+                    >
                       <ng-icon name="lucideClock" size="10" /> {{ msg.latencyMs }}ms
                     </span>
                   }

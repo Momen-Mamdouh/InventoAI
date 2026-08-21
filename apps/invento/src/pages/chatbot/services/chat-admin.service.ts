@@ -82,7 +82,7 @@ export class ChatAdminService {
   reviewUnansweredTheme(messageId: string): Observable<{ message: string }> {
     return this.http.patch<{ message: string }>(
       `${this.apiUrl}/chat/unanswered/${messageId}/review`,
-      {}
+      {},
     );
   }
 

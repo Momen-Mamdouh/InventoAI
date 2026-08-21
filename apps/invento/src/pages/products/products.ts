@@ -18,10 +18,13 @@ import {
   lucideX,
   lucideAlertCircle,
   lucideLoader2,
+  lucideCheck,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmBadgeImports } from '@spartan/helm/badge';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 
@@ -62,6 +65,8 @@ interface FormVariant {
     HlmButton,
     HlmCardImports,
     HlmInputImports,
+    HlmSelectImports,
+    HlmBadgeImports,
     CdkDropList,
     CdkDrag,
     DeleteConfirmDialog,
@@ -77,6 +82,7 @@ interface FormVariant {
       lucideX,
       lucideAlertCircle,
       lucideLoader2,
+      lucideCheck,
     }),
   ],
   templateUrl: './products.html',
@@ -126,6 +132,28 @@ export class Products implements OnInit {
   };
   isSubmitting = signal(false);
 
+  private readonly statusLabels: Record<string, string> = {
+    draft: 'Draft',
+    active: 'Active',
+    archived: 'Archived',
+  };
+
+  readonly statusItemToString = (value: unknown): string => {
+    return this.statusLabels[String(value).toLowerCase()] ?? 'Draft';
+  };
+
+  readonly getAttributeValueLabel = (attrId: string, valId: unknown): string => {
+    if (!valId) return '';
+    const attr = this.attributes().find((a) => a.id === attrId);
+    if (!attr) return '';
+    const val = attr.values.find((v) => v.id === valId);
+    return val ? val.value : '';
+  };
+
+  readonly makeAttributeItemToString = (attrId: string) => {
+    return (valId: unknown): string => this.getAttributeValueLabel(attrId, valId);
+  };
+
   createEmptyVariant(): FormVariant {
     const variantAttributeValues: Record<string, string> = {};
     if (this.attributes().length > 0) {
@@ -145,6 +173,19 @@ export class Products implements OnInit {
     this.fetchProducts();
     this.fetchAttributes();
     this.fetchCategories();
+  }
+
+  toggleCategory(catId: string): void {
+    const ids = this.newProduct.categoryIds || [];
+    if (ids.includes(catId)) {
+      this.newProduct.categoryIds = ids.filter((id) => id !== catId);
+    } else {
+      this.newProduct.categoryIds = [...ids, catId];
+    }
+  }
+
+  isCategorySelected(catId: string): boolean {
+    return (this.newProduct.categoryIds || []).includes(catId);
   }
 
   fetchCategories(): void {

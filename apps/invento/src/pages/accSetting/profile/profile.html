@@ -252,23 +252,22 @@
             <label for="timeZoneSelect" class="font-medium text-foreground text-xs sm:text-sm"
               >Time Zone</label
             >
-            <div class="relative">
-              <select
-                id="timeZoneSelect"
-                [value]="timeZone()"
-                (change)="onTimeZoneChange($any($event.target).value)"
-                class="flex bg-background shadow-2xs px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-10 appearance-none text-xs sm:text-sm transition-colors cursor-pointer pe-9"
-              >
+            <hlm-select
+              id="timeZoneSelect"
+              [value]="timeZone()"
+              (valueChange)="onTimeZoneChange($any($event))"
+              [itemToString]="timeZoneItemToString"
+              class="w-full"
+            >
+              <hlm-select-trigger class="w-full h-10 bg-background">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content *hlmSelectPortal>
                 @for (tz of timeZones; track tz) {
-                  <option [value]="tz">{{ tz }}</option>
+                  <hlm-select-item [value]="tz">{{ tz }}</hlm-select-item>
                 }
-              </select>
-              <ng-icon
-                name="lucideChevronDown"
-                size="16"
-                class="top-1/2 absolute text-muted-foreground -translate-y-1/2 pointer-events-none end-3"
-              />
-            </div>
+              </hlm-select-content>
+            </hlm-select>
           </div>
 
           <!-- Language Dropdown -->
@@ -276,23 +275,22 @@
             <label for="languageSelect" class="font-medium text-foreground text-xs sm:text-sm"
               >Language</label
             >
-            <div class="relative">
-              <select
-                id="languageSelect"
-                [value]="language()"
-                (change)="onLanguageChange($any($event.target).value)"
-                class="flex bg-background shadow-2xs px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-10 appearance-none text-xs sm:text-sm transition-colors cursor-pointer pe-9"
-              >
+            <hlm-select
+              id="languageSelect"
+              [value]="language()"
+              (valueChange)="onLanguageChange($any($event))"
+              [itemToString]="languageItemToString"
+              class="w-full"
+            >
+              <hlm-select-trigger class="w-full h-10 bg-background">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content *hlmSelectPortal>
                 @for (lang of languages; track lang) {
-                  <option [value]="lang">{{ lang }}</option>
+                  <hlm-select-item [value]="lang">{{ lang }}</hlm-select-item>
                 }
-              </select>
-              <ng-icon
-                name="lucideChevronDown"
-                size="16"
-                class="top-1/2 absolute text-muted-foreground -translate-y-1/2 pointer-events-none end-3"
-              />
-            </div>
+              </hlm-select-content>
+            </hlm-select>
           </div>
         </div>
 

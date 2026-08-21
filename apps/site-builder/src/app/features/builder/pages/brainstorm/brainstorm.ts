@@ -134,6 +134,18 @@ export class Brainstorm implements OnInit {
   });
 
   readonly isValidConcept = computed(() => this.validationStatus() === 'VALID');
+  readonly hasValidLogo = computed(() =>
+    Boolean(
+      this.logoFile() ||
+      this.logoPreview() ||
+      this.builderState.logoUrl() ||
+      this.builderState.hasLogo(),
+    ),
+  );
+
+  readonly canSubmit = computed(
+    () => this.isValidConcept() && this.hasValidLogo() && !this.isSubmitting(),
+  );
 
   contextChecklist: ContextChecklist[] = [
     { id: 1, content: 'brainstorm_check_1' },
@@ -216,7 +228,12 @@ export class Brainstorm implements OnInit {
   }
 
   onNext() {
-    if (!this.isValidConcept() || this.isSubmitting()) return;
+    if (!this.isValidConcept() || !this.hasValidLogo() || this.isSubmitting()) {
+      if (!this.hasValidLogo()) {
+        toast.error(this.localeService.translate('brainstorm_logo_required'));
+      }
+      return;
+    }
 
     const text = this.descriptionControl.value;
     this.builderState.brainstorm.set(text);

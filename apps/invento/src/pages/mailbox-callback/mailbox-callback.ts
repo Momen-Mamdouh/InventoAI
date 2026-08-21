@@ -10,11 +10,15 @@ import { PurchaseRequestService } from '@invento/invento/features/purchase-reque
   providers: [provideIcons({ lucideAlertCircle, lucideCheckCircle2, lucideLoader2 })],
   template: `
     <div class="min-h-screen flex items-center justify-center p-6 bg-background">
-      <div class="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
+      <div
+        class="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-sm"
+      >
         @if (loading()) {
           <ng-icon name="lucideLoader2" size="30" class="animate-spin text-primary mx-auto" />
           <h1 class="text-xl font-bold mt-4">Connecting mailbox…</h1>
-          <p class="text-sm text-muted-foreground mt-2">Finishing the Google connection securely.</p>
+          <p class="text-sm text-muted-foreground mt-2">
+            Finishing the Google connection securely.
+          </p>
         } @else if (success()) {
           <ng-icon name="lucideCheckCircle2" size="30" class="text-emerald-600 mx-auto" />
           <h1 class="text-xl font-bold mt-4">Mailbox connected</h1>
@@ -23,7 +27,12 @@ import { PurchaseRequestService } from '@invento/invento/features/purchase-reque
           <ng-icon name="lucideAlertCircle" size="30" class="text-destructive mx-auto" />
           <h1 class="text-xl font-bold mt-4">Could not connect mailbox</h1>
           <p class="text-sm text-muted-foreground mt-2">{{ error() }}</p>
-          <button class="mt-5 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium" (click)="router.navigate(['/purchase-requests'])">Back to purchase requests</button>
+          <button
+            class="mt-5 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium"
+            (click)="router.navigate(['/purchase-requests'])"
+          >
+            Back to purchase requests
+          </button>
         }
       </div>
     </div>
@@ -41,7 +50,8 @@ export class MailboxCallback implements OnInit {
     const params = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
     const code = params.get('code');
     const state = params.get('state');
-    const storedState = typeof window === 'undefined' ? null : sessionStorage.getItem('invento_mailbox_state');
+    const storedState =
+      typeof window === 'undefined' ? null : sessionStorage.getItem('invento_mailbox_state');
 
     if (!code || !state || (storedState && storedState !== state)) {
       this.loading.set(false);
@@ -58,7 +68,12 @@ export class MailboxCallback implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        this.error.set(Array.isArray(err?.error?.message) ? err.error.message.join(', ') : err?.error?.message || 'Google did not accept this authorization. Please try connecting again.');
+        this.error.set(
+          Array.isArray(err?.error?.message)
+            ? err.error.message.join(', ')
+            : err?.error?.message ||
+                'Google did not accept this authorization. Please try connecting again.',
+        );
       },
     });
   }

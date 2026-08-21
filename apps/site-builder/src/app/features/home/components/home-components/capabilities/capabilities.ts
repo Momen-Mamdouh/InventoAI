@@ -17,12 +17,7 @@ interface Capability {
   selector: 'app-capabilities',
   templateUrl: './capabilities.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgIcon,
-    ScrollAnimateDirective,
-    RouterLink,
-    TranslatePipe,
-  ],
+  imports: [NgIcon, ScrollAnimateDirective, RouterLink, TranslatePipe],
   providers: [provideIcons({ lucideTerminal, lucideLayers, lucideDatabase, lucideGlobe })],
 })
 export class Capabilities {

@@ -1,9 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import type {
-  ProductDetail,
-  ProductVariant,
-  ProductVariantOption,
-} from '@invento/user-site/app/features/product';
+import type { ProductDetail, ProductVariant, ProductVariantOption } from '../types';
 
 @Injectable()
 export class ProductStore {

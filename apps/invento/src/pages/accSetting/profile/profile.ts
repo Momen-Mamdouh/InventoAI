@@ -17,13 +17,23 @@ import {
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
+import { HlmSelectImports } from '@spartan/helm/select';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/service/auth.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NgIcon, HlmCard, HlmButton, HlmInput],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    NgIcon,
+    HlmCard,
+    HlmButton,
+    HlmInput,
+    HlmSelectImports,
+  ],
   providers: [
     provideIcons({
       lucideUpload,
@@ -93,6 +103,14 @@ export class ProfileComponent {
     'French (Français)',
     'German (Deutsch)',
   ];
+
+  readonly timeZoneItemToString = (value: unknown): string => {
+    return String(value) || this.initialTimeZone;
+  };
+
+  readonly languageItemToString = (value: unknown): string => {
+    return String(value) || this.initialLanguage;
+  };
 
   // Computed initials from full name
   initials = computed(() => {
