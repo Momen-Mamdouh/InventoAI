@@ -1,7 +1,9 @@
+import { TranslatePipe } from '@invento/core';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
+import { LocaleService } from '@invento/core';
 import { AuthService } from '../../../core/service/auth.service';
 
 import { HlmInput } from '@spartan/helm/input';
@@ -13,13 +15,14 @@ import { extractErrorMessage } from '../../../core/utils/error.utils';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
 })
 export class ForgotPassword {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private readonly _localeService = inject(LocaleService);
   private router = inject(Router);
 
   isLoading = signal(false);
@@ -30,7 +33,7 @@ export class ForgotPassword {
 
   onSubmit() {
     if (this.forgotPasswordForm.invalid) {
-      toast.error('Please enter a valid email address.');
+      toast.error(this._localeService.translate('auth_forgot_empty'));
       this.forgotPasswordForm.markAllAsTouched();
       return;
     }
@@ -41,7 +44,7 @@ export class ForgotPassword {
     this.authService.forgotPassword(email).subscribe({
       next: (res) => {
         this.isLoading.set(false);
-        toast.success(res.message || 'Reset code sent to your email.');
+        toast.success(res.message || this._localeService.translate('auth_forgot_success'));
         // Redirect to reset password, passing email
         this.router.navigate(['/auth/reset-password'], {
           queryParams: { email },

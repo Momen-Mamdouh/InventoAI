@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBolt,
@@ -41,6 +41,7 @@ import { TranslatePipe } from '@invento/core';
   ],
 })
 export class Hero {
+  private readonly router = inject(Router);
   protected readonly hlmH1 = hlmH1;
   protected readonly hlmP = hlmP;
 
@@ -65,4 +66,8 @@ export class Hero {
     '"oklch(52.7% .140 225)"',
     '"oklch(50.0% .135 210)"',
   ];
+
+  handleGetStarted(): void {
+    this.router.navigate(['/build']);
+  }
 }

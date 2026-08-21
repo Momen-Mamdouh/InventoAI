@@ -7,10 +7,11 @@ import { AuthService } from '@/app/core/service/auth.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSun, lucideMoon, lucideLayoutDashboard, lucideLogOut } from '@ng-icons/lucide';
 import { ApiConfig } from '@/app/core/config/api-config';
+import { TranslatePipe } from '@invento/core';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, HlmButton, LangSwitcher, ThemeSwitcher, NgIcon],
+  imports: [RouterLink, HlmButton, LangSwitcher, ThemeSwitcher, NgIcon, TranslatePipe],
   providers: [provideIcons({ lucideSun, lucideMoon, lucideLayoutDashboard, lucideLogOut })],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',

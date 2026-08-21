@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@invento/core';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -20,7 +21,7 @@ import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule, HlmInput, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, HlmInput, HlmLabel, HlmButton],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })

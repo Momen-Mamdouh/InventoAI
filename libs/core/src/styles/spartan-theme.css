@@ -8,6 +8,7 @@
  * ------------------------------------------------------------------------- */
 
 @import '@spartan-ng/brain/hlm-tailwind-preset.css';
+@import './magic-button.css';
 
 /* This tells Tailwind v4 how to resolve: <div class="dark:bg-black"> using .dark class */
 /* Native Brwosers control: inputs, date pickers, scrollbars, autofill -> and use color schema as hint  */

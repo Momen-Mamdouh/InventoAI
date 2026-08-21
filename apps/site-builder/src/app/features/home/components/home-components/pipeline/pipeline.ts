@@ -34,16 +34,26 @@ export class Pipeline {
   protected readonly hlmP = hlmP;
 
   protected readonly steps = signal<PipelineStep[]>([
-    { number: '01', title: 'pipeline_step_1', subtitle: 'pipeline_step_1_sub', route: '/brain' },
     {
-      number: '02',
+      number: 'pipeline_num_1',
+      title: 'pipeline_step_1',
+      subtitle: 'pipeline_step_1_sub',
+      route: '/brain',
+    },
+    {
+      number: 'pipeline_num_2',
       title: 'pipeline_step_2',
       subtitle: 'pipeline_step_2_sub',
       route: '/ai-builder',
     },
-    { number: '03', title: 'pipeline_step_3', subtitle: 'pipeline_step_3_sub', route: '/preview' },
     {
-      number: '04',
+      number: 'pipeline_num_3',
+      title: 'pipeline_step_3',
+      subtitle: 'pipeline_step_3_sub',
+      route: '/preview',
+    },
+    {
+      number: 'pipeline_num_4',
       title: 'pipeline_step_4',
       subtitle: 'pipeline_step_4_sub',
       route: '/validation',

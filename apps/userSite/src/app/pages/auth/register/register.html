@@ -1,15 +1,13 @@
 <div class="flex flex-col h-full">
   <div class="mb-8 text-center">
-    <h1 class="text-3xl font-bold tracking-tight mb-2">
-      Create an account
-    </h1>
+    <h1 class="text-3xl font-bold tracking-tight mb-2">Create an account</h1>
     <p class="text-sm text-muted-foreground">
-      Already have an account?
+      {{ 'auth_register_has_account' | translate }}
       <a
         routerLink="../login"
         queryParamsHandling="merge"
         class="font-medium text-primary hover:underline"
-        >Sign in</a
+        >{{ 'auth_register_signin' | translate }}</a
       >
     </p>
   </div>
@@ -17,53 +15,53 @@
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5 flex-1">
     <div class="grid grid-cols-2 gap-4">
       <div class="space-y-1.5">
-        <label hlmLabel for="firstName" class="text-sm font-semibold"
-          >First Name</label
-        >
+        <label hlmLabel for="firstName" class="text-sm font-semibold">{{
+          'auth_first_name' | translate
+        }}</label>
         <input
           hlmInput
           id="firstName"
           formControlName="firstName"
           (blur)="registerForm.get('firstName')?.markAsTouched()"
-          placeholder="First Name"
+          [placeholder]="'auth_first_name' | translate"
           class="w-full px-4 !py-6 text-base !rounded-xl"
         />
         @if (registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid) {
           <div class="text-xs text-destructive mt-1 space-y-0.5">
             @if (registerForm.get('firstName')?.errors?.['required']) {
-              <div>First name is required.</div>
+              <div>{{ 'auth_first_name_req' | translate }}</div>
             }
             @if (registerForm.get('firstName')?.errors?.['minlength']) {
-              <div>Must be at least 2 characters.</div>
+              <div>{{ 'auth_min_2_chars' | translate }}</div>
             }
             @if (registerForm.get('firstName')?.errors?.['pattern']) {
-              <div>Only letters, spaces, hyphens and apostrophes are allowed.</div>
+              <div>{{ 'auth_name_pattern' | translate }}</div>
             }
           </div>
         }
       </div>
       <div class="space-y-1.5">
-        <label hlmLabel for="lastName" class="text-sm font-semibold"
-          >Last Name</label
-        >
+        <label hlmLabel for="lastName" class="text-sm font-semibold">{{
+          'auth_last_name' | translate
+        }}</label>
         <input
           hlmInput
           id="lastName"
           formControlName="lastName"
           (blur)="registerForm.get('lastName')?.markAsTouched()"
-          placeholder="Last Name"
+          [placeholder]="'auth_last_name' | translate"
           class="w-full px-4 !py-6 text-base !rounded-xl"
         />
         @if (registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid) {
           <div class="text-xs text-destructive mt-1 space-y-0.5">
             @if (registerForm.get('lastName')?.errors?.['required']) {
-              <div>Last name is required.</div>
+              <div>{{ 'auth_last_name_req' | translate }}</div>
             }
             @if (registerForm.get('lastName')?.errors?.['minlength']) {
-              <div>Must be at least 2 characters.</div>
+              <div>{{ 'auth_min_2_chars' | translate }}</div>
             }
             @if (registerForm.get('lastName')?.errors?.['pattern']) {
-              <div>Only letters, spaces, hyphens and apostrophes are allowed.</div>
+              <div>{{ 'auth_name_pattern' | translate }}</div>
             }
           </div>
         }
@@ -71,9 +69,9 @@
     </div>
 
     <div class="space-y-1.5">
-      <label hlmLabel for="email" class="text-sm font-semibold"
-        >Email Address</label
-      >
+      <label hlmLabel for="email" class="text-sm font-semibold">{{
+        'auth_usersite_login_email' | translate
+      }}</label>
       <input
         hlmInput
         id="email"
@@ -84,14 +82,14 @@
         class="w-full px-4 !py-6 text-base !rounded-xl"
       />
       @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
-        <div class="text-xs text-destructive mt-1">Please enter a valid email address.</div>
+        <div class="text-xs text-destructive mt-1">{{ 'auth_email_error' | translate }}</div>
       }
     </div>
 
     <div class="space-y-1.5">
-      <label hlmLabel for="password" class="text-sm font-semibold"
-        >Password</label
-      >
+      <label hlmLabel for="password" class="text-sm font-semibold">{{
+        'auth_usersite_login_password' | translate
+      }}</label>
       <input
         hlmInput
         id="password"
@@ -104,13 +102,13 @@
       @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
         <div class="text-xs text-destructive mt-1 space-y-0.5">
           @if (registerForm.get('password')?.errors?.['required']) {
-            <div>Password is required.</div>
+            <div>{{ 'auth_password_error' | translate }}</div>
           }
           @if (registerForm.get('password')?.errors?.['minlength']) {
-            <div>Password must be at least 8 characters.</div>
+            <div>{{ 'auth_register_password_error' | translate }}</div>
           }
           @if (registerForm.get('password')?.errors?.['pattern']) {
-            <div>Password must include uppercase, lowercase, number, and special character.</div>
+            <div>{{ 'auth_pwd_pattern' | translate }}</div>
           }
         </div>
       }
@@ -122,7 +120,7 @@
         for="confirmPassword"
         class="text-sm font-semibold"
         [class.opacity-50]="registerForm.get('confirmPassword')?.disabled"
-        >Confirm Password</label
+        >{{ 'auth_confirm_pwd' | translate }}</label
       >
       <input
         hlmInput
@@ -130,11 +128,11 @@
         type="password"
         formControlName="confirmPassword"
         (blur)="registerForm.get('confirmPassword')?.markAsTouched()"
-        placeholder="Confirm Password"
+        [placeholder]="'auth_confirm_pwd' | translate"
         class="w-full px-4 !py-6 text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-100 dark:disabled:bg-zinc-800"
       />
       @if (registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched) {
-        <div class="text-xs text-destructive mt-1">Passwords do not match.</div>
+        <div class="text-xs text-destructive mt-1">{{ 'auth_pwd_mismatch' | translate }}</div>
       }
     </div>
 
@@ -145,9 +143,9 @@
       [disabled]="isLoading()"
     >
       @if (!isLoading()) {
-        <span>Sign Up</span>
+        <span>{{ 'auth_usersite_register_btn' | translate }}</span>
       } @else {
-        <span>Creating account...</span>
+        <span>{{ 'auth_register_creating' | translate }}</span>
       }
     </button>
   </form>

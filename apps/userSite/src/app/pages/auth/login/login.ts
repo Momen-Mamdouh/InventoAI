@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@invento/core';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
@@ -14,7 +15,7 @@ import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

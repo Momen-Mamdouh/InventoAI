@@ -1,24 +1,22 @@
 <div class="flex flex-col h-full">
   <div class="mb-8 text-center">
-    <h1 class="text-3xl font-bold tracking-tight mb-2">
-      Welcome Back
-    </h1>
+    <h1 class="text-3xl font-bold tracking-tight mb-2">Welcome Back</h1>
     <p class="text-sm text-muted-foreground">
-      Don't have an account?
+      {{ 'auth_login_no_account' | translate }}
       <a
         routerLink="../register"
         queryParamsHandling="merge"
         class="font-medium text-primary hover:underline"
-        >Sign up</a
+        >{{ 'auth_login_signup' | translate }}</a
       >
     </p>
   </div>
 
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5 flex-1">
     <div class="space-y-1.5">
-      <label hlmLabel for="email" class="text-sm font-semibold"
-        >Email Address</label
-      >
+      <label hlmLabel for="email" class="text-sm font-semibold">{{
+        'auth_usersite_login_email' | translate
+      }}</label>
       <input
         hlmInput
         id="email"
@@ -29,14 +27,14 @@
         class="w-full px-4 !py-6 text-base !rounded-xl"
       />
       @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
-        <div class="text-xs text-destructive mt-1">Please enter a valid email address.</div>
+        <div class="text-xs text-destructive mt-1">{{ 'auth_email_error' | translate }}</div>
       }
     </div>
 
     <div class="space-y-1.5">
-      <label hlmLabel for="password" class="text-sm font-semibold"
-        >Password</label
-      >
+      <label hlmLabel for="password" class="text-sm font-semibold">{{
+        'auth_usersite_login_password' | translate
+      }}</label>
       <input
         hlmInput
         id="password"
@@ -47,14 +45,14 @@
         class="w-full px-4 !py-6 text-base !rounded-xl"
       />
       @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
-        <div class="text-xs text-destructive mt-1">Password is required.</div>
+        <div class="text-xs text-destructive mt-1">{{ 'auth_password_error' | translate }}</div>
       }
       <div class="flex items-center justify-end pt-1">
         <a
           routerLink="../forgot-password"
           queryParamsHandling="merge"
           class="text-xs font-semibold text-primary hover:underline"
-          >Forgot password?</a
+          >{{ 'auth_login_forgot' | translate }}</a
         >
       </div>
     </div>
@@ -66,7 +64,7 @@
       [disabled]="isLoading()"
     >
       @if (!isLoading()) {
-        <span>Sign In</span>
+        <span>{{ 'auth_usersite_login_btn' | translate }}</span>
       } @else {
         <span>Signing in...</span>
       }

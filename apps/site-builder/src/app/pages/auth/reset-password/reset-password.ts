@@ -1,7 +1,9 @@
+import { TranslatePipe } from '@invento/core';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
+import { LocaleService } from '@invento/core';
 import { AuthService } from '../../../core/service/auth.service';
 
 import { HlmInput } from '@spartan/helm/input';
@@ -13,13 +15,14 @@ import { extractErrorMessage } from '../../../core/utils/error.utils';
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule, HlmInput, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, HlmInput, HlmLabel, HlmButton],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })
 export class ResetPassword implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private readonly _localeService = inject(LocaleService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -122,20 +125,20 @@ export class ResetPassword implements OnInit {
   // Step 1: Verify OTP (just UI progression, no separate API call)
   verifyOtp() {
     if (this.otpForm.invalid) {
-      toast.error('Please enter the 6-digit verification code.');
+      toast.error(this._localeService.translate('auth_reset_code_empty'));
       this.otpForm.markAllAsTouched();
       return;
     }
 
     this.verifiedOtp = this.otpForm.value.otp!;
     this.currentStep.set('password');
-    toast.success('Code accepted. Now set your new password.');
+    toast.success(this._localeService.translate('auth_reset_code_accepted'));
   }
 
   // Step 2: Submit new password with OTP to the API
   onSubmit() {
     if (this.passwordForm.invalid) {
-      toast.error('Please fix the errors before submitting.');
+      toast.error(this._localeService.translate('auth_form_errors'));
       this.passwordForm.markAllAsTouched();
       return;
     }
@@ -153,7 +156,7 @@ export class ResetPassword implements OnInit {
       .subscribe({
         next: (res) => {
           this.isLoading.set(false);
-          toast.success(res.message || 'Password reset successfully.');
+          toast.success(res.message || this._localeService.translate('auth_reset_success'));
           this.router.navigate(['/auth/login']);
         },
         error: (err) => {

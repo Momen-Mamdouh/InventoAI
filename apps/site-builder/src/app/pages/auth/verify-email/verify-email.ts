@@ -1,7 +1,9 @@
+import { TranslatePipe } from '@invento/core';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
+import { LocaleService } from '@invento/core';
 import { AuthService } from '../../../core/service/auth.service';
 
 import { HlmLabel } from '@spartan/helm/label';
@@ -12,13 +14,14 @@ import { extractErrorMessage } from '../../../core/utils/error.utils';
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [ReactiveFormsModule, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, HlmLabel, HlmButton],
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.css',
 })
 export class VerifyEmail implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private readonly _localeService = inject(LocaleService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -85,7 +88,7 @@ export class VerifyEmail implements OnInit {
 
   onSubmit() {
     if (this.verifyForm.invalid) {
-      toast.error('Please enter the verification code.');
+      toast.error(this._localeService.translate('auth_verify_empty'));
       this.verifyForm.markAllAsTouched();
       return;
     }
@@ -96,7 +99,7 @@ export class VerifyEmail implements OnInit {
     this.authService.verifyEmail(this.userEmail, otp!).subscribe({
       next: (res) => {
         this.isLoading.set(false);
-        toast.success(res.message || 'Email verified successfully.');
+        toast.success(res.message || this._localeService.translate('auth_verify_success'));
         this.router.navigate(['/auth/login']);
       },
       error: (err) => {
@@ -114,7 +117,7 @@ export class VerifyEmail implements OnInit {
     this.authService.resendVerification(this.userEmail).subscribe({
       next: () => {
         this.isResending.set(false);
-        toast.success('Verification code resent.');
+        toast.success(this._localeService.translate('auth_verify_resent'));
       },
       error: (err) => {
         this.isResending.set(false);

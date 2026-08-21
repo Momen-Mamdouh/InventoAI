@@ -1,7 +1,9 @@
+import { TranslatePipe } from '@invento/core';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
+import { LocaleService } from '@invento/core';
 import { AuthService } from '../../../core/service/auth.service';
 
 import { HlmInput } from '@spartan/helm/input';
@@ -12,7 +14,7 @@ import { extractErrorMessage } from '../../../core/utils/error.utils';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, HlmInput, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmButton],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -20,6 +22,7 @@ export class Register implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private readonly _localeService = inject(LocaleService);
 
   isLoading = signal(false);
 
@@ -82,7 +85,7 @@ export class Register implements OnInit {
 
   onSubmit() {
     if (this.registerForm.invalid) {
-      toast.error('Please fill all required fields correctly.');
+      toast.error(this._localeService.translate('auth_register_errors'));
       this.registerForm.markAllAsTouched();
       return;
     }
@@ -93,7 +96,7 @@ export class Register implements OnInit {
     this.authService.register(registerPayload).subscribe({
       next: (res) => {
         this.isLoading.set(false);
-        toast.success(res.message || 'Registration successful. Please verify your email.');
+        toast.success(res.message || this._localeService.translate('auth_register_success'));
         // Redirect to verify email, passing the email as state
         this.router.navigate(['/auth/verify-email'], {
           queryParams: { email: registerPayload.email },
