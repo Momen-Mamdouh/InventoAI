@@ -248,10 +248,17 @@
 </div>
 
 @if (selected(); as request) {
-  <div class="z-50 fixed inset-0 bg-black/30 backdrop-blur-[1px]" (click)="closeDetail()"></div>
+  <div
+    class="z-50 fixed inset-0 bg-black/30 backdrop-blur-[1px]"
+    tabindex="-1"
+    (click)="closeDetail()"
+    (keydown.escape)="closeDetail()"
+  ></div>
   <aside
     class="top-0 bottom-0 z-[51] fixed bg-background shadow-2xl border-s w-full max-w-5xl overflow-y-auto end-0"
+    tabindex="-1"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <div
       class="top-0 z-10 sticky flex justify-between items-center gap-3 bg-background/95 backdrop-blur px-5 py-4 border-border border-b"
@@ -388,7 +395,7 @@
                     <p class="text-[11px] text-muted-foreground">Unit price</p>
                     <p class="mt-1 font-semibold">
                       {{
-                        offer.unitAmount == null
+                        offer.unitAmount === null
                           ? '—'
                           : (formatMoney(offer.unitAmount) | currency: 'EGP' : 'symbol' : '1.2-2')
                       }}
@@ -401,14 +408,14 @@
                   <div>
                     <p class="text-[11px] text-muted-foreground">Delivery</p>
                     <p class="mt-1 font-semibold">
-                      {{ offer.deliveryDays == null ? '—' : offer.deliveryDays + 'd' }}
+                      {{ offer.deliveryDays === null ? '—' : offer.deliveryDays + 'd' }}
                     </p>
                   </div>
                   <div>
                     <p class="text-[11px] text-muted-foreground">Total</p>
                     <p class="mt-1 font-semibold">
                       {{
-                        offer.totalAmount == null
+                        offer.totalAmount === null
                           ? '—'
                           : (formatMoney(offer.totalAmount) | currency: 'EGP' : 'symbol' : '1.2-2')
                       }}
@@ -463,7 +470,7 @@
                     </button>
                   }
                   @if (
-                    offer.unitAmount != null &&
+                    offer.unitAmount !== null &&
                     request.status !== 'confirmed' &&
                     request.status !== 'cancelled' &&
                     offer.status !== 'declined'
@@ -534,10 +541,17 @@
 }
 
 @if (showCreate()) {
-  <div class="z-[60] fixed inset-0 bg-black/30" (click)="showCreate.set(false)"></div>
+  <div
+    class="z-[60] fixed inset-0 bg-black/30"
+    tabindex="-1"
+    (click)="showCreate.set(false)"
+    (keydown.escape)="showCreate.set(false)"
+  ></div>
   <div
     class="top-1/2 z-[61] fixed bg-background shadow-2xl p-6 border border-border rounded-2xl w-[calc(100%-2rem)] max-w-2xl max-h-[90vh] overflow-y-auto -translate-x-1/2 -translate-y-1/2 start-1/2"
+    tabindex="-1"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <div class="flex justify-between items-start gap-4 mb-6">
       <div>
@@ -559,14 +573,14 @@
     } @else {
       <div class="gap-4 grid sm:grid-cols-2">
         <div class="space-y-1">
-          <label class="font-medium text-sm">Product</label>
+          <label for="createProductSelect" class="font-medium text-sm">Product</label>
           <hlm-select
             [value]="createProductId()"
             (valueChange)="onCreateProductChange($any($event))"
             [itemToString]="productItemToString"
             class="w-full"
           >
-            <hlm-select-trigger class="w-full h-10 bg-background">
+            <hlm-select-trigger buttonId="createProductSelect" class="w-full h-10 bg-background">
               <hlm-select-value placeholder="Select product" />
             </hlm-select-trigger>
             <hlm-select-content *hlmSelectPortal>
@@ -577,14 +591,14 @@
           </hlm-select>
         </div>
         <div class="space-y-1">
-          <label class="font-medium text-sm">Variant</label>
+          <label for="createVariantSelect" class="font-medium text-sm">Variant</label>
           <hlm-select
             [value]="createVariantId"
             (valueChange)="createVariantId = $any($event)"
             [itemToString]="variantItemToString"
             class="w-full"
           >
-            <hlm-select-trigger class="w-full h-10 bg-background">
+            <hlm-select-trigger buttonId="createVariantSelect" class="w-full h-10 bg-background">
               <hlm-select-value placeholder="Select variant" />
             </hlm-select-trigger>
             <hlm-select-content *hlmSelectPortal>
@@ -660,10 +674,17 @@
 }
 
 @if (showEdit() && selected(); as request) {
-  <div class="z-[70] fixed inset-0 bg-black/30" (click)="showEdit.set(false)"></div>
+  <div
+    class="z-[70] fixed inset-0 bg-black/30"
+    tabindex="-1"
+    (click)="showEdit.set(false)"
+    (keydown.escape)="showEdit.set(false)"
+  ></div>
   <div
     class="top-1/2 z-[71] fixed bg-background shadow-2xl p-6 border border-border rounded-2xl w-[calc(100%-2rem)] max-w-3xl max-h-[90vh] overflow-y-auto -translate-x-1/2 -translate-y-1/2 start-1/2"
+    tabindex="-1"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <div class="flex justify-between items-start gap-4 mb-5">
       <div>
@@ -743,10 +764,17 @@
 }
 
 @if (showReply() && selectedOffer(); as offer) {
-  <div class="z-[70] fixed inset-0 bg-black/30" (click)="showReply.set(false)"></div>
+  <div
+    class="z-[70] fixed inset-0 bg-black/30"
+    tabindex="-1"
+    (click)="showReply.set(false)"
+    (keydown.escape)="showReply.set(false)"
+  ></div>
   <div
     class="top-1/2 z-[71] fixed bg-background shadow-2xl p-6 border border-border rounded-2xl w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 -translate-y-1/2 start-1/2"
+    tabindex="-1"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <h2 class="font-bold text-xl">Paste {{ offer.supplierName }}'s reply</h2>
     <p class="mt-1 text-muted-foreground text-sm">
@@ -767,10 +795,17 @@
 }
 
 @if (showOfferEdit() && selectedOffer(); as offer) {
-  <div class="z-[70] fixed inset-0 bg-black/30" (click)="showOfferEdit.set(false)"></div>
+  <div
+    class="z-[70] fixed inset-0 bg-black/30"
+    tabindex="-1"
+    (click)="showOfferEdit.set(false)"
+    (keydown.escape)="showOfferEdit.set(false)"
+  ></div>
   <div
     class="top-1/2 z-[71] fixed bg-background shadow-2xl p-6 border border-border rounded-2xl w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 -translate-y-1/2 start-1/2"
+    tabindex="-1"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <h2 class="font-bold text-xl">Correct {{ offer.supplierName }}'s offer</h2>
     <p class="mt-1 text-muted-foreground text-sm">
@@ -817,10 +852,17 @@
 }
 
 @if (showCancelConfirm()) {
-  <div class="z-[80] fixed inset-0 bg-black/40" (click)="showCancelConfirm.set(false)"></div>
+  <div
+    class="z-[80] fixed inset-0 bg-black/40"
+    tabindex="-1"
+    (click)="showCancelConfirm.set(false)"
+    (keydown.escape)="showCancelConfirm.set(false)"
+  ></div>
   <div
     class="top-1/2 z-[81] fixed bg-background shadow-2xl p-6 border border-border rounded-2xl w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 start-1/2"
+    tabindex="-1"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <h2 class="font-bold text-lg">Cancel this purchase request?</h2>
     <p class="mt-2 text-muted-foreground text-sm">
@@ -836,10 +878,17 @@
 }
 
 @if (offerToConfirm(); as offer) {
-  <div class="z-[80] fixed inset-0 bg-black/40" (click)="cancelConfirmOffer()"></div>
+  <div
+    class="z-[80] fixed inset-0 bg-black/40"
+    tabindex="-1"
+    (click)="cancelConfirmOffer()"
+    (keydown.escape)="cancelConfirmOffer()"
+  ></div>
   <div
     class="top-1/2 z-[81] fixed bg-background shadow-2xl p-6 border border-border rounded-2xl w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 start-1/2"
+    tabindex="-1"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <h2 class="font-bold text-lg">Confirm {{ offer.supplierName }} as the winning supplier?</h2>
     <p class="mt-2 text-muted-foreground text-sm">
@@ -856,10 +905,17 @@
 }
 
 @if (showDisconnectMailboxConfirm()) {
-  <div class="z-[80] fixed inset-0 bg-black/40" (click)="cancelDisconnectMailbox()"></div>
+  <div
+    class="z-[80] fixed inset-0 bg-black/40"
+    tabindex="-1"
+    (click)="cancelDisconnectMailbox()"
+    (keydown.escape)="cancelDisconnectMailbox()"
+  ></div>
   <div
     class="top-1/2 z-[81] fixed bg-background shadow-2xl p-6 border border-border rounded-2xl w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 start-1/2"
+    tabindex="-1"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <h2 class="font-bold text-lg">Disconnect the mailbox?</h2>
     <p class="mt-2 text-muted-foreground text-sm">Supplier replies can still be pasted manually.</p>

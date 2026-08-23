@@ -4,6 +4,16 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ProductListItem } from '../../product/types/product';
 
+/** Order summary surfaced inline in a chat reply — see chatbot.html's order card. */
+export interface ChatOrderSummary {
+  orderNumber: string;
+  status: string;
+  itemCount: number;
+  totalAmount: number;
+  currency: string;
+  createdAt: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -13,7 +23,7 @@ export interface ChatMessage {
   // Payloads for the active session (not returned by GET)
   products?: ProductListItem[];
   faqs?: { id: string; question: string }[];
-  order?: any | null;
+  order?: ChatOrderSummary | null;
   requiresLogin?: boolean;
 }
 
@@ -40,7 +50,7 @@ export interface ChatTurnResponse {
   resolution: 'answered' | 'unanswered' | 'off_topic' | 'needs_login' | 'error';
   products: ProductListItem[];
   faqs: { id: string; question: string }[];
-  order: any | null;
+  order: ChatOrderSummary | null;
   requiresLogin: boolean;
 }
 

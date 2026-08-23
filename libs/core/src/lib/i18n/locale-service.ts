@@ -12,7 +12,12 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import type { Locale } from './locale';
-import { TRANSLATION_LOADER, type TranslationLoader } from './translation-loader';
+import {
+  TRANSLATION_LOADER,
+  type TranslationDictionary,
+  type TranslationLoader,
+  type TranslationValue,
+} from './translation-loader';
 import { buildCookie, readCookie } from '../ssr/cookie';
 
 const LOCALE_STORAGE_KEY = 'invento_locale';
@@ -24,7 +29,7 @@ function isLocale(value: string | null): value is Locale {
 @Injectable({ providedIn: 'root' })
 export class LocaleService {
   private readonly _locale: WritableSignal<Locale> = signal<Locale>('en');
-  private readonly _translations: WritableSignal<Record<string, any>> = signal({});
+  private readonly _translations: WritableSignal<TranslationDictionary> = signal({});
   private readonly _loader: TranslationLoader | null = inject(TRANSLATION_LOADER, {
     optional: true,
   });
@@ -34,7 +39,7 @@ export class LocaleService {
 
   readonly locale: Signal<Locale> = this._locale.asReadonly();
   readonly isRtl: Signal<boolean> = computed(() => this._locale() === 'ar');
-  readonly translations: Signal<Record<string, any>> = this._translations.asReadonly();
+  readonly translations: Signal<TranslationDictionary> = this._translations.asReadonly();
 
   constructor() {
     // Resolve and apply synchronously so the SERVER-rendered HTML already carries the
@@ -58,29 +63,28 @@ export class LocaleService {
   }
 
   translate(key: string, params?: Record<string, string | number>): string {
-    let resolvedValue: any = this._translations();
-    
-    // First try flat key
-    if (resolvedValue && resolvedValue[key] !== undefined) {
-      resolvedValue = resolvedValue[key];
-    } else {
-      // Fallback to nested resolution
-      const parts = key.split('.');
-      for (const part of parts) {
-        if (resolvedValue && typeof resolvedValue === 'object') {
-          resolvedValue = resolvedValue[part];
+    const dictionary = this._translations();
+    let resolvedValue: TranslationValue | undefined = dictionary[key];
+
+    // Fallback to nested resolution when the flat key isn't present
+    if (resolvedValue === undefined) {
+      let cursor: TranslationValue | undefined = dictionary;
+      for (const part of key.split('.')) {
+        if (cursor && typeof cursor === 'object') {
+          cursor = cursor[part];
         } else {
-          resolvedValue = undefined;
+          cursor = undefined;
           break;
         }
       }
+      resolvedValue = cursor;
     }
 
     let value = typeof resolvedValue === 'string' ? resolvedValue : key;
 
     if (params) {
       for (const [k, v] of Object.entries(params)) {
-        value = value.replace(new RegExp(`\{\{${k}\}\}`, 'g'), String(v));
+        value = value.replace(new RegExp(`{{${k}}}`, 'g'), String(v));
       }
     }
     return value;

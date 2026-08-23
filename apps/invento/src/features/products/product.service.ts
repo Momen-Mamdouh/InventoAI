@@ -17,7 +17,9 @@ export class ProductService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/products`;
 
-  getProducts(params?: Record<string, any>): Observable<PaginatedResponse<ApiProductListItem>> {
+  getProducts(
+    params?: Record<string, string | number | boolean>,
+  ): Observable<PaginatedResponse<ApiProductListItem>> {
     let httpParams = new HttpParams();
     if (params) {
       Object.keys(params).forEach((key) => {
@@ -105,7 +107,18 @@ export class ProductService {
     return this.http.post<ApiProductDetail>(`${this.apiUrl}/${id}/variants`, payload);
   }
 
-  updateVariant(id: string, variantId: string, payload: any): Observable<ApiProductDetail> {
+  updateVariant(
+    id: string,
+    variantId: string,
+    payload: {
+      sku?: string | null;
+      priceAmount?: number;
+      compareAtAmount?: number | null;
+      stockQuantity?: number;
+      lowStockThreshold?: number;
+      attributeValueIds?: string[];
+    },
+  ): Observable<ApiProductDetail> {
     return this.http.patch<ApiProductDetail>(`${this.apiUrl}/${id}/variants/${variantId}`, payload);
   }
 

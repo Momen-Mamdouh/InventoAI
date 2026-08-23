@@ -6,7 +6,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
@@ -35,6 +35,7 @@ import {
   ApiProductDetail,
   UpdateProductDto,
   ApiProductVariant,
+  ApiProductImage,
 } from '../../../features/products/product.model';
 import { ProductService } from '../../../features/products/product.service';
 import { AttributeService } from '../../../features/attributes/attribute.service';
@@ -405,7 +406,7 @@ export class ProductDetails implements OnInit {
     });
   }
 
-  dropImage(event: CdkDragDrop<any[]>): void {
+  dropImage(event: CdkDragDrop<ApiProductImage[]>): void {
     const p = this.product();
     if (!p || !p.images) return;
 
@@ -614,7 +615,14 @@ export class ProductDetails implements OnInit {
     }
 
     this.isAddingVariant.set(true);
-    const payload: any = {
+    const payload: {
+      sku: string | null;
+      priceAmount: number;
+      compareAtAmount: number | null;
+      stockQuantity: number;
+      lowStockThreshold: number;
+      attributeValueIds: string[];
+    } = {
       ...this.addVariantForm,
       priceAmount: Math.round(this.addVariantForm.priceAmount * 100),
       compareAtAmount:
@@ -669,7 +677,13 @@ export class ProductDetails implements OnInit {
     }
 
     this.isSaving.set(true);
-    const payload = {
+    const payload: {
+      sku: string | null;
+      priceAmount: number;
+      compareAtAmount: number | null;
+      stockQuantity: number;
+      lowStockThreshold: number;
+    } = {
       ...this.editVariantForm,
       priceAmount: Math.round(this.editVariantForm.priceAmount * 100),
       compareAtAmount:
@@ -677,7 +691,7 @@ export class ProductDetails implements OnInit {
           ? Math.round(this.editVariantForm.compareAtAmount * 100)
           : null,
     };
-    if (!payload.sku) payload.sku = null as any;
+    if (!payload.sku) payload.sku = null;
 
     this.productService.updateVariant(p.id, vId, payload).subscribe({
       next: (updatedProduct) => {

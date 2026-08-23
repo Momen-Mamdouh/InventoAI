@@ -169,7 +169,7 @@
                   <td class="px-4 py-4">
                     <p class="font-semibold">
                       {{
-                        item.offer.unitAmount == null
+                        item.offer.unitAmount === null
                           ? 'No price'
                           : (item.offer.unitAmount / 100 | currency: 'EGP' : 'symbol' : '1.2-2')
                       }}
@@ -179,7 +179,7 @@
                     </p>
                   </td>
                   <td class="px-4 py-4 text-muted-foreground">
-                    {{ item.offer.deliveryDays == null ? '—' : item.offer.deliveryDays + ' days' }}
+                    {{ item.offer.deliveryDays === null ? '—' : item.offer.deliveryDays + ' days' }}
                   </td>
                   <td class="px-4 py-4">
                     <span

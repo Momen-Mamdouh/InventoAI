@@ -80,23 +80,26 @@ export class CatalogAiReviewComponent {
     const request: CatalogApplyRequest = {
       categories: this.categories()
         .filter((c) => c.selected !== false)
-        .map(({ selected, ...c }) => ({
-          ...c,
+        .map((c) => ({
+          name: c.name,
           description: c.description === null ? undefined : c.description,
         })),
       attributes: this.attributes()
         .filter((a) => a.selected !== false)
-        .map(({ selected, ...a }) => ({
-          ...a,
+        .map((a) => ({
+          name: a.name,
+          key: a.key,
+          isVariantAxis: a.isVariantAxis,
+          displayStyle: a.displayStyle,
           values: a.values.map((v) => ({
-            ...v,
+            value: v.value,
             swatchHex: v.swatchHex === null ? undefined : v.swatchHex,
           })),
         })),
     };
 
     this.catalogAiService.applyCatalog(request).subscribe({
-      next: (response) => {
+      next: () => {
         this.status.set('success');
       },
       error: (err) => {

@@ -18,7 +18,7 @@ import {
   lucideChevronRight,
 } from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
-import { ChatSessionPreview, ChatSessionsResponse } from '../../types/chat-admin.types';
+import { ChatSessionsResponse } from '../../types/chat-admin.types';
 
 @Component({
   selector: 'app-chatbot-history',

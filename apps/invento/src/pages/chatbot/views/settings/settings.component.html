@@ -35,8 +35,12 @@
           </p>
         </div>
         <div class="flex items-center gap-2">
-          <label class="text-sm font-medium">Enable Chatbot</label>
-          <hlm-switch [checked]="isEnabled()" (checkedChange)="isEnabled.set($event)" />
+          <label for="chatbotEnabledToggle" class="text-sm font-medium">Enable Chatbot</label>
+          <hlm-switch
+            inputId="chatbotEnabledToggle"
+            [checked]="isEnabled()"
+            (checkedChange)="isEnabled.set($event)"
+          />
         </div>
       </div>
 

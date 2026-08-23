@@ -469,15 +469,20 @@
               </div>
               @for (attr of productAttributes(); track attr.id) {
                 <div>
-                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground">{{
-                    attr.name
-                  }}</label>
+                  <label
+                    [for]="'attr-select-' + attr.id"
+                    class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                    >{{ attr.name }}</label
+                  >
                   <hlm-select
                     [(value)]="editProductForm.productAttributeValues[attr.id]"
                     [itemToString]="makeProductAttributeItemToString(attr.id)"
                     class="w-full"
                   >
-                    <hlm-select-trigger class="w-full h-9 bg-transparent">
+                    <hlm-select-trigger
+                      [buttonId]="'attr-select-' + attr.id"
+                      class="w-full h-9 bg-transparent"
+                    >
                       <hlm-select-value [placeholder]="'Select ' + attr.name" />
                     </hlm-select-trigger>
                     <hlm-select-content *hlmSelectPortal>
@@ -562,7 +567,7 @@
             </div>
 
             <div>
-              <label class="text-sm font-semibold mb-2 block text-foreground">Categories</label>
+              <span class="text-sm font-semibold mb-2 block text-foreground">Categories</span>
               <div
                 class="flex flex-wrap gap-2 p-3 border border-input rounded-md bg-transparent min-h-[80px]"
               >
@@ -627,7 +632,9 @@
     <!-- Backdrop -->
     <div
       class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+      tabindex="-1"
       (click)="toggleGenerateDrawer()"
+      (keydown.escape)="toggleGenerateDrawer()"
     ></div>
 
     <!-- Drawer Panel -->
@@ -651,10 +658,13 @@
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-6">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-semibold mb-2 block text-foreground"
+            <label
+              for="generate-base-price"
+              class="text-sm font-semibold mb-2 block text-foreground"
               >Base Price (minor units)</label
             >
             <input
+              id="generate-base-price"
               hlmInput
               type="number"
               [(ngModel)]="generateVariantsForm.priceAmount"
@@ -662,8 +672,13 @@
             />
           </div>
           <div>
-            <label class="text-sm font-semibold mb-2 block text-foreground">Base Stock</label>
+            <label
+              for="generate-base-stock"
+              class="text-sm font-semibold mb-2 block text-foreground"
+              >Base Stock</label
+            >
             <input
+              id="generate-base-stock"
               hlmInput
               type="number"
               [(ngModel)]="generateVariantsForm.stockQuantity"
@@ -687,13 +702,18 @@
               }
 
               <div>
-                <label class="text-xs font-semibold mb-1 block">Attribute</label>
+                <label [for]="'axis-attribute-' + i" class="text-xs font-semibold mb-1 block"
+                  >Attribute</label
+                >
                 <hlm-select
                   [(value)]="axis.attributeId"
                   [itemToString]="axisAttributeItemToString"
                   class="w-full"
                 >
-                  <hlm-select-trigger class="w-full h-9 bg-background">
+                  <hlm-select-trigger
+                    [buttonId]="'axis-attribute-' + i"
+                    class="w-full h-9 bg-background"
+                  >
                     <hlm-select-value placeholder="Select an attribute..." />
                   </hlm-select-trigger>
                   <hlm-select-content *hlmSelectPortal>
@@ -706,7 +726,7 @@
 
               @if (axis.attributeId) {
                 <div>
-                  <label class="text-xs font-semibold mb-1 block">Values</label>
+                  <span class="text-xs font-semibold mb-1 block">Values</span>
                   <div class="flex flex-wrap gap-2 mt-2">
                     @for (attr of activeVariantAxes(); track attr.id) {
                       @if (attr.id === axis.attributeId) {
@@ -768,7 +788,9 @@
     <!-- Backdrop -->
     <div
       class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+      tabindex="-1"
       (click)="toggleAddVariantDrawer()"
+      (keydown.escape)="toggleAddVariantDrawer()"
     ></div>
 
     <!-- Drawer Panel -->
@@ -791,18 +813,35 @@
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-4">
         <div>
-          <label class="text-sm font-semibold mb-1 block">SKU (Optional)</label>
-          <input hlmInput type="text" [(ngModel)]="addVariantForm.sku" class="w-full" />
+          <label for="add-variant-sku" class="text-sm font-semibold mb-1 block"
+            >SKU (Optional)</label
+          >
+          <input
+            id="add-variant-sku"
+            hlmInput
+            type="text"
+            [(ngModel)]="addVariantForm.sku"
+            class="w-full"
+          />
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-semibold mb-1 block">Price</label>
-            <input hlmInput type="number" [(ngModel)]="addVariantForm.priceAmount" class="w-full" />
+            <label for="add-variant-price" class="text-sm font-semibold mb-1 block">Price</label>
+            <input
+              id="add-variant-price"
+              hlmInput
+              type="number"
+              [(ngModel)]="addVariantForm.priceAmount"
+              class="w-full"
+            />
           </div>
           <div>
-            <label class="text-sm font-semibold mb-1 block">Compare At (Opt)</label>
+            <label for="add-variant-compare-at" class="text-sm font-semibold mb-1 block"
+              >Compare At (Opt)</label
+            >
             <input
+              id="add-variant-compare-at"
               hlmInput
               type="number"
               [(ngModel)]="addVariantForm.compareAtAmount"
@@ -813,8 +852,11 @@
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-semibold mb-1 block">Stock Quantity</label>
+            <label for="add-variant-stock" class="text-sm font-semibold mb-1 block"
+              >Stock Quantity</label
+            >
             <input
+              id="add-variant-stock"
               hlmInput
               type="number"
               [(ngModel)]="addVariantForm.stockQuantity"
@@ -822,8 +864,11 @@
             />
           </div>
           <div>
-            <label class="text-sm font-semibold mb-1 block">Low Stock Threshold</label>
+            <label for="add-variant-low-stock" class="text-sm font-semibold mb-1 block"
+              >Low Stock Threshold</label
+            >
             <input
+              id="add-variant-low-stock"
               hlmInput
               type="number"
               [(ngModel)]="addVariantForm.lowStockThreshold"
@@ -890,7 +935,9 @@
     <!-- Backdrop -->
     <div
       class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+      tabindex="-1"
       (click)="closeEditVariantDrawer()"
+      (keydown.escape)="closeEditVariantDrawer()"
     ></div>
 
     <!-- Drawer Panel -->
@@ -913,8 +960,9 @@
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-4">
         <div>
-          <label class="text-sm font-semibold mb-1 block">SKU</label>
+          <label for="edit-variant-sku" class="text-sm font-semibold mb-1 block">SKU</label>
           <input
+            id="edit-variant-sku"
             hlmInput
             type="text"
             [(ngModel)]="editVariantForm.sku"
@@ -924,13 +972,22 @@
         </div>
 
         <div>
-          <label class="text-sm font-semibold mb-1 block">Price</label>
-          <input hlmInput type="number" [(ngModel)]="editVariantForm.priceAmount" class="w-full" />
+          <label for="edit-variant-price" class="text-sm font-semibold mb-1 block">Price</label>
+          <input
+            id="edit-variant-price"
+            hlmInput
+            type="number"
+            [(ngModel)]="editVariantForm.priceAmount"
+            class="w-full"
+          />
         </div>
 
         <div>
-          <label class="text-sm font-semibold mb-1 block">Compare At Amount</label>
+          <label for="edit-variant-compare-at" class="text-sm font-semibold mb-1 block"
+            >Compare At Amount</label
+          >
           <input
+            id="edit-variant-compare-at"
             hlmInput
             type="number"
             [(ngModel)]="editVariantForm.compareAtAmount"
@@ -941,8 +998,9 @@
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-semibold mb-1 block">Stock</label>
+            <label for="edit-variant-stock" class="text-sm font-semibold mb-1 block">Stock</label>
             <input
+              id="edit-variant-stock"
               hlmInput
               type="number"
               [(ngModel)]="editVariantForm.stockQuantity"
@@ -950,8 +1008,11 @@
             />
           </div>
           <div>
-            <label class="text-sm font-semibold mb-1 block">Low Stock</label>
+            <label for="edit-variant-low-stock" class="text-sm font-semibold mb-1 block"
+              >Low Stock</label
+            >
             <input
+              id="edit-variant-low-stock"
               hlmInput
               type="number"
               [(ngModel)]="editVariantForm.lowStockThreshold"

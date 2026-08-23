@@ -1,4 +1,5 @@
 import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -591,13 +592,14 @@ export class PurchaseRequests implements OnInit {
     });
   }
 
-  private handleActionError(err: any): void {
+  private handleActionError(err: HttpErrorResponse): void {
     this.saving.set(false);
     this.error.set(this.messageFromError(err, 'The action could not be completed.'));
   }
 
-  private messageFromError(err: any, fallback: string): string {
-    const message = err?.error?.message;
-    return Array.isArray(message) ? message.join(', ') : message || fallback;
+  private messageFromError(err: HttpErrorResponse, fallback: string): string {
+    const message: unknown = err?.error?.message;
+    if (Array.isArray(message)) return message.join(', ');
+    return typeof message === 'string' && message ? message : fallback;
   }
 }

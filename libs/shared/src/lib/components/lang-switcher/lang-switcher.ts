@@ -18,7 +18,7 @@ import { LocaleService } from '@invento/core';
   imports: [HlmSwitchImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <label class="inline-flex cursor-pointer items-center gap-2" [attr.aria-label]="'Switch language'">
+    <label for="lang-switcher-toggle" class="inline-flex cursor-pointer items-center gap-2" [attr.aria-label]="'Switch language'">
       <span
         class="text-xs font-medium transition-colors select-none"
         [class.text-muted-foreground]="localeService.isRtl()"
@@ -28,6 +28,7 @@ import { LocaleService } from '@invento/core';
       </span>
 
       <hlm-switch
+        inputId="lang-switcher-toggle"
         [checked]="localeService.isRtl()"
         (checkedChange)="onToggle($event)"
         aria-label="Switch between English and Arabic"

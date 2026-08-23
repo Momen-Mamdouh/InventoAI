@@ -194,7 +194,11 @@
                     <div>
                       <p
                         class="font-medium text-primary hover:underline cursor-pointer"
+                        role="button"
+                        tabindex="0"
                         (click)="onEdit(c)"
+                        (keydown.enter)="onEdit(c)"
+                        (keydown.space)="onEdit(c)"
                       >
                         {{ c.name }}
                       </p>

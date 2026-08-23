@@ -197,7 +197,11 @@
         <!-- In Stock Only -->
         <div
           class="flex justify-between items-center py-6 border-b border-border group cursor-pointer"
+          role="button"
+          tabindex="0"
           (click)="inStockChange.emit(!isInStockOnly)"
+          (keydown.enter)="inStockChange.emit(!isInStockOnly)"
+          (keydown.space)="inStockChange.emit(!isInStockOnly)"
         >
           <span
             class="text-xs uppercase tracking-widest font-medium text-muted-foreground group-hover:text-foreground transition-colors"

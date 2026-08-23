@@ -81,6 +81,13 @@
         "staticFilePath": "dist/apps/userSite/browser",
         "spa": true
       }
+    },
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/userSite/src/**/*.ts", "apps/userSite/src/**/*.html"]
+      }
     }
   }
 }

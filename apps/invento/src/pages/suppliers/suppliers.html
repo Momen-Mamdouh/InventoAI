@@ -248,7 +248,11 @@
                     <div class="min-w-0">
                       <p
                         class="font-medium text-primary hover:underline truncate cursor-pointer"
+                        role="button"
+                        tabindex="0"
                         (click)="onView(supplier)"
+                        (keydown.enter)="onView(supplier)"
+                        (keydown.space)="onView(supplier)"
                       >
                         {{ supplier.name }}
                       </p>

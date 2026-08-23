@@ -215,10 +215,7 @@
             </tr>
           } @else {
             <!-- Products Iteration -->
-            @for (
-              product of products() | search: searchTerm() : ['title', 'sku'];
-              track product.id
-            ) {
+            @for (product of products() | search: searchTerm() : ['title']; track product.id) {
               <tr cdkDrag class="group hover:bg-muted/40 transition-colors cursor-move">
                 <td class="px-2 sm:px-3 md:px-4 py-3 text-center">
                   <input
@@ -472,15 +469,20 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               @for (attr of productAttributes(); track attr.id) {
                 <div>
-                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground">{{
-                    attr.name
-                  }}</label>
+                  <label
+                    [for]="'new-product-attr-' + attr.id"
+                    class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                    >{{ attr.name }}</label
+                  >
                   <hlm-select
                     [(value)]="newProduct.productAttributeValues[attr.id]"
                     [itemToString]="makeAttributeItemToString(attr.id)"
                     class="w-full"
                   >
-                    <hlm-select-trigger class="w-full h-9 bg-transparent">
+                    <hlm-select-trigger
+                      [buttonId]="'new-product-attr-' + attr.id"
+                      class="w-full h-9 bg-transparent"
+                    >
                       <hlm-select-value [placeholder]="'Select ' + attr.name" />
                     </hlm-select-trigger>
                     <hlm-select-content *hlmSelectPortal>
@@ -521,12 +523,12 @@
             </button>
           </div>
 
-          @for (variant of newProduct.variants; track $index) {
+          @for (variant of newProduct.variants; track $index; let vi = $index) {
             <div class="p-4 border border-border rounded-lg bg-muted/10 relative group space-y-4">
               @if (newProduct.variants.length > 1) {
                 <button
                   type="button"
-                  (click)="removeVariant($index)"
+                  (click)="removeVariant(vi)"
                   class="absolute -top-2 -right-2 bg-rose-100 text-rose-600 hover:bg-rose-200 dark:bg-rose-900/50 dark:text-rose-400 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                   title="Remove variant"
                 >
@@ -539,15 +541,20 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   @for (attr of variantAttributes(); track attr.id) {
                     <div>
-                      <label class="text-xs font-semibold mb-1.5 block text-muted-foreground">{{
-                        attr.name
-                      }}</label>
+                      <label
+                        [for]="'variant-' + vi + '-attr-' + attr.id"
+                        class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                        >{{ attr.name }}</label
+                      >
                       <hlm-select
                         [(value)]="variant.variantAttributeValues[attr.id]"
                         [itemToString]="makeAttributeItemToString(attr.id)"
                         class="w-full"
                       >
-                        <hlm-select-trigger class="w-full h-9 bg-transparent">
+                        <hlm-select-trigger
+                          [buttonId]="'variant-' + vi + '-attr-' + attr.id"
+                          class="w-full h-9 bg-transparent"
+                        >
                           <hlm-select-value [placeholder]="'Select ' + attr.name" />
                         </hlm-select-trigger>
                         <hlm-select-content *hlmSelectPortal>
@@ -569,66 +576,81 @@
 
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 <div class="sm:col-span-2 lg:col-span-1">
-                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                  <label
+                    [for]="'sku_' + vi"
+                    class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >SKU</label
                   >
                   <input
+                    [id]="'sku_' + vi"
                     hlmInput
                     type="text"
                     [(ngModel)]="variant.sku"
-                    [name]="'sku_' + $index"
+                    [name]="'sku_' + vi"
                     class="w-full h-8 text-sm"
                     placeholder="SKU"
                   />
                 </div>
                 <div>
-                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                  <label
+                    [for]="'price_' + vi"
+                    class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >Price <span class="text-rose-500">*</span></label
                   >
                   <input
+                    [id]="'price_' + vi"
                     hlmInput
                     type="number"
                     [(ngModel)]="variant.price"
-                    [name]="'price_' + $index"
+                    [name]="'price_' + vi"
                     class="w-full h-8 text-sm"
                     placeholder="0.00"
                   />
                 </div>
                 <div>
-                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                  <label
+                    [for]="'compare_' + vi"
+                    class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >Compare At</label
                   >
                   <input
+                    [id]="'compare_' + vi"
                     hlmInput
                     type="number"
                     [(ngModel)]="variant.compareAtAmount"
-                    [name]="'compare_' + $index"
+                    [name]="'compare_' + vi"
                     class="w-full h-8 text-sm"
                     placeholder="0.00"
                   />
                 </div>
                 <div>
-                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                  <label
+                    [for]="'stock_' + vi"
+                    class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >Stock</label
                   >
                   <input
+                    [id]="'stock_' + vi"
                     hlmInput
                     type="number"
                     [(ngModel)]="variant.stock"
-                    [name]="'stock_' + $index"
+                    [name]="'stock_' + vi"
                     class="w-full h-8 text-sm"
                     placeholder="0"
                   />
                 </div>
                 <div>
-                  <label class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                  <label
+                    [for]="'lowStock_' + vi"
+                    class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >Low Stock</label
                   >
                   <input
+                    [id]="'lowStock_' + vi"
                     hlmInput
                     type="number"
                     [(ngModel)]="variant.lowStockThreshold"
-                    [name]="'lowStock_' + $index"
+                    [name]="'lowStock_' + vi"
                     class="w-full h-8 text-sm"
                     placeholder="0"
                   />
@@ -719,7 +741,7 @@
             </div>
 
             <div>
-              <label class="text-sm font-semibold mb-2 block text-foreground">Categories</label>
+              <span class="text-sm font-semibold mb-2 block text-foreground">Categories</span>
               <div
                 class="flex flex-wrap gap-2 p-3 border border-input rounded-md bg-transparent min-h-[80px]"
               >

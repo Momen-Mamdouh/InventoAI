@@ -12,7 +12,7 @@ import {
   lucideChevronRight,
 } from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
-import { UnansweredResponse } from '../../types/chat-admin.types';
+import { UnansweredResponse, UnansweredTheme } from '../../types/chat-admin.types';
 
 @Component({
   selector: 'app-chatbot-unanswered',
@@ -98,7 +98,7 @@ export class UnansweredComponent implements OnInit {
     this.loadThemes();
   }
 
-  markAsReviewed(theme: any) {
+  markAsReviewed(theme: UnansweredTheme) {
     // The endpoint takes a messageId. We'll use the first messageId of the theme occurrences.
     if (!theme.messageIds || theme.messageIds.length === 0) return;
 
