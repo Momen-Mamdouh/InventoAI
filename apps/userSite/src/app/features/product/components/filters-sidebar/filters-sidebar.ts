@@ -5,13 +5,15 @@ import { FilterResponse, FilterAttribute } from '../../types';
 import { ActivatedRoute } from '@angular/router';
 import { parseAttributes } from '../../utils';
 import { HlmTypographyImports } from '@spartan/helm/typography';
-import { GenericSelectImports, GenericSelectOption, SkeletonBlock } from '@invento/shared';
+import { GenericSelectImports, GenericSelectOption } from '@invento/shared-ui-generic-select';
+import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
 import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmSwitchImports } from '@spartan/helm/switch';
 
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideRotateCcw, lucideFilterX } from '@ng-icons/lucide';
-import { ColorSwatch, EmptyState } from '@invento/shared';
+import { ColorSwatch } from '@invento/shared-ui-color-swatch';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 import { HlmSlider } from '@spartan/helm/slider';
 
 import { HlmAccordionImports } from '@spartan/helm/accordion';

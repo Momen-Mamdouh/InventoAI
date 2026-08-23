@@ -30,9 +30,6 @@
       "path": "./libs/core/tsconfig.lib.json"
     },
     {
-      "path": "./libs/shared/tsconfig.lib.json"
-    },
-    {
       "path": "./libs/shared/util-error/tsconfig.lib.json"
     },
     {
@@ -40,6 +37,81 @@
     },
     {
       "path": "./libs/shared/feature-auth/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-constants/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-directives/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-pipes/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-template/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-mock/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-environment/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-ai-loader/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-steps-bar/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-page-header/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-loader/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-container-width/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-home-components/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-empty-state/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-brand-logo/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-color-swatch/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-double-slash/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-error-state/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-filter-tabs/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-generic-select/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-lang-switcher/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-page-badge/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-pagination/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-search-input/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-skeleton-block/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/ui-theme-switcher/tsconfig.lib.json"
     }
   ],
   "extends": "./tsconfig.base.json"

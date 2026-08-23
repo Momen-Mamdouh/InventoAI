@@ -7,7 +7,8 @@ import {
   viewChildren,
 } from '@angular/core';
 import gsap from 'gsap';
-import { FilterTabs, SearchInput, type FilterTab } from '@invento/shared';
+import { FilterTabs, type FilterTab } from '@invento/shared-ui-filter-tabs';
+import { SearchInput } from '@invento/shared-ui-search-input';
 import { LocaleService, TranslatePipe } from '@invento/core';
 import { OrdersDataService, type OrderFilter } from '@invento/user-site/app/features/orders';
 import { animateElementsOnRender } from '@invento/user-site/app/core/utils/animation.utils';

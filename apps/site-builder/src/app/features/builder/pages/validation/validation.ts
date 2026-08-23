@@ -15,7 +15,7 @@ import {
   HlmCardTitle,
 } from '@spartan/helm/card';
 import { PageHeader } from '@/app/shared/components/page-header/page-header';
-import { DoubleSlash } from '@invento/shared';
+import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { BuilderState } from '@/app/features/builder/services/builder-state';
 import { TranslatePipe, LocaleService } from '@invento/core';
 import { toast } from '@spartan/helm/sonner';

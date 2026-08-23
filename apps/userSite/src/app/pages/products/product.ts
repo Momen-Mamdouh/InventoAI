@@ -22,7 +22,9 @@ import {
 } from '@invento/user-site/app/features/product';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { HlmButtonImports } from '@spartan/helm/button';
-import { EmptyState, Pagination, SkeletonBlock } from '@invento/shared';
+import { EmptyState } from '@invento/shared-ui-empty-state';
+import { Pagination } from '@invento/shared-ui-pagination';
+import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSearchX, lucideInfo } from '@ng-icons/lucide';
 import { switchMap, catchError, combineLatest, tap } from 'rxjs';

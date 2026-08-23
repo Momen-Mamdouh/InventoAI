@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideStore } from '@ng-icons/lucide';
-import { EmptyState } from '@invento/shared';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 import { TranslatePipe } from '@invento/core';
 
 /**
