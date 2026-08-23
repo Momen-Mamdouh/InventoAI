@@ -118,7 +118,7 @@
 
       <div class="flex justify-end mt-1">
         <a
-          [routerLink]="[config.authBasePath, 'forgot-password']"
+          [routerLink]="[authBasePath, 'forgot-password']"
           class="font-medium text-primary text-sm hover:underline"
           tabindex="-1"
           >{{ 'auth_login_forgot' | translate }}</a
@@ -166,7 +166,7 @@
 
     <div class="mt-8 text-muted-foreground text-sm stagger-5">
       {{ 'auth_login_no_account' | translate }}
-      <a [routerLink]="[config.authBasePath, 'register']" class="font-medium text-primary hover:underline">{{
+      <a [routerLink]="[authBasePath, 'register']" class="font-medium text-primary hover:underline">{{
         'auth_login_signup' | translate
       }}</a>
     </div>

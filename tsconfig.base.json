@@ -117,7 +117,24 @@
       "@invento/invento-util-site-builder-url": [
         "./libs/invento/util-site-builder-url/src/index.ts"
       ],
-      "@invento/invento-ui-shell": ["./libs/invento/ui-shell/src/index.ts"]
+      "@invento/invento-ui-shell": ["./libs/invento/ui-shell/src/index.ts"],
+      "@invento/user-site-data-access-store": ["./libs/user-site/data-access-store/src/index.ts"],
+      "@invento/user-site-data-access-cart": ["./libs/user-site/data-access-cart/src/index.ts"],
+      "@invento/user-site-data-access-product": [
+        "./libs/user-site/data-access-product/src/index.ts"
+      ],
+      "@invento/user-site-data-access-order": ["./libs/user-site/data-access-order/src/index.ts"],
+      "@invento/user-site-util-animation": ["./libs/user-site/util-animation/src/index.ts"],
+      "@invento/user-site-feature-product": ["./libs/user-site/feature-product/src/index.ts"],
+      "@invento/user-site-feature-orders": ["./libs/user-site/feature-orders/src/index.ts"],
+      "@invento/user-site-feature-checkout": ["./libs/user-site/feature-checkout/src/index.ts"],
+      "@invento/user-site-feature-faq": ["./libs/user-site/feature-faq/src/index.ts"],
+      "@invento/user-site-feature-chatbot": ["./libs/user-site/feature-chatbot/src/index.ts"],
+      "@invento/user-site-feature-account-settings": [
+        "./libs/user-site/feature-account-settings/src/index.ts"
+      ],
+      "@invento/user-site-feature-home": ["./libs/user-site/feature-home/src/index.ts"],
+      "@invento/user-site-ui-storefront": ["./libs/user-site/ui-storefront/src/index.ts"]
     }
   }
 }

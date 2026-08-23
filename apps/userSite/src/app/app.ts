@@ -2,13 +2,15 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
-import { Footer, Navbar } from '@invento/user-site/app/shared/components';
-import { Chatbot } from '@invento/user-site/app/features/chatbot/chatbot';
+import { Footer, Navbar } from '@invento/user-site-ui-storefront';
+import { Chatbot } from '@invento/user-site-feature-chatbot';
 import { HlmToasterImports } from '@spartan/helm/sonner';
-import { StoreSeoService } from '@invento/user-site/app/core/service/store-seo.service';
-import { StoreThemeService } from '@invento/user-site/app/core/service/store-theme.service';
-import { StoreService } from '@invento/user-site/app/core/service/store.service';
-import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
+import {
+  StoreSeoService,
+  StoreThemeService,
+  StoreService,
+  StoreSlugService,
+} from '@invento/user-site-data-access-store';
 import { LocaleService } from '@invento/shared-util-i18n';
 import { ThemeService } from '@invento/shared-util-theme';
 

@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { toast } from '@spartan/helm/sonner';
-import { AUTH_CONFIG, AuthService } from '@invento/shared-data-access-auth';
+import { AUTH_CONFIG, AuthService, resolveAuthBasePath } from '@invento/shared-data-access-auth';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
@@ -27,6 +27,9 @@ export class ForgotPassword {
   private readonly router = inject(Router);
   protected readonly config = inject(AUTH_CONFIG);
 
+  /** Resolved once per page load — see `AuthConfig.authBasePath`'s doc comment. */
+  protected readonly authBasePath = resolveAuthBasePath(this.config);
+
   isLoading = signal(false);
 
   forgotPasswordForm = this.fb.group({
@@ -41,13 +44,14 @@ export class ForgotPassword {
     }
 
     const email = this.forgotPasswordForm.value.email!;
+    const slug = this.config.resolveStoreSlug?.();
 
     this.isLoading.set(true);
-    this.authService.forgotPassword(email).subscribe({
+    this.authService.forgotPassword(email, slug ? { storeSlug: slug } : undefined).subscribe({
       next: (res) => {
         this.isLoading.set(false);
         toast.success(res.message || 'Reset code sent to your email.');
-        this.router.navigate([`${this.config.authBasePath}/reset-password`], {
+        this.router.navigate([`${this.authBasePath}/reset-password`], {
           queryParams: { email },
         });
       },

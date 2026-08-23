@@ -3,7 +3,11 @@ import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
-import { AUTH_CONFIG, AuthService } from '@invento/shared-data-access-auth';
+import {
+  AUTH_CONFIG,
+  AuthService,
+  resolveVerifyEmailRedirect,
+} from '@invento/shared-data-access-auth';
 
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
@@ -90,13 +94,16 @@ export class VerifyEmail implements OnInit {
     }
 
     const { otp } = this.verifyForm.value;
+    const slug = this.config.resolveStoreSlug?.();
 
     this.isLoading.set(true);
-    this.authService.verifyEmail(this.userEmail, otp!).subscribe({
+    this.authService
+      .verifyEmail(this.userEmail, otp!, slug ? { storeSlug: slug } : undefined)
+      .subscribe({
       next: (res) => {
         this.isLoading.set(false);
         toast.success(res.message || 'Email verified successfully.');
-        this.router.navigateByUrl(this.config.verifyEmailRedirect);
+        this.router.navigateByUrl(resolveVerifyEmailRedirect(this.config));
       },
       error: (err) => {
         this.isLoading.set(false);
@@ -109,8 +116,12 @@ export class VerifyEmail implements OnInit {
   resendCode() {
     if (!this.userEmail) return;
 
+    const slug = this.config.resolveStoreSlug?.();
+
     this.isResending.set(true);
-    this.authService.resendVerification(this.userEmail).subscribe({
+    this.authService
+      .resendVerification(this.userEmail, slug ? { storeSlug: slug } : undefined)
+      .subscribe({
       next: () => {
         this.isResending.set(false);
         toast.success('Verification code resent.');

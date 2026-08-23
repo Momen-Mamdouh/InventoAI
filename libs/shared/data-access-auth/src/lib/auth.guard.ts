@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AUTH_CONFIG } from './auth-config';
+import { AUTH_CONFIG, resolveAuthBasePath } from './auth-config';
 import { TokenService } from './token.service';
 
 /**
@@ -20,7 +20,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  return router.createUrlTree([`${config.authBasePath}/login`], {
+  return router.createUrlTree([`${resolveAuthBasePath(config)}/login`], {
     queryParams: { returnUrl: state.url },
   });
 };
