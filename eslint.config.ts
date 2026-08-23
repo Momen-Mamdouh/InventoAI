@@ -160,6 +160,26 @@ export default defineConfig([
     rules: moduleBoundariesRule([...sharedAllow, '@invento/invento/**']),
   },
   {
+    // TODO(phase-11): `libs/ui/utils` (the spartan-styles project) imports the `ThemeApiResponse`
+    // and `Palette` *types* from `@invento/core`, which is tagged `type:core`. No `type:ui` or
+    // `type:util` row permits depending on `type:core`, so this violates the vertical matrix
+    // under either tag — retagging the project cannot resolve it.
+    //
+    // Surfaced by phase 5 (T041-T046), which gave `libs/ui/utils` its own project and lint
+    // target for the first time. It is a genuine layering defect, not a tooling artefact: a
+    // presentational styles library should not reach into the core domain layer. The real fix
+    // is to move those two theme types out of `@invento/core` into a `type:util` library that
+    // both sides may legally depend on. No existing task covers that move, so it is recorded
+    // here and in violations.md rather than silently absorbed.
+    //
+    // Scoped to this one project's files so the exemption cannot leak to any other `type:ui`
+    // library. 3 occurrences: spartan-styles.ts, spartan-styles/hlm-style.ts,
+    // spartan-styles/index.ts.
+    files: ['libs/ui/utils/**/*.ts'],
+    plugins: { '@nx': nx },
+    rules: moduleBoundariesRule([...sharedAllow, '@invento/core']),
+  },
+  {
     files: ['**/*.html'],
     extends: [
       ...angular.configs.templateRecommended,

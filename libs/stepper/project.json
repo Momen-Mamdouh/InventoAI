@@ -4,7 +4,10 @@
   "projectType": "library",
   "sourceRoot": "libs/stepper",
   "prefix": "hlm",
-  "tags": ["scope:shared", "type:ui"],
-  "implicitDependencies": ["spartan-ui"],
+  "tags": [
+    "scope:shared",
+    "type:ui"
+  ],
+  "implicitDependencies": [],
   "targets": {}
 }
