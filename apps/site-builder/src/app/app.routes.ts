@@ -1,24 +1,9 @@
 import { Routes } from '@angular/router';
 
-// Layouts
+// Layouts (kept eager — they are the shells)
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { BuilderLayout } from './layouts/builder-layout/builder-layout';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
-
-// Pages
-import { Home } from './features/home/pages/home/home';
-import { Brainstorm } from './features/builder/pages/brainstorm/brainstorm';
-import { AiInterview } from './features/builder/pages/ai-interview/ai-interview';
-import { Preview } from './features/builder/pages/preview/preview';
-import { Validation } from './features/builder/pages/validation/validation';
-import { StyleTest } from './features/home/pages/style-test/style-test';
-
-// Auth Pages
-import { Login } from './pages/auth/login/login';
-import { Register } from './pages/auth/register/register';
-import { ForgotPassword } from './pages/auth/forgot-password/forgot-password';
-import { ResetPassword } from './pages/auth/reset-password/reset-password';
-import { VerifyEmail } from './pages/auth/verify-email/verify-email';
 
 // Guards
 import { stepGuard } from './core/guards/step-guard';
@@ -33,8 +18,15 @@ export const routes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
 
       // 1. Home Phase: Renders inside MainLayout (Navbar only)
-      { path: 'home', component: Home },
-      { path: 'style-test', component: StyleTest },
+      {
+        path: 'home',
+        loadComponent: () => import('./features/home/pages/home/home').then((m) => m.Home),
+      },
+      {
+        path: 'style-test',
+        loadComponent: () =>
+          import('./features/home/pages/style-test/style-test').then((m) => m.StyleTest),
+      },
 
       // 2. Builder Phase: Renders inside BuilderLayout (Steps Bar + page content)
       {
@@ -45,22 +37,28 @@ export const routes: Routes = [
           { path: '', redirectTo: 'brainstorm', pathMatch: 'full' },
           {
             path: 'brainstorm',
-            component: Brainstorm,
+            loadComponent: () =>
+              import('./features/builder/pages/brainstorm/brainstorm').then((m) => m.Brainstorm),
             canActivate: [stepGuard('brainstorm')],
           },
           {
             path: 'ai-interview',
-            component: AiInterview,
+            loadComponent: () =>
+              import('./features/builder/pages/ai-interview/ai-interview').then(
+                (m) => m.AiInterview,
+              ),
             canActivate: [stepGuard('ai-interview')],
           },
           {
             path: 'validation',
-            component: Validation,
+            loadComponent: () =>
+              import('./features/builder/pages/validation/validation').then((m) => m.Validation),
             canActivate: [stepGuard('validation')],
           },
           {
             path: 'preview',
-            component: Preview,
+            loadComponent: () =>
+              import('./features/builder/pages/preview/preview').then((m) => m.Preview),
             canActivate: [stepGuard('preview')],
           },
           { path: '**', redirectTo: 'brainstorm' },
@@ -73,11 +71,29 @@ export const routes: Routes = [
     component: AuthLayout,
     canActivate: [guestGuard],
     children: [
-      { path: 'login', component: Login },
-      { path: 'register', component: Register },
-      { path: 'forgot-password', component: ForgotPassword },
-      { path: 'reset-password', component: ResetPassword },
-      { path: 'verify-email', component: VerifyEmail },
+      {
+        path: 'login',
+        loadComponent: () => import('./pages/auth/login/login').then((m) => m.Login),
+      },
+      {
+        path: 'register',
+        loadComponent: () => import('./pages/auth/register/register').then((m) => m.Register),
+      },
+      {
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('./pages/auth/forgot-password/forgot-password').then((m) => m.ForgotPassword),
+      },
+      {
+        path: 'reset-password',
+        loadComponent: () =>
+          import('./pages/auth/reset-password/reset-password').then((m) => m.ResetPassword),
+      },
+      {
+        path: 'verify-email',
+        loadComponent: () =>
+          import('./pages/auth/verify-email/verify-email').then((m) => m.VerifyEmail),
+      },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },
