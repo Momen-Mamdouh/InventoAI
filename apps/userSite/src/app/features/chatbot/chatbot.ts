@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ViewChild, ElementRef, effect } from '@angular/core';
+import { Component, inject, signal, OnInit, effect } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBotMessageSquare,
@@ -159,7 +159,9 @@ export class Chatbot implements OnInit {
         if (container) {
           container.scrollTop = container.scrollHeight;
         }
-      } catch (err) {}
+      } catch (err) {
+        console.warn('scrollToElement failed', err);
+      }
     }, 50);
   }
 
@@ -261,7 +263,9 @@ export class Chatbot implements OnInit {
       if (history) {
         this.chatHistory.set(JSON.parse(history));
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('loadHistory failed', e);
+    }
   }
 
   private saveCurrentSessionToHistory() {

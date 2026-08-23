@@ -1,7 +1,11 @@
 import { InjectionToken } from '@angular/core';
 import type { Locale } from './locale';
 
-export type TranslationLoader = (locale: Locale) => Record<string, any>;
+/** A translation JSON tree: leaves are strings, branches nest further keys. */
+export type TranslationValue = string | { [key: string]: TranslationValue };
+export type TranslationDictionary = Record<string, TranslationValue>;
+
+export type TranslationLoader = (locale: Locale) => TranslationDictionary;
 
 export const TRANSLATION_LOADER = new InjectionToken<TranslationLoader>('TRANSLATION_LOADER');
 

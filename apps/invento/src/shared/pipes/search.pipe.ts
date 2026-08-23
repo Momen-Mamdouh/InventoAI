@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class SearchPipe implements PipeTransform {
-  transform(items: any[], searchTerm: string, keys: string[] = []): any[] {
+  transform<T extends object>(items: T[], searchTerm: string, keys: (keyof T)[] = []): T[] {
     if (!items || !searchTerm) {
       return items;
     }
@@ -16,7 +16,12 @@ export class SearchPipe implements PipeTransform {
       if (keys.length > 0) {
         return keys.some((key) => {
           const value = item[key];
-          return value && value.toString().toLowerCase().includes(lowerCaseSearch);
+          return (
+            value !== null &&
+            value !== undefined &&
+            (typeof value === 'string' || typeof value === 'number') &&
+            value.toString().toLowerCase().includes(lowerCaseSearch)
+          );
         });
       }
 

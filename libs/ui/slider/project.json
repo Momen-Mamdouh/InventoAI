@@ -8,5 +8,18 @@
     "scope:shared"
   ],
   "projectType": "library",
-  "targets": {}
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/slider/**/*.ts",
+          "libs/ui/slider/**/*.html"
+        ]
+      }
+    }
+  }
 }

@@ -88,6 +88,13 @@
         "staticFilePath": "dist/apps/invento/browser",
         "spa": true
       }
+    },
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/invento/src/**/*.ts", "apps/invento/src/**/*.html"]
+      }
     }
   }
 }

@@ -14,7 +14,6 @@ import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HlmBreadcrumbImports } from '@spartan/helm/breadcrumb';
 import { TranslatePipe, LocaleService, ThemeService } from '@invento/core';
-import { BrandLogo } from '@invento/shared';
 
 import { BreadcrumbService } from '../../../core/service/breadcrumb.service';
 

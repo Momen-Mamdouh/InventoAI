@@ -4,7 +4,6 @@ import {
   Component,
   computed,
   effect,
-  HostListener,
   inject,
   OnDestroy,
   OnInit,

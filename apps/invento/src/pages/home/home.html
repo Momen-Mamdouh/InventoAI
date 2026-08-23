@@ -108,7 +108,7 @@
                 @if (heroImageUrl()) {
                   <img
                     [src]="heroImageUrl()"
-                    (error)="fallbackHeroImg($event)"
+                    (error)="fallbackHeroImg()"
                     alt="Hero banner"
                     class="w-full h-[120px] sm:h-[140px] object-cover"
                   />
@@ -466,7 +466,7 @@
                   @if (heroImageUrl()) {
                     <img
                       [src]="heroImageUrl()"
-                      (error)="fallbackHeroImg($event)"
+                      (error)="fallbackHeroImg()"
                       alt="Hero background"
                       class="absolute inset-0 w-full h-full object-cover"
                     />

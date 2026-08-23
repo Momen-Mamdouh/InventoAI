@@ -39,6 +39,13 @@ export interface ApiAttributeValue {
   swatchHex: string | null;
 }
 
+export interface ApiProductImage {
+  id: string;
+  url: string;
+  altText: string | null;
+  position: number;
+}
+
 export interface ApiProductVariant {
   id: string;
   sku: string;
@@ -68,7 +75,7 @@ export interface ApiProductDetail {
   variantCount: number;
   categories: ApiCategory[];
   attributeValues: ApiAttributeValue[];
-  images: any[];
+  images: ApiProductImage[];
   variants: ApiProductVariant[];
   createdAt: string;
   updatedAt: string;

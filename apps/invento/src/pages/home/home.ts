@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe, type ThemeApiResponse, type Palette } from '@invento/core';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { EmptyState } from '@invento/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -127,31 +127,31 @@ export class HomeComponent implements OnInit {
   });
 
   themeStyles = computed(() => {
-    const theme = this.storeData()?.theme as any;
+    const theme = this.storeData()?.theme as ThemeApiResponse | undefined;
     if (!theme) return {};
 
     const mode = this.previewThemeMode();
-    const palette = (mode === 'dark' ? theme.dark : theme.light) || theme.light || theme.dark || {};
+    const palette: Palette =
+      (mode === 'dark' ? theme.dark : theme.light) || theme.light || theme.dark;
 
     const styles: Record<string, string> = {};
     for (const [key, value] of Object.entries(palette)) {
       if (!value) continue;
       const cssKey = key.replace(/([a-z])([A-Z0-9])/g, '$1-$2').toLowerCase();
-      styles[`--${cssKey}`] = value as string;
-      styles[`--color-${cssKey}`] = value as string;
+      styles[`--${cssKey}`] = value;
+      styles[`--color-${cssKey}`] = value;
     }
 
-    if (palette.card) styles['--sidebar'] = palette.card as string;
-    if (palette.foreground) styles['--sidebar-foreground'] = palette.foreground as string;
-    if (palette.primary) styles['--sidebar-primary'] = palette.primary as string;
+    if (palette.card) styles['--sidebar'] = palette.card;
+    if (palette.foreground) styles['--sidebar-foreground'] = palette.foreground;
+    if (palette.primary) styles['--sidebar-primary'] = palette.primary;
     if (palette.primaryForeground)
-      styles['--sidebar-primary-foreground'] = palette.primaryForeground as string;
-    if (palette.accent) styles['--sidebar-accent'] = palette.accent as string;
-    if (palette.accentForeground)
-      styles['--sidebar-accent-foreground'] = palette.accentForeground as string;
-    if (palette.border) styles['--sidebar-border'] = palette.border as string;
-    if (palette.card) styles['--input-background'] = palette.card as string;
-    if (palette.muted) styles['--switch-background'] = palette.muted as string;
+      styles['--sidebar-primary-foreground'] = palette.primaryForeground;
+    if (palette.accent) styles['--sidebar-accent'] = palette.accent;
+    if (palette.accentForeground) styles['--sidebar-accent-foreground'] = palette.accentForeground;
+    if (palette.border) styles['--sidebar-border'] = palette.border;
+    if (palette.card) styles['--input-background'] = palette.card;
+    if (palette.muted) styles['--switch-background'] = palette.muted;
 
     if (theme.radius) {
       styles['--radius'] = theme.radius;
@@ -463,7 +463,7 @@ export class HomeComponent implements OnInit {
       'https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=400&auto=format&fit=crop';
   }
 
-  fallbackHeroImg(event: Event) {
+  fallbackHeroImg() {
     this.heroImageUrl.set('');
   }
 

@@ -1,10 +1,10 @@
 {
-  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "site-builder",
   "projectType": "application",
-  "generators": {},
   "sourceRoot": "apps/site-builder/src",
   "prefix": "app",
+  "tags": ["type:app", "scope:site-builder"],
   "implicitDependencies": [
     "spartan-ui",
     "spartan-stepper",
@@ -30,7 +30,7 @@
         "ssr": {
           "entry": "apps/site-builder/src/server.ts"
         },
-        "outputPath": "dist/site-builder"
+        "outputPath": "dist/apps/site-builder"
       },
       "configurations": {
         "production": {
@@ -79,6 +79,15 @@
         "proxyConfig": "apps/site-builder/proxy.conf.json"
       }
     },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "site-builder:build",
+        "staticFilePath": "dist/apps/site-builder/browser",
+        "spa": true
+      }
+    },
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
@@ -92,6 +101,5 @@
       },
       "outputs": ["{options.outputFile}"]
     }
-  },
-  "tags": ["type:app", "scope:site-builder"]
+  }
 }

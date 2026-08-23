@@ -33,6 +33,7 @@
             } @else {
               <a
                 hlmPaginationLink
+                tabindex="0"
                 [isActive]="page === currentPage()"
                 [attr.aria-label]="'pagination.go_to_page' | translate: { page: page }"
                 class="min-w-9 cursor-pointer font-semibold tabular-nums"
@@ -42,6 +43,8 @@
                     : 'hover:bg-accent hover:text-accent-foreground'
                 "
                 (click)="goTo(page)"
+                (keydown.enter)="goTo(page)"
+                (keydown.space)="goTo(page)"
               >
                 {{ page }}
               </a>
