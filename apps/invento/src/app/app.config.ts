@@ -7,9 +7,10 @@ import { provideSpartanHlm } from '@spartan/helm/utils';
 import { TRANSLATION_LOADER } from '@invento/shared-util-i18n';
 import type { Locale } from '@invento/shared-util-i18n';
 import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
+import { SITE_BUILDER_URL } from '@invento/invento-util-site-builder-url';
 import { environment } from '../environments/environment';
-import en from '@invento/invento/assets/i18n/en.json';
-import ar from '@invento/invento/assets/i18n/ar.json';
+import en from '../assets/i18n/en.json';
+import ar from '../assets/i18n/ar.json';
 
 /**
  * invento is an "owner" app (T053/T059): it hits the `/owner`-suffixed backend endpoints, has no
@@ -43,6 +44,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideSpartanHlm(),
     { provide: AUTH_CONFIG, useValue: authConfig },
+    { provide: SITE_BUILDER_URL, useValue: environment.siteBuilderUrl },
     {
       provide: TRANSLATION_LOADER,
       useValue: (locale: Locale) => (locale === 'ar' ? ar : en),

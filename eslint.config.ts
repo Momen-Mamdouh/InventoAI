@@ -168,14 +168,6 @@ export default defineConfig([
     rules: moduleBoundariesRule(['@invento/user-site/**']),
   },
   {
-    // TODO(phase-8): invento's own self-import alias, removed once T095-T130 reduce the app to
-    // a shell. Scoped to this app's own files only — see violations.md Category B
-    // (51 occurrences).
-    files: ['apps/invento/**/*.ts'],
-    plugins: { '@nx': nx },
-    rules: moduleBoundariesRule(['@invento/invento/**']),
-  },
-  {
     // TODO(phase-11): `libs/shared/util-mock/src/lib/mock-preview.ts` imports the `PreviewProduct`
     // and `ThemeSuggestion` *types* from `@invento/core` (`type:core`) to shape its mock data
     // literals. Originally surfaced by Phase 7 (T069) once the file was correctly tagged
