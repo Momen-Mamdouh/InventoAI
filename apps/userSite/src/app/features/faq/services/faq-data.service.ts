@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, throwError } from 'rxjs';
-import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
+import { extractErrorMessage } from '@invento/shared-util-error';
 import type { FaqItem } from '@invento/user-site/app/features/faq/types';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 import { environment } from '@invento/user-site/environments/environment';

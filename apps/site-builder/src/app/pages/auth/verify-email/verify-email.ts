@@ -9,7 +9,7 @@ import { AuthService } from '../../../core/service/auth.service';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 
-import { extractErrorMessage } from '../../../core/utils/error.utils';
+import { extractErrorMessage } from '@invento/shared-util-error';
 
 @Component({
   selector: 'app-verify-email',

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { toast } from '@spartan/helm/sonner';
-import { extractErrorMessage } from '../../core/utils/error.utils';
+import { extractErrorMessage } from '@invento/shared-util-error';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {

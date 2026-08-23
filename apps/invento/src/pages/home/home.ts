@@ -36,7 +36,7 @@ import {
 } from '../../features/store/store.service';
 import { CategoriesService } from '../../features/categories/category.service';
 import { ProductService } from '../../features/products/product.service';
-import { AuthService } from '../../core/service/auth.service';
+import { AuthService } from '@invento/shared-data-access-auth';
 import { environment } from '../../environments/environment';
 import { HlmButtonImports } from '@spartan/helm/button';
 

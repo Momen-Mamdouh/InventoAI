@@ -30,7 +30,7 @@ import { HlmAvatar, HlmAvatarFallback } from '@spartan/helm/avatar';
 import { TranslatePipe, LocaleService } from '@invento/core';
 import { BrandLogo } from '@invento/shared';
 import { toast } from '@spartan/helm/sonner';
-import { AuthService } from '../../../core/service/auth.service';
+import { AuthService } from '@invento/shared-data-access-auth';
 
 interface NavItem {
   label: string;
