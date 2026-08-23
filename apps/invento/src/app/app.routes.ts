@@ -1,10 +1,9 @@
 import { Routes } from '@angular/router';
 import { MainLayout } from '@invento/invento/layouts/main-layout/main-layout';
 import { AuthLayout } from '@invento/invento/layouts/auth-layout/auth-layout';
-import { authGuard } from '../core/guards/auth.guard';
-import { guestGuard } from '../core/guards/guest.guard';
-import { storeGuard } from '../core/guards/store.guard';
-import { noStoreGuard } from '../core/guards/no-store.guard';
+import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
+import { storeGuard } from './guards/store.guard';
+import { noStoreGuard } from './guards/no-store.guard';
 
 export const appRoutes: Routes = [
   {
@@ -221,33 +220,25 @@ export const appRoutes: Routes = [
     children: [
       {
         path: 'login',
-        loadComponent: () => import('@invento/invento/pages/auth/login/login').then((c) => c.Login),
+        loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.loginRoutes),
       },
       {
         path: 'register',
-        loadComponent: () =>
-          import('@invento/invento/pages/auth/register/register').then((c) => c.Register),
+        loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.registerRoutes),
       },
       {
         path: 'forgot-password',
-        loadComponent: () =>
-          import('@invento/invento/pages/auth/forgot-password/forgot-password').then(
-            (c) => c.ForgotPassword,
-          ),
+        loadChildren: () =>
+          import('@invento/shared-feature-auth').then((m) => m.forgotPasswordRoutes),
       },
       {
         path: 'reset-password',
-        loadComponent: () =>
-          import('@invento/invento/pages/auth/reset-password/reset-password').then(
-            (c) => c.ResetPassword,
-          ),
+        loadChildren: () =>
+          import('@invento/shared-feature-auth').then((m) => m.resetPasswordRoutes),
       },
       {
         path: 'verify-email',
-        loadComponent: () =>
-          import('@invento/invento/pages/auth/verify-email/verify-email').then(
-            (c) => c.VerifyEmail,
-          ),
+        loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.verifyEmailRoutes),
       },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],

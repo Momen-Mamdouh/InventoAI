@@ -31,6 +31,15 @@
     },
     {
       "path": "./libs/shared/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-error/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/data-access-auth/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/feature-auth/tsconfig.lib.json"
     }
   ],
   "extends": "./tsconfig.base.json"

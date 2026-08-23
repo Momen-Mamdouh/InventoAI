@@ -6,9 +6,28 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideSpartanHlm } from '@spartan/helm/utils';
 import { TRANSLATION_LOADER } from '@invento/core';
 import type { Locale } from '@invento/core';
-import { authInterceptor } from '../core/interceptors/auth.interceptor';
+import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
+import { environment } from '../environments/environment';
 import en from '@invento/invento/assets/i18n/en.json';
 import ar from '@invento/invento/assets/i18n/ar.json';
+
+/**
+ * invento is an "owner" app (T053/T059): it hits the `/owner`-suffixed backend endpoints, has no
+ * customer-role exclusions, and — uniquely among the three apps — sends owners who have not
+ * created a store yet to `/no-store` instead of their normal post-login destination. See
+ * `specs/001-nx-workspace-restructure/auth-superset.md`.
+ */
+const authConfig: AuthConfig = {
+  apiBaseUrl: environment.apiUrl,
+  postLoginRoute: '/home',
+  tokenStorageKey: 'invento',
+  googleClientId: environment.googleClientId,
+  verifyEmailRedirect: '/auth/login',
+  authBasePath: '/auth',
+  authRole: 'owner',
+  resolvePostAuthRoute: (authService, fallback) =>
+    authService.getStoreSlug() ? fallback : '/no-store',
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,6 +42,7 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideSpartanHlm(),
+    { provide: AUTH_CONFIG, useValue: authConfig },
     {
       provide: TRANSLATION_LOADER,
       useValue: (locale: Locale) => (locale === 'ar' ? ar : en),

@@ -10,7 +10,7 @@ import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 
-import { extractErrorMessage } from '../../../core/utils/error.utils';
+import { extractErrorMessage } from '@invento/shared-util-error';
 
 @Component({
   selector: 'app-reset-password',

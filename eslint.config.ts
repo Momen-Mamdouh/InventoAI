@@ -18,11 +18,28 @@ import tseslint from 'typescript-eslint';
 // `type:shared` (currently only `libs/shared`, the pre-Phase-7 umbrella) is
 // intentionally NOT a row here — it is unconstrained by this rule until Phase 7
 // dissolves it into real `type:ui`/`type:util` projects. See violations.md.
+//
+// `type:app` was widened to permit `type:data-access` in Phase 6 (T052-T061):
+// `contracts/library-api.md`'s "Shared auth contract" explicitly requires guards,
+// `AUTH_CONFIG`, and `authInterceptor` to be imported straight into an app's own
+// `app.routes.ts`/`app.config.ts` from `@invento/shared-data-access-auth` — bootstrap
+// and route-guard wiring live at the composition root, not behind a feature layer.
+// This is the first `type:data-access` project in the workspace, so this row was never
+// exercised before now. See the Phase 6 report for a note on `@nx/enforce-module-
+// boundaries@23.1.0` apparently not flagging `type:data-access`/`type:feature` targets
+// at all yet (reproduced independently of this row) — worth a follow-up spike before
+// Phase 11's T206 boundary re-verification.
 // ------------------------------------------------------------------
 const depConstraints = [
   {
     sourceTag: 'type:app',
-    onlyDependOnLibsWithTags: ['type:feature', 'type:ui', 'type:util', 'type:core'],
+    onlyDependOnLibsWithTags: [
+      'type:feature',
+      'type:ui',
+      'type:util',
+      'type:core',
+      'type:data-access',
+    ],
   },
   {
     sourceTag: 'type:feature',

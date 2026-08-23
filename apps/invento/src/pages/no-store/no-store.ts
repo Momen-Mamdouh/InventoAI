@@ -12,7 +12,7 @@ import {
 import { HlmButton } from '@spartan/helm/button';
 import { TranslatePipe, LocaleService, ThemeService } from '@invento/core';
 import { toast } from '@spartan/helm/sonner';
-import { AuthService } from '../../core/service/auth.service';
+import { AuthService } from '@invento/shared-data-access-auth';
 import { environment } from '../../environments/environment';
 
 @Component({

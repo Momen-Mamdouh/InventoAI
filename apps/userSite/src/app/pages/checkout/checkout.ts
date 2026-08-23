@@ -41,7 +41,7 @@ import { toast } from '@spartan/helm/sonner';
 import { CartService } from '@invento/user-site/app/core/service/cart.service';
 import { AuthService } from '@invento/user-site/app/core/service/auth.service';
 import { OrdersDataService, type OrderDetail } from '@invento/user-site/app/features/orders';
-import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
+import { extractErrorMessage } from '@invento/shared-util-error';
 import type { CreateOrderPayload } from '@invento/user-site/app/core/interface/cart.interface';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 import { animateElementsOnRender } from '@invento/user-site/app/core/utils/animation.utils';

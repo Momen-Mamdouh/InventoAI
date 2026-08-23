@@ -19,7 +19,7 @@ import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/service/auth.service';
+import { AuthService } from '@invento/shared-data-access-auth';
 
 @Component({
   selector: 'app-profile',

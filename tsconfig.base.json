@@ -53,7 +53,10 @@
       "@spartan/helm/carousel": ["./libs/ui/carousel/src/index.ts"],
       "@spartan/helm/checkbox": ["./libs/ui/checkbox/src/index.ts"],
       "@spartan/helm/slider": ["./libs/ui/slider/src/index.ts"],
-      "@spartan/helm/accordion": ["./libs/ui/accordion/src/index.ts"]
+      "@spartan/helm/accordion": ["./libs/ui/accordion/src/index.ts"],
+      "@invento/shared-util-error": ["./libs/shared/util-error/src/index.ts"],
+      "@invento/shared-data-access-auth": ["./libs/shared/data-access-auth/src/index.ts"],
+      "@invento/shared-feature-auth": ["./libs/shared/feature-auth/src/index.ts"]
     }
   }
 }

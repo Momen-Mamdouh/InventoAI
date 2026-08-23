@@ -15,7 +15,7 @@ import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 
-import { extractErrorMessage } from '@invento/user-site/app/core/utils/error.utils';
+import { extractErrorMessage } from '@invento/shared-util-error';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({
