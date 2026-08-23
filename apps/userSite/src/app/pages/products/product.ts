@@ -29,7 +29,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSearchX, lucideInfo } from '@ng-icons/lucide';
 import { switchMap, catchError, combineLatest, tap } from 'rxjs';
 import { of, Subscription } from 'rxjs';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({

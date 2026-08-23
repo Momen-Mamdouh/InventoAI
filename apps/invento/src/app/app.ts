@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HlmToasterImports } from '@spartan/helm/sonner';
-import { ThemeService } from '@invento/core';
+import { ThemeService } from '@invento/shared-util-theme';
 
 @Component({
   imports: [RouterModule, HlmToasterImports],

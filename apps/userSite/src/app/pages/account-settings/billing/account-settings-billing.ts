@@ -9,7 +9,7 @@ import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSeparatorImports } from '@spartan/helm/separator';
 import { HlmTypographyImports } from '@spartan/helm/typography';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 interface PaymentCard {
   id: number;

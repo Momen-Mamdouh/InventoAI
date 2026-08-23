@@ -1,4 +1,4 @@
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 

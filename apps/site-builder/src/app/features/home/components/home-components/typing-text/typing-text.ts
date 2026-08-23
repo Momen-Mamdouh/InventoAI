@@ -9,7 +9,7 @@ import {
   signal,
   input,
 } from '@angular/core';
-import { LocaleService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-typing-text',

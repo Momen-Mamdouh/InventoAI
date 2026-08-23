@@ -1,5 +1,5 @@
+import type { ThemeApiResponse } from '@invento/shared-util-theme';
 import type { ThemeSuggestion } from '../interface/Preview';
-import type { ThemeApiResponse } from '../interface/Preview';
 import { parseThemeCss } from './Preview-css-parser';
 
 /**

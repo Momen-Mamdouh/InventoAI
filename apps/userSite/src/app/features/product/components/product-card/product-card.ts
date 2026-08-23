@@ -11,7 +11,7 @@ import {
   HlmCardContent,
 } from '@spartan/helm/card';
 import { toast } from '@spartan/helm/sonner';
-import { LocaleService, TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { ProductApiService } from '../../services';
 import { flyToCart } from '../../utils';
 

@@ -11,6 +11,7 @@ import {
   type WritableSignal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { buildCookie, readCookie } from '@invento/shared-util-ssr';
 import type { Locale } from './locale';
 import {
   TRANSLATION_LOADER,
@@ -18,7 +19,6 @@ import {
   type TranslationLoader,
   type TranslationValue,
 } from './translation-loader';
-import { buildCookie, readCookie } from '../ssr/cookie';
 
 const LOCALE_STORAGE_KEY = 'invento_locale';
 

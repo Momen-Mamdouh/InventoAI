@@ -10,7 +10,8 @@ import {
   lucideLogOut,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
-import { TranslatePipe, LocaleService, ThemeService } from '@invento/core';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
+import { ThemeService } from '@invento/shared-util-theme';
 import { toast } from '@spartan/helm/sonner';
 import { AuthService } from '@invento/shared-data-access-auth';
 import { environment } from '../../environments/environment';

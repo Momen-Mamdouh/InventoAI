@@ -10,7 +10,7 @@ import { HlmButton } from '@spartan/helm/button';
 import { toast } from '@spartan/helm/sonner';
 import { flyToCart } from '../../utils';
 
-import { LocaleService, TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { QuantityStepper } from '../quantity-stepper/quantity-stepper';
 import { CartService } from '@invento/user-site/app/core/service/cart.service';
 import { ProductStore } from '../../services';

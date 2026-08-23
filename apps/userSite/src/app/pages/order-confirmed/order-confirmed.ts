@@ -1,5 +1,5 @@
 import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import {
   ChangeDetectionStrategy,
   Component,

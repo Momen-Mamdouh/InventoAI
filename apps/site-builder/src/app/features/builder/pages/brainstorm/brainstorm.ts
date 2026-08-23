@@ -35,7 +35,7 @@ import { hlmH2, hlmP } from '@spartan/helm/typography';
 import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { toast } from '@spartan/helm/sonner';
 import { Router } from '@angular/router';
-import { TranslatePipe, LocaleService } from '@invento/core';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { HlmItemImports } from '@spartan/helm/item';
 import { MIN_BRAINSTORM_LENGTH } from '@/app/features/builder/constants/builder-steps';

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideStore } from '@ng-icons/lucide';
 import { EmptyState } from '@invento/shared-ui-empty-state';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 /**
  * Shown when the URL names no store.

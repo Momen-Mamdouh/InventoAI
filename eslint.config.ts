@@ -176,86 +176,25 @@ export default defineConfig([
     rules: moduleBoundariesRule(['@invento/invento/**']),
   },
   {
-    // TODO(phase-11): `libs/ui/utils` (the spartan-styles project) imports the `ThemeApiResponse`
-    // and `Palette` *types* from `@invento/core`, which is tagged `type:core`. No `type:ui` or
-    // `type:util` row permits depending on `type:core`, so this violates the vertical matrix
-    // under either tag — retagging the project cannot resolve it.
-    //
-    // Surfaced by phase 5 (T041-T046), which gave `libs/ui/utils` its own project and lint
-    // target for the first time. It is a genuine layering defect, not a tooling artefact: a
-    // presentational styles library should not reach into the core domain layer. The real fix
-    // is to move those two theme types out of `@invento/core` into a `type:util` library that
-    // both sides may legally depend on. No existing task covers that move, so it is recorded
-    // here and in violations.md rather than silently absorbed.
-    //
-    // Scoped to this one project's files so the exemption cannot leak to any other `type:ui`
-    // library. 3 occurrences: spartan-styles.ts, spartan-styles/hlm-style.ts,
-    // spartan-styles/index.ts.
-    files: ['libs/ui/utils/**/*.ts'],
-    plugins: { '@nx': nx },
-    rules: moduleBoundariesRule(['@invento/core']),
-  },
-  {
-    // Surfaced by Phase 7 (T069): `libs/shared/util-constants/src/lib/styles.ts` imports the
-    // `HlmStyle` *type* from `@spartan/styles` (`libs/ui/utils`, `type:ui`) to `satisfies` its
-    // `STYLES` tuple against it. Previously invisible because the file lived inside the
-    // untagged `type:shared` umbrella, which carries no depConstraints row at all; giving the
-    // file a real `type:util` tag (as the phase requires) makes the existing dependency a
-    // genuine vertical-matrix violation for the first time — not a tooling artefact.
-    //
-    // The real fix is the same one already on file for `libs/ui/utils` above: hoist `HlmStyle`
-    // (and the duplicate `HLM_STYLES` tuple that already lives in `spartan-styles.ts`) into a
-    // `type:util` library both sides may depend on, and delete this file's own copy of the list
-    // outright. No existing task covers that move. `STYLES` has zero consumers in the workspace
-    // today (verified by phase 7's own grep), so this is dead code carried forward unchanged
-    // per the "lift-and-shift, do not redesign" instruction for this phase — recorded here and
-    // in violations.md rather than silently absorbed or dropped.
-    //
-    // Scoped to this one project's files. 1 occurrence: styles.ts.
-    files: ['libs/shared/util-constants/**/*.ts'],
-    plugins: { '@nx': nx },
-    rules: moduleBoundariesRule(['@spartan/styles']),
-  },
-  {
-    // Surfaced by Phase 7 (T069): `libs/shared/util-mock/src/lib/mock-preview.ts` imports the
-    // `PreviewProduct` and `ThemeSuggestion` *types* from `@invento/core` (`type:core`) to shape
-    // its mock data literals. Same root cause as the `util-constants` entry immediately above —
-    // invisible under the untagged `type:shared` umbrella, real once the file is correctly
-    // tagged `type:util`. The real fix is moving those two Preview types out of `@invento/core`
-    // into a shared `type:util` library; no existing task covers that move. This mock data has
-    // no consumer in `libs/shared` today (site-builder's own `preview-data-client.ts` and
-    // `preview.spec.ts` import their own local fork via `@/app/shared/mock/mock-preview`,
-    // reconciled separately in Phase 10 at T180) — recorded here and in violations.md.
+    // TODO(phase-11): `libs/shared/util-mock/src/lib/mock-preview.ts` imports the `PreviewProduct`
+    // and `ThemeSuggestion` *types* from `@invento/core` (`type:core`) to shape its mock data
+    // literals. Originally surfaced by Phase 7 (T069) once the file was correctly tagged
+    // `type:util` for the first time (invisible before that under the untagged `type:shared`
+    // umbrella). Phase 7b (2026-08-23) moved the i18n/theme runtime pieces that caused the other
+    // three exemption blocks that used to live here out of `@invento/core` into
+    // `@invento/shared-util-i18n`/`@invento/shared-util-theme`, which is why those three are gone —
+    // but `PreviewProduct`/`ThemeSuggestion` were deliberately left in `@invento/core` (they stay
+    // "Preview types" per that phase's brief) because moving them has an unreviewed blast radius:
+    // `libs/core/src/lib/utils/theme-suggestion-converter.ts` and `Preview-css-parser.ts` also
+    // touch the `Preview.ts` interface file these two live in. The real fix is still moving those
+    // two Preview types into a `type:util` library both sides may depend on; no existing task
+    // covers that move. This mock data has no consumer in `libs/shared` today (site-builder's own
+    // `preview-data-client.ts` and `preview.spec.ts` import their own local fork via
+    // `@/app/shared/mock/mock-preview`, reconciled separately in Phase 10 at T180) — recorded here
+    // and in violations.md.
     //
     // Scoped to this one project's files. 2 occurrences: mock-preview.ts.
     files: ['libs/shared/util-mock/**/*.ts'],
-    plugins: { '@nx': nx },
-    rules: moduleBoundariesRule(['@invento/core']),
-  },
-  {
-    // Surfaced by Phase 7 (T077-T089): four of the newly split-out `libs/shared/ui-*` projects
-    // reach into `@invento/core` (`type:core`) for i18n/theme runtime pieces the umbrella
-    // previously hid under its unconstrained `type:shared` tag:
-    //   - `ui-page-badge` and `ui-pagination` import the `TranslatePipe` *pipe*.
-    //   - `ui-lang-switcher` injects `LocaleService`; `ui-theme-switcher` injects `ThemeService`.
-    // The latter two are a real Presentational-library-contract tension (`contracts/
-    // library-api.md` rule 2: "No injected data-access service ... inputs and outputs only") on
-    // top of the boundary violation — these two components were never purely presentational, and
-    // that was true before this phase too, just invisible. Phase 7 is lift-and-shift only (no
-    // redesign), so the components move unchanged; the real fix is either hoisting
-    // `TranslatePipe`/`LocaleService`/`ThemeService` into a `type:util` library both layers may
-    // depend on, or accepting that these four are actually `type:feature`-shaped and re-tagging
-    // them. No existing task covers that move — recorded here and in violations.md.
-    //
-    // Scoped to exactly these four projects' files so the exemption cannot leak to any other
-    // `type:ui` library. 4 occurrences: page-badge.ts, pagination.ts, lang-switcher.ts,
-    // theme-switcher.ts.
-    files: [
-      'libs/shared/ui-page-badge/**/*.ts',
-      'libs/shared/ui-pagination/**/*.ts',
-      'libs/shared/ui-lang-switcher/**/*.ts',
-      'libs/shared/ui-theme-switcher/**/*.ts',
-    ],
     plugins: { '@nx': nx },
     rules: moduleBoundariesRule(['@invento/core']),
   },

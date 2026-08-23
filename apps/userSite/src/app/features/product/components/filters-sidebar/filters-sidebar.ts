@@ -17,7 +17,7 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
 import { HlmSlider } from '@spartan/helm/slider';
 
 import { HlmAccordionImports } from '@spartan/helm/accordion';
-import { TranslatePipe, LocaleService } from '@invento/core';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-filters-sidebar',

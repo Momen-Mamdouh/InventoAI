@@ -1,7 +1,8 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { TranslatePipe, type ThemeApiResponse, type Palette } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
+import type { ThemeApiResponse, Palette } from '@invento/shared-util-theme';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { NgIcon, provideIcons } from '@ng-icons/core';

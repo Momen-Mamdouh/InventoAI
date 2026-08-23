@@ -13,7 +13,7 @@ import { ProductListItem } from '../../types';
 import { Subscription } from 'rxjs';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({

@@ -12,7 +12,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ScrollAnimateDirective } from '@/app/shared/directives/scroll-animate.directive';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronLeft, lucideInfinity, lucidePercent } from '@ng-icons/lucide';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 interface Stat {
   readonly label: string;

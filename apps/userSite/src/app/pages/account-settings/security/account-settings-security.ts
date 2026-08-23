@@ -17,7 +17,7 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { AuthService } from '@invento/user-site/app/core/service/auth.service';
 import { extractErrorMessage } from '@invento/shared-util-error';
-import { LocaleService, TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 
 function passwordsMatchValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {

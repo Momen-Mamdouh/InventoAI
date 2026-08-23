@@ -17,7 +17,7 @@ import {
 import { PageHeader } from '@/app/shared/components/page-header/page-header';
 import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { BuilderState } from '@/app/features/builder/services/builder-state';
-import { TranslatePipe, LocaleService } from '@invento/core';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
 import { switchMap, tap, finalize, of } from 'rxjs';
 import { DomainApi } from '@/app/features/builder/services/domain-api';

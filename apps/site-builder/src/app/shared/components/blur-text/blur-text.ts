@@ -11,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { NgClass, isPlatformBrowser } from '@angular/common';
-import { LocaleService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
 import { gsap } from 'gsap';
 
 @Component({

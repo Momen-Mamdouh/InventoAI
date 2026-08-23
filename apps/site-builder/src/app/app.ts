@@ -2,7 +2,8 @@ import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@a
 import { RouterOutlet } from '@angular/router';
 import { LoaderComponent } from './features/builder/components/loader.component/loader';
 import { HlmToasterImports } from '@spartan/helm/sonner';
-import { LocaleService, ThemeService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
+import { ThemeService } from '@invento/shared-util-theme';
 
 @Component({
   selector: 'app-root',

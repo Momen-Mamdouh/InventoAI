@@ -4,7 +4,7 @@ import { HlmCard, HlmCardHeader, HlmCardTitle, HlmCardDescription } from '@spart
 import { ScrollAnimateDirective } from '@/app/shared/directives/scroll-animate.directive';
 import { PageHeader } from '@/app/shared/components/page-header/page-header';
 import { hlmH3, hlmP } from '@spartan/helm/typography';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 interface PipelineStep {
   readonly number: string;

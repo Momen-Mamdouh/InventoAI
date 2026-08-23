@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, firstValueFrom, tap, throwError } from 'rxjs';
-import { LocaleService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
 import { extractErrorMessage } from '@invento/shared-util-error';
 import type {
   CancelOrderPayload,

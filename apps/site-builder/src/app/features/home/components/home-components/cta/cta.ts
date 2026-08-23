@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { HlmButton } from '@spartan/helm/button';
 import { ScrollAnimateDirective } from '@/app/shared/directives/scroll-animate.directive';
 import { hlmH2, hlmP } from '@spartan/helm/typography';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-cta',

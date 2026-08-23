@@ -1,4 +1,4 @@
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import {
   FormBuilder,

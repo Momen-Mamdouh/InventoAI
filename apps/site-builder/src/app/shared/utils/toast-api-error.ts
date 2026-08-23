@@ -1,4 +1,4 @@
-import { LocaleService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
 
 /**

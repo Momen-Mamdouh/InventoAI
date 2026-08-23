@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { HlmButton } from '@spartan/helm/button';
 
 import { animateElementsOnRender } from '@invento/user-site/app/core/utils/animation.utils';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-not-found',
