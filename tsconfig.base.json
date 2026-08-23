@@ -82,7 +82,42 @@
       "@invento/shared-ui-pagination": ["./libs/shared/ui-pagination/src/index.ts"],
       "@invento/shared-ui-search-input": ["./libs/shared/ui-search-input/src/index.ts"],
       "@invento/shared-ui-skeleton-block": ["./libs/shared/ui-skeleton-block/src/index.ts"],
-      "@invento/shared-ui-theme-switcher": ["./libs/shared/ui-theme-switcher/src/index.ts"]
+      "@invento/shared-ui-theme-switcher": ["./libs/shared/ui-theme-switcher/src/index.ts"],
+      "@invento/shared-ui-drift-wall": ["./libs/shared/ui-drift-wall/src/index.ts"],
+      "@invento/invento-data-access-product": ["./libs/invento/data-access-product/src/index.ts"],
+      "@invento/invento-data-access-supplier": ["./libs/invento/data-access-supplier/src/index.ts"],
+      "@invento/invento-data-access-order": ["./libs/invento/data-access-order/src/index.ts"],
+      "@invento/invento-data-access-faq": ["./libs/invento/data-access-faq/src/index.ts"],
+      "@invento/invento-data-access-category": ["./libs/invento/data-access-category/src/index.ts"],
+      "@invento/invento-data-access-store": ["./libs/invento/data-access-store/src/index.ts"],
+      "@invento/invento-util-breadcrumb": ["./libs/invento/util-breadcrumb/src/index.ts"],
+      "@invento/invento-data-access-attribute": [
+        "./libs/invento/data-access-attribute/src/index.ts"
+      ],
+      "@invento/invento-ui-confirm-dialog": ["./libs/invento/ui-confirm-dialog/src/index.ts"],
+      "@invento/invento-data-access-purchase-request": [
+        "./libs/invento/data-access-purchase-request/src/index.ts"
+      ],
+      "@invento/invento-feature-products": ["./libs/invento/feature-products/src/index.ts"],
+      "@invento/invento-feature-orders": ["./libs/invento/feature-orders/src/index.ts"],
+      "@invento/invento-feature-suppliers": ["./libs/invento/feature-suppliers/src/index.ts"],
+      "@invento/invento-feature-categories": ["./libs/invento/feature-categories/src/index.ts"],
+      "@invento/invento-feature-attributes": ["./libs/invento/feature-attributes/src/index.ts"],
+      "@invento/invento-feature-purchase-requests": [
+        "./libs/invento/feature-purchase-requests/src/index.ts"
+      ],
+      "@invento/invento-feature-faq": ["./libs/invento/feature-faq/src/index.ts"],
+      "@invento/invento-feature-ai-advisor": ["./libs/invento/feature-ai-advisor/src/index.ts"],
+      "@invento/invento-feature-chatbot": ["./libs/invento/feature-chatbot/src/index.ts"],
+      "@invento/invento-feature-catalog-ai": ["./libs/invento/feature-catalog-ai/src/index.ts"],
+      "@invento/invento-feature-account-settings": [
+        "./libs/invento/feature-account-settings/src/index.ts"
+      ],
+      "@invento/invento-feature-home": ["./libs/invento/feature-home/src/index.ts"],
+      "@invento/invento-util-site-builder-url": [
+        "./libs/invento/util-site-builder-url/src/index.ts"
+      ],
+      "@invento/invento-ui-shell": ["./libs/invento/ui-shell/src/index.ts"]
     }
   }
 }

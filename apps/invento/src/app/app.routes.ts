@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
-import { MainLayout } from '@invento/invento/layouts/main-layout/main-layout';
-import { AuthLayout } from '@invento/invento/layouts/auth-layout/auth-layout';
+import { MainLayout, AuthLayout } from '@invento/invento-ui-shell';
 import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
 import { storeGuard } from './guards/store.guard';
 import { noStoreGuard } from './guards/no-store.guard';
@@ -9,7 +8,7 @@ export const appRoutes: Routes = [
   {
     path: 'no-store',
     canActivate: [authGuard, noStoreGuard],
-    loadComponent: () => import('@invento/invento/pages/no-store').then((c) => c.NoStoreComponent),
+    loadComponent: () => import('./pages/no-store/no-store').then((c) => c.NoStoreComponent),
   },
   {
     path: '',
@@ -19,197 +18,65 @@ export const appRoutes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
         path: 'home',
-        loadComponent: () =>
-          import('@invento/invento/pages/home/home').then((c) => c.HomeComponent),
+        loadChildren: () => import('@invento/invento-feature-home').then((m) => m.homeRoutes),
       },
       {
         path: 'catalog-ai',
-        loadComponent: () =>
-          import('../features/catalog-ai/ui/catalog-ai-review/catalog-ai-review.component').then(
-            (c) => c.CatalogAiReviewComponent,
-          ),
+        loadChildren: () =>
+          import('@invento/invento-feature-catalog-ai').then((m) => m.catalogAiRoutes),
       },
       {
         path: 'products',
-        loadComponent: () =>
-          import('@invento/invento/pages/products/products').then((c) => c.Products),
-      },
-      {
-        path: 'products/:id',
-        loadComponent: () =>
-          import('@invento/invento/pages/products/product-details/product-details').then(
-            (c) => c.ProductDetails,
-          ),
+        loadChildren: () =>
+          import('@invento/invento-feature-products').then((m) => m.productsRoutes),
       },
       {
         path: 'attributes',
-        loadComponent: () =>
-          import('@invento/invento/pages/attributes/attributes').then((c) => c.AttributesComponent),
+        loadChildren: () =>
+          import('@invento/invento-feature-attributes').then((m) => m.attributesRoutes),
       },
       {
         path: 'categories',
-        loadComponent: () =>
-          import('@invento/invento/pages/categories/categories').then((c) => c.Categories),
+        loadChildren: () =>
+          import('@invento/invento-feature-categories').then((m) => m.categoriesRoutes),
       },
       {
         path: 'users',
-        loadComponent: () => import('@invento/invento/pages/users/users').then((c) => c.Users),
+        loadComponent: () => import('./pages/users/users').then((c) => c.Users),
       },
       {
         path: 'orders',
-        loadComponent: () => import('@invento/invento/pages/orders/orders').then((c) => c.Orders),
+        loadChildren: () => import('@invento/invento-feature-orders').then((m) => m.ordersRoutes),
       },
       {
         path: 'faq',
-        loadComponent: () =>
-          import('@invento/invento/pages/faq-management/faq-management.page').then(
-            (c) => c.FaqManagementPageComponent,
-          ),
+        loadChildren: () => import('@invento/invento-feature-faq').then((m) => m.faqRoutes),
       },
       {
         path: 'suppliers',
-        loadComponent: () =>
-          import('@invento/invento/pages/suppliers/suppliers').then((c) => c.Suppliers),
-      },
-      {
-        path: 'suppliers/:id',
-        loadComponent: () =>
-          import('@invento/invento/pages/suppliers/supplier-details/supplier-details').then(
-            (c) => c.SupplierDetails,
-          ),
+        loadChildren: () =>
+          import('@invento/invento-feature-suppliers').then((m) => m.suppliersRoutes),
       },
       {
         path: 'purchase-requests',
-        loadComponent: () =>
-          import('@invento/invento/pages/purchase-requests/purchase-requests').then(
-            (c) => c.PurchaseRequests,
+        loadChildren: () =>
+          import('@invento/invento-feature-purchase-requests').then(
+            (m) => m.purchaseRequestsRoutes,
           ),
       },
-
       {
         path: 'ai-advisor',
-        loadComponent: () =>
-          import('@invento/invento/pages/ai-advisor/ai-advisor').then((c) => c.AiAdvisor),
+        loadChildren: () =>
+          import('@invento/invento-feature-ai-advisor').then((m) => m.aiAdvisorRoutes),
       },
       {
-        path: 'profile',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/profile/profile').then(
-            (c) => c.ProfileComponent,
-          ),
-      },
-      {
-        path: 'acc-setting/profile',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/profile/profile').then(
-            (c) => c.ProfileComponent,
-          ),
-      },
-      {
-        path: 'security',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/security/security').then(
-            (c) => c.SecurityComponent,
-          ),
-      },
-      {
-        path: 'acc-setting/security',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/security/security').then(
-            (c) => c.SecurityComponent,
-          ),
-      },
-      {
-        path: 'my-stores',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/myStores/my-stores').then(
-            (c) => c.MyStoresComponent,
-          ),
-      },
-      {
-        path: 'acc-setting/my-stores',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/myStores/my-stores').then(
-            (c) => c.MyStoresComponent,
-          ),
-      },
-      {
-        path: 'notifications',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/notifications/notifications').then(
-            (c) => c.NotificationsComponent,
-          ),
-      },
-      {
-        path: 'acc-setting/notifications',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/notifications/notifications').then(
-            (c) => c.NotificationsComponent,
-          ),
-      },
-      {
-        path: 'billing',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/bilingPlan/biling-plan').then(
-            (c) => c.BilingPlanComponent,
-          ),
-      },
-      {
-        path: 'acc-setting/billing',
-        loadComponent: () =>
-          import('@invento/invento/pages/accSetting/bilingPlan/biling-plan').then(
-            (c) => c.BilingPlanComponent,
-          ),
+        path: '',
+        loadChildren: () =>
+          import('@invento/invento-feature-account-settings').then((m) => m.accountSettingsRoutes),
       },
       {
         path: 'chatbot',
-        loadComponent: () =>
-          import('../pages/chatbot/chatbot.layout').then((c) => c.ChatbotLayoutComponent),
-        children: [
-          { path: '', redirectTo: 'insights', pathMatch: 'full' },
-          {
-            path: 'insights',
-            loadComponent: () =>
-              import('../pages/chatbot/views/insights/insights.component').then(
-                (c) => c.InsightsComponent,
-              ),
-          },
-          {
-            path: 'settings',
-            loadComponent: () =>
-              import('../pages/chatbot/views/settings/settings.component').then(
-                (c) => c.SettingsComponent,
-              ),
-          },
-          {
-            path: 'knowledge',
-            loadComponent: () =>
-              import('../pages/chatbot/views/knowledge/knowledge.component').then(
-                (c) => c.KnowledgeComponent,
-              ),
-          },
-          {
-            path: 'history',
-            loadComponent: () =>
-              import('../pages/chatbot/views/history/history.component').then(
-                (c) => c.HistoryComponent,
-              ),
-          },
-          {
-            path: 'history/:id',
-            loadComponent: () =>
-              import('../pages/chatbot/views/transcript/transcript.component').then(
-                (c) => c.TranscriptComponent,
-              ),
-          },
-          {
-            path: 'unanswered',
-            loadComponent: () =>
-              import('../pages/chatbot/views/unanswered/unanswered.component').then(
-                (c) => c.UnansweredComponent,
-              ),
-          },
-        ],
+        loadChildren: () => import('@invento/invento-feature-chatbot').then((m) => m.chatbotRoutes),
       },
     ],
   },
@@ -245,22 +112,17 @@ export const appRoutes: Routes = [
   },
   {
     path: 'mailbox/callback',
-    loadComponent: () =>
-      import('@invento/invento/pages/mailbox-callback/mailbox-callback').then(
-        (c) => c.MailboxCallback,
-      ),
+    loadChildren: () =>
+      import('@invento/invento-feature-purchase-requests').then((m) => m.mailboxCallbackRoutes),
   },
   {
     path: 'dashboard/mailbox/callback',
-    loadComponent: () =>
-      import('@invento/invento/pages/mailbox-callback/mailbox-callback').then(
-        (c) => c.MailboxCallback,
-      ),
+    loadChildren: () =>
+      import('@invento/invento-feature-purchase-requests').then((m) => m.mailboxCallbackRoutes),
   },
   {
     path: 'not-found',
-    loadComponent: () =>
-      import('@invento/invento/pages/not-found/not-found').then((c) => c.NotFound),
+    loadComponent: () => import('./pages/not-found/not-found').then((c) => c.NotFound),
   },
   { path: '**', redirectTo: 'not-found' },
 ];
