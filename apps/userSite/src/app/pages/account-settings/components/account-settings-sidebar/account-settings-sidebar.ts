@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideUser, lucideShield, lucideBell, lucideTrash2 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan/helm/button';
-import { LocaleService, TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 
 interface NavItem {
   label: string;

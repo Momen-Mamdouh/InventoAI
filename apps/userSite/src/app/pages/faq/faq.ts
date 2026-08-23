@@ -25,7 +25,7 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
 import { ErrorState } from '@invento/shared-ui-error-state';
 import { SearchInput } from '@invento/shared-ui-search-input';
 import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 // Icons
 import { provideIcons, NgIconComponent } from '@ng-icons/core';

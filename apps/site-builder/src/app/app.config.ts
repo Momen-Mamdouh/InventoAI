@@ -11,8 +11,8 @@ import {
   withNoIncrementalHydration,
 } from '@angular/platform-browser';
 import { HlmStyleService } from '@spartan/styles';
-import { TRANSLATION_LOADER } from '@invento/core';
-import type { Locale } from '@invento/core';
+import { TRANSLATION_LOADER } from '@invento/shared-util-i18n';
+import type { Locale } from '@invento/shared-util-i18n';
 import en from '@invento/site-builder/assets/i18n/en.json';
 import ar from '@invento/site-builder/assets/i18n/ar.json';
 // import { apiAuthInterceptor } from './core/interceptors/api-auth-interceptor';

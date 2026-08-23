@@ -1,5 +1,5 @@
 import { DOCUMENT, Injectable, effect, inject } from '@angular/core';
-import { buildStoreThemeCss } from '@invento/core';
+import { buildStoreThemeCss } from '@invento/shared-util-theme';
 
 import { StoreService } from './store.service';
 

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMoon, lucideSun } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
-import { ThemeService } from '@invento/core';
+import { ThemeService } from '@invento/shared-util-theme';
 
 /**
  * Light / dark toggle, shared by every app.

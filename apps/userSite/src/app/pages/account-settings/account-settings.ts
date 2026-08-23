@@ -5,7 +5,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideTrash2 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmTypographyImports } from '@spartan/helm/typography';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-account-settings',

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { HlmSwitchImports } from '@spartan/helm/switch';
-import { LocaleService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
 
 /**
  * EN / AR language toggle, shared by every app.

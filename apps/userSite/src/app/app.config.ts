@@ -11,8 +11,8 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideSpartanHlm } from '@spartan/helm/utils';
 import { Directionality, type Direction } from '@angular/cdk/bidi';
-import { LocaleService, TRANSLATION_LOADER } from '@invento/core';
-import type { Locale } from '@invento/core';
+import { LocaleService, TRANSLATION_LOADER } from '@invento/shared-util-i18n';
+import type { Locale } from '@invento/shared-util-i18n';
 import globalEn from '@invento/user-site/assets/i18n/en.json';
 import globalAr from '@invento/user-site/assets/i18n/ar.json';
 

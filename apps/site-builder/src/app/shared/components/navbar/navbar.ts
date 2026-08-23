@@ -8,7 +8,7 @@ import { AuthService } from '@/app/core/service/auth.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSun, lucideMoon, lucideLayoutDashboard, lucideLogOut } from '@ng-icons/lucide';
 import { ApiConfig } from '@/app/core/config/api-config';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-navbar',

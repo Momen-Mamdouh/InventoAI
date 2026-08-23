@@ -29,7 +29,7 @@ import { hlmP } from '@spartan/helm/typography';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmInputImports } from '@spartan/helm/input';
 import { SpartanStepperImports } from '@/spartan/stepper';
-import { TranslatePipe, LocaleService } from '@invento/core';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
 import { AiInterviewApi, SubmitAnswersPayload } from '../../services/ai-interview-api';
 import { decodeAnswer, encodeAnswer, isAnswered } from '../../utils/answer-codec';

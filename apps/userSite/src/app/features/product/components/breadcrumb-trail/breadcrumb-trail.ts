@@ -4,7 +4,7 @@ import { HlmBreadcrumbImports } from '@spartan/helm/breadcrumb';
 import { hlmUl } from '@spartan/helm/typography';
 import { RouterModule } from '@angular/router';
 
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({

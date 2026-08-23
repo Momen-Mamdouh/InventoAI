@@ -3,7 +3,7 @@ import { Preview } from './preview';
 import { PreviewDataClient } from '@/app/core/service/preview-data-client';
 import { BuilderState } from '@/app/features/builder/services/builder-state';
 import { ThemeItem } from '@/app/features/builder/services/themes-api';
-import { LocaleService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
 import {
   MOCK_THEMES,
   MOCK_PREVIEW_PRODUCTS,

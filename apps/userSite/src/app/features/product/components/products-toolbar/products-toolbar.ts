@@ -25,7 +25,7 @@ import { lucideInfo, lucideSearchX } from '@ng-icons/lucide';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { HlmButton } from '@spartan/helm/button';
 
-import { TranslatePipe, LocaleService } from '@invento/core';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({

@@ -17,7 +17,7 @@ import { HlmButton } from '@spartan/helm/button';
 import { BlurText } from '@/app/shared/components/blur-text/blur-text';
 import { ScrollAnimateDirective } from '@/app/shared/directives/scroll-animate.directive';
 import { hlmH1, hlmP } from '@spartan/helm/typography';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-hero',

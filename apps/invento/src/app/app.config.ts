@@ -4,8 +4,8 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { appRoutes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideSpartanHlm } from '@spartan/helm/utils';
-import { TRANSLATION_LOADER } from '@invento/core';
-import type { Locale } from '@invento/core';
+import { TRANSLATION_LOADER } from '@invento/shared-util-i18n';
+import type { Locale } from '@invento/shared-util-i18n';
 import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
 import { environment } from '../environments/environment';
 import en from '@invento/invento/assets/i18n/en.json';

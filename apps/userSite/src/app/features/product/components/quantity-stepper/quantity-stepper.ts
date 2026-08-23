@@ -3,7 +3,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMinus, lucidePlus } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
 import { ProductStore } from '../../services';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-quantity-stepper',

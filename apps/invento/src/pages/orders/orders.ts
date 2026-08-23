@@ -58,7 +58,7 @@ import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { OrderStatCard } from './components/order-stat-card';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import {
   OrderStore,
   type OrderListItem,

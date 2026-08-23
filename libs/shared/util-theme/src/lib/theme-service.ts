@@ -11,8 +11,8 @@ import {
   type WritableSignal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { buildCookie, readCookie } from '@invento/shared-util-ssr';
 import type { Theme } from './theme';
-import { buildCookie, readCookie } from '../ssr/cookie';
 
 const THEME_STORAGE_KEY = 'invento_theme';
 

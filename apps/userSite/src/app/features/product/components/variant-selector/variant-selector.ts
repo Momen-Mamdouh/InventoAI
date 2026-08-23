@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ProductStore } from '../../services';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSlash, lucideTriangleAlert } from '@ng-icons/lucide';

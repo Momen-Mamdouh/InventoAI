@@ -23,7 +23,7 @@ import {
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideAlertCircle } from '@ng-icons/lucide';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 
 @Component({

@@ -6,7 +6,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideImage } from '@ng-icons/lucide';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-product-gallery',

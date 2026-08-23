@@ -13,7 +13,8 @@ import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HlmBreadcrumbImports } from '@spartan/helm/breadcrumb';
-import { TranslatePipe, LocaleService, ThemeService } from '@invento/core';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
+import { ThemeService } from '@invento/shared-util-theme';
 
 import { BreadcrumbService } from '../../../core/service/breadcrumb.service';
 

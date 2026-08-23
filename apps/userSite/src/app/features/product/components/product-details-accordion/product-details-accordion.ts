@@ -5,7 +5,7 @@ import { ProductStore } from '../../services';
 
 import { HlmAccordionImports } from '@spartan/helm/accordion';
 
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-product-details-accordion',

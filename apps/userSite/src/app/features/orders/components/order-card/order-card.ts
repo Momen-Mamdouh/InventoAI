@@ -3,7 +3,7 @@ import { HlmDialogImports } from '@spartan/helm/dialog';
 import { BrnDialogContent } from '@spartan-ng/brain/dialog';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
-import { LocaleService, TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';

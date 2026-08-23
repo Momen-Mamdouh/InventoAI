@@ -39,7 +39,7 @@ import { PublishApi } from '@/app/features/builder/services/publish-api';
 import { ContainerWidth } from '@/app/shared/components/container-width/container-width';
 import { hlmH2, hlmH3, hlmH4, hlmP } from '@spartan/helm/typography';
 import { DoubleSlash } from '@invento/shared-ui-double-slash';
-import { LocaleService, TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
 import { toastApiError } from '@/app/shared/utils/toast-api-error';
 import { PALETTE_DEFAULTS, DEFAULT_RADIUS, deriveDarkPalette } from '@/app/core/utils/palette';

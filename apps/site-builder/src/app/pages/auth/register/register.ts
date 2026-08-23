@@ -1,4 +1,4 @@
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import {
   AfterViewInit,
   Component,
@@ -11,7 +11,7 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
-import { LocaleService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
 import { AuthService } from '../../../core/service/auth.service';
 import { GoogleAuthService } from '../../../core/service/google-auth.service';
 

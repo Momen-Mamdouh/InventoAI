@@ -27,7 +27,7 @@ import {
 } from '@ng-icons/lucide';
 import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
 import { HlmAvatar, HlmAvatarFallback } from '@spartan/helm/avatar';
-import { TranslatePipe, LocaleService } from '@invento/core';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { BrandLogo } from '@invento/shared-ui-brand-logo';
 import { toast } from '@spartan/helm/sonner';
 import { AuthService } from '@invento/shared-data-access-auth';

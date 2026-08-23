@@ -25,7 +25,7 @@ import { HlmPopoverImports } from '@spartan/helm/popover';
 import { BrnPopoverContent } from '@spartan-ng/brain/popover';
 import { LangSwitcher } from '@invento/shared-ui-lang-switcher';
 import { ThemeSwitcher } from '@invento/shared-ui-theme-switcher';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { CartService } from '@invento/user-site/app/core/service/cart.service';
 import { StoreService } from '@invento/user-site/app/core/service/store.service';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';

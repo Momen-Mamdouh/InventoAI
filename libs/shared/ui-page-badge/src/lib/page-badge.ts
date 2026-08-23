@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, InputSignal } from '@angular/core';
 import { HlmBadgeImports } from '@spartan/helm/badge';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-page-badge',

@@ -12,7 +12,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import gsap from 'gsap';
-import { LocaleService, TranslatePipe } from '@invento/core';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 
 // Spartan UI & Icons
 import { HlmLabel } from '@spartan/helm/label';

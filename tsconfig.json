@@ -39,9 +39,6 @@
       "path": "./libs/shared/feature-auth/tsconfig.lib.json"
     },
     {
-      "path": "./libs/shared/util-constants/tsconfig.lib.json"
-    },
-    {
       "path": "./libs/shared/util-directives/tsconfig.lib.json"
     },
     {
@@ -55,6 +52,15 @@
     },
     {
       "path": "./libs/shared/util-environment/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-ssr/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-i18n/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/util-theme/tsconfig.lib.json"
     },
     {
       "path": "./libs/shared/ui-ai-loader/tsconfig.lib.json"

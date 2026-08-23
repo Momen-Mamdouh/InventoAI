@@ -4,7 +4,7 @@ import { lucideTerminal, lucideLayers, lucideDatabase, lucideGlobe } from '@ng-i
 import { ScrollAnimateDirective } from '@/app/shared/directives/scroll-animate.directive';
 import { hlmH3, hlmP } from '@spartan/helm/typography';
 import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '@invento/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 interface Capability {
   readonly icon: string;

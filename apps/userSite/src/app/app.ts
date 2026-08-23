@@ -9,7 +9,8 @@ import { StoreSeoService } from '@invento/user-site/app/core/service/store-seo.s
 import { StoreThemeService } from '@invento/user-site/app/core/service/store-theme.service';
 import { StoreService } from '@invento/user-site/app/core/service/store.service';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
-import { LocaleService, ThemeService } from '@invento/core';
+import { LocaleService } from '@invento/shared-util-i18n';
+import { ThemeService } from '@invento/shared-util-theme';
 
 @Component({
   imports: [RouterModule, Chatbot, Navbar, Footer, HlmToasterImports],
