@@ -28,7 +28,7 @@ import {
 import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
 import { HlmAvatar, HlmAvatarFallback } from '@spartan/helm/avatar';
 import { TranslatePipe, LocaleService } from '@invento/core';
-import { BrandLogo } from '@invento/shared';
+import { BrandLogo } from '@invento/shared-ui-brand-logo';
 import { toast } from '@spartan/helm/sonner';
 import { AuthService } from '@invento/shared-data-access-auth';
 

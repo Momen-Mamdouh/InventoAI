@@ -5,7 +5,7 @@
   "prefix": "app",
   "sourceRoot": "apps/invento/src",
   "tags": ["type:app", "scope:invento"],
-  "implicitDependencies": ["spartan-stepper", "spartan-stepper-shared", "core", "shared"],
+  "implicitDependencies": ["spartan-stepper", "spartan-stepper-shared", "core"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

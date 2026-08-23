@@ -27,7 +27,9 @@ import {
   lucideTag,
 } from '@ng-icons/lucide';
 import { LocaleService, TranslatePipe } from '@invento/core';
-import { EmptyState, ErrorState, SkeletonBlock } from '@invento/shared';
+import { EmptyState } from '@invento/shared-ui-empty-state';
+import { ErrorState } from '@invento/shared-ui-error-state';
+import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
 
 import { ProductCard } from '@invento/user-site/app/features/product';
 import { StoreService } from '@invento/user-site/app/core/service/store.service';

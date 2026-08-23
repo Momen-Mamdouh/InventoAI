@@ -1,4 +1,4 @@
-import { EmptyState } from '@invento/shared';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 import {
   ChangeDetectionStrategy,
   Component,

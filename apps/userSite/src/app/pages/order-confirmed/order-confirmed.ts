@@ -1,4 +1,4 @@
-import { SkeletonBlock } from '@invento/shared';
+import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
 import { TranslatePipe } from '@invento/core';
 import {
   ChangeDetectionStrategy,

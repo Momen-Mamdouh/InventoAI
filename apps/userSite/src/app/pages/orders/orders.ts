@@ -21,7 +21,10 @@ import {
   OrderCardComponent,
   ORDERS_SERVER_LOAD_LIMIT,
 } from '@invento/user-site/app/features/orders';
-import { EmptyState, ErrorState, Pagination, SkeletonBlock } from '@invento/shared';
+import { EmptyState } from '@invento/shared-ui-empty-state';
+import { ErrorState } from '@invento/shared-ui-error-state';
+import { Pagination } from '@invento/shared-ui-pagination';
+import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
 import { TranslatePipe } from '@invento/core';
 import { StoreSlugService } from '@invento/user-site/app/core/service/store-slug.service';
 

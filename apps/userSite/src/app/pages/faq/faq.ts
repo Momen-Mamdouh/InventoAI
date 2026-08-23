@@ -21,7 +21,10 @@ import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmAccordionImports } from '@spartan/helm/accordion';
 import { HlmTypographyImports } from '@spartan/helm/typography';
-import { EmptyState, ErrorState, SearchInput, SkeletonBlock } from '@invento/shared';
+import { EmptyState } from '@invento/shared-ui-empty-state';
+import { ErrorState } from '@invento/shared-ui-error-state';
+import { SearchInput } from '@invento/shared-ui-search-input';
+import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
 import { TranslatePipe } from '@invento/core';
 
 // Icons

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe, type ThemeApiResponse, type Palette } from '@invento/core';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
-import { EmptyState } from '@invento/shared';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideImage,
