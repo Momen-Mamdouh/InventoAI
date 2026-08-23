@@ -82,6 +82,7 @@
     "@angular/compiler-cli": "^22.0.2",
     "@eslint/js": "^10.0.1",
     "@nx/angular": "23.1.0",
+    "@nx/eslint-plugin": "23.1.0",
     "@nx/js": "23.1.0",
     "@nx/workspace": "23.1.0",
     "@schematics/angular": "^22.0.3",
