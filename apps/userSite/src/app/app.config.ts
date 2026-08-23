@@ -5,50 +5,23 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { provideRouter, withViewTransitions, withRouterConfig } from '@angular/router';
+import { Router, provideRouter, withViewTransitions, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideSpartanHlm } from '@spartan/helm/utils';
 import { Directionality, type Direction } from '@angular/cdk/bidi';
 import { LocaleService, TRANSLATION_LOADER } from '@invento/shared-util-i18n';
 import type { Locale } from '@invento/shared-util-i18n';
-import globalEn from '@invento/user-site/assets/i18n/en.json';
-import globalAr from '@invento/user-site/assets/i18n/ar.json';
+import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
+import { StoreSlugService } from '@invento/user-site-data-access-store';
+import { environment } from '../environments/environment';
+import en from '../assets/i18n/en.json';
+import ar from '../assets/i18n/ar.json';
 
-import productEn from '@invento/user-site/locales/product/en.json';
-import productAr from '@invento/user-site/locales/product/ar.json';
-import homeEn from '@invento/user-site/locales/home/en.json';
-import homeAr from '@invento/user-site/locales/home/ar.json';
-import checkoutEn from '@invento/user-site/locales/checkout/en.json';
-import checkoutAr from '@invento/user-site/locales/checkout/ar.json';
-import ordersEn from '@invento/user-site/locales/orders/en.json';
-import ordersAr from '@invento/user-site/locales/orders/ar.json';
-import orderConfirmedEn from '@invento/user-site/locales/order-confirmed/en.json';
-import orderConfirmedAr from '@invento/user-site/locales/order-confirmed/ar.json';
-import accountSettingsEn from '@invento/user-site/locales/account-settings/en.json';
-import accountSettingsAr from '@invento/user-site/locales/account-settings/ar.json';
-
-// Each feature owns its own locale bundle (rule R11); the global file keeps only the
-// cross-cutting chrome: nav, footer, pagination and the standalone status pages.
-const en = {
-  ...globalEn,
-  product: productEn,
-  home: homeEn,
-  checkout: checkoutEn,
-  orders: ordersEn,
-  order_confirmed: orderConfirmedEn,
-  account_settings: accountSettingsEn,
-};
-const ar = {
-  ...globalAr,
-  product: productAr,
-  home: homeAr,
-  checkout: checkoutAr,
-  orders: ordersAr,
-  order_confirmed: orderConfirmedAr,
-  account_settings: accountSettingsAr,
-};
+// Phase 9 (T131-T133): the six per-feature locale bundles that used to live under
+// `src/locales/` and get spread onto the global file at runtime were folded directly into
+// `assets/i18n/{ar,en}.json` (same nested namespaces: product, home, checkout, orders,
+// order_confirmed, account_settings) — a lift-and-shift, not a re-key. `src/locales/` is gone.
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -61,6 +34,60 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideSpartanHlm(),
+    /**
+     * userSite is a "customer" app (T053/T059, `auth-superset.md`): it hits the unsuffixed
+     * backend endpoints and every auth page/redirect is scoped under the storefront's own
+     * slug (`/{storeSlug}/auth/...`), not a fixed mount point. The slug is only known at
+     * runtime — resolved from the host/URL by `StoreSlugService` — so `authBasePath`,
+     * `verifyEmailRedirect` and `resolvePostAuthRoute` are all closures over it rather than
+     * literals, per the `authBasePath`-resolver extension seam flagged in `auth-superset.md`
+     * §Deferred. No `if` on app identity anywhere here or in the shared library.
+     */
+    {
+      provide: AUTH_CONFIG,
+      useFactory: (): AuthConfig => {
+        const storeSlugService = inject(StoreSlugService);
+        const router = inject(Router);
+
+        /**
+         * `StoreSlugService.slug()` is driven by a `NavigationEnd`-triggered signal, so it only
+         * reflects the URL of the LAST *completed* navigation. Auth guards run mid-navigation,
+         * before `NavigationEnd` fires — reading the signal there returned the previous (often
+         * empty) slug, producing `/auth/login` instead of `/{slug}/auth/login`. Preferring the
+         * in-flight navigation's own target URL (`getCurrentNavigation()`, non-null only while a
+         * navigation — and therefore a guard — is pending) fixes this without touching
+         * `StoreSlugService` itself; it falls back to the settled signal once navigation has
+         * finished, e.g. inside a page component's own effects/handlers.
+         */
+        const currentSlug = (): string => {
+          const inFlightUrl =
+            router.getCurrentNavigation()?.finalUrl ?? router.getCurrentNavigation()?.extractedUrl;
+          if (inFlightUrl) {
+            const [first] = inFlightUrl
+              .toString()
+              .split('?')[0]
+              .split('#')[0]
+              .split('/')
+              .filter(Boolean);
+            if (first) return first;
+          }
+          return storeSlugService.slug();
+        };
+        const authBasePath = () => `/${currentSlug()}/auth`;
+
+        return {
+          apiBaseUrl: environment.apiUrl,
+          postLoginRoute: '/',
+          tokenStorageKey: 'usersite',
+          googleClientId: environment.googleClientId,
+          verifyEmailRedirect: () => `${authBasePath()}/login`,
+          authBasePath,
+          authRole: 'customer',
+          resolveStoreSlug: currentSlug,
+          resolvePostAuthRoute: () => `/${currentSlug()}`,
+        };
+      },
+    },
     {
       provide: TRANSLATION_LOADER,
       useValue: (locale: Locale) => (locale === 'ar' ? ar : en),

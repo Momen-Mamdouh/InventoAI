@@ -12,7 +12,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { toast } from '@spartan/helm/sonner';
-import { AUTH_CONFIG, AuthService, GoogleAuthService } from '@invento/shared-data-access-auth';
+import {
+  AUTH_CONFIG,
+  AuthService,
+  GoogleAuthService,
+  resolveAuthBasePath,
+} from '@invento/shared-data-access-auth';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
@@ -40,6 +45,9 @@ export class Login implements AfterViewInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   protected readonly config = inject(AUTH_CONFIG);
+
+  /** Resolved once per page load — see `AuthConfig.authBasePath`'s doc comment. */
+  protected readonly authBasePath = resolveAuthBasePath(this.config);
 
   /** Where to send the user after a successful login. Falls back to `postLoginRoute`. */
   private readonly returnUrl =
@@ -93,8 +101,11 @@ export class Login implements AfterViewInit {
       return;
     }
 
+    const slug = this.config.resolveStoreSlug?.();
+    const credentials = slug ? { ...this.loginForm.value, storeSlug: slug } : this.loginForm.value;
+
     this.isLoading.set(true);
-    this.authService.login(this.loginForm.value).subscribe({
+    this.authService.login(credentials).subscribe({
       next: () => {
         this.isLoading.set(false);
         toast.success('Logged in successfully');
@@ -121,7 +132,12 @@ export class Login implements AfterViewInit {
 
   handleGoogleSignIn(idToken: string) {
     this.isGoogleLoading.set(true);
-    this.authService.googleLoginOwner(idToken).subscribe({
+    const slug = this.config.resolveStoreSlug?.();
+    const request =
+      this.config.authRole === 'customer' && slug
+        ? this.authService.googleLogin(idToken, slug)
+        : this.authService.googleLoginOwner(idToken);
+    request.subscribe({
       next: () => {
         this.isGoogleLoading.set(false);
         toast.success('Signed in with Google successfully');

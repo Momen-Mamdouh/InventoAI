@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
-import { AUTH_CONFIG, AuthService } from '@invento/shared-data-access-auth';
+import { AUTH_CONFIG, AuthService, resolveAuthBasePath } from '@invento/shared-data-access-auth';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
@@ -26,6 +26,9 @@ export class ResetPassword implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly config = inject(AUTH_CONFIG);
+
+  /** Resolved once per page load — see `AuthConfig.authBasePath`'s doc comment. */
+  private readonly authBasePath = resolveAuthBasePath(this.config);
 
   isLoading = signal(false);
   userEmail = '';
@@ -137,6 +140,7 @@ export class ResetPassword implements OnInit {
     }
 
     const { newPassword, confirmPassword } = this.passwordForm.value;
+    const slug = this.config.resolveStoreSlug?.();
 
     this.isLoading.set(true);
     this.authService
@@ -145,12 +149,13 @@ export class ResetPassword implements OnInit {
         otp: this.verifiedOtp,
         newPassword,
         confirmPassword,
+        ...(slug ? { storeSlug: slug } : {}),
       })
       .subscribe({
         next: (res) => {
           this.isLoading.set(false);
           toast.success(res.message || 'Password reset successfully.');
-          this.router.navigate([`${this.config.authBasePath}/login`]);
+          this.router.navigate([`${this.authBasePath}/login`]);
         },
         error: (err) => {
           this.isLoading.set(false);

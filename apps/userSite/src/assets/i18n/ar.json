@@ -151,5 +151,423 @@
   "auth_resetting": "جاري إعادة التعيين...",
   "auth_we_sent_code": "لقد أرسلنا رمز التحقق إلى",
   "auth_didnt_receive": "لم تستلم الرمز؟",
-  "auth_terms_privacy": "بالمتابعة، أنت توافق على شروط الخصوصية والخدمة الخاصة بـ Invento."
+  "auth_terms_privacy": "بالمتابعة، أنت توافق على شروط الخصوصية والخدمة الخاصة بـ Invento.",
+  "product": {
+    "card": {
+      "add_to_cart": "أضف",
+      "out_of_stock": "نفدت الكمية",
+      "toast_added": "تمت إضافة “{{title}}” إلى سلتك",
+      "toast_out_of_stock": "هذا المنتج غير متوفر حالياً.",
+      "toast_add_failed": "تعذرت إضافة المنتج إلى السلة."
+    },
+    "summary": {
+      "save": "وفر {{percentage}}%"
+    },
+    "variant": {
+      "select_option": "اختر {{name}}"
+    },
+    "accordion": {
+      "details": "تفاصيل المنتج",
+      "specifications": "المواصفات"
+    },
+    "actions": {
+      "low_stock": "تبقى {{count}} فقط في المخزون",
+      "in_stock": "متوفر",
+      "out_of_stock": "نفدت الكمية",
+      "add_to_cart": "أضف إلى السلة",
+      "toast_added": "تمت إضافة {{quantity}} × \"{{title}}\" إلى السلة!"
+    },
+    "recommended": {
+      "title": "موصى به لك",
+      "previous_slide": "الشريحة السابقة",
+      "next_slide": "الشريحة التالية"
+    },
+    "stepper": {
+      "decrease": "إنقاص الكمية",
+      "increase": "زيادة الكمية"
+    },
+    "gallery": {
+      "view_image": "عرض الصورة {{index}} من {{name}}",
+      "carousel_previous": "الصورة السابقة",
+      "carousel_next": "الصورة التالية"
+    },
+    "filters": {
+      "title": "التصنيفات",
+      "clear": "مسح",
+      "categories": "الفئات",
+      "all": "جميع {{name}}",
+      "price_range": "نطاق السعر",
+      "in_stock_only": "المتوفر فقط",
+      "empty_title": "لم يتم العثور على نتائج",
+      "empty_description": "لم نتمكن من تحميل أي عوامل تصفية لبحثك الحالي."
+    },
+    "toolbar": {
+      "items": "عناصر",
+      "search_placeholder": "ابحث عن المنتجات...",
+      "search_validation": "استمر في الكتابة... أدخل حرفين على الأقل للبحث.",
+      "searching_for": "جاري البحث عن \"{{term}}\"...",
+      "products": "المنتجات",
+      "no_products_found": "لم يتم العثور على منتجات",
+      "search_empty_desc": "لم نتمكن من العثور على أي شيء يطابق \"{{term}}\".",
+      "sort_by": "ترتيب حسب:",
+      "sort_relevance": "الصلة",
+      "sort_newest": "الأحدث",
+      "sort_price_asc": "السعر: من الأقل للأعلى",
+      "sort_price_desc": "السعر: من الأعلى للأقل",
+      "sort_title_asc": "العنوان: أ-ي",
+      "sort_title_desc": "العنوان: ي-أ"
+    },
+    "breadcrumb": {
+      "shop": "المتجر",
+      "nav_label": "مسار التصفح"
+    },
+    "products": {
+      "title": "المنتجات",
+      "did_you_mean": "نعرض نتائج <span class=\"font-bold\">{{term}}</span> بدلاً من بحثك الأصلي.",
+      "no_products": "لم يتم العثور على منتجات",
+      "no_products_desc": "حاول ضبط عوامل التصفية أو مصطلحات البحث للعثور على ما تبحث عنه.",
+      "clear_all": "مسح جميع التصنيفات"
+    },
+    "product_details": {
+      "not_found_title": "المنتج غير موجود",
+      "not_found_desc": "قد يكون هذا المنتج قد تمت إزالته أو أن الرابط غير صحيح."
+    }
+  },
+  "home": {
+    "badge": "تشكيلة جديدة",
+    "hero_fallback_title": "أهلاً بك في متجرنا",
+    "hero_fallback_subtitle": "تصفّح المجموعة واعثر على ما يناسبك.",
+    "shop_now": "تسوّق الآن",
+    "browse_all": "تصفّح الكل",
+    "categories": "الفئات",
+    "featured_products": "منتجات مميزة",
+    "view_all": "عرض الكل",
+    "about": "عن المتجر",
+    "all_categories": "عرض كل الفئات",
+    "empty_title": "لا يوجد مميز بعد",
+    "empty_description": "لم يقم هذا المتجر بتمييز أي شيء على صفحته الرئيسية بعد. الكتالوج الكامل متاح.",
+    "browse_products": "تصفّح الكتالوج",
+    "error_title": "تعذر تحميل هذا المتجر",
+    "error_message": "حدث خطأ أثناء جلب بيانات المتجر. يرجى المحاولة مرة أخرى.",
+    "retry": "أعد المحاولة",
+    "value_secure_title": "دفع آمن",
+    "value_secure_body": "تبقى بيانات طلبك ودفعك محمية.",
+    "value_orders_title": "تتبّع طلباتك",
+    "value_orders_body": "تابع كل طلب من التأكيد حتى التسليم.",
+    "value_help_title": "إجابات لأسئلتك",
+    "value_help_body": "اقرأ الأسئلة الشائعة أو اسأل المساعد."
+  },
+  "checkout": {
+    "nav": {
+      "back_to_orders": "العودة إلى طلباتي"
+    },
+    "page": {
+      "title": "إتمام الشراء",
+      "subtitle": "راجع المنتجات وأكمل بيانات التوصيل أدناه."
+    },
+    "summary": {
+      "order_items": "منتجات الطلب ({{count}})",
+      "clear_all": "إفراغ الكل",
+      "subtotal": "الإجمالي الفرعي",
+      "shipping": "الشحن",
+      "free": "مجاني",
+      "total": "الإجمالي"
+    },
+    "empty": {
+      "title": "سلتك فارغة",
+      "description": "تصفّح كتالوجنا أو أعد الطلب من سجل طلباتك السابقة.",
+      "browse_products": "تصفّح المنتجات"
+    },
+    "item": {
+      "decrease_quantity": "إنقاص الكمية",
+      "increase_quantity": "زيادة الكمية",
+      "remove_item": "إزالة المنتج"
+    },
+    "form": {
+      "contact": {
+        "heading": "بيانات المستلم والتواصل",
+        "first_name_label": "الاسم الأول *",
+        "first_name_placeholder": "الاسم الأول",
+        "last_name_label": "اسم العائلة *",
+        "last_name_placeholder": "اسم العائلة",
+        "email_label": "البريد الإلكتروني *",
+        "account_email_badge": "بريد الحساب",
+        "email_placeholder": "name@example.com",
+        "phone_label": "رقم الهاتف *",
+        "phone_placeholder": "+201001234567"
+      },
+      "address": {
+        "heading": "عنوان التوصيل",
+        "line1_label": "عنوان الشارع (السطر الأول) *",
+        "line1_placeholder": "مثال: 18 شارع طلعت حرب",
+        "line2_label": "الشقة، الدور، المبنى (اختياري)",
+        "line2_placeholder": "مثال: شقة 5، الدور 3",
+        "city_label": "المدينة *",
+        "city_placeholder": "مثال: القاهرة",
+        "governorate_label": "المحافظة (اختياري)",
+        "governorate_placeholder": "مثال: القاهرة",
+        "postal_code_label": "الرمز البريدي (اختياري)",
+        "postal_code_placeholder": "مثال: 11511",
+        "note_label": "ملاحظة الطلب / التوصيل (اختياري)",
+        "note_placeholder": "مثال: يُرجى قرع الجرس أو التسليم لأمن المبنى"
+      }
+    },
+    "payment": {
+      "heading": "طريقة الدفع",
+      "cod_label": "الدفع عند الاستلام",
+      "cod_description_prefix": "ادفع نقدًا مبلغ",
+      "cod_description_suffix": "مباشرةً لمندوب التوصيل عند استلام طلبك."
+    },
+    "actions": {
+      "placing_order": "جارٍ إتمام الطلب...",
+      "place_order": "إتمام الطلب ({{amount}})",
+      "sign_in_to_place_order": "سجّل الدخول لإتمام الطلب ({{amount}})",
+      "sign_in_note": "يُرجى تسجيل الدخول لإتمام طلبك. سيتم الاحتفاظ بمنتجات سلتك وبيانات التوصيل."
+    },
+    "errors": {
+      "first_name_required": "الاسم الأول مطلوب.",
+      "last_name_required": "اسم العائلة مطلوب.",
+      "email_invalid": "يجب إدخال بريد إلكتروني صحيح.",
+      "phone_required": "رقم الهاتف مطلوب (6 إلى 32 حرفًا).",
+      "line1_required": "عنوان الشارع مطلوب.",
+      "city_required": "المدينة مطلوبة."
+    },
+    "modal": {
+      "clear_cart_title": "إفراغ سلة التسوق؟",
+      "clear_cart_description": "هل أنت متأكد من رغبتك في إزالة جميع المنتجات من سلتك؟ ستحتاج إلى إعادة إضافتها إذا غيّرت رأيك.",
+      "keep_items": "الاحتفاظ بالمنتجات",
+      "confirm_clear": "نعم، إفراغ السلة"
+    },
+    "toast": {
+      "cart_cleared": "تم إفراغ سلتك.",
+      "cart_empty": "سلتك فارغة. يُرجى إضافة منتجات لإتمام الشراء.",
+      "guest_sign_in_prompt": "يُرجى تسجيل الدخول لإتمام طلبك. تم حفظ البيانات التي أدخلتها.",
+      "validation_error": "يُرجى استكمال جميع بيانات التوصيل المطلوبة.",
+      "order_placed": "تم إتمام الطلب رقم #{{orderNumber}} بنجاح!",
+      "order_failed": "تعذّر إتمام طلبك. يُرجى مراجعة بياناتك والمحاولة مرة أخرى.",
+      "unavailable_items": "بعض المنتجات في سلتك لم تعد متوفرة في هذا المتجر. أفرغ سلتك للمتابعة.",
+      "clear_cart_action": "إفراغ السلة"
+    }
+  },
+  "orders": {
+    "signin_title": "سجّل الدخول لعرض طلباتك",
+    "signin_desc": "يرجى تسجيل الدخول إلى حسابك لعرض مشترياتك السابقة وتتبّع الشحنات النشطة وإدارة طلباتك.",
+    "log_in": "تسجيل الدخول",
+    "error_title": "تعذّر تحميل الطلبات",
+    "try_again": "حاول مرة أخرى",
+    "empty_title": "لا توجد طلبات بعد",
+    "empty_desc": "لم تقم بأي طلب حتى الآن. بمجرد أن تطلب، ستظهر طلباتك هنا.",
+    "no_match_title": "لا توجد طلبات مطابقة",
+    "no_match_prefix": "لا توجد طلبات تطابق ",
+    "no_match_suffix": ". جرّب كلمة بحث أخرى أو أعد ضبط التصفية.",
+    "no_match_filter_desc": "لا توجد طلبات تطابق الفلتر المحدد. جرّب فلترًا آخر أو أعد ضبطه.",
+    "reset_filters": "إعادة ضبط التصفية",
+    "browse_store": "تصفّح المتجر",
+    "filters": {
+      "all": "كل الطلبات",
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكّد",
+      "shipped": "تم الشحن",
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغى"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكّد",
+      "shipped": "تم الشحن",
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغى"
+    },
+    "search_placeholder": "ابحث برقم الطلب أو المنتج...",
+    "search_aria": "البحث في الطلبات",
+    "filter_aria": "تصفية الطلبات حسب الحالة",
+    "result_count": "عرض {{count}} من أصل {{total}} طلب",
+    "hero": {
+      "badge": "الحساب • سجل الطلبات",
+      "title": "طلباتي",
+      "subtitle": "تتبّع الشحنات، واطّلع على تفاصيل الطلبات، ونزّل الإيصالات، وأدر سجل مشترياتك لحظة بلحظة.",
+      "total_orders": "إجمالي الطلبات",
+      "in_progress": "قيد التنفيذ",
+      "delivered": "تم التوصيل",
+      "total_spent": "إجمالي الإنفاق"
+    },
+    "errors": {
+      "login_required": "يرجى تسجيل الدخول لعرض طلباتك.",
+      "fetch_failed": "تعذّر جلب طلباتك. يرجى المحاولة مرة أخرى لاحقًا.",
+      "cancel_failed_fallback": "تعذّر إلغاء الطلب."
+    },
+    "card": {
+      "order_number": "طلب رقم #{{orderNumber}}",
+      "item_singular": "منتج",
+      "item_plural": "منتجات",
+      "total_amount": "إجمالي المبلغ",
+      "reorder_title": "إعادة طلب عناصر هذا الطلب",
+      "reorder": "إعادة الطلب",
+      "reordering": "جارٍ إعادة الطلب...",
+      "print_receipt_aria": "طباعة الإيصال",
+      "print_receipt_title": "طباعة الإيصال / الفاتورة",
+      "sku_label": "رمز المنتج:",
+      "quantity_label": "الكمية:",
+      "each_suffix": "للقطعة",
+      "contains_label": "يحتوي على",
+      "recipient_label": "المستلم:",
+      "placed_by_label": "تم الطلب بواسطة",
+      "cancel_order": "إلغاء الطلب",
+      "hide_details": "إخفاء تفاصيل الشحن والعنوان",
+      "view_details": "عرض التتبع والعنوان والدفع",
+      "shipment_progress": "مراحل الشحن",
+      "current_badge": "الحالية",
+      "delivery_address": "عنوان التوصيل",
+      "contact_notes": "التواصل والملاحظات",
+      "email_label": "البريد الإلكتروني:",
+      "phone_label": "الهاتف:",
+      "payment_summary": "ملخص الدفع",
+      "method_label": "الطريقة:",
+      "payment_status_label": "حالة الدفع:",
+      "subtotal_label": "الإجمالي الفرعي:",
+      "shipping_fee_label": "رسوم الشحن:",
+      "free": "مجاني",
+      "total_label": "الإجمالي:",
+      "cancel_modal_title": "إلغاء الطلب رقم #{{orderNumber}}",
+      "cancel_modal_desc": "هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء بعد التأكيد.",
+      "select_reason": "اختر سببًا:",
+      "cancel_reasons": {
+        "wrong_size": "تم طلب مقاس أو لون خاطئ",
+        "changed_mind": "غيّرت رأيي",
+        "change_address": "أحتاج إلى تغيير عنوان التوصيل",
+        "better_price": "وجدت سعرًا أفضل في مكان آخر",
+        "long_delivery": "مدة التوصيل طويلة جدًا",
+        "duplicate_order": "طلب مكرر عن طريق الخطأ"
+      },
+      "additional_details_label": "تفاصيل إضافية (اختياري، بحد أقصى 200 حرف)",
+      "additional_comments_placeholder": "أضف أي تعليقات إضافية...",
+      "optional_chars_hint": "اختياري، حتى 200 حرف",
+      "keep_order": "الإبقاء على الطلب",
+      "cancelling": "جارٍ الإلغاء...",
+      "confirm_cancellation": "تأكيد الإلغاء",
+      "timeline": {
+        "order_placed": "تم تقديم الطلب",
+        "order_cancelled": "تم إلغاء الطلب",
+        "cancelled_by_customer": "تم الإلغاء من قبل العميل",
+        "cancel_reason_prefix": "السبب:",
+        "confirmed": "تم التأكيد",
+        "shipped": "تم الشحن",
+        "delivered": "تم التوصيل"
+      },
+      "toast": {
+        "order_cancelled": "تم إلغاء الطلب رقم #{{orderNumber}}.",
+        "cancel_failed": "تعذّر إلغاء الطلب رقم #{{orderNumber}}.",
+        "load_items_failed": "تعذّر تحميل عناصر هذا الطلب.",
+        "no_variant_items": "لا توجد عناصر متاحة لإعادة الطلب.",
+        "reorder_added": "تمت إضافة عناصر الطلب إلى الدفع!",
+        "reorder_failed": "تعذّر تجهيز إعادة الطلب. يرجى المحاولة مرة أخرى.",
+        "popup_blocked": "يرجى السماح بالنوافذ المنبثقة لطباعة الإيصال."
+      },
+      "receipt": {
+        "title_prefix": "إيصال - طلب رقم #{{orderNumber}}",
+        "order_line": "طلب رقم #{{orderNumber}}",
+        "heading": "إيصال الطلب",
+        "payment_label": "الدفع:",
+        "shipping_to": "التوصيل إلى",
+        "table_item": "المنتج",
+        "table_qty": "الكمية",
+        "table_price": "السعر",
+        "table_total": "الإجمالي",
+        "subtotal": "الإجمالي الفرعي",
+        "shipping": "الشحن",
+        "free": "مجاني",
+        "total": "الإجمالي",
+        "thanks": "شكرًا لتسوقك معنا!"
+      }
+    }
+  },
+  "order_confirmed": {
+    "title": "شكرًا لطلبك!",
+    "order_number": "طلب رقم #{{orderNumber}}",
+    "confirmation_prefix": "تم إرسال تأكيد الطلب إلى",
+    "retrieving": "جارٍ استرجاع تفاصيل تأكيد الطلب...",
+    "received_processing": "تم استلام طلبك وجارٍ معالجته.",
+    "order_summary": "ملخص الطلب",
+    "qty_label": "الكمية:",
+    "each_suffix": "للقطعة",
+    "subtotal": "الإجمالي الفرعي",
+    "shipping": "الشحن",
+    "free": "مجاني",
+    "total": "الإجمالي",
+    "details_fallback": "ستظهر تفاصيل طلبك في صفحة سجل الطلبات.",
+    "order_status": "حالة الطلب",
+    "order_placed": "تم تقديم الطلب",
+    "just_now": "الآن",
+    "processing_confirmation": "المعالجة والتأكيد",
+    "pending_merchant_review": "بانتظار مراجعة المتجر",
+    "out_for_delivery": "قيد التوصيل",
+    "cash_on_delivery": "الدفع عند الاستلام",
+    "delivery_address": "عنوان التوصيل",
+    "phone_label": "الهاتف:",
+    "view_all_orders": "عرض كل طلباتي",
+    "continue_shopping": "متابعة التسوق"
+  },
+  "account_settings": {
+    "title": "إعدادات الحساب",
+    "subtitle": "إدارة ملفك الشخصي والأمان.",
+    "delete_account": "حذف الحساب",
+    "sidebar": {
+      "profile": "الملف الشخصي",
+      "security": "الأمان"
+    },
+    "profile": {
+      "photo_title": "الصورة الشخصية",
+      "photo_description": "قم برفع صورة شخصية تظهر لفريقك وعملائك.",
+      "info_title": "المعلومات الشخصية",
+      "info_description": "اسمك وبيانات التواصل المسجلة لدى Storai.",
+      "first_name": "الاسم الأول",
+      "last_name": "اسم العائلة",
+      "email": "البريد الإلكتروني",
+      "edit_notice": "تعديل الملف الشخصي غير متاح حاليًا. تواصل مع الدعم إذا احتجت لتغيير أي من هذه البيانات.",
+      "sign_in_prompt": "سجّل الدخول لعرض تفاصيل ملفك الشخصي."
+    },
+    "security": {
+      "title": "تغيير كلمة المرور",
+      "description": "استخدم كلمة مرور قوية لا تقل عن 12 حرفًا.",
+      "current_password": "كلمة المرور الحالية",
+      "current_password_placeholder": "أدخل كلمة المرور الحالية",
+      "new_password": "كلمة المرور الجديدة",
+      "new_password_placeholder": "8 أحرف على الأقل",
+      "confirm_password": "تأكيد كلمة المرور الجديدة",
+      "confirm_password_placeholder": "أعد إدخال كلمة المرور الجديدة",
+      "show_password": "إظهار كلمة المرور",
+      "hide_password": "إخفاء كلمة المرور",
+      "error_min_length": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+      "error_pattern": "يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد على الأقل.",
+      "error_mismatch": "كلمتا المرور غير متطابقتين.",
+      "submit": "تحديث كلمة المرور",
+      "submitting": "جارٍ التحديث…",
+      "toast_success": "تم تحديث كلمة المرور بنجاح",
+      "toast_error": "تعذر تحديث كلمة المرور. حاول مرة أخرى."
+    },
+    "billing": {
+      "payment_methods_title": "طرق الدفع",
+      "payment_methods_description": "حافظ على تحديث بطاقاتك واختر البطاقة المستخدمة للمشتريات القادمة.",
+      "add_card": "إضافة بطاقة",
+      "card_name": "الاسم على البطاقة",
+      "card_number": "رقم البطاقة",
+      "card_number_placeholder": "1234 5678 9012 3456",
+      "expiry": "تاريخ الانتهاء",
+      "expiry_placeholder": "شهر/سنة",
+      "cvc": "رمز التحقق CVC",
+      "cvc_placeholder": "123",
+      "billing_zip": "الرمز البريدي للفواتير",
+      "save_card": "حفظ البطاقة",
+      "cancel": "إلغاء",
+      "empty": "لا توجد طرق دفع محفوظة بعد. أضف بطاقتك الأولى للبدء.",
+      "default_badge": "افتراضية",
+      "expires": "تنتهي في {{expiry}}",
+      "set_default": "تعيين كافتراضية",
+      "remove": "إزالة",
+      "preference_title": "تفضيلات الفوترة",
+      "preference_description": "بطاقاتك المحفوظة جاهزة للاشتراكات والمشتريات القادمة.",
+      "preference_point_1": "تُستخدم طرق الدفع الافتراضية تلقائيًا لعمليات التجديد والفواتير.",
+      "preference_point_2": "يمكنك تحديث طريقتك في أي وقت يحتاج فيه حسابك لذلك."
+    }
+  }
 }

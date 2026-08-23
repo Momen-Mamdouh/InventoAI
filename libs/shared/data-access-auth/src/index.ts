@@ -1,4 +1,4 @@
-export { AUTH_CONFIG } from './lib/auth-config';
+export { AUTH_CONFIG, resolveAuthBasePath, resolveVerifyEmailRedirect } from './lib/auth-config';
 export type { AuthConfig } from './lib/auth-config';
 export type {
   User,

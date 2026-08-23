@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { AUTH_CONFIG } from './auth-config';
+import { AUTH_CONFIG, resolveAuthBasePath } from './auth-config';
 import { TokenService } from './token.service';
 import {
   AuthResponse,
@@ -415,7 +415,7 @@ export class AuthService {
   logout(): void {
     this.tokenService.clearTokens();
     this.setCurrentUser(null);
-    this.router.navigate([`${this.config.authBasePath}/login`]);
+    this.router.navigate([`${resolveAuthBasePath(this.config)}/login`]);
   }
 
   isAuthenticated(): boolean {

@@ -31,16 +31,38 @@ export interface AuthConfig {
   /** Google Identity Services client ID used to render/initiate the Google sign-in button. */
   readonly googleClientId: string;
 
-  /** Route to send the user to after a successful email verification. */
-  readonly verifyEmailRedirect: string;
+  /**
+   * Route to send the user to after a successful email verification.
+   *
+   * Same resolvable-path shape as {@link authBasePath}, for the same reason: userSite's value
+   * (`${authBasePath}/login`) is slug-scoped and only known at runtime. Read via
+   * {@link resolveVerifyEmailRedirect}.
+   */
+  readonly verifyEmailRedirect: string | (() => string);
 
   /**
    * Mount path of the five auth pages (`login`, `register`, `forgot-password`,
-   * `reset-password`, `verify-email`) within this app's router, e.g. `/auth`. Used to build
-   * in-page navigation (`routerLink`s and `router.navigate` calls) without hardcoding a path
-   * that only holds for some apps.
+   * `reset-password`, `verify-email`) within this app's router, e.g. `/auth`.
+   *
+   * invento and site-builder mount at a fixed path, so a literal string is enough. userSite's
+   * mount point is slug-scoped (`/{storeSlug}/auth`) and the slug is only known at runtime (it
+   * is resolved from the URL/host by `StoreSlugService`, a userSite-only concept the shared
+   * library must never import) — so this also accepts a zero-arg resolver function, read via
+   * {@link resolveAuthBasePath} everywhere the shared stack needs it. Phase 9 extension seam
+   * (`auth-superset.md` §Deferred); resolved by widening the type, not by forking a guard.
    */
-  readonly authBasePath: string;
+  readonly authBasePath: string | (() => string);
+
+  /**
+   * Optional resolver for the current storefront slug, supplied only by userSite. Used to:
+   * - pick `AuthService.googleLogin(idToken, slug)` over `googleLoginOwner(idToken)`
+   * - append `{ storeSlug }` to the `register`/`forgotPassword`/`resendVerification`/
+   *   `resetPassword` request bodies (`auth-superset.md`'s `extra` parameter)
+   *
+   * Absent for `'owner'`-role apps (invento, site-builder), which have no concept of a store
+   * slug — the shared code then never reaches for it.
+   */
+  readonly resolveStoreSlug?: () => string;
 
   /**
    * Selects which backend endpoint family this app's users authenticate against, and the
@@ -64,3 +86,17 @@ export interface AuthConfig {
 }
 
 export const AUTH_CONFIG = new InjectionToken<AuthConfig>('AUTH_CONFIG');
+
+function resolvePath(value: string | (() => string)): string {
+  return typeof value === 'function' ? value() : value;
+}
+
+/** Resolves {@link AuthConfig.authBasePath} to a plain string, whichever form the app supplied. */
+export function resolveAuthBasePath(config: AuthConfig): string {
+  return resolvePath(config.authBasePath);
+}
+
+/** Resolves {@link AuthConfig.verifyEmailRedirect} to a plain string, whichever form the app supplied. */
+export function resolveVerifyEmailRedirect(config: AuthConfig): string {
+  return resolvePath(config.verifyEmailRedirect);
+}

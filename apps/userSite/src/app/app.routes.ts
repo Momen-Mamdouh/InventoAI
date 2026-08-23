@@ -1,12 +1,14 @@
 import { Routes } from '@angular/router';
 
-import { authGuard, guestGuard, storeGuard } from '@invento/user-site/app/core/guards';
+import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
+import { storeGuard } from '@invento/user-site-data-access-store';
 
-import { NotFoundComponent } from '@invento/user-site/app/shared/components';
-import { NoStoreComponent } from '@invento/user-site/app/pages/no-store';
-import { StoreNotFoundComponent } from '@invento/user-site/app/pages/store-not-found';
-
-import { AuthLayout } from '@invento/user-site/app/layouts/auth-layout/auth-layout';
+import {
+  NotFoundComponent,
+  NoStoreComponent,
+  StoreNotFoundComponent,
+  AuthLayout,
+} from '@invento/user-site-ui-storefront';
 
 export const routes: Routes = [
   // No slug in the URL means no store to show. Previously this redirected to a slug baked
@@ -25,46 +27,43 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        loadComponent: () =>
-          import('@invento/user-site/app/pages/home').then((m) => m.HomeComponent),
+        loadChildren: () => import('@invento/user-site-feature-home').then((m) => m.homeRoutes),
       },
       {
         path: 'products',
-        loadComponent: () =>
-          import('@invento/user-site/app/pages/products').then((m) => m.Products),
+        loadChildren: () =>
+          import('@invento/user-site-feature-product').then((m) => m.productsListRoutes),
       },
       {
         path: 'product-details/:id',
-        loadComponent: () =>
-          import('@invento/user-site/app/pages/product-details').then((m) => m.ProductDetails),
+        loadChildren: () =>
+          import('@invento/user-site-feature-product').then((m) => m.productDetailsRoutes),
       },
       {
         path: 'checkout',
-        loadComponent: () =>
-          import('@invento/user-site/app/pages/checkout').then((m) => m.CheckoutComponent),
+        loadChildren: () =>
+          import('@invento/user-site-feature-checkout').then((m) => m.checkoutRoutes),
       },
       {
         path: 'order-confirmed',
-        loadComponent: () =>
-          import('@invento/user-site/app/pages/order-confirmed').then(
-            (m) => m.OrderConfirmedComponent,
-          ),
+        loadChildren: () =>
+          import('@invento/user-site-feature-orders').then((m) => m.orderConfirmedRoutes),
       },
       {
         path: 'faq',
-        loadComponent: () => import('@invento/user-site/app/pages/faq').then((m) => m.FaqComponent),
+        loadChildren: () => import('@invento/user-site-feature-faq').then((m) => m.faqRoutes),
       },
       {
         path: 'orders',
         canActivate: [authGuard],
-        loadComponent: () =>
-          import('@invento/user-site/app/pages/orders').then((m) => m.OrdersComponent),
+        loadChildren: () =>
+          import('@invento/user-site-feature-orders').then((m) => m.ordersListRoutes),
       },
       {
         path: 'account-settings',
         canActivate: [authGuard],
         loadChildren: () =>
-          import('@invento/user-site/app/pages/account-settings/account-settings.routes').then(
+          import('@invento/user-site-feature-account-settings').then(
             (m) => m.ACCOUNT_SETTINGS_ROUTES,
           ),
       },
@@ -75,34 +74,27 @@ export const routes: Routes = [
         children: [
           {
             path: 'login',
-            loadComponent: () =>
-              import('@invento/user-site/app/pages/auth/login/login').then((m) => m.Login),
+            loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.loginRoutes),
           },
           {
             path: 'register',
-            loadComponent: () =>
-              import('@invento/user-site/app/pages/auth/register/register').then((m) => m.Register),
+            loadChildren: () =>
+              import('@invento/shared-feature-auth').then((m) => m.registerRoutes),
           },
           {
             path: 'forgot-password',
-            loadComponent: () =>
-              import('@invento/user-site/app/pages/auth/forgot-password/forgot-password').then(
-                (m) => m.ForgotPassword,
-              ),
+            loadChildren: () =>
+              import('@invento/shared-feature-auth').then((m) => m.forgotPasswordRoutes),
           },
           {
             path: 'reset-password',
-            loadComponent: () =>
-              import('@invento/user-site/app/pages/auth/reset-password/reset-password').then(
-                (m) => m.ResetPassword,
-              ),
+            loadChildren: () =>
+              import('@invento/shared-feature-auth').then((m) => m.resetPasswordRoutes),
           },
           {
             path: 'verify-email',
-            loadComponent: () =>
-              import('@invento/user-site/app/pages/auth/verify-email/verify-email').then(
-                (m) => m.VerifyEmail,
-              ),
+            loadChildren: () =>
+              import('@invento/shared-feature-auth').then((m) => m.verifyEmailRoutes),
           },
           { path: '', redirectTo: 'login', pathMatch: 'full' },
         ],

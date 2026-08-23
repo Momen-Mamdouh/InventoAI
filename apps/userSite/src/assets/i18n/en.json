@@ -151,5 +151,423 @@
   "auth_resetting": "Resetting...",
   "auth_we_sent_code": "We've sent a verification code to",
   "auth_didnt_receive": "Didn't receive the code?",
-  "auth_terms_privacy": "By continuing, you agree to Invento's Terms of Service and Privacy Policy."
+  "auth_terms_privacy": "By continuing, you agree to Invento's Terms of Service and Privacy Policy.",
+  "product": {
+    "card": {
+      "add_to_cart": "Add",
+      "out_of_stock": "Out of Stock",
+      "toast_added": "Added “{{title}}” to your cart",
+      "toast_out_of_stock": "This product is currently out of stock.",
+      "toast_add_failed": "Could not add this product to your cart."
+    },
+    "summary": {
+      "save": "Save {{percentage}}%"
+    },
+    "variant": {
+      "select_option": "Select {{name}}"
+    },
+    "accordion": {
+      "details": "Product Details",
+      "specifications": "Specifications"
+    },
+    "actions": {
+      "low_stock": "Only {{count}} left in stock",
+      "in_stock": "In Stock",
+      "out_of_stock": "Out of Stock",
+      "add_to_cart": "Add to Cart",
+      "toast_added": "Added {{quantity}} × \"{{title}}\" to cart!"
+    },
+    "recommended": {
+      "title": "Recommended for You",
+      "previous_slide": "Previous slide",
+      "next_slide": "Next slide"
+    },
+    "stepper": {
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity"
+    },
+    "gallery": {
+      "view_image": "View image {{index}} of {{name}}",
+      "carousel_previous": "Carousel Previous",
+      "carousel_next": "Carousel Next"
+    },
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear",
+      "categories": "Categories",
+      "all": "All {{name}}",
+      "price_range": "Price Range",
+      "in_stock_only": "In Stock Only",
+      "empty_title": "No filters found",
+      "empty_description": "We couldn't load any filters for your current search."
+    },
+    "toolbar": {
+      "items": "Items",
+      "search_placeholder": "Search products...",
+      "search_validation": "Keep typing... enter at least 2 characters to search.",
+      "searching_for": "Searching for \"{{term}}\"...",
+      "products": "Products",
+      "no_products_found": "No products found",
+      "search_empty_desc": "We couldn't find anything matching \"{{term}}\".",
+      "sort_by": "Sort by:",
+      "sort_relevance": "Relevance",
+      "sort_newest": "Newest",
+      "sort_price_asc": "Price: Low to High",
+      "sort_price_desc": "Price: High to Low",
+      "sort_title_asc": "Title: A-Z",
+      "sort_title_desc": "Title: Z-A"
+    },
+    "breadcrumb": {
+      "shop": "Shop",
+      "nav_label": "Breadcrumb"
+    },
+    "products": {
+      "title": "Products",
+      "did_you_mean": "Showing results for <span class=\"font-bold\">{{term}}</span> instead of your original search.",
+      "no_products": "No products found",
+      "no_products_desc": "Try adjusting your filters or search terms to find what you're looking for.",
+      "clear_all": "Clear all filters"
+    },
+    "product_details": {
+      "not_found_title": "Product not found",
+      "not_found_desc": "This product might have been removed or the link is incorrect."
+    }
+  },
+  "home": {
+    "badge": "New Collection",
+    "hero_fallback_title": "Welcome to our store",
+    "hero_fallback_subtitle": "Browse the collection and find something you love.",
+    "shop_now": "Shop Now",
+    "browse_all": "Browse All",
+    "categories": "Categories",
+    "featured_products": "Featured Products",
+    "view_all": "View All",
+    "about": "About this store",
+    "all_categories": "See all categories",
+    "empty_title": "Nothing featured yet",
+    "empty_description": "This store has not highlighted anything on its landing page yet. The full catalogue is still available.",
+    "browse_products": "Browse the catalogue",
+    "error_title": "We could not load this store",
+    "error_message": "Something went wrong while fetching the storefront. Please try again.",
+    "retry": "Try again",
+    "value_secure_title": "Secure checkout",
+    "value_secure_body": "Your order and payment details stay protected.",
+    "value_orders_title": "Track your orders",
+    "value_orders_body": "Follow every order from confirmation to delivery.",
+    "value_help_title": "Questions answered",
+    "value_help_body": "Read the store FAQ or ask the assistant anything."
+  },
+  "checkout": {
+    "nav": {
+      "back_to_orders": "Back to My Orders"
+    },
+    "page": {
+      "title": "Checkout",
+      "subtitle": "Review the items and complete your delivery details below."
+    },
+    "summary": {
+      "order_items": "Order Items ({{count}})",
+      "clear_all": "Clear All",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "free": "Free",
+      "total": "Total"
+    },
+    "empty": {
+      "title": "Your cart is empty",
+      "description": "Browse our catalog or select reorder from your order history.",
+      "browse_products": "Browse Products"
+    },
+    "item": {
+      "decrease_quantity": "Decrease quantity",
+      "increase_quantity": "Increase quantity",
+      "remove_item": "Remove item"
+    },
+    "form": {
+      "contact": {
+        "heading": "Recipient & Contact Details",
+        "first_name_label": "First Name *",
+        "first_name_placeholder": "First name",
+        "last_name_label": "Last Name *",
+        "last_name_placeholder": "Last name",
+        "email_label": "Email Address *",
+        "account_email_badge": "Account Email",
+        "email_placeholder": "name@example.com",
+        "phone_label": "Phone Number *",
+        "phone_placeholder": "+201001234567"
+      },
+      "address": {
+        "heading": "Delivery Address",
+        "line1_label": "Street Address (Line 1) *",
+        "line1_placeholder": "e.g., 18 Talaat Harb St",
+        "line2_label": "Apartment, Suite, Building (Optional)",
+        "line2_placeholder": "e.g., Apt 5, Floor 3",
+        "city_label": "City *",
+        "city_placeholder": "e.g., Cairo",
+        "governorate_label": "Governorate (Optional)",
+        "governorate_placeholder": "e.g., Cairo",
+        "postal_code_label": "Postal Code (Optional)",
+        "postal_code_placeholder": "e.g., 11511",
+        "note_label": "Order / Delivery Note (Optional)",
+        "note_placeholder": "e.g., Please ring the bell or leave with security"
+      }
+    },
+    "payment": {
+      "heading": "Payment Method",
+      "cod_label": "Cash on Delivery (COD)",
+      "cod_description_prefix": "Pay in cash with",
+      "cod_description_suffix": "directly to the courier upon receiving your package."
+    },
+    "actions": {
+      "placing_order": "Placing Order...",
+      "place_order": "Place Order ({{amount}})",
+      "sign_in_to_place_order": "Sign in to Place Order ({{amount}})",
+      "sign_in_note": "Please sign in to place your order. Your cart items and delivery details will be preserved."
+    },
+    "errors": {
+      "first_name_required": "First name is required.",
+      "last_name_required": "Last name is required.",
+      "email_invalid": "Valid email is required.",
+      "phone_required": "Phone number is required (6-32 characters).",
+      "line1_required": "Street address is required.",
+      "city_required": "City is required."
+    },
+    "modal": {
+      "clear_cart_title": "Clear Shopping Cart?",
+      "clear_cart_description": "Are you sure you want to remove all items from your cart? You will need to re-add them if you change your mind.",
+      "keep_items": "Keep Items",
+      "confirm_clear": "Yes, Clear Cart"
+    },
+    "toast": {
+      "cart_cleared": "Your cart has been cleared.",
+      "cart_empty": "Your cart is empty. Please add items to checkout.",
+      "guest_sign_in_prompt": "Please sign in to place your order. Your entered details have been saved.",
+      "validation_error": "Please complete all required delivery details.",
+      "order_placed": "Order #{{orderNumber}} placed successfully!",
+      "order_failed": "Failed to place your order. Please check your details and try again.",
+      "unavailable_items": "Some items in your cart are no longer available in this store. Clear your cart to continue.",
+      "clear_cart_action": "Clear Cart"
+    }
+  },
+  "orders": {
+    "signin_title": "Sign in to view your orders",
+    "signin_desc": "Please log in to your account to view your past purchases, track active shipments, and manage your orders.",
+    "log_in": "Log In",
+    "error_title": "Unable to load orders",
+    "try_again": "Try Again",
+    "empty_title": "No orders yet",
+    "empty_desc": "You haven't placed any orders yet. Once you do, they'll show up here.",
+    "no_match_title": "No matching orders found",
+    "no_match_prefix": "No orders match ",
+    "no_match_suffix": ". Try another search term or reset your filters.",
+    "no_match_filter_desc": "No orders match the selected filter. Try another filter or reset it.",
+    "reset_filters": "Reset Filters",
+    "browse_store": "Browse Store",
+    "filters": {
+      "all": "All Orders",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "search_placeholder": "Search order # or item...",
+    "search_aria": "Search orders",
+    "filter_aria": "Filter orders by status",
+    "result_count": "Showing {{count}} of {{total}} orders",
+    "hero": {
+      "badge": "Account • Order History",
+      "title": "My Orders",
+      "subtitle": "Track shipments, inspect order details, download receipts, and manage your purchase history in real time.",
+      "total_orders": "Total Orders",
+      "in_progress": "In Progress",
+      "delivered": "Delivered",
+      "total_spent": "Total Spent"
+    },
+    "errors": {
+      "login_required": "Please log in to view your orders.",
+      "fetch_failed": "Failed to fetch your orders. Please try again later.",
+      "cancel_failed_fallback": "Failed to cancel order."
+    },
+    "card": {
+      "order_number": "Order #{{orderNumber}}",
+      "item_singular": "item",
+      "item_plural": "items",
+      "total_amount": "Total Amount",
+      "reorder_title": "Reorder items from this order",
+      "reorder": "Reorder",
+      "reordering": "Reordering...",
+      "print_receipt_aria": "Print Receipt",
+      "print_receipt_title": "Print Receipt / Invoice",
+      "sku_label": "SKU:",
+      "quantity_label": "Quantity:",
+      "each_suffix": "each",
+      "contains_label": "Contains",
+      "recipient_label": "Recipient:",
+      "placed_by_label": "Placed by",
+      "cancel_order": "Cancel Order",
+      "hide_details": "Hide Shipment & Address Details",
+      "view_details": "View Tracking, Address & Payment",
+      "shipment_progress": "Shipment Progress",
+      "current_badge": "Current",
+      "delivery_address": "Delivery Address",
+      "contact_notes": "Contact & Notes",
+      "email_label": "Email:",
+      "phone_label": "Phone:",
+      "payment_summary": "Payment Summary",
+      "method_label": "Method:",
+      "payment_status_label": "Payment Status:",
+      "subtotal_label": "Subtotal:",
+      "shipping_fee_label": "Shipping Fee:",
+      "free": "Free",
+      "total_label": "Total:",
+      "cancel_modal_title": "Cancel Order #{{orderNumber}}",
+      "cancel_modal_desc": "Are you sure you want to cancel this order? This action cannot be undone once confirmed.",
+      "select_reason": "Select a reason:",
+      "cancel_reasons": {
+        "wrong_size": "Ordered wrong size or color",
+        "changed_mind": "Changed my mind",
+        "change_address": "Need to change delivery address",
+        "better_price": "Found a better price elsewhere",
+        "long_delivery": "Delivery time is too long",
+        "duplicate_order": "Duplicate order by mistake"
+      },
+      "additional_details_label": "Additional details (Optional, max 200 characters)",
+      "additional_comments_placeholder": "Add any additional comments...",
+      "optional_chars_hint": "Optional, up to 200 characters",
+      "keep_order": "Keep Order",
+      "cancelling": "Cancelling...",
+      "confirm_cancellation": "Confirm Cancellation",
+      "timeline": {
+        "order_placed": "Order Placed",
+        "order_cancelled": "Order Cancelled",
+        "cancelled_by_customer": "Cancelled by customer",
+        "cancel_reason_prefix": "Reason:",
+        "confirmed": "Confirmed",
+        "shipped": "Shipped",
+        "delivered": "Delivered"
+      },
+      "toast": {
+        "order_cancelled": "Order #{{orderNumber}} has been cancelled.",
+        "cancel_failed": "Unable to cancel order #{{orderNumber}}.",
+        "load_items_failed": "Unable to load items for this order.",
+        "no_variant_items": "No available variant items found to reorder.",
+        "reorder_added": "Order items added to checkout!",
+        "reorder_failed": "Failed to prepare reorder. Please try again.",
+        "popup_blocked": "Please allow popups to print receipt."
+      },
+      "receipt": {
+        "title_prefix": "Receipt - Order #{{orderNumber}}",
+        "order_line": "Order #{{orderNumber}}",
+        "heading": "Order Receipt",
+        "payment_label": "Payment:",
+        "shipping_to": "Shipping To",
+        "table_item": "Item",
+        "table_qty": "Qty",
+        "table_price": "Price",
+        "table_total": "Total",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "free": "Free",
+        "total": "Total",
+        "thanks": "Thank you for shopping with us!"
+      }
+    }
+  },
+  "order_confirmed": {
+    "title": "Thank You for Your Order!",
+    "order_number": "Order #{{orderNumber}}",
+    "confirmation_prefix": "A confirmation has been recorded for",
+    "retrieving": "Retrieving order confirmation details...",
+    "received_processing": "Your order has been received and is being processed.",
+    "order_summary": "Order Summary",
+    "qty_label": "Qty:",
+    "each_suffix": "each",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "total": "Total",
+    "details_fallback": "Your order details will appear on your Orders history page.",
+    "order_status": "Order Status",
+    "order_placed": "Order Placed",
+    "just_now": "Just now",
+    "processing_confirmation": "Processing & Confirmation",
+    "pending_merchant_review": "Pending merchant review",
+    "out_for_delivery": "Out for Delivery",
+    "cash_on_delivery": "Cash on Delivery",
+    "delivery_address": "Delivery Address",
+    "phone_label": "Phone:",
+    "view_all_orders": "View All My Orders",
+    "continue_shopping": "Continue Shopping"
+  },
+  "account_settings": {
+    "title": "Account Settings",
+    "subtitle": "Manage your profile and security.",
+    "delete_account": "Delete Account",
+    "sidebar": {
+      "profile": "Profile",
+      "security": "Security"
+    },
+    "profile": {
+      "photo_title": "Profile Photo",
+      "photo_description": "Upload a profile photo visible to your team and customers.",
+      "info_title": "Personal Information",
+      "info_description": "Your name and contact details on file with Storai.",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email Address",
+      "edit_notice": "Profile editing isn't available yet. Reach out to support if any of these details need to change.",
+      "sign_in_prompt": "Sign in to view your profile details."
+    },
+    "security": {
+      "title": "Change Password",
+      "description": "Use a strong password at least 12 characters long.",
+      "current_password": "Current Password",
+      "current_password_placeholder": "Enter current password",
+      "new_password": "New Password",
+      "new_password_placeholder": "Min. 8 characters",
+      "confirm_password": "Confirm New Password",
+      "confirm_password_placeholder": "Repeat new password",
+      "show_password": "Show password",
+      "hide_password": "Hide password",
+      "error_min_length": "Password must be at least 8 characters.",
+      "error_pattern": "Password must contain at least one letter and one number.",
+      "error_mismatch": "Passwords do not match.",
+      "submit": "Update Password",
+      "submitting": "Updating…",
+      "toast_success": "Password updated successfully",
+      "toast_error": "Failed to update password. Please try again."
+    },
+    "billing": {
+      "payment_methods_title": "Payment Methods",
+      "payment_methods_description": "Keep your cards up to date and choose which one is used for future purchases.",
+      "add_card": "Add Card",
+      "card_name": "Name on card",
+      "card_number": "Card number",
+      "card_number_placeholder": "1234 5678 9012 3456",
+      "expiry": "Expiry",
+      "expiry_placeholder": "MM/YY",
+      "cvc": "CVC",
+      "cvc_placeholder": "123",
+      "billing_zip": "Billing ZIP",
+      "save_card": "Save card",
+      "cancel": "Cancel",
+      "empty": "No saved payment methods yet. Add your first card to get started.",
+      "default_badge": "Default",
+      "expires": "Expires {{expiry}}",
+      "set_default": "Set as default",
+      "remove": "Remove",
+      "preference_title": "Billing Preference",
+      "preference_description": "Your saved cards are ready for future subscriptions and purchases.",
+      "preference_point_1": "Default payments are used automatically for renewals and invoices.",
+      "preference_point_2": "You can update your method whenever your account needs it."
+    }
+  }
 }

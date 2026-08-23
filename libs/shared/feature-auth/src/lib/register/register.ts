@@ -13,7 +13,12 @@ import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@
 import { Router, RouterLink } from '@angular/router';
 
 import { toast } from '@spartan/helm/sonner';
-import { AUTH_CONFIG, AuthService, GoogleAuthService } from '@invento/shared-data-access-auth';
+import {
+  AUTH_CONFIG,
+  AuthService,
+  GoogleAuthService,
+  resolveAuthBasePath,
+} from '@invento/shared-data-access-auth';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
@@ -35,6 +40,9 @@ export class Register implements OnInit, AfterViewInit {
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly router = inject(Router);
   protected readonly config = inject(AUTH_CONFIG);
+
+  /** Resolved once per page load — see `AuthConfig.authBasePath`'s doc comment. */
+  protected readonly authBasePath = resolveAuthBasePath(this.config);
 
   googleBtnContainer = viewChild<ElementRef<HTMLDivElement>>('googleBtnContainer');
 
@@ -124,14 +132,16 @@ export class Register implements OnInit, AfterViewInit {
       return;
     }
 
-    const registerPayload = this.registerForm.getRawValue();
+    const formValue = this.registerForm.getRawValue();
+    const slug = this.config.resolveStoreSlug?.();
+    const registerPayload = slug ? { ...formValue, storeSlug: slug } : formValue;
 
     this.isLoading.set(true);
     this.authService.register(registerPayload).subscribe({
       next: (res) => {
         this.isLoading.set(false);
         toast.success(res.message || 'Registration successful. Please verify your email.');
-        this.router.navigate([`${this.config.authBasePath}/verify-email`], {
+        this.router.navigate([`${this.authBasePath}/verify-email`], {
           queryParams: { email: registerPayload.email },
         });
       },
@@ -156,11 +166,19 @@ export class Register implements OnInit, AfterViewInit {
 
   handleGoogleSignIn(idToken: string) {
     this.isGoogleLoading.set(true);
-    this.authService.googleLoginOwner(idToken).subscribe({
+    const slug = this.config.resolveStoreSlug?.();
+    const request =
+      this.config.authRole === 'customer' && slug
+        ? this.authService.googleLogin(idToken, slug)
+        : this.authService.googleLoginOwner(idToken);
+    request.subscribe({
       next: () => {
         this.isGoogleLoading.set(false);
         toast.success('Signed in with Google successfully');
-        this.router.navigate([this.config.postLoginRoute]);
+        const target = this.config.resolvePostAuthRoute
+          ? this.config.resolvePostAuthRoute(this.authService, this.config.postLoginRoute)
+          : this.config.postLoginRoute;
+        this.router.navigate([target]);
       },
       error: (err) => {
         this.isGoogleLoading.set(false);
