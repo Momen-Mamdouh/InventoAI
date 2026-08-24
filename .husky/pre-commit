@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+
 
 # 1. Branch Name Validation
 branch_name=$(git symbolic-ref --short HEAD 2>/dev/null)

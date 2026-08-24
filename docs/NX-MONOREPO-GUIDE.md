@@ -1,6 +1,31 @@
 # Nx Multi-App Monorepo Guide
 
-**Last updated:** July 2026
+> # ⚠️ SUPERSEDED — DO NOT FOLLOW THIS DOCUMENT
+>
+> **This describes the workspace as it was before the 2026-08 restructure. Most of it is now wrong.**
+> It is kept only as a historical record of the previous layout.
+>
+> **Current documentation → [architecture.md](./architecture.md) · [adding-code.md](./adding-code.md) · [workspace-map.md](./workspace-map.md)**
+>
+> Specifically, everything below that mentions any of the following no longer exists:
+>
+> | Referenced here                  | Reality                                                                           |
+> | -------------------------------- | --------------------------------------------------------------------------------- |
+> | `@invento/shared` umbrella       | Dissolved into ~26 individual `libs/shared/*` projects                            |
+> | `spartan-ui` bundle project      | Split into 34 per-primitive projects under `libs/ui/*`                            |
+> | `spartan-stepper-shared`         | Deleted (dead Analog-docs scaffolding, zero consumers)                            |
+> | `apps/*/src/app/features/`       | Gone — apps hold only bootstrap files now                                         |
+> | `@/*` alias                      | Retired; use `@invento/<scope>-<type>-<name>`                                     |
+> | `@/spartan/stepper`              | Now `@spartan/helm/stepper`                                                       |
+> | Root `project.json` as an orphan | It **was** site-builder; its config now lives at `apps/site-builder/project.json` |
+> | `implicitDependencies`           | Not used — Nx derives the graph from imports                                      |
+> | 8 registered projects            | **112**                                                                           |
+> | `npm test` / `npm run test:all`  | Testing is deliberately deferred workspace-wide                                   |
+>
+> The dependency-graph export in this folder (`dependency-graph.html`, `static/`) is from the same
+> era and is equally stale. Run `npx nx graph` for the live graph.
+
+**Last updated:** July 2026 (pre-restructure)
 
 ---
 

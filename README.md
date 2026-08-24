@@ -1,59 +1,81 @@
-# InventoAI
+# InventoAI — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+An Nx monorepo of **three Angular 22 applications** backed by 109 shared libraries. All three are
+server-rendered.
 
-## Development server
+| App              | What it does                                                      | Dev port |
+| ---------------- | ----------------------------------------------------------------- | -------- |
+| **site-builder** | Owners generate a store's theme, brand, and content with AI       | `4200`   |
+| **userSite**     | The generated storefront — multi-tenant, one app serves any store | `4300`   |
+| **invento**      | The admin dashboard — products, orders, suppliers, AI tools       | `4400`   |
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Start
 
 ```bash
-ng generate component component-name
+npm ci
+npm run start:all
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+That runs all three apps at once on `4200` / `4300` / `4400`. For a single app:
 
 ```bash
-ng generate --help
+npm start                 # site-builder  → http://localhost:4200
+npm run start:user        # userSite      → http://localhost:4300
+npm run start:invento     # invento       → http://localhost:4400
 ```
 
-## Building
+You will need the backend running on `:3000` for anything that touches data.
 
-To build the project run:
+## Before you push
 
 ```bash
-ng build
+npm run lint              # all 112 projects
+npm run build:all         # builds the 3 apps (only apps have a build target)
+npm run format:check
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Run **both** lint and build. ESLint does not typecheck module resolution, so lint can pass while the
+build is broken.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Read this before writing code
 
-```bash
-ng test
+The workspace has an enforced architecture: **applications are shells, all real code lives in
+`libs/`**, and every project carries `scope:` and `type:` tags that ESLint uses to decide which
+imports are legal. Putting a component in the wrong place fails lint, not review.
+
+**→ [docs/README.md](./docs/README.md)** — start here. About an hour to productive.
+
+| Then                                             | For                                        |
+| ------------------------------------------------ | ------------------------------------------ |
+| [docs/architecture.md](./docs/architecture.md)   | The structure and the boundary rules       |
+| [docs/adding-code.md](./docs/adding-code.md)     | Where your code goes, with recipes         |
+| [docs/workspace-map.md](./docs/workspace-map.md) | Which library owns what — all 112 projects |
+| [docs/traps.md](./docs/traps.md)                 | The things that will surprise you          |
+
+---
+
+## Stack
+
+Angular 22 (standalone, signals, `OnPush`) · Nx 23 · TypeScript 6 strict · Tailwind CSS v4 ·
+Spartan UI (Helm) · Express 5 SSR · i18n `en`/`ar` with RTL.
+
+## Layout
+
+```
+apps/            3 thin application shells — bootstrap, routes, config
+libs/
+  core/          legacy shared core (preview engine, theme tokens)
+  shared/        cross-app: auth, ~19 ui components, ~10 util libraries
+  invento/       admin dashboard domain
+  user-site/     storefront domain
+  site-builder/  builder domain
+  ui/            34 Spartan UI primitives, one project each
+docs/            the handbook
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Grepping `apps/` for feature code will mostly find nothing — it is not there. Use
+[docs/workspace-map.md](./docs/workspace-map.md) or `npx nx graph`.

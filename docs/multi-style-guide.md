@@ -145,7 +145,7 @@ Each class/variant file imports `HlmStyle` type from `./hlm-style`. This file ju
 
 ```typescript
 export type { HlmStyle } from '../spartan-styles';
-export type { ThemeApiResponse } from '@/app/core/interface/Preview';
+export type { ThemeApiResponse } from '@invento/shared-util-theme';
 ```
 
 ### `spartan-styles/hlm-button.variants.ts`
