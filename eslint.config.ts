@@ -152,14 +152,6 @@ export default defineConfig([
     rules: moduleBoundariesRule([]),
   },
   {
-    // TODO(phase-10): site-builder's own self-import aliases, removed once T160-T189 replace
-    // `@/*` with `@invento/site-builder/*` (T160-T161) and reduce the app to a shell. Scoped to
-    // this app's own files only — see violations.md Category B (78 + 2 occurrences).
-    files: ['apps/site-builder/**/*.ts'],
-    plugins: { '@nx': nx },
-    rules: moduleBoundariesRule(['@/**', '@invento/site-builder/**']),
-  },
-  {
     // TODO(phase-11): `libs/shared/util-mock/src/lib/mock-preview.ts` imports the `PreviewProduct`
     // and `ThemeSuggestion` *types* from `@invento/core` (`type:core`) to shape its mock data
     // literals. Originally surfaced by Phase 7 (T069) once the file was correctly tagged

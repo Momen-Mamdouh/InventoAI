@@ -1,5 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, signal, effect } from '@angular/core';
 
+/**
+ * Reconciled from site-builder's fork (T169) — its SVG "N"-mark rendering replaced the earlier
+ * stub's CSS-box version, matching the design language `ui-ai-loader` (T167) already adopted from
+ * the same source. Class and file renamed to drop the `.component` suffix (Constitution
+ * Principle 3); `LoaderComponent` -> `Loader`.
+ */
 @Component({
   selector: 'app-loader',
   templateUrl: './loader.html',

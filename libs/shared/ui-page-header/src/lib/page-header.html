@@ -11,12 +11,13 @@
     class="${hlmH1} mb-2 font-work font-bold text-3xl md:text-4xl tracking-tight"
     style="color: var(--foreground)"
   >
-    {{ title() }} <span style="color: var(--primary)">{{ accentTitle() }}</span>
+    {{ title() | translate }}
+    <span style="color: var(--primary)">{{ accentTitle() | translate }}</span>
   </h1>
 
   @if (description()) {
     <p class="${hlmP}" style="color: var(--foreground)">
-      {{ description() }}
+      {{ description() | translate }}
     </p>
   }
 </div>

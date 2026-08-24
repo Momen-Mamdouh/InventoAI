@@ -296,10 +296,13 @@ export class AuthService {
   }
 
   register(data: Record<string, unknown>): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(
-      `${this.config.apiBaseUrl}${this.endpoints.register}`,
-      data,
-    );
+    return this.http
+      .post<RegisterResponse>(`${this.config.apiBaseUrl}${this.endpoints.register}`, data)
+      .pipe(
+        tap(() => {
+          this.config.onAuthEvent?.('register');
+        }),
+      );
   }
 
   login(credentials: Record<string, unknown>): Observable<AuthResponse> {
@@ -309,6 +312,7 @@ export class AuthService {
         tap((response) => {
           this.tokenService.setTokens(response.accessToken, response.refreshToken);
           this.setCurrentUser(response.user, response.accessToken);
+          this.config.onAuthEvent?.('login');
         }),
       );
   }
@@ -327,6 +331,7 @@ export class AuthService {
           const enrichedUser = mergeGoogleProfile(response.user, googlePayload);
           this.tokenService.setTokens(response.accessToken, response.refreshToken);
           this.setCurrentUser(enrichedUser, response.accessToken);
+          this.config.onAuthEvent?.('login');
         }),
       );
   }
@@ -342,6 +347,7 @@ export class AuthService {
         tap((response) => {
           this.tokenService.setTokens(response.accessToken, response.refreshToken);
           this.setCurrentUser(response.user, response.accessToken);
+          this.config.onAuthEvent?.('login');
         }),
       );
   }
@@ -415,6 +421,7 @@ export class AuthService {
   logout(): void {
     this.tokenService.clearTokens();
     this.setCurrentUser(null);
+    this.config.onAuthEvent?.('logout');
     this.router.navigate([`${resolveAuthBasePath(this.config)}/login`]);
   }
 

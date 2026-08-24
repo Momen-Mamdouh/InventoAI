@@ -1,19 +1,24 @@
 import type { PreviewProduct } from '@invento/core';
 import type { ThemeSuggestion } from '@invento/core';
 
-export const MOCK_PREVIEW_TABS: string[] = ['Shop', 'Lookbook', 'About', 'Contact'];
+export const MOCK_PREVIEW_TABS: string[] = [
+  'preview_tab_1',
+  'preview_tab_2',
+  'preview_tab_3',
+  'preview_tab_4',
+];
 
 export const MOCK_PREVIEW_PRODUCTS: PreviewProduct[] = [
-  { name: 'Structured Overcoat', price: 380, badge: 'NEW' },
-  { name: 'Technical Tee', price: 95, badge: 'BEST-SELLER' },
-  { name: 'Utility Pant', price: 220, badge: 'PRE-ORDER' },
+  { name: 'preview_product_1', price: 380, badge: 'preview_badge_new' },
+  { name: 'preview_product_2', price: 95, badge: 'preview_badge_bestseller' },
+  { name: 'preview_product_3', price: 220, badge: 'preview_badge_preorder' },
 ];
 
 export const MOCK_THEMES: ThemeSuggestion[] = [
   {
     id: 'midnight-edge',
-    name: 'Midnight Edge',
-    description: 'Sharp, dark, and high-contrast. Built for brands that mean business.',
+    name: 'theme_midnight_edge',
+    description: 'theme_midnight_edge_desc',
     radius: '0px',
     colors: {
       background: '#0a0a0a',
@@ -30,8 +35,8 @@ export const MOCK_THEMES: ThemeSuggestion[] = [
   },
   {
     id: 'eternal-love',
-    name: 'Eternal Love',
-    description: 'Warm rose tones with soft curves. Romance meets luxury.',
+    name: 'theme_eternal_love',
+    description: 'theme_eternal_love_desc',
     radius: '16px',
     colors: {
       background: '#fff1f2',
@@ -48,8 +53,8 @@ export const MOCK_THEMES: ThemeSuggestion[] = [
   },
   {
     id: 'solar-optimism',
-    name: 'Solar Optimism',
-    description: 'Energetic amber and golden tones with welcoming rounded shapes.',
+    name: 'theme_solar_optimism',
+    description: 'theme_solar_optimism_desc',
     radius: '12px',
     colors: {
       background: '#fffbeb',
@@ -66,8 +71,8 @@ export const MOCK_THEMES: ThemeSuggestion[] = [
   },
   {
     id: 'arctic-minimal',
-    name: 'Arctic Minimal',
-    description: 'Ice-cold whites and steel blues. Clean, precise, no excess.',
+    name: 'theme_arctic_minimal',
+    description: 'theme_arctic_minimal_desc',
     radius: '4px',
     colors: {
       background: '#f8fafc',

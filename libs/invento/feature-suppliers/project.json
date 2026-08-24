@@ -1,17 +1,25 @@
 {
-  "name": "feature-suppliers",
+  "name": "invento-feature-suppliers",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/invento/feature-suppliers/src",
   "prefix": "lib",
-  "tags": ["scope:invento", "type:feature"],
+  "tags": [
+    "scope:invento",
+    "type:feature"
+  ],
   "projectType": "library",
   "// targets": "to see all targets run: nx show project feature-suppliers --web",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/invento/feature-suppliers/**/*.ts", "libs/invento/feature-suppliers/**/*.html"]
+        "lintFilePatterns": [
+          "libs/invento/feature-suppliers/**/*.ts",
+          "libs/invento/feature-suppliers/**/*.html"
+        ]
       }
     }
   }

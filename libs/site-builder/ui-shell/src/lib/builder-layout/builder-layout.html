@@ -1,0 +1,9 @@
+<app-ai-loader [isNavigating]="builderState.isNavigating()" />
+
+<div class="flex flex-col gap-6 flex-1 w-full">
+  <app-steps-bar [steps]="steps"></app-steps-bar>
+
+  <div class="bg-card text-card-foreground rounded-lg p-6 shadow-sm flex-1">
+    <router-outlet></router-outlet>
+  </div>
+</div>
