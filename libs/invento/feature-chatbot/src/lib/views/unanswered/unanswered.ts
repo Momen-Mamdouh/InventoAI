@@ -27,7 +27,7 @@ import { UnansweredResponse, UnansweredTheme } from '../../types/chat-admin.type
       lucideChevronRight,
     }),
   ],
-  templateUrl: './unanswered.component.html',
+  templateUrl: './unanswered.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnansweredComponent implements OnInit {

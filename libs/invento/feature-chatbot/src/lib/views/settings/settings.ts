@@ -31,7 +31,7 @@ import { ChatbotSettings, UpdateChatbotSettingsDto } from '../../types/chat-admi
       lucideSave,
     }),
   ],
-  templateUrl: './settings.component.html',
+  templateUrl: './settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent implements OnInit {

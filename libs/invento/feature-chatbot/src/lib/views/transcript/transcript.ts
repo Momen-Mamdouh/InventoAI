@@ -34,7 +34,7 @@ import { ChatTranscript } from '../../types/chat-admin.types';
       lucideClock,
     }),
   ],
-  templateUrl: './transcript.component.html',
+  templateUrl: './transcript.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TranscriptComponent implements OnInit {

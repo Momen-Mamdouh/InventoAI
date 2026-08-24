@@ -3,7 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BuilderState } from './builder-state';
 import { ThemeItem, ThemesApi } from './themes-api';
 import { MOCK_PREVIEW_TABS, MOCK_PREVIEW_PRODUCTS } from '@invento/shared-util-mock';
-import { ThemeSuggestion, PreviewProduct, parseThemeCss, extractPalette, extractRadius } from '@invento/core';
+import { parseThemeCss, extractPalette, extractRadius } from '@invento/core';
+import { ThemeSuggestion, PreviewProduct } from '@invento/shared-util-preview-types';
 
 /**
  * Supplies the Preview step with the store's themes.

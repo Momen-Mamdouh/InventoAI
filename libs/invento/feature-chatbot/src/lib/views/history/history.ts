@@ -46,7 +46,7 @@ import { ChatSessionsResponse } from '../../types/chat-admin.types';
       lucideChevronRight,
     }),
   ],
-  templateUrl: './history.component.html',
+  templateUrl: './history.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryComponent implements OnInit {

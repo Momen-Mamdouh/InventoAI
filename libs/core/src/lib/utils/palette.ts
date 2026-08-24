@@ -1,4 +1,4 @@
-import { ThemeSuggestion } from '../interface/Preview';
+import { ThemeSuggestion } from '@invento/shared-util-preview-types';
 
 export type PreviewPalette = ThemeSuggestion['colors'];
 

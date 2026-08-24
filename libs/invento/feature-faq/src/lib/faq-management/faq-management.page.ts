@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { FaqStore } from '@invento/invento-data-access-faq';
-import { FaqListComponent } from '../faq-list/faq-list.component';
-import { FaqFormComponent } from '../faq-form/faq-form.component';
+import { FaqListComponent } from '../faq-list/faq-list';
+import { FaqFormComponent } from '../faq-form/faq-form';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideChevronRight, lucidePlus } from '@ng-icons/lucide';

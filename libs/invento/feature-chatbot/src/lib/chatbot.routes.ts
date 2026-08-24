@@ -8,30 +8,30 @@ export const chatbotRoutes: Routes = [
       { path: '', redirectTo: 'insights', pathMatch: 'full' },
       {
         path: 'insights',
-        loadComponent: () => import('./views/insights/insights.component').then((m) => m.InsightsComponent),
+        loadComponent: () => import('./views/insights/insights').then((m) => m.InsightsComponent),
       },
       {
         path: 'settings',
-        loadComponent: () => import('./views/settings/settings.component').then((m) => m.SettingsComponent),
+        loadComponent: () => import('./views/settings/settings').then((m) => m.SettingsComponent),
       },
       {
         path: 'knowledge',
         loadComponent: () =>
-          import('./views/knowledge/knowledge.component').then((m) => m.KnowledgeComponent),
+          import('./views/knowledge/knowledge').then((m) => m.KnowledgeComponent),
       },
       {
         path: 'history',
-        loadComponent: () => import('./views/history/history.component').then((m) => m.HistoryComponent),
+        loadComponent: () => import('./views/history/history').then((m) => m.HistoryComponent),
       },
       {
         path: 'history/:id',
         loadComponent: () =>
-          import('./views/transcript/transcript.component').then((m) => m.TranscriptComponent),
+          import('./views/transcript/transcript').then((m) => m.TranscriptComponent),
       },
       {
         path: 'unanswered',
         loadComponent: () =>
-          import('./views/unanswered/unanswered.component').then((m) => m.UnansweredComponent),
+          import('./views/unanswered/unanswered').then((m) => m.UnansweredComponent),
       },
     ],
   },

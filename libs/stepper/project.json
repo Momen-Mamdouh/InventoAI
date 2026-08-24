@@ -2,12 +2,16 @@
   "name": "spartan-stepper",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "sourceRoot": "libs/stepper",
+  "sourceRoot": "libs/stepper/src",
   "prefix": "hlm",
-  "tags": [
-    "scope:shared",
-    "type:ui"
-  ],
-  "implicitDependencies": [],
-  "targets": {}
+  "tags": ["scope:shared", "type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/stepper/**/*.ts", "libs/stepper/**/*.html"]
+      }
+    }
+  }
 }

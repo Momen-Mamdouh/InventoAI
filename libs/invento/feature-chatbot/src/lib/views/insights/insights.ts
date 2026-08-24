@@ -35,7 +35,7 @@ import { RouterLink } from '@angular/router';
       lucidePackage,
     }),
   ],
-  templateUrl: './insights.component.html',
+  templateUrl: './insights.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InsightsComponent implements OnInit {
