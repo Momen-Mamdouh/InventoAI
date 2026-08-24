@@ -38,7 +38,7 @@ import { ApiErrorBody, FaqEntry, FaqStore } from '@invento/invento-data-access-f
     HlmSwitchImports,
     HlmTextareaImports,
   ],
-  templateUrl: './faq-form.component.html',
+  templateUrl: './faq-form.html',
 })
 export class FaqFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);

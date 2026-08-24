@@ -1,4 +1,5 @@
-import { ThemeSuggestion, ThemeApiResponse } from '../interface/Preview';
+import { ThemeApiResponse } from '../interface/Preview';
+import { ThemeSuggestion } from '@invento/shared-util-preview-types';
 import { parseThemeCss } from './Preview-css-parser';
 import { extractPalette, extractRadius } from './palette';
 

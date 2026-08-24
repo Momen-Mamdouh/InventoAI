@@ -27,42 +27,10 @@ export interface Palette {
   ring: string;
 }
 
-export interface PreviewProduct {
-  readonly name: string;
-  readonly price: number;
-  readonly badge: string;
-}
-
-export interface ThemeSuggestion {
-  id: string;
-  name: string;
-  description: string;
-  colors: {
-    background: string;
-    foreground: string;
-    primary: string;
-    primaryForeground: string;
-    secondary: string;
-    secondaryForeground: string;
-    accent: string;
-    destructive: string;
-    border: string;
-    ring: string;
-  };
-  darkColors?: {
-    background: string;
-    foreground: string;
-    primary: string;
-    primaryForeground: string;
-    secondary: string;
-    secondaryForeground: string;
-    accent: string;
-    destructive: string;
-    border: string;
-    ring: string;
-  };
-  radius: string;
-}
+// `PreviewProduct` and `ThemeSuggestion` moved to `@invento/shared-util-preview-types`
+// (Phase 11, T190) — a `type:util` project both `libs/shared/util-mock` (`type:util`) and
+// `libs/site-builder/data-access-builder` (`type:data-access`) may legally depend on.
+// `type:core` imports them back below where still needed internally.
 
 export type PreviewViewport = 'desktop' | 'tablet' | 'mobile';
 export type PreviewSize = 'S' | 'M' | 'L' | 'XL';

@@ -1,5 +1,4 @@
-import type { PreviewProduct } from '@invento/core';
-import type { ThemeSuggestion } from '@invento/core';
+import type { PreviewProduct, ThemeSuggestion } from '@invento/shared-util-preview-types';
 
 export const MOCK_PREVIEW_TABS: string[] = [
   'preview_tab_1',

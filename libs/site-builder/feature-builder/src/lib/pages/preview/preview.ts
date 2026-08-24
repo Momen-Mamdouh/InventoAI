@@ -26,11 +26,11 @@ import {
 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan/helm/button';
 import {
-  ThemeSuggestion,
   PreviewSize,
   PreviewViewport,
   Viewport,
 } from '@invento/core';
+import { ThemeSuggestion } from '@invento/shared-util-preview-types';
 import { ApiConfig } from '@invento/site-builder-data-access-preview';
 import { PageHeader } from '@invento/shared-ui-page-header';
 import { HlmDialogImports } from '@spartan/helm/dialog';

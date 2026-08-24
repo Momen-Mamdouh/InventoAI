@@ -5,7 +5,6 @@
   "sourceRoot": "apps/site-builder/src",
   "prefix": "app",
   "tags": ["type:app", "scope:site-builder"],
-  "implicitDependencies": ["spartan-stepper", "spartan-stepper-shared", "core"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

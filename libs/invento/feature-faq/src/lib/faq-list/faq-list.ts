@@ -7,7 +7,7 @@ import { HlmSwitchImports } from '@spartan/helm/switch';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
 import { FaqStore, type FaqEntry } from '@invento/invento-data-access-faq';
-import { FaqFormComponent } from '../faq-form/faq-form.component';
+import { FaqFormComponent } from '../faq-form/faq-form';
 
 @Component({
   selector: 'app-faq-list',
@@ -23,7 +23,7 @@ import { FaqFormComponent } from '../faq-form/faq-form.component';
     FaqFormComponent,
   ],
   providers: [provideIcons({ lucideGripVertical, lucidePencil, lucideTrash2 })],
-  templateUrl: './faq-list.component.html',
+  templateUrl: './faq-list.html',
 })
 export class FaqListComponent {
   protected readonly store = inject(FaqStore);

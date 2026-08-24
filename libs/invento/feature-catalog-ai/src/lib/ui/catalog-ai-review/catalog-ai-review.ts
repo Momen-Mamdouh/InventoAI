@@ -28,7 +28,7 @@ interface SelectableAttribute extends GeneratedAttribute {
   standalone: true,
   imports: [CommonModule, FormsModule, HlmButtonImports, HlmInputImports, HlmSelectImports, NgIcon],
   providers: [provideIcons({ lucideWand2, lucideLoader2, lucideAlertCircle, lucideCheck })],
-  templateUrl: './catalog-ai-review.component.html',
+  templateUrl: './catalog-ai-review.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogAiReviewComponent {

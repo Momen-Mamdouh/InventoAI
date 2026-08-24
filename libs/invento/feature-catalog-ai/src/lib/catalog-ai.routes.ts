@@ -4,7 +4,7 @@ export const catalogAiRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./ui/catalog-ai-review/catalog-ai-review.component').then(
+      import('./ui/catalog-ai-review/catalog-ai-review').then(
         (m) => m.CatalogAiReviewComponent,
       ),
   },

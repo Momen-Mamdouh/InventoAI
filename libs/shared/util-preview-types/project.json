@@ -1,0 +1,21 @@
+{
+  "name": "util-preview-types",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/util-preview-types/src",
+  "prefix": "lib",
+  "tags": ["scope:shared", "type:util"],
+  "projectType": "library",
+  "// targets": "to see all targets run: nx show project util-preview-types --web",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/util-preview-types/**/*.ts",
+          "libs/shared/util-preview-types/**/*.html"
+        ]
+      }
+    }
+  }
+}

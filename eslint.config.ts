@@ -97,9 +97,6 @@ function moduleBoundariesRule(allow: string[]) {
 
 export default defineConfig([
   {
-    ignores: ['libs/stepper/**', 'libs/stepper-shared/**'],
-  },
-  {
     files: ['apps/**/*.ts', 'libs/**/*.ts'],
     ignores: ['libs/ui/**', 'libs/stepper/**'],
     extends: [
@@ -132,7 +129,7 @@ export default defineConfig([
   },
   {
     // Relax rules for Spartan UI generated files
-    files: ['libs/ui/**/*.ts'],
+    files: ['libs/ui/**/*.ts', 'libs/stepper/**/*.ts'],
     extends: [...tseslint.configs.recommended, ...angular.configs.tsRecommended, prettierConfig],
     processor: angular.processInlineTemplates,
     rules: {
@@ -150,29 +147,6 @@ export default defineConfig([
     files: ['apps/**/*.ts', 'libs/**/*.ts'],
     plugins: { '@nx': nx },
     rules: moduleBoundariesRule([]),
-  },
-  {
-    // TODO(phase-11): `libs/shared/util-mock/src/lib/mock-preview.ts` imports the `PreviewProduct`
-    // and `ThemeSuggestion` *types* from `@invento/core` (`type:core`) to shape its mock data
-    // literals. Originally surfaced by Phase 7 (T069) once the file was correctly tagged
-    // `type:util` for the first time (invisible before that under the untagged `type:shared`
-    // umbrella). Phase 7b (2026-08-23) moved the i18n/theme runtime pieces that caused the other
-    // three exemption blocks that used to live here out of `@invento/core` into
-    // `@invento/shared-util-i18n`/`@invento/shared-util-theme`, which is why those three are gone —
-    // but `PreviewProduct`/`ThemeSuggestion` were deliberately left in `@invento/core` (they stay
-    // "Preview types" per that phase's brief) because moving them has an unreviewed blast radius:
-    // `libs/core/src/lib/utils/theme-suggestion-converter.ts` and `Preview-css-parser.ts` also
-    // touch the `Preview.ts` interface file these two live in. The real fix is still moving those
-    // two Preview types into a `type:util` library both sides may depend on; no existing task
-    // covers that move. This mock data has no consumer in `libs/shared` today (site-builder's own
-    // `preview-data-client.ts` and `preview.spec.ts` import their own local fork via
-    // `@/app/shared/mock/mock-preview`, reconciled separately in Phase 10 at T180) — recorded here
-    // and in violations.md.
-    //
-    // Scoped to this one project's files. 2 occurrences: mock-preview.ts.
-    files: ['libs/shared/util-mock/**/*.ts'],
-    plugins: { '@nx': nx },
-    rules: moduleBoundariesRule(['@invento/core']),
   },
   {
     files: ['**/*.html'],

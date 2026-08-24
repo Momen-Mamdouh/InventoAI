@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "@spartan/helm/stepper": ["./libs/stepper/lib/index.ts"],
+      "@spartan/helm/stepper": ["./libs/stepper/src/index.ts"],
       "@spartan/helm/navigation-menu": ["./libs/ui/navigation-menu/src/index.ts"],
       "@spartan/helm/utils": ["./libs/ui/utils/src/index.ts"],
       "@spartan/helm/button": ["./libs/ui/button/src/index.ts"],
@@ -62,6 +62,7 @@
       "@invento/shared-util-ssr": ["./libs/shared/util-ssr/src/index.ts"],
       "@invento/shared-util-i18n": ["./libs/shared/util-i18n/src/index.ts"],
       "@invento/shared-util-theme": ["./libs/shared/util-theme/src/index.ts"],
+      "@invento/shared-util-preview-types": ["./libs/shared/util-preview-types/src/index.ts"],
       "@invento/shared-ui-ai-loader": ["./libs/shared/ui-ai-loader/src/index.ts"],
       "@invento/shared-ui-steps-bar": ["./libs/shared/ui-steps-bar/src/index.ts"],
       "@invento/shared-ui-page-header": ["./libs/shared/ui-page-header/src/index.ts"],

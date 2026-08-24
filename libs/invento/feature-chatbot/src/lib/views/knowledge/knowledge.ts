@@ -32,7 +32,7 @@ import { KnowledgeStatus } from '../../types/chat-admin.types';
       lucideMessageCircleQuestionMark,
     }),
   ],
-  templateUrl: './knowledge.component.html',
+  templateUrl: './knowledge.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KnowledgeComponent implements OnInit {
