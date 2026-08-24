@@ -13,7 +13,7 @@ import { Directionality, type Direction } from '@angular/cdk/bidi';
 import { LocaleService, TRANSLATION_LOADER } from '@invento/shared-util-i18n';
 import type { Locale } from '@invento/shared-util-i18n';
 import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
-import { StoreSlugService } from '@invento/user-site-data-access-store';
+import { StoreSlugService, normalizeSlug } from '@invento/user-site-data-access-store';
 import { environment } from '../environments/environment';
 import en from '../assets/i18n/en.json';
 import ar from '../assets/i18n/ar.json';
@@ -69,7 +69,8 @@ export const appConfig: ApplicationConfig = {
               .split('#')[0]
               .split('/')
               .filter(Boolean);
-            if (first) return first;
+            const normalized = normalizeSlug(first);
+            if (normalized) return normalized;
           }
           return storeSlugService.slug();
         };

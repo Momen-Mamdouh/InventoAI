@@ -2,6 +2,7 @@ import { DOCUMENT, Injectable, REQUEST, computed, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
+import { normalizeSlug } from './normalize-slug';
 
 /**
  * Hostnames that never carry a store subdomain, so their first label must not be
@@ -23,7 +24,7 @@ function slugFromHost(host: string): string {
   if (labels.length < 3) return '';
 
   const candidate = labels[0];
-  return NON_TENANT_LABELS.has(candidate) ? '' : candidate;
+  return NON_TENANT_LABELS.has(candidate) ? '' : normalizeSlug(candidate);
 }
 
 /**
@@ -73,6 +74,6 @@ export class StoreSlugService {
   readonly slug = computed(() => {
     if (this.hostSlug) return this.hostSlug;
     const clean = this.currentUrl().split('?')[0].split('#')[0];
-    return clean.split('/').filter(Boolean)[0] ?? '';
+    return normalizeSlug(clean.split('/').filter(Boolean)[0]);
   });
 }
