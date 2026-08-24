@@ -1,17 +1,25 @@
 {
-  "name": "feature-faq",
+  "name": "invento-feature-faq",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/invento/feature-faq/src",
   "prefix": "lib",
-  "tags": ["scope:invento", "type:feature"],
+  "tags": [
+    "scope:invento",
+    "type:feature"
+  ],
   "projectType": "library",
   "// targets": "to see all targets run: nx show project feature-faq --web",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/invento/feature-faq/**/*.ts", "libs/invento/feature-faq/**/*.html"]
+        "lintFilePatterns": [
+          "libs/invento/feature-faq/**/*.ts",
+          "libs/invento/feature-faq/**/*.html"
+        ]
       }
     }
   }

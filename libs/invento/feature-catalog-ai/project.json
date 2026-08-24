@@ -1,17 +1,25 @@
 {
-  "name": "feature-catalog-ai",
+  "name": "invento-feature-catalog-ai",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/invento/feature-catalog-ai/src",
   "prefix": "lib",
-  "tags": ["scope:invento", "type:feature"],
+  "tags": [
+    "scope:invento",
+    "type:feature"
+  ],
   "projectType": "library",
   "// targets": "to see all targets run: nx show project feature-catalog-ai --web",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/invento/feature-catalog-ai/**/*.ts", "libs/invento/feature-catalog-ai/**/*.html"]
+        "lintFilePatterns": [
+          "libs/invento/feature-catalog-ai/**/*.ts",
+          "libs/invento/feature-catalog-ai/**/*.html"
+        ]
       }
     }
   }

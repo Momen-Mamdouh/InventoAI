@@ -6,152 +6,46 @@
       [class]="hlmUl"
       class="z-10 relative flex md:flex-wrap justify-between md:justify-center items-start md:items-center gap-y-4 md:gap-2 lg:gap-6 w-full font-medium text-sm"
     >
-      <li class="flex md:flex-row flex-col flex-1 md:flex-none items-center md:gap-2 lg:gap-3">
-        <a
-          routerLink="/build"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          #rlaBrain="routerLinkActive"
-          class="z-10 flex md:flex-row flex-col items-center gap-1.5 md:gap-2 bg-card md:bg-transparent md:px-3 md:py-1.5 border rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all duration-200"
-          [ngClass]="
-            rlaBrain.isActive
-              ? 'border-transparent md:border-primary/50 md:bg-primary/10'
-              : 'border-transparent md:hover:bg-muted/50'
-          "
-        >
-          <span
-            class="flex justify-center items-center rounded-full ring-8 ring-card md:ring-0 w-8 md:w-5 h-8 md:h-5 font-bold text-xs transition-all duration-300 shrink-0"
+      @for (step of steps(); track step.id; let i = $index, isLast = $last) {
+        <li class="flex md:flex-row flex-col flex-1 md:flex-none items-center md:gap-2 lg:gap-3">
+          <a
+            [routerLink]="step.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            #rla="routerLinkActive"
+            class="z-10 flex md:flex-row flex-col items-center gap-1.5 md:gap-2 bg-card md:bg-transparent md:px-3 md:py-1.5 border rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all duration-200"
             [ngClass]="
-              rlaBrain.isActive
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_var(--primary)] border-none'
-                : 'bg-muted text-muted-foreground border border-border md:border-none md:bg-muted'
+              rla.isActive
+                ? 'border-transparent md:border-primary/50 md:bg-primary/10'
+                : 'border-transparent md:hover:bg-muted/50'
             "
           >
-            1
-          </span>
-          <span
-            class="text-[10px] sm:text-xs md:text-sm text-center whitespace-nowrap transition-colors"
-            [ngClass]="
-              rlaBrain.isActive
-                ? 'text-foreground md:text-primary'
-                : 'text-muted-foreground md:hover:text-foreground'
-            "
-          >
-            Brainstorm
-          </span>
-        </a>
-        <span class="hidden md:block ml-1 lg:ml-3 font-normal text-muted">❯</span>
-      </li>
-
-      <li class="flex md:flex-row flex-col flex-1 md:flex-none items-center md:gap-2 lg:gap-3">
-        <a
-          routerLink="/build"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          #rlaInterview="routerLinkActive"
-          class="z-10 flex md:flex-row flex-col items-center gap-1.5 md:gap-2 bg-card md:bg-transparent md:px-3 md:py-1.5 border rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all duration-200"
-          [ngClass]="
-            rlaInterview.isActive
-              ? 'border-transparent md:border-primary/50 md:bg-primary/10'
-              : 'border-transparent md:hover:bg-muted/50'
-          "
-        >
-          <span
-            class="flex justify-center items-center rounded-full ring-8 ring-card md:ring-0 w-8 md:w-5 h-8 md:h-5 font-bold text-xs transition-all duration-300 shrink-0"
-            [ngClass]="
-              rlaInterview.isActive
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_var(--primary)] border-none'
-                : 'bg-muted text-muted-foreground border border-border md:border-none md:bg-muted'
-            "
-          >
-            2
-          </span>
-          <span
-            class="text-[10px] sm:text-xs md:text-sm text-center whitespace-nowrap transition-colors"
-            [ngClass]="
-              rlaInterview.isActive
-                ? 'text-foreground md:text-primary'
-                : 'text-muted-foreground md:hover:text-foreground'
-            "
-          >
-            AI Interview
-          </span>
-        </a>
-        <span class="hidden md:block ml-1 lg:ml-3 font-normal text-muted">❯</span>
-      </li>
-
-      <li class="flex md:flex-row flex-col flex-1 md:flex-none items-center md:gap-2 lg:gap-3">
-        <a
-          routerLink="/build"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          #rlaPreview="routerLinkActive"
-          class="z-10 flex md:flex-row flex-col items-center gap-1.5 md:gap-2 bg-card md:bg-transparent md:px-3 md:py-1.5 border rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all duration-200"
-          [ngClass]="
-            rlaPreview.isActive
-              ? 'border-transparent md:border-primary/50 md:bg-primary/10'
-              : 'border-transparent md:hover:bg-muted/50'
-          "
-        >
-          <span
-            class="flex justify-center items-center rounded-full ring-8 ring-card md:ring-0 w-8 md:w-5 h-8 md:h-5 font-bold text-xs transition-all duration-300 shrink-0"
-            [ngClass]="
-              rlaPreview.isActive
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_var(--primary)] border-none'
-                : 'bg-muted text-muted-foreground border border-border md:border-none md:bg-muted'
-            "
-          >
-            3
-          </span>
-          <span
-            class="text-[10px] sm:text-xs md:text-sm text-center whitespace-nowrap transition-colors"
-            [ngClass]="
-              rlaPreview.isActive
-                ? 'text-foreground md:text-primary'
-                : 'text-muted-foreground md:hover:text-foreground'
-            "
-          >
-            Preview
-          </span>
-        </a>
-        <span class="hidden md:block ml-1 lg:ml-3 font-normal text-muted">❯</span>
-      </li>
-
-      <li class="flex md:flex-row flex-col flex-1 md:flex-none items-center md:gap-2 lg:gap-3">
-        <a
-          routerLink="/build"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          #rlaValidation="routerLinkActive"
-          class="z-10 flex md:flex-row flex-col items-center gap-1.5 md:gap-2 bg-card md:bg-transparent md:px-3 md:py-1.5 border rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all duration-200"
-          [ngClass]="
-            rlaValidation.isActive
-              ? 'border-transparent md:border-primary/50 md:bg-primary/10'
-              : 'border-transparent md:hover:bg-muted/50'
-          "
-        >
-          <span
-            class="flex justify-center items-center rounded-full ring-8 ring-card md:ring-0 w-8 md:w-5 h-8 md:h-5 font-bold text-xs transition-all duration-300 shrink-0"
-            [ngClass]="
-              rlaValidation.isActive
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_var(--primary)] border-none'
-                : 'bg-muted text-muted-foreground border border-border md:border-none md:bg-muted'
-            "
-          >
-            4
-          </span>
-          <span
-            class="text-[10px] sm:text-xs md:text-sm text-center whitespace-nowrap transition-colors"
-            [ngClass]="
-              rlaValidation.isActive
-                ? 'text-foreground md:text-primary'
-                : 'text-muted-foreground md:hover:text-foreground'
-            "
-          >
-            Validation
-          </span>
-        </a>
-      </li>
+            <span
+              class="flex justify-center items-center rounded-full ring-8 ring-card md:ring-0 w-8 md:w-5 h-8 md:h-5 font-bold text-xs transition-all duration-300 shrink-0"
+              [ngClass]="
+                rla.isActive
+                  ? 'bg-primary text-primary-foreground shadow-[0_0_12px_var(--primary)] border-none'
+                  : 'bg-muted text-muted-foreground border border-border md:border-none md:bg-muted'
+              "
+            >
+              {{ i + 1 }}
+            </span>
+            <span
+              class="text-[10px] sm:text-xs md:text-sm text-center whitespace-nowrap transition-colors"
+              [ngClass]="
+                rla.isActive
+                  ? 'text-foreground md:text-primary'
+                  : 'text-muted-foreground md:hover:text-foreground'
+              "
+            >
+              {{ step.labelKey | translate }}
+            </span>
+          </a>
+          @if (!isLast) {
+            <span class="hidden md:block ml-1 lg:ml-3 font-normal text-muted">❯</span>
+          }
+        </li>
+      }
     </ul>
   </div>
 </div>

@@ -83,6 +83,22 @@ export interface AuthConfig {
     authService: { getStoreSlug(): string | null },
     fallback: string,
   ) => string;
+
+  /**
+   * Optional lifecycle hook fired after a successful register, login (credentials or Google), or
+   * logout — before any navigation happens. Lets an app react to a session change (reset
+   * feature-scoped state, prime data that depends on the new token, ...) without the shared auth
+   * stack ever importing that app's code or branching on which app is running.
+   *
+   * Phase 10 extension seam (`auth-superset.md` §Deferred item 2): site-builder's
+   * `BuilderState.reset()`/`.loadQuestions()` used to be called straight from a site-builder-local
+   * `AuthService`. Porting that call into this shared library would mean `shared` importing
+   * `BuilderState` — a `type:data-access` library reaching into a `scope:site-builder` feature,
+   * inverting the dependency direction. Site-builder instead supplies this hook from its own
+   * `app.config.ts` and does the reset/reload there. Absent for apps with no such reaction
+   * (invento, userSite today).
+   */
+  readonly onAuthEvent?: (event: 'register' | 'login' | 'logout') => void;
 }
 
 export const AUTH_CONFIG = new InjectionToken<AuthConfig>('AUTH_CONFIG');

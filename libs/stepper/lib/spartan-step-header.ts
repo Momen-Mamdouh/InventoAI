@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideCircleAlert, lucidePencil } from '@ng-icons/lucide';
-import { HlmStyleService } from '@/spartan/styles'; // adjust path
+import { HlmStyleService } from '@spartan/styles';
 import { buttonVariantsByStyle } from '@spartan/styles';
 import type { HlmStyle } from '@spartan/styles';
 import { SpartanStepLabel } from './spartan-step-label';

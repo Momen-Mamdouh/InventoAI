@@ -9,9 +9,7 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "@/*": ["./apps/site-builder/src/*"],
-      "@/spartan/stepper": ["./libs/stepper/lib"],
-      "@/spartan/styles": ["./libs/ui/utils/src/lib/spartan-styles"],
+      "@spartan/helm/stepper": ["./libs/stepper/lib/index.ts"],
       "@spartan/helm/navigation-menu": ["./libs/ui/navigation-menu/src/index.ts"],
       "@spartan/helm/utils": ["./libs/ui/utils/src/index.ts"],
       "@spartan/helm/button": ["./libs/ui/button/src/index.ts"],
@@ -69,7 +67,6 @@
       "@invento/shared-ui-page-header": ["./libs/shared/ui-page-header/src/index.ts"],
       "@invento/shared-ui-loader": ["./libs/shared/ui-loader/src/index.ts"],
       "@invento/shared-ui-container-width": ["./libs/shared/ui-container-width/src/index.ts"],
-      "@invento/shared-ui-home-components": ["./libs/shared/ui-home-components/src/index.ts"],
       "@invento/shared-ui-empty-state": ["./libs/shared/ui-empty-state/src/index.ts"],
       "@invento/shared-ui-brand-logo": ["./libs/shared/ui-brand-logo/src/index.ts"],
       "@invento/shared-ui-color-swatch": ["./libs/shared/ui-color-swatch/src/index.ts"],
@@ -134,7 +131,16 @@
         "./libs/user-site/feature-account-settings/src/index.ts"
       ],
       "@invento/user-site-feature-home": ["./libs/user-site/feature-home/src/index.ts"],
-      "@invento/user-site-ui-storefront": ["./libs/user-site/ui-storefront/src/index.ts"]
+      "@invento/user-site-ui-storefront": ["./libs/user-site/ui-storefront/src/index.ts"],
+      "@invento/site-builder-data-access-preview": [
+        "./libs/site-builder/data-access-preview/src/index.ts"
+      ],
+      "@invento/site-builder-data-access-builder": [
+        "./libs/site-builder/data-access-builder/src/index.ts"
+      ],
+      "@invento/site-builder-feature-builder": ["./libs/site-builder/feature-builder/src/index.ts"],
+      "@invento/site-builder-ui-shell": ["./libs/site-builder/ui-shell/src/index.ts"],
+      "@invento/site-builder-feature-home": ["./libs/site-builder/feature-home/src/index.ts"]
     }
   }
 }
