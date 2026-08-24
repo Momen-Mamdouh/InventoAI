@@ -6,6 +6,7 @@
     "start": "nx serve site-builder -p 4200",
     "start:user": "nx serve userSite -p 4300",
     "start:invento": "nx serve invento -p 4400",
+    "start:all": "nx run-many -t serve --projects=site-builder,userSite,invento",
     "build": "nx build site-builder",
     "build:all": "nx run-many -t build",
     "test": "nx test site-builder",
