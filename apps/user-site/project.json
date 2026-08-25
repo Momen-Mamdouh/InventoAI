@@ -1,9 +1,9 @@
 {
-  "name": "userSite",
+  "name": "user-site",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "apps/userSite/src",
+  "sourceRoot": "apps/user-site/src",
   "tags": ["type:app", "scope:user-site"],
   "targets": {
     "build": {
@@ -11,19 +11,19 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/userSite",
-        "browser": "apps/userSite/src/main.ts",
-        "tsConfig": "apps/userSite/tsconfig.app.json",
+        "outputPath": "dist/apps/user-site",
+        "browser": "apps/user-site/src/main.ts",
+        "tsConfig": "apps/user-site/tsconfig.app.json",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/userSite/public"
+            "input": "apps/user-site/public"
           }
         ],
-        "styles": ["apps/userSite/src/styles.css"],
-        "server": "apps/userSite/src/main.server.ts",
+        "styles": ["apps/user-site/src/styles.css"],
+        "server": "apps/user-site/src/main.server.ts",
         "ssr": {
-          "entry": "apps/userSite/src/server.ts"
+          "entry": "apps/user-site/src/server.ts"
         },
         "outputMode": "server"
       },
@@ -59,10 +59,10 @@
       },
       "configurations": {
         "production": {
-          "buildTarget": "userSite:build:production"
+          "buildTarget": "user-site:build:production"
         },
         "development": {
-          "buildTarget": "userSite:build:development"
+          "buildTarget": "user-site:build:development"
         }
       }
     },
@@ -70,8 +70,8 @@
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "userSite:build",
-        "staticFilePath": "dist/apps/userSite/browser",
+        "buildTarget": "user-site:build",
+        "staticFilePath": "dist/apps/user-site/browser",
         "spa": true
       }
     },
@@ -79,7 +79,7 @@
       "executor": "@angular-eslint/builder:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/userSite/src/**/*.ts", "apps/userSite/src/**/*.html"]
+        "lintFilePatterns": ["apps/user-site/src/**/*.ts", "apps/user-site/src/**/*.html"]
       }
     }
   }

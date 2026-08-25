@@ -6,7 +6,7 @@ server-rendered.
 | App                 | What it does                                                      | Dev port |
 | ------------------- | ----------------------------------------------------------------- | -------- |
 | **site-builder**    | Owners generate a store's theme, brand, and content with AI       | `4200`   |
-| **userSite**        | The generated storefront — multi-tenant, one app serves any store | `4300`   |
+| **user-site**       | The generated storefront — multi-tenant, one app serves any store | `4300`   |
 | **owner-dashboard** | The admin dashboard — products, orders, suppliers, AI tools       | `4400`   |
 
 ---
@@ -21,9 +21,9 @@ npm run start:all
 That runs all three apps at once on `4200` / `4300` / `4400`. For a single app:
 
 ```bash
-npm start                 # site-builder  → http://localhost:4200
-npm run start:user        # userSite      → http://localhost:4300
-npm run start:owner-dashboard  # owner-dashboard → http://localhost:4400
+npm start                        # site-builder      → http://localhost:4200
+npm run start:user-site          # user-site        → http://localhost:4300
+npm run start:owner-dashboard    # owner-dashboard  → http://localhost:4400
 ```
 
 You will need the backend running on `:3000` for anything that touches data.

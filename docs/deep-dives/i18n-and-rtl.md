@@ -21,7 +21,7 @@ Each app owns its own dictionaries. There is no shared translation file.
 | --------------- | --------------------------------------------------- | ---------- |
 | owner-dashboard | `apps/owner-dashboard/src/assets/i18n/{en,ar}.json` | 217        |
 | site-builder    | `apps/site-builder/src/assets/i18n/{en,ar}.json`    | 354        |
-| userSite        | `apps/userSite/src/assets/i18n/{en,ar}.json`        | 573        |
+| user-site       | `apps/user-site/src/assets/i18n/{en,ar}.json`       | 573        |
 
 **`en.json` and `ar.json` must stay line-for-line symmetric.** All three pairs currently are. A key
 present in one and missing from the other is a silent bug: `translate()` falls back to returning the
@@ -141,7 +141,7 @@ express — an icon that must mirror, a directional chevron:
 Angular CDK's `Directionality` resolves the document direction **once, in its constructor**, and
 never re-checks it — there is no observer on `documentElement.dir`. Plain CSS (`:dir()`, logical
 properties) picks up a live switch immediately; CDK-driven overlays do not, unless something
-explicitly pushes the new value into CDK. `apps/userSite/src/app/app.config.ts` carries a comment
+explicitly pushes the new value into CDK. `apps/user-site/src/app/app.config.ts` carries a comment
 block explaining how this is handled there — read it before debugging a popover that opens on the
 wrong side after a language switch.
 
@@ -154,7 +154,7 @@ wrong side after a language switch.
 3. Confirm the pair is still symmetric:
 
    ```bash
-   node -e "const a=require('./apps/userSite/src/assets/i18n/en.json'),b=require('./apps/userSite/src/assets/i18n/ar.json');const ka=Object.keys(a),kb=Object.keys(b);console.log(ka.length,kb.length,JSON.stringify(ka.filter(k=>!kb.includes(k))))"
+   node -e "const a=require('./apps/user-site/src/assets/i18n/en.json'),b=require('./apps/user-site/src/assets/i18n/ar.json');const ka=Object.keys(a),kb=Object.keys(b);console.log(ka.length,kb.length,JSON.stringify(ka.filter(k=>!kb.includes(k))))"
    ```
 
 4. Switch to Arabic in the running app and check the layout, not just the text.

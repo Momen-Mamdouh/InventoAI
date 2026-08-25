@@ -53,10 +53,10 @@ Hardcoded colors do not respond to dark mode and do not respond to a store's gen
 | App                 | `src/styles.css`                                                                       |
 | ------------------- | -------------------------------------------------------------------------------------- |
 | **site-builder**    | 9 lines — Tailwind entry + `@import '../../../libs/core/src/styles/spartan-theme.css'` |
-| **userSite**        | 19 lines — the same import, plus a `scrollbar-gutter` rule                             |
+| **user-site**       | 19 lines — the same import, plus a `scrollbar-gutter` rule                             |
 | **owner-dashboard** | **358 lines — a fully inlined copy. It does not import the shared file at all.**       |
 
-So a token you add to the shared file reaches site-builder and userSite, and **does not reach
+So a token you add to the shared file reaches site-builder and user-site, and **does not reach
 owner-dashboard**. When you touch theme tokens, edit all three.
 
 Measured drift today: owner-dashboard's copy is missing exactly **8 tokens** the shared file has —
@@ -64,13 +64,13 @@ Measured drift today: owner-dashboard's copy is missing exactly **8 tokens** the
 counterparts. Nothing in `libs/owner-dashboard/**` currently uses them, so this is latent rather than a live
 bug — but `bg-success` in an owner-dashboard template would render as nothing.
 
-> A comment in `apps/userSite/src/styles.css` claims "invento also imports that file". It does not.
+> A comment in `apps/user-site/src/styles.css` claims "invento also imports that file". It does not.
 
 ### Per-store runtime theming
 
 Storefronts get their palette from the backend, not from the token file.
 `@invento/shared-util-theme` exposes `buildStoreThemeCss()` alongside the light/dark `ThemeService`,
-and userSite's `StoreThemeService` (`@invento/user-site-data-access-store`) applies it. A store's
+and user-site's `StoreThemeService` (`@invento/user-site-data-access-store`) applies it. A store's
 brand colors are data, so they are injected at runtime rather than compiled in.
 
 ---

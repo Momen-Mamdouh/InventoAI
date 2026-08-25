@@ -210,7 +210,7 @@ export type { WishlistItem } from './lib/wishlist.model';
 ```bash
 npx nx reset                                    # alias changes need a cold graph
 npx nx lint user-site-data-access-wishlist
-npx nx build userSite
+npx nx build user-site
 npx nx show projects --affected                 # should list the new lib + its consumers only
 ```
 

@@ -25,7 +25,7 @@ lint error you cannot merge past.
 | App                 | What it is              | Port   | Serve                           | Source                     |
 | ------------------- | ----------------------- | ------ | ------------------------------- | -------------------------- |
 | **site-builder**    | Theme/brand generator   | `4200` | `npm start`                     | `apps/site-builder/src`    |
-| **userSite**        | Multi-tenant storefront | `4300` | `npm run start:user`            | `apps/userSite/src`        |
+| **user-site**       | Multi-tenant storefront | `4300` | `npm run start:user-site`       | `apps/user-site/src`       |
 | **owner-dashboard** | Admin dashboard         | `4400` | `npm run start:owner-dashboard` | `apps/owner-dashboard/src` |
 
 All three run **at once** with `npm run start:all` — each `serve` target declares its own port and
@@ -36,7 +36,7 @@ How thin "thin" actually is:
 | App             | TS lines in `apps/*/src` | What lives in `src/app/`                                                  |
 | --------------- | ------------------------ | ------------------------------------------------------------------------- |
 | site-builder    | 309                      | bootstrap only (`app.ts`, `app.config.ts`, `app.routes.ts`, …)            |
-| userSite        | 424                      | bootstrap only                                                            |
+| user-site       | 424                      | bootstrap only                                                            |
 | owner-dashboard | 447                      | bootstrap + 2 guards + 3 trivial pages (`no-store`, `not-found`, `users`) |
 
 If you are about to add a component to `apps/`, stop. It almost certainly belongs in a library. An
@@ -56,7 +56,7 @@ Every project carries **exactly one `scope:` tag and exactly one `type:` tag**. 
 | ----------------------- | --------------------------------------------------------- | ----------------------------------------------------- | -------- |
 | `scope:shared`          | `libs/shared/*`, `libs/ui/*`, `libs/stepper`, `libs/core` | Usable by any app. May not depend on any app's scope. | 67       |
 | `scope:owner-dashboard` | `libs/owner-dashboard/*` + `apps/owner-dashboard`         | Admin-dashboard domain                                | 25       |
-| `scope:user-site`       | `libs/user-site/*` + `apps/userSite`                      | Storefront domain                                     | 14       |
+| `scope:user-site`       | `libs/user-site/*` + `apps/user-site`                     | Storefront domain                                     | 14       |
 | `scope:site-builder`    | `libs/site-builder/*` + `apps/site-builder`               | Builder domain                                        | 6        |
 
 ### `type:` — what kind of thing it is
@@ -106,7 +106,7 @@ Read it as a ladder: **app → feature → data-access → util**. Nothing may i
 | **`scope:site-builder`**    |   ✅   |        ✗        |     ✗     |      ✅      |
 
 Plainly: **each app's scope sees itself plus `shared`, and nothing else.** `shared` sees only
-`shared`. userSite cannot import owner-dashboard code; shared cannot import any app's code.
+`shared`. user-site cannot import owner-dashboard code; shared cannot import any app's code.
 
 ### When you hit a boundary error
 
@@ -168,7 +168,7 @@ scope:user-site      + type:feature     + checkout →  @invento/user-site-featu
 
 Spartan UI primitives use `@spartan/helm/<name>`; their style data lives at `@spartan/styles`. Each
 app can import its own files via `@invento/<app>/*` (e.g. `@invento/user-site/*` →
-`apps/userSite/src/*`) — that exemption is scoped to that app's own directory and cannot leak to
+`apps/user-site/src/*`) — that exemption is scoped to that app's own directory and cannot leak to
 another project.
 
 There are **115 aliases** registered in `tsconfig.base.json` (77 `@invento/*`, 38 `@spartan/*`).
@@ -227,7 +227,7 @@ comment there before copying the pattern.
 Adding a product to the cart on the storefront:
 
 ```
-apps/userSite/src/app/app.routes.ts             type:app           (URL → feature)
+apps/user-site/src/app/app.routes.ts            type:app           (URL → feature)
   └─ @invento/user-site-feature-product         type:feature       (the page)
        ├─ @invento/user-site-data-access-cart   type:data-access   (CartService)
        ├─ @invento/shared-ui-loader             type:ui            (spinner)
@@ -242,19 +242,19 @@ trace can see `owner-dashboard`.
 ## Commands
 
 ```bash
-npm run start:all         # all three apps at once (4200 / 4300 / 4400)
-npm start                 # site-builder only
-npm run start:user        # userSite only
+npm run start:all              # all three apps at once (4200 / 4300 / 4400)
+npm start                      # site-builder only
+npm run start:user-site        # user-site only
 npm run start:owner-dashboard  # owner-dashboard only
 
-npm run build:all         # nx run-many -t build   — the 3 apps (see note below)
-npm run lint              # nx run-many -t lint    — all 112 projects
-npm run format            # prettier --write .     (does NOT touch libs/ — see traps.md)
+npm run build:all              # nx run-many -t build   — the 3 apps (see note below)
+npm run lint                   # nx run-many -t lint    — all 112 projects
+npm run format                 # prettier --write .     (does NOT touch libs/ — see traps.md)
 
-npx nx build userSite                 # one project
-npx nx lint owner-dashboard-feature-products  # one project (mind the project name!)
-npx nx graph                          # interactive dependency graph in the browser
-npx nx show projects --affected       # what your change actually touches
+npx nx build user-site                         # one project
+npx nx lint owner-dashboard-feature-products   # one project (mind the project name!)
+npx nx graph                                   # interactive dependency graph in the browser
+npx nx show projects --affected                # what your change actually touches
 ```
 
 **Why `lint` covers 112 projects and `build` covers 3:** every project has a `lint` target, but only

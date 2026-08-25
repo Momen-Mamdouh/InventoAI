@@ -22,7 +22,7 @@ import { ThemeService } from '@invento/shared-util-theme';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  protected title = 'userSite';
+  protected title = 'user-site';
 
   /**
    * Both are root-provided and purely reactive, so nothing injects them otherwise and they

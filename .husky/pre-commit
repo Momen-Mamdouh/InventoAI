@@ -17,5 +17,11 @@ if [ -n "$branch_name" ] && [ "$branch_name" != "main" ] && [ "$branch_name" != 
   fi
 fi
 
-# 2. Run lint-staged
+# 2. Project Name Validation
+node scripts/check-project-names.mjs
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+# 3. Run lint-staged
 npx lint-staged

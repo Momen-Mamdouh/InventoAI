@@ -1,7 +1,7 @@
 # Deep dive — Authentication
 
 **One implementation, three apps.** There is exactly one `AuthService`, one set of guards, and one
-set of five auth pages in the whole workspace. Every difference between owner-dashboard, userSite, and
+set of five auth pages in the whole workspace. Every difference between owner-dashboard, user-site, and
 site-builder is expressed through an injected configuration object — never through a check on which
 app is running.
 
@@ -36,12 +36,12 @@ the shared service is a contract violation** — widen `AuthConfig` instead.
 | `verifyEmailRedirect`   | Where to go after email verification — `string` **or** `() => string`  |
 | `authBasePath`          | Where the five auth pages are mounted — `string` **or** `() => string` |
 | `authRole`              | `'owner'` or `'customer'` — selects the backend endpoint family        |
-| `resolveStoreSlug?`     | userSite only. Supplies the tenant slug to requests.                   |
+| `resolveStoreSlug?`     | user-site only. Supplies the tenant slug to requests.                  |
 | `resolvePostAuthRoute?` | Optional override of the plain redirect, based on app-specific state   |
 | `onAuthEvent?`          | Optional hook fired on register/login/logout                           |
 
 Two fields accept a **resolver function** rather than a plain string. That is not decoration:
-userSite's auth pages are mounted under a runtime-resolved tenant slug (`/{storeSlug}/auth`), so the
+user-site's auth pages are mounted under a runtime-resolved tenant slug (`/{storeSlug}/auth`), so the
 value is not known at configuration time. The type was widened rather than forking a guard.
 
 ### How each app configures it
@@ -66,7 +66,7 @@ const authConfig: AuthConfig = {
 | ------------------- | ------------ | ----------------- | ------------------- | -------------------- | --------------------------------------------------------- |
 | **owner-dashboard** | `'owner'`    | `'invento'`       | `/home`             | `/auth`              | `resolvePostAuthRoute` → `/no-store`                      |
 | **site-builder**    | `'owner'`    | `'invento'`       | `/build/brainstorm` | `/auth`              | `onAuthEvent` resets `BuilderState` and reloads questions |
-| **userSite**        | `'customer'` | `'usersite'`      | `/`                 | `() => /{slug}/auth` | `resolveStoreSlug` — the multi-tenant seam                |
+| **user-site**       | `'customer'` | `'usersite'`      | `/`                 | `() => /{slug}/auth` | `resolveStoreSlug` — the multi-tenant seam                |
 
 site-builder builds its config with a `useFactory` so it can depend on `BuilderState`. That keeps
 the wizard store out of the shared library entirely: the hook is supplied at the composition root,
@@ -113,11 +113,11 @@ import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
 A feature library exports **routes, not page components**, precisely so a route cannot be mounted
 somewhere that skips its guards. When you move a route, move its guards with it.
 
-| Guard        | Purpose                                                              |
-| ------------ | -------------------------------------------------------------------- |
-| `authGuard`  | Requires a valid session for this app's `authRole`                   |
-| `guestGuard` | Keeps signed-in users off the auth pages                             |
-| `storeGuard` | userSite/owner-dashboard only — resolves the tenant before rendering |
+| Guard        | Purpose                                                               |
+| ------------ | --------------------------------------------------------------------- |
+| `authGuard`  | Requires a valid session for this app's `authRole`                    |
+| `guestGuard` | Keeps signed-in users off the auth pages                              |
+| `storeGuard` | user-site/owner-dashboard only — resolves the tenant before rendering |
 
 ---
 
@@ -140,9 +140,9 @@ this.config.authRole === 'customer' && slug
 
 ---
 
-## The multi-tenant seam (userSite only)
+## The multi-tenant seam (user-site only)
 
-userSite serves many stores from one app. The tenant slug comes from the URL and is posted as
+user-site serves many stores from one app. The tenant slug comes from the URL and is posted as
 `storeSlug` in every auth request, resolved through
 `@invento/user-site-data-access-store`:
 

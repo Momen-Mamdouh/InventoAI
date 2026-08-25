@@ -23,7 +23,7 @@ Use this as the "which library owns X?" lookup table.
 | ---------------------- | ----------------- | ---- | --------------------------------------------------------------------------------------- |
 | `apps/owner-dashboard` | `owner-dashboard` | 4400 | Admin dashboard shell — bootstrap, routes, guards, 3 trivial pages (port 4400).         |
 | `apps/site-builder`    | `site-builder`    | 4200 | Theme/brand generator shell — bootstrap, routes, AUTH_CONFIG (port 4200).               |
-| `apps/userSite`        | `userSite`        | 4300 | Multi-tenant storefront shell — bootstrap, slug-scoped routes, AUTH_CONFIG (port 4300). |
+| `apps/user-site`       | `user-site`       | 4300 | Multi-tenant storefront shell — bootstrap, slug-scoped routes, AUTH_CONFIG (port 4300). |
 
 ## scope:shared — core (1)
 

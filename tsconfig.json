@@ -21,7 +21,7 @@
       "path": "./apps/site-builder/tsconfig.spec.json"
     },
     {
-      "path": "./apps/userSite/tsconfig.app.json"
+      "path": "./apps/user-site/tsconfig.app.json"
     },
     {
       "path": "./apps/owner-dashboard/tsconfig.app.json"

@@ -29,7 +29,7 @@
       "@spartan/helm/typography": ["./libs/ui/typography/src/index.ts"],
       "@invento/core": ["./libs/core/src/index.ts"],
       "@invento/site-builder/*": ["./apps/site-builder/src/*"],
-      "@invento/user-site/*": ["./apps/userSite/src/*"],
+      "@invento/user-site/*": ["./apps/user-site/src/*"],
       "@invento/owner-dashboard/*": ["./apps/owner-dashboard/src/*"],
       "@spartan/helm/breadcrumb": ["./libs/ui/breadcrumb/src/index.ts"],
       "@spartan/helm/scroll-area": ["./libs/ui/scroll-area/src/index.ts"],

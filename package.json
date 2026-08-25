@@ -4,9 +4,9 @@
   "scripts": {
     "ng": "nx",
     "start": "nx serve site-builder -p 4200",
-    "start:user": "nx serve userSite -p 4300",
+    "start:user-site": "nx serve user-site -p 4300",
     "start:owner-dashboard": "nx serve owner-dashboard -p 4400",
-    "start:all": "nx run-many -t serve --projects=site-builder,userSite,owner-dashboard",
+    "start:all": "nx run-many -t serve --projects=site-builder,user-site,owner-dashboard",
     "build": "nx build site-builder",
     "build:all": "nx run-many -t build",
     "test": "nx test site-builder",
@@ -15,6 +15,7 @@
     "lint:fix": "nx run-many -t lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "check:names": "node scripts/check-project-names.mjs",
     "prepare": "husky"
   },
   "lint-staged": {

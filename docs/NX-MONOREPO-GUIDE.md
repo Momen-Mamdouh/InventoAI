@@ -259,7 +259,7 @@ libs/shared/src/index.ts
 
 All Spartan UI components (`hlm-button`, `hlm-card`, `hlm-badge`, etc.) and the stepper are available to every app via `@spartan/helm/*` and `@/spartan/stepper` imports.
 
-**Example:** Using a button in `apps/userSite/src/app/app.ts`:
+**Example:** Using a button in `apps/user-site/src/app/app.ts`:
 
 ```typescript
 import { HlmButtonDirective } from '@spartan/helm/button';

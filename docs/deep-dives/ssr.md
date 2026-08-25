@@ -104,7 +104,7 @@ the **dev server**, configured in each app's `project.json`.
 
 ## Data fetching
 
-Guards and resolvers run on the server too. `storeGuard` on userSite resolves the tenant during the
+Guards and resolvers run on the server too. `storeGuard` on user-site resolves the tenant during the
 server render, which is why the storefront's first paint already has the right store.
 
 Two consequences worth internalising:
@@ -118,7 +118,7 @@ Two consequences worth internalising:
 
 ## Testing SSR locally
 
-Serving with `npm run start:user` (etc.) already exercises the server render.
+Serving with `npm run start:user-site` (etc.) already exercises the server render.
 
 **Refresh the page on every route you touch.** Client-side navigation never hits the server path, so a
 bug that only appears on a cold load is invisible until someone deep-links or hits F5. That is the
