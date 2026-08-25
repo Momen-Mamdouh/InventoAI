@@ -3,11 +3,11 @@
 An Nx monorepo of **three Angular 22 applications** backed by 109 shared libraries. All three are
 server-rendered.
 
-| App              | What it does                                                      | Dev port |
-| ---------------- | ----------------------------------------------------------------- | -------- |
-| **site-builder** | Owners generate a store's theme, brand, and content with AI       | `4200`   |
-| **userSite**     | The generated storefront — multi-tenant, one app serves any store | `4300`   |
-| **invento**      | The admin dashboard — products, orders, suppliers, AI tools       | `4400`   |
+| App                 | What it does                                                      | Dev port |
+| ------------------- | ----------------------------------------------------------------- | -------- |
+| **site-builder**    | Owners generate a store's theme, brand, and content with AI       | `4200`   |
+| **userSite**        | The generated storefront — multi-tenant, one app serves any store | `4300`   |
+| **owner-dashboard** | The admin dashboard — products, orders, suppliers, AI tools       | `4400`   |
 
 ---
 
@@ -23,7 +23,7 @@ That runs all three apps at once on `4200` / `4300` / `4400`. For a single app:
 ```bash
 npm start                 # site-builder  → http://localhost:4200
 npm run start:user        # userSite      → http://localhost:4300
-npm run start:invento     # invento       → http://localhost:4400
+npm run start:owner-dashboard  # owner-dashboard → http://localhost:4400
 ```
 
 You will need the backend running on `:3000` for anything that touches data.
@@ -70,7 +70,7 @@ apps/            3 thin application shells — bootstrap, routes, config
 libs/
   core/          legacy shared core (preview engine, theme tokens)
   shared/        cross-app: auth, ~19 ui components, ~10 util libraries
-  invento/       admin dashboard domain
+  owner-dashboard/ admin dashboard domain
   user-site/     storefront domain
   site-builder/  builder domain
   ui/            34 Spartan UI primitives, one project each

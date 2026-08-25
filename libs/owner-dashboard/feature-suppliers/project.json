@@ -1,0 +1,25 @@
+{
+  "name": "owner-dashboard-feature-suppliers",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/owner-dashboard/feature-suppliers/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "scope:owner-dashboard",
+    "type:feature"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/owner-dashboard/feature-suppliers/**/*.ts",
+          "libs/owner-dashboard/feature-suppliers/**/*.html"
+        ]
+      }
+    }
+  }
+}

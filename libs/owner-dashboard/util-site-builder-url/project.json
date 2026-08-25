@@ -1,0 +1,25 @@
+{
+  "name": "owner-dashboard-util-site-builder-url",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/owner-dashboard/util-site-builder-url/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "scope:owner-dashboard",
+    "type:util"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/owner-dashboard/util-site-builder-url/**/*.ts",
+          "libs/owner-dashboard/util-site-builder-url/**/*.html"
+        ]
+      }
+    }
+  }
+}

@@ -59,7 +59,10 @@ const depConstraints = [
   { sourceTag: 'type:ui', onlyDependOnLibsWithTags: ['type:ui', 'type:util'] },
   { sourceTag: 'type:util', onlyDependOnLibsWithTags: ['type:util'] },
   { sourceTag: 'type:core', onlyDependOnLibsWithTags: ['type:core', 'type:util'] },
-  { sourceTag: 'scope:invento', onlyDependOnLibsWithTags: ['scope:invento', 'scope:shared'] },
+  {
+    sourceTag: 'scope:owner-dashboard',
+    onlyDependOnLibsWithTags: ['scope:owner-dashboard', 'scope:shared'],
+  },
   {
     sourceTag: 'scope:user-site',
     onlyDependOnLibsWithTags: ['scope:user-site', 'scope:shared'],

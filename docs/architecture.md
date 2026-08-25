@@ -22,22 +22,22 @@ lint error you cannot merge past.
 
 ## Applications are shells
 
-| App              | What it is              | Port   | Serve                   | Source                  |
-| ---------------- | ----------------------- | ------ | ----------------------- | ----------------------- |
-| **site-builder** | Theme/brand generator   | `4200` | `npm start`             | `apps/site-builder/src` |
-| **userSite**     | Multi-tenant storefront | `4300` | `npm run start:user`    | `apps/userSite/src`     |
-| **invento**      | Admin dashboard         | `4400` | `npm run start:invento` | `apps/invento/src`      |
+| App                 | What it is              | Port   | Serve                           | Source                     |
+| ------------------- | ----------------------- | ------ | ------------------------------- | -------------------------- |
+| **site-builder**    | Theme/brand generator   | `4200` | `npm start`                     | `apps/site-builder/src`    |
+| **userSite**        | Multi-tenant storefront | `4300` | `npm run start:user`            | `apps/userSite/src`        |
+| **owner-dashboard** | Admin dashboard         | `4400` | `npm run start:owner-dashboard` | `apps/owner-dashboard/src` |
 
 All three run **at once** with `npm run start:all` — each `serve` target declares its own port and
 `"continuous": true`, so they do not collide.
 
 How thin "thin" actually is:
 
-| App          | TS lines in `apps/*/src` | What lives in `src/app/`                                                  |
-| ------------ | ------------------------ | ------------------------------------------------------------------------- |
-| site-builder | 309                      | bootstrap only (`app.ts`, `app.config.ts`, `app.routes.ts`, …)            |
-| userSite     | 424                      | bootstrap only                                                            |
-| invento      | 447                      | bootstrap + 2 guards + 3 trivial pages (`no-store`, `not-found`, `users`) |
+| App             | TS lines in `apps/*/src` | What lives in `src/app/`                                                  |
+| --------------- | ------------------------ | ------------------------------------------------------------------------- |
+| site-builder    | 309                      | bootstrap only (`app.ts`, `app.config.ts`, `app.routes.ts`, …)            |
+| userSite        | 424                      | bootstrap only                                                            |
+| owner-dashboard | 447                      | bootstrap + 2 guards + 3 trivial pages (`no-store`, `not-found`, `users`) |
 
 If you are about to add a component to `apps/`, stop. It almost certainly belongs in a library. An
 app may hold: bootstrap files, its route table, its `AUTH_CONFIG` wiring, its `styles.css`, its
@@ -52,12 +52,12 @@ Every project carries **exactly one `scope:` tag and exactly one `type:` tag**. 
 
 ### `scope:` — who owns it
 
-| Scope                | Root                                                      | Meaning                                               | Projects |
-| -------------------- | --------------------------------------------------------- | ----------------------------------------------------- | -------- |
-| `scope:shared`       | `libs/shared/*`, `libs/ui/*`, `libs/stepper`, `libs/core` | Usable by any app. May not depend on any app's scope. | 67       |
-| `scope:invento`      | `libs/invento/*` + `apps/invento`                         | Admin-dashboard domain                                | 25       |
-| `scope:user-site`    | `libs/user-site/*` + `apps/userSite`                      | Storefront domain                                     | 14       |
-| `scope:site-builder` | `libs/site-builder/*` + `apps/site-builder`               | Builder domain                                        | 6        |
+| Scope                   | Root                                                      | Meaning                                               | Projects |
+| ----------------------- | --------------------------------------------------------- | ----------------------------------------------------- | -------- |
+| `scope:shared`          | `libs/shared/*`, `libs/ui/*`, `libs/stepper`, `libs/core` | Usable by any app. May not depend on any app's scope. | 67       |
+| `scope:owner-dashboard` | `libs/owner-dashboard/*` + `apps/owner-dashboard`         | Admin-dashboard domain                                | 25       |
+| `scope:user-site`       | `libs/user-site/*` + `apps/userSite`                      | Storefront domain                                     | 14       |
+| `scope:site-builder`    | `libs/site-builder/*` + `apps/site-builder`               | Builder domain                                        | 6        |
 
 ### `type:` — what kind of thing it is
 
@@ -98,15 +98,15 @@ Read it as a ladder: **app → feature → data-access → util**. Nothing may i
 
 ### Horizontal — which `scope:` may depend on which
 
-|                          | shared | invento | user-site | site-builder |
-| ------------------------ | :----: | :-----: | :-------: | :----------: |
-| **`scope:shared`**       |   ✅   |    ✗    |     ✗     |      ✗       |
-| **`scope:invento`**      |   ✅   |   ✅    |     ✗     |      ✗       |
-| **`scope:user-site`**    |   ✅   |    ✗    |    ✅     |      ✗       |
-| **`scope:site-builder`** |   ✅   |    ✗    |     ✗     |      ✅      |
+|                             | shared | owner-dashboard | user-site | site-builder |
+| --------------------------- | :----: | :-------------: | :-------: | :----------: |
+| **`scope:shared`**          |   ✅   |        ✗        |     ✗     |      ✗       |
+| **`scope:owner-dashboard`** |   ✅   |       ✅        |     ✗     |      ✗       |
+| **`scope:user-site`**       |   ✅   |        ✗        |    ✅     |      ✗       |
+| **`scope:site-builder`**    |   ✅   |        ✗        |     ✗     |      ✅      |
 
 Plainly: **each app's scope sees itself plus `shared`, and nothing else.** `shared` sees only
-`shared`. userSite cannot import invento code; shared cannot import any app's code.
+`shared`. userSite cannot import owner-dashboard code; shared cannot import any app's code.
 
 ### When you hit a boundary error
 
@@ -114,7 +114,7 @@ The error names both tags. Three legitimate fixes, in order of preference:
 
 1. **Move the code to `shared`** — if two scopes genuinely need it.
 2. **Change the `type:` tag** — if the tag is simply wrong. A "presentational" component that reads
-   live session state is not `type:ui`; it is `type:feature`. `invento-ui-shell` and
+   live session state is not `type:ui`; it is `type:feature`. `owner-dashboard-ui-shell` and
    `user-site-ui-storefront` are both tagged `type:feature` for exactly this reason, despite the
    `ui-` prefix in their directory names.
 3. **Invert the dependency** — pass the data in as an input instead of reaching for it.
@@ -130,17 +130,17 @@ This is the single most common time-waster in this workspace. **66 of 109 librar
 project name that is not derivable from their directory path, because `scope:shared` libraries drop
 the scope prefix while the other three scopes keep it.
 
-| Directory                         | Nx project name<br>(`nx lint` / `nx build`) | Import alias<br>(`import … from`)     |
-| --------------------------------- | ------------------------------------------- | ------------------------------------- |
-| `libs/shared/ui-loader`           | `ui-loader`                                 | `@invento/shared-ui-loader`           |
-| `libs/shared/data-access-auth`    | `data-access-auth`                          | `@invento/shared-data-access-auth`    |
-| `libs/shared/util-i18n`           | `util-i18n`                                 | `@invento/shared-util-i18n`           |
-| `libs/invento/feature-products`   | `invento-feature-products`                  | `@invento/invento-feature-products`   |
-| `libs/user-site/data-access-cart` | `user-site-data-access-cart`                | `@invento/user-site-data-access-cart` |
-| `libs/site-builder/feature-home`  | `site-builder-feature-home`                 | `@invento/site-builder-feature-home`  |
-| `libs/ui/button`                  | `button`                                    | `@spartan/helm/button`                |
-| `libs/stepper`                    | `spartan-stepper`                           | `@spartan/helm/stepper`               |
-| `libs/core`                       | `core`                                      | `@invento/core`                       |
+| Directory                               | Nx project name<br>(`nx lint` / `nx build`) | Import alias<br>(`import … from`)           |
+| --------------------------------------- | ------------------------------------------- | ------------------------------------------- |
+| `libs/shared/ui-loader`                 | `ui-loader`                                 | `@invento/shared-ui-loader`                 |
+| `libs/shared/data-access-auth`          | `data-access-auth`                          | `@invento/shared-data-access-auth`          |
+| `libs/shared/util-i18n`                 | `util-i18n`                                 | `@invento/shared-util-i18n`                 |
+| `libs/owner-dashboard/feature-products` | `owner-dashboard-feature-products`          | `@invento/owner-dashboard-feature-products` |
+| `libs/user-site/data-access-cart`       | `user-site-data-access-cart`                | `@invento/user-site-data-access-cart`       |
+| `libs/site-builder/feature-home`        | `site-builder-feature-home`                 | `@invento/site-builder-feature-home`        |
+| `libs/ui/button`                        | `button`                                    | `@spartan/helm/button`                      |
+| `libs/stepper`                          | `spartan-stepper`                           | `@spartan/helm/stepper`                     |
+| `libs/core`                             | `core`                                      | `@invento/core`                             |
 
 ```bash
 npx nx lint shared-ui-loader   # ✗ Cannot find project 'shared-ui-loader'
@@ -161,9 +161,9 @@ For everything except the Spartan primitives, the alias is **`@invento/<scope>-<
 matches the tags exactly:
 
 ```
-scope:shared    + type:ui          + loader   →  @invento/shared-ui-loader
-scope:invento   + type:data-access + order    →  @invento/invento-data-access-order
-scope:user-site + type:feature     + checkout →  @invento/user-site-feature-checkout
+scope:shared         + type:ui          + loader   →  @invento/shared-ui-loader
+scope:owner-dashboard + type:data-access + order    →  @invento/owner-dashboard-data-access-order
+scope:user-site      + type:feature     + checkout →  @invento/user-site-feature-checkout
 ```
 
 Spartan UI primitives use `@spartan/helm/<name>`; their style data lives at `@spartan/styles`. Each
@@ -198,7 +198,7 @@ Real examples of each shape:
 
 ```ts
 // type:feature — export routes, not page components
-// libs/invento/feature-products/src/index.ts
+// libs/owner-dashboard/feature-products/src/index.ts
 export { productsRoutes } from './lib/products.routes';
 
 // type:data-access — the service, the store, the types
@@ -216,7 +216,7 @@ export { extractErrorMessage } from './lib/error.utils';
 ```
 
 A feature exports **routes** so an app cannot bypass routing and mount a page component directly.
-Four libraries document a deliberate exception in their own `index.ts` — `invento-ui-shell`,
+Four libraries document a deliberate exception in their own `index.ts` — `owner-dashboard-ui-shell`,
 `user-site-ui-storefront`, `user-site-feature-product`, and `user-site-feature-chatbot`. Read the
 comment there before copying the pattern.
 
@@ -235,7 +235,7 @@ apps/userSite/src/app/app.routes.ts             type:app           (URL → feat
 ```
 
 Every hop goes down the vertical ladder and stays inside `user-site` + `shared`. Nothing in this
-trace can see `invento`.
+trace can see `owner-dashboard`.
 
 ---
 
@@ -245,14 +245,14 @@ trace can see `invento`.
 npm run start:all         # all three apps at once (4200 / 4300 / 4400)
 npm start                 # site-builder only
 npm run start:user        # userSite only
-npm run start:invento     # invento only
+npm run start:owner-dashboard  # owner-dashboard only
 
 npm run build:all         # nx run-many -t build   — the 3 apps (see note below)
 npm run lint              # nx run-many -t lint    — all 112 projects
 npm run format            # prettier --write .     (does NOT touch libs/ — see traps.md)
 
 npx nx build userSite                 # one project
-npx nx lint invento-feature-products  # one project (mind the project name!)
+npx nx lint owner-dashboard-feature-products  # one project (mind the project name!)
 npx nx graph                          # interactive dependency graph in the browser
 npx nx show projects --affected       # what your change actually touches
 ```

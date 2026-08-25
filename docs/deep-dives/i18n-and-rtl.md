@@ -17,11 +17,11 @@ export { TRANSLATION_LOADER, type TranslationLoader } from './lib/translation-lo
 
 Each app owns its own dictionaries. There is no shared translation file.
 
-| App          | Files                                            | Lines each |
-| ------------ | ------------------------------------------------ | ---------- |
-| invento      | `apps/invento/src/assets/i18n/{en,ar}.json`      | 217        |
-| site-builder | `apps/site-builder/src/assets/i18n/{en,ar}.json` | 354        |
-| userSite     | `apps/userSite/src/assets/i18n/{en,ar}.json`     | 573        |
+| App             | Files                                               | Lines each |
+| --------------- | --------------------------------------------------- | ---------- |
+| owner-dashboard | `apps/owner-dashboard/src/assets/i18n/{en,ar}.json` | 217        |
+| site-builder    | `apps/site-builder/src/assets/i18n/{en,ar}.json`    | 354        |
+| userSite        | `apps/userSite/src/assets/i18n/{en,ar}.json`        | 573        |
 
 **`en.json` and `ar.json` must stay line-for-line symmetric.** All three pairs currently are. A key
 present in one and missing from the other is a silent bug: `translate()` falls back to returning the

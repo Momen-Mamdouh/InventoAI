@@ -3,7 +3,7 @@ import type { Routes } from '@angular/router';
 /**
  * Public API contract for a feature library: export routes, not page components
  * (`contracts/library-api.md`). Each app mounts these under its own `AuthLayout` at whatever
- * path its `AUTH_CONFIG.authBasePath` names — see `apps/invento/src/app/app.routes.ts`.
+ * path its `AUTH_CONFIG.authBasePath` names — see `apps/owner-dashboard/src/app/app.routes.ts`.
  */
 export const loginRoutes: Routes = [
   { path: '', loadComponent: () => import('./login/login').then((m) => m.Login) },

@@ -19,11 +19,11 @@ Use this as the "which library owns X?" lookup table.
 
 ## Applications (3)
 
-| Path                | Nx project name | Port | Purpose                                                                                 |
-| ------------------- | --------------- | ---- | --------------------------------------------------------------------------------------- |
-| `apps/invento`      | `invento`       | 4400 | Admin dashboard shell — bootstrap, routes, guards, 3 trivial pages (port 4400).         |
-| `apps/site-builder` | `site-builder`  | 4200 | Theme/brand generator shell — bootstrap, routes, AUTH_CONFIG (port 4200).               |
-| `apps/userSite`     | `userSite`      | 4300 | Multi-tenant storefront shell — bootstrap, slug-scoped routes, AUTH_CONFIG (port 4300). |
+| Path                   | Nx project name   | Port | Purpose                                                                                 |
+| ---------------------- | ----------------- | ---- | --------------------------------------------------------------------------------------- |
+| `apps/owner-dashboard` | `owner-dashboard` | 4400 | Admin dashboard shell — bootstrap, routes, guards, 3 trivial pages (port 4400).         |
+| `apps/site-builder`    | `site-builder`    | 4200 | Theme/brand generator shell — bootstrap, routes, AUTH_CONFIG (port 4200).               |
+| `apps/userSite`        | `userSite`        | 4300 | Multi-tenant storefront shell — bootstrap, slug-scoped routes, AUTH_CONFIG (port 4300). |
 
 ## scope:shared — core (1)
 
@@ -127,49 +127,49 @@ One Nx project per primitive. These are generated/vendored code: `libs/ui/**` an
 | `libs/ui/typography`      | `typography`      | `@spartan/helm/typography`      | Spartan UI Helm primitive. |
 | `libs/ui/utils`           | `utils`           | `@spartan/helm/utils`           | Spartan UI Helm primitive. |
 
-## scope:invento — data-access (8)
+## scope:owner-dashboard — data-access (8)
 
-| Path                                        | Nx project name                        | Import alias                                    | Purpose                                                              |
-| ------------------------------------------- | -------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------- |
-| `libs/invento/data-access-attribute`        | `invento-data-access-attribute`        | `@invento/invento-data-access-attribute`        | AttributeService and product-attribute models.                       |
-| `libs/invento/data-access-category`         | `invento-data-access-category`         | `@invento/invento-data-access-category`         | CategoriesService, CategoriesState, category models.                 |
-| `libs/invento/data-access-faq`              | `invento-data-access-faq`              | `@invento/invento-data-access-faq`              | FaqApiService, FaqStore, FAQ DTOs.                                   |
-| `libs/invento/data-access-order`            | `invento-data-access-order`            | `@invento/invento-data-access-order`            | OrderService, OrderStore, order models.                              |
-| `libs/invento/data-access-product`          | `invento-data-access-product`          | `@invento/invento-data-access-product`          | ProductService and the product/category/image API models.            |
-| `libs/invento/data-access-purchase-request` | `invento-data-access-purchase-request` | `@invento/invento-data-access-purchase-request` | PurchaseRequestService and purchase-request/offer/extraction models. |
-| `libs/invento/data-access-store`            | `invento-data-access-store`            | `@invento/invento-data-access-store`            | StoreService and store/hero/featured-content response models.        |
-| `libs/invento/data-access-supplier`         | `invento-data-access-supplier`         | `@invento/invento-data-access-supplier`         | SupplierService, SuppliersState, supplier models.                    |
+| Path                                                | Nx project name                                | Import alias                                            | Purpose                                                              |
+| --------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------- |
+| `libs/owner-dashboard/data-access-attribute`        | `owner-dashboard-data-access-attribute`        | `@invento/owner-dashboard-data-access-attribute`        | AttributeService and product-attribute models.                       |
+| `libs/owner-dashboard/data-access-category`         | `owner-dashboard-data-access-category`         | `@invento/owner-dashboard-data-access-category`         | CategoriesService, CategoriesState, category models.                 |
+| `libs/owner-dashboard/data-access-faq`              | `owner-dashboard-data-access-faq`              | `@invento/owner-dashboard-data-access-faq`              | FaqApiService, FaqStore, FAQ DTOs.                                   |
+| `libs/owner-dashboard/data-access-order`            | `owner-dashboard-data-access-order`            | `@invento/owner-dashboard-data-access-order`            | OrderService, OrderStore, order models.                              |
+| `libs/owner-dashboard/data-access-product`          | `owner-dashboard-data-access-product`          | `@invento/owner-dashboard-data-access-product`          | ProductService and the product/category/image API models.            |
+| `libs/owner-dashboard/data-access-purchase-request` | `owner-dashboard-data-access-purchase-request` | `@invento/owner-dashboard-data-access-purchase-request` | PurchaseRequestService and purchase-request/offer/extraction models. |
+| `libs/owner-dashboard/data-access-store`            | `owner-dashboard-data-access-store`            | `@invento/owner-dashboard-data-access-store`            | StoreService and store/hero/featured-content response models.        |
+| `libs/owner-dashboard/data-access-supplier`         | `owner-dashboard-data-access-supplier`         | `@invento/owner-dashboard-data-access-supplier`         | SupplierService, SuppliersState, supplier models.                    |
 
-## scope:invento — feature (13)
+## scope:owner-dashboard — feature (13)
 
-| Path                                     | Nx project name                     | Import alias                                 | Purpose                                                                                                                |
-| ---------------------------------------- | ----------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `libs/invento/feature-account-settings`  | `invento-feature-account-settings`  | `@invento/invento-feature-account-settings`  | Account settings pages (routes).                                                                                       |
-| `libs/invento/feature-ai-advisor`        | `invento-feature-ai-advisor`        | `@invento/invento-feature-ai-advisor`        | AI advisor pages (routes).                                                                                             |
-| `libs/invento/feature-attributes`        | `invento-feature-attributes`        | `@invento/invento-feature-attributes`        | Product attribute management pages (routes).                                                                           |
-| `libs/invento/feature-catalog-ai`        | `invento-feature-catalog-ai`        | `@invento/invento-feature-catalog-ai`        | AI catalog generation pages (routes).                                                                                  |
-| `libs/invento/feature-categories`        | `invento-feature-categories`        | `@invento/invento-feature-categories`        | Category management pages (routes).                                                                                    |
-| `libs/invento/feature-chatbot`           | `invento-feature-chatbot`           | `@invento/invento-feature-chatbot`           | Chatbot admin pages (routes).                                                                                          |
-| `libs/invento/feature-faq`               | `invento-feature-faq`               | `@invento/invento-feature-faq`               | FAQ management pages (routes).                                                                                         |
-| `libs/invento/feature-home`              | `invento-feature-home`              | `@invento/invento-feature-home`              | Dashboard home pages (routes).                                                                                         |
-| `libs/invento/feature-orders`            | `invento-feature-orders`            | `@invento/invento-feature-orders`            | Order management pages (routes).                                                                                       |
-| `libs/invento/feature-products`          | `invento-feature-products`          | `@invento/invento-feature-products`          | Product list/details/create pages (routes).                                                                            |
-| `libs/invento/feature-purchase-requests` | `invento-feature-purchase-requests` | `@invento/invento-feature-purchase-requests` | Purchase-request pages plus the mailbox callback route.                                                                |
-| `libs/invento/feature-suppliers`         | `invento-feature-suppliers`         | `@invento/invento-feature-suppliers`         | Supplier management pages (routes).                                                                                    |
-| `libs/invento/ui-shell`                  | `invento-ui-shell`                  | `@invento/invento-ui-shell`                  | Dashboard chrome: MainLayout, AuthLayout, Sidebar, Header, KpiCard. Tagged type:feature — it reads live session state. |
+| Path                                             | Nx project name                             | Import alias                                         | Purpose                                                                                                                |
+| ------------------------------------------------ | ------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `libs/owner-dashboard/feature-account-settings`  | `owner-dashboard-feature-account-settings`  | `@invento/owner-dashboard-feature-account-settings`  | Account settings pages (routes).                                                                                       |
+| `libs/owner-dashboard/feature-ai-advisor`        | `owner-dashboard-feature-ai-advisor`        | `@invento/owner-dashboard-feature-ai-advisor`        | AI advisor pages (routes).                                                                                             |
+| `libs/owner-dashboard/feature-attributes`        | `owner-dashboard-feature-attributes`        | `@invento/owner-dashboard-feature-attributes`        | Product attribute management pages (routes).                                                                           |
+| `libs/owner-dashboard/feature-catalog-ai`        | `owner-dashboard-feature-catalog-ai`        | `@invento/owner-dashboard-feature-catalog-ai`        | AI catalog generation pages (routes).                                                                                  |
+| `libs/owner-dashboard/feature-categories`        | `owner-dashboard-feature-categories`        | `@invento/owner-dashboard-feature-categories`        | Category management pages (routes).                                                                                    |
+| `libs/owner-dashboard/feature-chatbot`           | `owner-dashboard-feature-chatbot`           | `@invento/owner-dashboard-feature-chatbot`           | Chatbot admin pages (routes).                                                                                          |
+| `libs/owner-dashboard/feature-faq`               | `owner-dashboard-feature-faq`               | `@invento/owner-dashboard-feature-faq`               | FAQ management pages (routes).                                                                                         |
+| `libs/owner-dashboard/feature-home`              | `owner-dashboard-feature-home`              | `@invento/owner-dashboard-feature-home`              | Dashboard home pages (routes).                                                                                         |
+| `libs/owner-dashboard/feature-orders`            | `owner-dashboard-feature-orders`            | `@invento/owner-dashboard-feature-orders`            | Order management pages (routes).                                                                                       |
+| `libs/owner-dashboard/feature-products`          | `owner-dashboard-feature-products`          | `@invento/owner-dashboard-feature-products`          | Product list/details/create pages (routes).                                                                            |
+| `libs/owner-dashboard/feature-purchase-requests` | `owner-dashboard-feature-purchase-requests` | `@invento/owner-dashboard-feature-purchase-requests` | Purchase-request pages plus the mailbox callback route.                                                                |
+| `libs/owner-dashboard/feature-suppliers`         | `owner-dashboard-feature-suppliers`         | `@invento/owner-dashboard-feature-suppliers`         | Supplier management pages (routes).                                                                                    |
+| `libs/owner-dashboard/ui-shell`                  | `owner-dashboard-ui-shell`                  | `@invento/owner-dashboard-ui-shell`                  | Dashboard chrome: MainLayout, AuthLayout, Sidebar, Header, KpiCard. Tagged type:feature — it reads live session state. |
 
-## scope:invento — ui (1)
+## scope:owner-dashboard — ui (1)
 
-| Path                             | Nx project name             | Import alias                         | Purpose                                                         |
-| -------------------------------- | --------------------------- | ------------------------------------ | --------------------------------------------------------------- |
-| `libs/invento/ui-confirm-dialog` | `invento-ui-confirm-dialog` | `@invento/invento-ui-confirm-dialog` | DeleteConfirmDialog — reusable destructive-action confirmation. |
+| Path                                     | Nx project name                     | Import alias                                 | Purpose                                                         |
+| ---------------------------------------- | ----------------------------------- | -------------------------------------------- | --------------------------------------------------------------- |
+| `libs/owner-dashboard/ui-confirm-dialog` | `owner-dashboard-ui-confirm-dialog` | `@invento/owner-dashboard-ui-confirm-dialog` | DeleteConfirmDialog — reusable destructive-action confirmation. |
 
-## scope:invento — util (2)
+## scope:owner-dashboard — util (2)
 
-| Path                                 | Nx project name                 | Import alias                             | Purpose                           |
-| ------------------------------------ | ------------------------------- | ---------------------------------------- | --------------------------------- |
-| `libs/invento/util-breadcrumb`       | `invento-util-breadcrumb`       | `@invento/invento-util-breadcrumb`       | BreadcrumbService.                |
-| `libs/invento/util-site-builder-url` | `invento-util-site-builder-url` | `@invento/invento-util-site-builder-url` | SITE_BUILDER_URL injection token. |
+| Path                                         | Nx project name                         | Import alias                                     | Purpose                           |
+| -------------------------------------------- | --------------------------------------- | ------------------------------------------------ | --------------------------------- |
+| `libs/owner-dashboard/util-breadcrumb`       | `owner-dashboard-util-breadcrumb`       | `@invento/owner-dashboard-util-breadcrumb`       | BreadcrumbService.                |
+| `libs/owner-dashboard/util-site-builder-url` | `owner-dashboard-util-site-builder-url` | `@invento/owner-dashboard-util-site-builder-url` | SITE_BUILDER_URL injection token. |
 
 ## scope:user-site — data-access (4)
 

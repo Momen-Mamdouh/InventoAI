@@ -57,7 +57,7 @@ libs/ui/utils/src/lib/spartan-styles/
 ├── index.ts                     ← barrel export of everything
 ```
 
-### Invento app (consumers)
+### `libs/ui/*` (consumers)
 
 ```
 libs/ui/

@@ -16,7 +16,7 @@ Answer two questions, in this order.
 Will more than one app use it?
 ├── Yes ──────────────────► scope:shared        libs/shared/…
 └── No ── which app?
-          ├── admin dashboard ─► scope:invento       libs/invento/…
+          ├── admin dashboard ─► scope:owner-dashboard  libs/owner-dashboard/…
           ├── storefront ──────► scope:user-site     libs/user-site/…
           └── builder ─────────► scope:site-builder  libs/site-builder/…
 ```
@@ -36,7 +36,7 @@ Is it a pure function, pipe, directive, or token? ► type:util         (exports
 The trap: **a component that injects a data service is not `type:ui`.** `type:ui` may only depend on
 `type:ui` and `type:util`, so the moment it injects `AuthService` or `StoreService`, lint rejects it.
 Either pass the data in as an input (better) or tag the library `type:feature` (what
-`invento-ui-shell` and `user-site-ui-storefront` do).
+`owner-dashboard-ui-shell` and `user-site-ui-storefront` do).
 
 ---
 
@@ -45,7 +45,7 @@ Either pass the data in as an input (better) or tag the library `type:feature` (
 The most common case. No configuration changes at all.
 
 ```
-libs/invento/feature-products/src/lib/pages/product-export/
+libs/owner-dashboard/feature-products/src/lib/pages/product-export/
 ├── product-export.ts
 ├── product-export.html
 └── product-export.css      (only if you need it)
@@ -86,7 +86,7 @@ export class ProductExport {
 Services belong in a `type:data-access` library, never in a feature or a UI library.
 
 ```ts
-// libs/invento/data-access-product/src/lib/product-export.service.ts
+// libs/owner-dashboard/data-access-product/src/lib/product-export.service.ts
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
@@ -104,7 +104,7 @@ export class ProductExportService {
 Then widen the barrel:
 
 ```ts
-// libs/invento/data-access-product/src/index.ts
+// libs/owner-dashboard/data-access-product/src/index.ts
 export { ProductExportService } from './lib/product-export.service';
 ```
 
@@ -116,7 +116,7 @@ export { ProductExportService } from './lib/product-export.service';
       is a build error)
 - [ ] No component, template, or style file in the library
 
-**Gate:** `npx nx lint invento-data-access-product && npx nx build invento`
+**Gate:** `npx nx lint owner-dashboard-data-access-product && npx nx build owner-dashboard`
 
 ---
 
@@ -224,7 +224,7 @@ mounting a page directly and bypassing its guards.
 **In the library:**
 
 ```ts
-// libs/invento/feature-wishlist/src/lib/wishlist.routes.ts
+// libs/owner-dashboard/feature-wishlist/src/lib/wishlist.routes.ts
 import type { Routes } from '@angular/router';
 
 export const wishlistRoutes: Routes = [
@@ -241,16 +241,16 @@ export const wishlistRoutes: Routes = [
 ```
 
 ```ts
-// libs/invento/feature-wishlist/src/index.ts
+// libs/owner-dashboard/feature-wishlist/src/index.ts
 export { wishlistRoutes } from './lib/wishlist.routes';
 ```
 
-**In the app** (`apps/invento/src/app/app.routes.ts`) — lazy-loaded, guards on the app's route entry:
+**In the app** (`apps/owner-dashboard/src/app/app.routes.ts`) — lazy-loaded, guards on the app's route entry:
 
 ```ts
 {
   path: 'wishlist',
-  loadChildren: () => import('@invento/invento-feature-wishlist').then((m) => m.wishlistRoutes),
+  loadChildren: () => import('@invento/owner-dashboard-feature-wishlist').then((m) => m.wishlistRoutes),
 },
 ```
 
@@ -262,7 +262,7 @@ export { wishlistRoutes } from './lib/wishlist.routes';
 - [ ] Pages live under `src/lib/pages/<name>/`
 - [ ] File naming drops the `.component` suffix: `wishlist-list/wishlist-list.ts`
 
-**Gate:** `npx nx build invento` — a bundle-size jump usually means the route is not actually lazy.
+**Gate:** `npx nx build owner-dashboard` — a bundle-size jump usually means the route is not actually lazy.
 
 ---
 
@@ -307,7 +307,7 @@ Then bring it in line:
 - `project.json` — tags `["type:app", "scope:my-app"]`, a `lint` target, and a `serve` target with
   `"continuous": true` and a **free port** (4200/4300/4400 are taken)
 - `tsconfig.app.json` — `"include": ["src/**/*.ts"]`, no `rootDir` override
-  (`apps/invento/tsconfig.app.json` is the reference)
+  (`apps/owner-dashboard/tsconfig.app.json` is the reference)
 - `src/styles.css` — the Tailwind entry imports must live **here**, not in a library
   (see [deep-dives/theming.md](./deep-dives/theming.md))
 - `eslint.config.ts` — add `scope:my-app` to `depConstraints` (itself + `scope:shared`)

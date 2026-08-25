@@ -16,7 +16,7 @@ If you are new, read in this order. Total time to productive: about an hour.
 
 After those three you should be able to answer, without help:
 
-> _"I need to add a supplier-export button to the invento dashboard. Which library does it go in,
+> _"I need to add a supplier-export button to the owner-dashboard app. Which library does it go in,
 > what tags does it need, and what command proves I got it right?"_
 
 If you cannot, the docs have failed — please say so, and fix them.

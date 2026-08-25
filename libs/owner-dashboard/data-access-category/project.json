@@ -1,0 +1,25 @@
+{
+  "name": "owner-dashboard-data-access-category",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/owner-dashboard/data-access-category/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "scope:owner-dashboard",
+    "type:data-access"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/owner-dashboard/data-access-category/**/*.ts",
+          "libs/owner-dashboard/data-access-category/**/*.html"
+        ]
+      }
+    }
+  }
+}

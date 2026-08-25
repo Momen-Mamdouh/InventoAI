@@ -17,7 +17,7 @@ leads with the **symptom you would actually see**, because that is how you will 
 | Prettier "fixed" nothing in `libs/`                       | `libs/` is Prettier-ignored                               | [#5](#5-libs-is-prettier-ignored)                        |
 | `prefer-on-push-component-change-detection` error         | `OnPush` is mandatory                                     | [#6](#6-onpush-is-mandatory)                             |
 | Tailwind classes silently missing from the built app      | Tailwind entry import moved out of the app's `styles.css` | [#7](#7-tailwind-entry-imports-must-stay-in-the-app)     |
-| Theme token changed in one app but not another            | invento does not use the shared theme file                | [#8](#8-inventos-theme-css-is-a-fork)                    |
+| Theme token changed in one app but not another            | owner-dashboard does not use the shared theme file        | [#8](#8-owner-dashboards-theme-css-is-a-fork)            |
 | A library imports fine but exports nothing                | It is an empty placeholder                                | [#9](#9-two-libraries-are-deliberately-empty)            |
 | `tsc -b` complains about `libs/shared/ui-home-components` | Dangling reference to a deleted library                   | [#10](#10-the-root-tsconfigjson-reference-list-is-stale) |
 
@@ -71,7 +71,7 @@ the `scope:` isolation rule. See
 
 1. Move the code to `scope:shared` — if two scopes genuinely need it.
 2. Retag the library — a "presentational" component that reads live session state is not `type:ui`.
-   `invento-ui-shell` and `user-site-ui-storefront` are tagged `type:feature` for exactly this
+   `owner-dashboard-ui-shell` and `user-site-ui-storefront` are tagged `type:feature` for exactly this
    reason.
 3. Invert the dependency — pass data in as an input.
 
@@ -153,18 +153,18 @@ Shared **tokens** may live in a library and be imported after those lines. The e
 
 ---
 
-## 8. invento's theme CSS is a fork
+## 8. owner-dashboard's theme CSS is a fork
 
 **Symptom:** you change a design token in `libs/core/src/styles/spartan-theme.css`; site-builder and
-userSite pick it up, invento does not.
+userSite pick it up, owner-dashboard does not.
 
 **Why:**
 
-| App          | `src/styles.css`                                                                 |
-| ------------ | -------------------------------------------------------------------------------- |
-| site-builder | 9 lines — Tailwind entry + `@import '…/libs/core/src/styles/spartan-theme.css'`  |
-| userSite     | 19 lines — the same import, plus a scrollbar-gutter rule                         |
-| invento      | **358 lines — a fully inlined copy. It does not import the shared file at all.** |
+| App             | `src/styles.css`                                                                 |
+| --------------- | -------------------------------------------------------------------------------- |
+| site-builder    | 9 lines — Tailwind entry + `@import '…/libs/core/src/styles/spartan-theme.css'`  |
+| userSite        | 19 lines — the same import, plus a scrollbar-gutter rule                         |
+| owner-dashboard | **358 lines — a fully inlined copy. It does not import the shared file at all.** |
 
 **Fix:** when you touch theme tokens, check all three files, not just the shared one.
 
@@ -207,12 +207,12 @@ it is not.
 
 ## Known-open items (not bugs you introduced)
 
-| Item                                                                                        | Where                                                                             |
-| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `@font-face BlackOpsOne` declared twice, pointing at a `.ttf` that does not exist           | [deep-dives/theming.md](./deep-dives/theming.md#known-issue-the-blackopsone-font) |
-| invento's inlined theme is missing the 8 `--success`/`--warning` tokens the shared file has | [#8](#8-inventos-theme-css-is-a-fork)                                             |
-| Root `tsconfig.json` references a deleted library, and covers 35 of 112 projects            | [#10](#10-the-root-tsconfigjson-reference-list-is-stale)                          |
-| userSite's initial bundle is ~1.20 MB against a 1 MB warning budget                         | `apps/userSite/project.json` budgets                                              |
-| Customer auth endpoints carry trailing slashes the owner endpoints lack                     | `libs/shared/data-access-auth/src/lib/auth.service.ts`                            |
+| Item                                                                                                | Where                                                                             |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `@font-face BlackOpsOne` declared twice, pointing at a `.ttf` that does not exist                   | [deep-dives/theming.md](./deep-dives/theming.md#known-issue-the-blackopsone-font) |
+| owner-dashboard's inlined theme is missing the 8 `--success`/`--warning` tokens the shared file has | [#8](#8-owner-dashboards-theme-css-is-a-fork)                                     |
+| Root `tsconfig.json` references a deleted library, and covers 35 of 112 projects                    | [#10](#10-the-root-tsconfigjson-reference-list-is-stale)                          |
+| userSite's initial bundle is ~1.20 MB against a 1 MB warning budget                                 | `apps/userSite/project.json` budgets                                              |
+| Customer auth endpoints carry trailing slashes the owner endpoints lack                             | `libs/shared/data-access-auth/src/lib/auth.service.ts`                            |
 
 None of these block work. They are listed so you do not spend an afternoon rediscovering one.

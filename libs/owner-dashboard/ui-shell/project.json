@@ -1,0 +1,25 @@
+{
+  "name": "owner-dashboard-ui-shell",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/owner-dashboard/ui-shell/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "scope:owner-dashboard",
+    "type:feature"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/owner-dashboard/ui-shell/**/*.ts",
+          "libs/owner-dashboard/ui-shell/**/*.html"
+        ]
+      }
+    }
+  }
+}

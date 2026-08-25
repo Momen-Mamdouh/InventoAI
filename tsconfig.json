@@ -24,7 +24,7 @@
       "path": "./apps/userSite/tsconfig.app.json"
     },
     {
-      "path": "./apps/invento/tsconfig.app.json"
+      "path": "./apps/owner-dashboard/tsconfig.app.json"
     },
     {
       "path": "./libs/core/tsconfig.lib.json"

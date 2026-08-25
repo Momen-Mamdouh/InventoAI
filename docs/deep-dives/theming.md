@@ -50,19 +50,19 @@ Hardcoded colors do not respond to dark mode and do not respond to a store's gen
 
 ### The three apps do not share this file equally
 
-| App              | `src/styles.css`                                                                       |
-| ---------------- | -------------------------------------------------------------------------------------- |
-| **site-builder** | 9 lines — Tailwind entry + `@import '../../../libs/core/src/styles/spartan-theme.css'` |
-| **userSite**     | 19 lines — the same import, plus a `scrollbar-gutter` rule                             |
-| **invento**      | **358 lines — a fully inlined copy. It does not import the shared file at all.**       |
+| App                 | `src/styles.css`                                                                       |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| **site-builder**    | 9 lines — Tailwind entry + `@import '../../../libs/core/src/styles/spartan-theme.css'` |
+| **userSite**        | 19 lines — the same import, plus a `scrollbar-gutter` rule                             |
+| **owner-dashboard** | **358 lines — a fully inlined copy. It does not import the shared file at all.**       |
 
 So a token you add to the shared file reaches site-builder and userSite, and **does not reach
-invento**. When you touch theme tokens, edit all three.
+owner-dashboard**. When you touch theme tokens, edit all three.
 
-Measured drift today: invento's copy is missing exactly **8 tokens** the shared file has —
+Measured drift today: owner-dashboard's copy is missing exactly **8 tokens** the shared file has —
 `--success`, `--success-foreground`, `--warning`, `--warning-foreground` and their `--color-*`
-counterparts. Nothing in `libs/invento/**` currently uses them, so this is latent rather than a live
-bug — but `bg-success` in an invento template would render as nothing.
+counterparts. Nothing in `libs/owner-dashboard/**` currently uses them, so this is latent rather than a live
+bug — but `bg-success` in an owner-dashboard template would render as nothing.
 
 > A comment in `apps/userSite/src/styles.css` claims "invento also imports that file". It does not.
 
@@ -141,7 +141,7 @@ undoes it.
 | Location                                    | Declaration                                                                   |
 | ------------------------------------------- | ----------------------------------------------------------------------------- |
 | `libs/core/src/styles/spartan-theme.css:18` | `src: url('/assets/fonts/…ttf') format('truetype')` — valid syntax            |
-| `apps/invento/src/styles.css:15`            | `src: url('/assets/fonts/…ttf') format('ttf')` — **invalid `format()` value** |
+| `apps/owner-dashboard/src/styles.css:15`    | `src: url('/assets/fonts/…ttf') format('ttf')` — **invalid `format()` value** |
 
 There is no `assets/fonts/` directory in any app's `public/`, so the font never loads. Three places
 reference the family and silently fall back:

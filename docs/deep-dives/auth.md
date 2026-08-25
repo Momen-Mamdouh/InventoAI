@@ -1,7 +1,7 @@
 # Deep dive — Authentication
 
 **One implementation, three apps.** There is exactly one `AuthService`, one set of guards, and one
-set of five auth pages in the whole workspace. Every difference between invento, userSite, and
+set of five auth pages in the whole workspace. Every difference between owner-dashboard, userSite, and
 site-builder is expressed through an injected configuration object — never through a check on which
 app is running.
 
@@ -47,7 +47,7 @@ value is not known at configuration time. The type was widened rather than forki
 ### How each app configures it
 
 ```ts
-// apps/invento/src/app/app.config.ts  — owner app
+// apps/owner-dashboard/src/app/app.config.ts  — owner app
 const authConfig: AuthConfig = {
   apiBaseUrl: environment.apiUrl,
   postLoginRoute: '/home',
@@ -62,11 +62,11 @@ const authConfig: AuthConfig = {
 };
 ```
 
-| App              | `authRole`   | `tokenStorageKey` | `postLoginRoute`    | `authBasePath`       | Notable extra                                             |
-| ---------------- | ------------ | ----------------- | ------------------- | -------------------- | --------------------------------------------------------- |
-| **invento**      | `'owner'`    | `'invento'`       | `/home`             | `/auth`              | `resolvePostAuthRoute` → `/no-store`                      |
-| **site-builder** | `'owner'`    | `'invento'`       | `/build/brainstorm` | `/auth`              | `onAuthEvent` resets `BuilderState` and reloads questions |
-| **userSite**     | `'customer'` | `'usersite'`      | `/`                 | `() => /{slug}/auth` | `resolveStoreSlug` — the multi-tenant seam                |
+| App                 | `authRole`   | `tokenStorageKey` | `postLoginRoute`    | `authBasePath`       | Notable extra                                             |
+| ------------------- | ------------ | ----------------- | ------------------- | -------------------- | --------------------------------------------------------- |
+| **owner-dashboard** | `'owner'`    | `'invento'`       | `/home`             | `/auth`              | `resolvePostAuthRoute` → `/no-store`                      |
+| **site-builder**    | `'owner'`    | `'invento'`       | `/build/brainstorm` | `/auth`              | `onAuthEvent` resets `BuilderState` and reloads questions |
+| **userSite**        | `'customer'` | `'usersite'`      | `/`                 | `() => /{slug}/auth` | `resolveStoreSlug` — the multi-tenant seam                |
 
 site-builder builds its config with a `useFactory` so it can depend on `BuilderState`. That keeps
 the wizard store out of the shared library entirely: the hook is supplied at the composition root,
@@ -96,7 +96,7 @@ Guards are imported straight into the app's `app.routes.ts`, not buried inside a
 This is why `type:app` is permitted to depend on `type:data-access`.
 
 ```ts
-// apps/invento/src/app/app.routes.ts
+// apps/owner-dashboard/src/app/app.routes.ts
 import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
 
 {
@@ -104,7 +104,7 @@ import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
   component: MainLayout,
   canActivate: [authGuard, storeGuard],
   children: [
-    { path: 'products', loadChildren: () => import('@invento/invento-feature-products').then((m) => m.productsRoutes) },
+    { path: 'products', loadChildren: () => import('@invento/owner-dashboard-feature-products').then((m) => m.productsRoutes) },
     …
   ],
 }
@@ -113,11 +113,11 @@ import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
 A feature library exports **routes, not page components**, precisely so a route cannot be mounted
 somewhere that skips its guards. When you move a route, move its guards with it.
 
-| Guard        | Purpose                                                      |
-| ------------ | ------------------------------------------------------------ |
-| `authGuard`  | Requires a valid session for this app's `authRole`           |
-| `guestGuard` | Keeps signed-in users off the auth pages                     |
-| `storeGuard` | userSite/invento only — resolves the tenant before rendering |
+| Guard        | Purpose                                                              |
+| ------------ | -------------------------------------------------------------------- |
+| `authGuard`  | Requires a valid session for this app's `authRole`                   |
+| `guestGuard` | Keeps signed-in users off the auth pages                             |
+| `storeGuard` | userSite/owner-dashboard only — resolves the tenant before rendering |
 
 ---
 
