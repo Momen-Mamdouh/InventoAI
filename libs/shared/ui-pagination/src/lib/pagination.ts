@@ -23,6 +23,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   templateUrl: './pagination.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [HlmPaginationImports, TranslatePipe, HlmMuted],
+  host: { class: 'block' },
 })
 export class Pagination {
   public readonly currentPage = input.required<number>();
@@ -30,6 +31,8 @@ export class Pagination {
   /** Optional: enables the "Showing X-Y of Z" summary. */
   public readonly totalItems = input<number | undefined>(undefined);
   public readonly pageSize = input<number | undefined>(undefined);
+  /** Optional: disables all navigation, e.g. while a page request is in flight. */
+  public readonly disabled = input<boolean>(false);
 
   public readonly pageChange = output<number>();
 
@@ -63,6 +66,7 @@ export class Pagination {
 
   protected goTo(page: number | string): void {
     if (
+      this.disabled() ||
       typeof page === 'string' ||
       page < 1 ||
       page > this.totalPages() ||

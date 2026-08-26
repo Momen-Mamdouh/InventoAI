@@ -7,15 +7,10 @@ import { HlmButton } from '@spartan/helm/button';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmH2, HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideCheck,
-  lucideMessageSquare,
-  lucideAlertCircle,
-  lucideChevronLeft,
-  lucideChevronRight,
-} from '@ng-icons/lucide';
+import { lucideCheck, lucideMessageSquare, lucideAlertCircle } from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
 import { UnansweredResponse, UnansweredTheme } from '../../types/chat-admin.types';
+import { Pagination } from '@invento/shared-ui-pagination';
 
 @Component({
   selector: 'app-chatbot-unanswered',
@@ -32,14 +27,13 @@ import { UnansweredResponse, UnansweredTheme } from '../../types/chat-admin.type
     HlmH3,
     HlmMuted,
     HlmCheckboxImports,
+    Pagination,
   ],
   providers: [
     provideIcons({
       lucideCheck,
       lucideMessageSquare,
       lucideAlertCircle,
-      lucideChevronLeft,
-      lucideChevronRight,
     }),
   ],
   templateUrl: './unanswered.html',
@@ -67,9 +61,6 @@ export class UnansweredComponent implements OnInit {
   readonly daysItemToString = (value: unknown): string => {
     return this.daysLabels[Number(value)] ?? 'Last 30 Days';
   };
-
-  // Template Helpers
-  Math = Math;
 
   // Track loading state for individual review actions
   reviewingIds = signal<Set<string>>(new Set<string>());

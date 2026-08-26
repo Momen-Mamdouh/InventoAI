@@ -545,64 +545,12 @@
         </div>
 
         <!-- Right: Pagination navigation buttons -->
-        <div class="flex items-center gap-1">
-          <button
-            hlmBtn
-            variant="outline"
-            size="icon"
-            class="w-8 h-8"
-            [disabled]="store.currentPage() === 1 || store.isLoading()"
-            (click)="store.setPage(1)"
-          >
-            <ng-icon name="lucideChevronsLeft" size="16" class="rtl:rotate-180" />
-          </button>
-          <button
-            hlmBtn
-            variant="outline"
-            size="icon"
-            class="w-8 h-8"
-            [disabled]="store.currentPage() === 1 || store.isLoading()"
-            (click)="store.setPage(store.currentPage() - 1)"
-          >
-            <ng-icon name="lucideChevronLeft" size="16" class="rtl:rotate-180" />
-          </button>
-
-          @for (page of pageNumbers(); track page) {
-            @if (page >= store.currentPage() - 2 && page <= store.currentPage() + 2) {
-              <button
-                hlmBtn
-                [variant]="store.currentPage() === page ? 'default' : 'outline'"
-                size="icon"
-                class="w-8 h-8 font-semibold text-xs"
-                [disabled]="store.isLoading()"
-                (click)="store.setPage(page)"
-              >
-                {{ page }}
-              </button>
-            }
-          }
-
-          <button
-            hlmBtn
-            variant="outline"
-            size="icon"
-            class="w-8 h-8"
-            [disabled]="store.currentPage() === store.totalPages() || store.isLoading()"
-            (click)="store.setPage(store.currentPage() + 1)"
-          >
-            <ng-icon name="lucideChevronRight" size="16" class="rtl:rotate-180" />
-          </button>
-          <button
-            hlmBtn
-            variant="outline"
-            size="icon"
-            class="w-8 h-8"
-            [disabled]="store.currentPage() === store.totalPages() || store.isLoading()"
-            (click)="store.setPage(store.totalPages())"
-          >
-            <ng-icon name="lucideChevronsRight" size="16" class="rtl:rotate-180" />
-          </button>
-        </div>
+        <app-pagination
+          [currentPage]="store.currentPage()"
+          [totalPages]="store.totalPages()"
+          [disabled]="store.isLoading()"
+          (pageChange)="store.setPage($event)"
+        />
       </div>
     } @else {
       <!-- Empty State -->

@@ -285,61 +285,11 @@
         <span hlmMuted>{{ store.total() }} total</span>
       </div>
 
-      <div class="flex items-center gap-1">
-        <button
-          hlmBtn
-          variant="outline"
-          size="icon"
-          [disabled]="store.page() === 1"
-          (click)="store.setPage(1)"
-          aria-label="First page"
-        >
-          <ng-icon name="lucideChevronsLeft" size="1rem" />
-        </button>
-        <button
-          hlmBtn
-          variant="outline"
-          size="icon"
-          [disabled]="store.page() === 1"
-          (click)="store.setPage(store.page() - 1)"
-          aria-label="Previous page"
-        >
-          <ng-icon name="lucideChevronLeft" size="1rem" />
-        </button>
-
-        @for (p of pageNumbers(); track p) {
-          <button
-            hlmBtn
-            [variant]="store.page() === p ? 'default' : 'outline'"
-            size="icon"
-            class="w-8 h-8 font-medium text-xs"
-            (click)="store.setPage(p)"
-          >
-            {{ p }}
-          </button>
-        }
-
-        <button
-          hlmBtn
-          variant="outline"
-          size="icon"
-          [disabled]="store.page() >= store.totalPages()"
-          (click)="store.setPage(store.page() + 1)"
-          aria-label="Next page"
-        >
-          <ng-icon name="lucideChevronRight" size="1rem" />
-        </button>
-        <button
-          hlmBtn
-          variant="outline"
-          size="icon"
-          [disabled]="store.page() >= store.totalPages()"
-          (click)="store.setPage(store.totalPages())"
-          aria-label="Last page"
-        >
-          <ng-icon name="lucideChevronsRight" size="1rem" />
-        </button>
-      </div>
+      <app-pagination
+        [currentPage]="store.page()"
+        [totalPages]="store.totalPages()"
+        (pageChange)="store.setPage($event)"
+      />
     </div>
   </div>
 

@@ -1,5 +1,5 @@
 @if (totalPages() > 1) {
-  <div class="mt-8 flex flex-col items-center gap-3">
+  <div class="flex flex-col items-center gap-3">
     @if (summary(); as s) {
       <p hlmMuted class="tabular-nums">
         {{ 'pagination.showing' | translate: { from: s.from, to: s.to, total: s.total } }}
@@ -16,9 +16,9 @@
         <li hlmPaginationItem>
           <hlm-pagination-previous
             class="cursor-pointer"
-            [class.pointer-events-none]="isFirst()"
-            [class.opacity-40]="isFirst()"
-            [attr.aria-disabled]="isFirst() ? 'true' : null"
+            [class.pointer-events-none]="isFirst() || disabled()"
+            [class.opacity-40]="isFirst() || disabled()"
+            [attr.aria-disabled]="isFirst() || disabled() ? 'true' : null"
             [text]="'pagination.previous' | translate"
             [aria-label]="'pagination.go_to_previous' | translate"
             (click)="goTo(currentPage() - 1)"
@@ -36,6 +36,8 @@
                 tabindex="0"
                 [isActive]="page === currentPage()"
                 [attr.aria-label]="'pagination.go_to_page' | translate: { page: page }"
+                [class.pointer-events-none]="disabled()"
+                [class.opacity-40]="disabled()"
                 class="min-w-9 cursor-pointer font-semibold tabular-nums"
                 [class]="
                   page === currentPage()
@@ -56,9 +58,9 @@
         <li hlmPaginationItem>
           <hlm-pagination-next
             class="cursor-pointer"
-            [class.pointer-events-none]="isLast()"
-            [class.opacity-40]="isLast()"
-            [attr.aria-disabled]="isLast() ? 'true' : null"
+            [class.pointer-events-none]="isLast() || disabled()"
+            [class.opacity-40]="isLast() || disabled()"
+            [attr.aria-disabled]="isLast() || disabled() ? 'true' : null"
             [text]="'pagination.next' | translate"
             [aria-label]="'pagination.go_to_next' | translate"
             (click)="goTo(currentPage() + 1)"

@@ -241,5 +241,12 @@
   "notifications.enable_email": "Enable email notification",
   "notifications.disable_email": "Disable email notification",
   "notifications.enable_inapp": "Enable in-app notification",
-  "notifications.disable_inapp": "Disable in-app notification"
+  "notifications.disable_inapp": "Disable in-app notification",
+  "pagination.showing": "Showing {{from}}–{{to}} of {{total}}",
+  "pagination.aria": "Pagination",
+  "pagination.go_to_page": "Go to page {{page}}",
+  "pagination.previous": "Previous",
+  "pagination.next": "Next",
+  "pagination.go_to_previous": "Go to previous page",
+  "pagination.go_to_next": "Go to next page"
 }

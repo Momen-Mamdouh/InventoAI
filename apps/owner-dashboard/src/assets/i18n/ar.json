@@ -241,5 +241,12 @@
   "notifications.enable_email": "تفعيل إشعارات البريد الإلكتروني",
   "notifications.disable_email": "تعطيل إشعارات البريد الإلكتروني",
   "notifications.enable_inapp": "تفعيل الإشعارات داخل التطبيق",
-  "notifications.disable_inapp": "تعطيل الإشعارات داخل التطبيق"
+  "notifications.disable_inapp": "تعطيل الإشعارات داخل التطبيق",
+  "pagination.showing": "عرض {{from}}–{{to}} من {{total}}",
+  "pagination.aria": "ترقيم الصفحات",
+  "pagination.go_to_page": "الذهاب إلى صفحة {{page}}",
+  "pagination.previous": "السابق",
+  "pagination.next": "التالي",
+  "pagination.go_to_previous": "الذهاب إلى الصفحة السابقة",
+  "pagination.go_to_next": "الذهاب إلى الصفحة التالية"
 }

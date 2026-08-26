@@ -17,7 +17,6 @@ import {
   lucideArrowLeft,
   lucideCheck,
   lucideCheckCircle2,
-  lucideChevronLeft,
   lucideChevronRight,
   lucideCircleDollarSign,
   lucideClock3,
@@ -67,6 +66,7 @@ import {
   PurchaseRequestStatus,
   SupplierOffer,
 } from '@invento/owner-dashboard-data-access-purchase-request';
+import { Pagination } from '@invento/shared-ui-pagination';
 
 @Component({
   selector: 'app-purchase-requests',
@@ -98,6 +98,7 @@ import {
     HlmTooltipImports,
     TranslatePipe,
     HlmCheckboxImports,
+    Pagination,
   ],
   providers: [
     provideIcons({
@@ -105,7 +106,6 @@ import {
       lucideArrowLeft,
       lucideCheck,
       lucideCheckCircle2,
-      lucideChevronLeft,
       lucideChevronRight,
       lucideCircleDollarSign,
       lucideClock3,

@@ -54,6 +54,7 @@ import { toast } from '@spartan/helm/sonner';
 import { HlmH1, HlmH3, HlmH4, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { TranslatePipe } from '@invento/shared-util-i18n';
+import { Pagination } from '@invento/shared-ui-pagination';
 import {
   Insight,
   InsightKind,
@@ -92,6 +93,7 @@ export type AdvisorPanelTab = 'today' | 'history' | 'settings';
     HlmSmall,
     HlmTooltipImports,
     TranslatePipe,
+    Pagination,
   ],
   providers: [
     provideIcons({

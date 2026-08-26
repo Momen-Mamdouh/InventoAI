@@ -20,9 +20,6 @@ import {
   lucideSearch,
   lucideRefreshCw,
   lucideChevronRight,
-  lucideChevronsLeft,
-  lucideChevronLeft,
-  lucideChevronsRight,
   lucideTriangleAlert,
   lucideNotebookText,
   lucideUsers,
@@ -40,6 +37,7 @@ import { HlmH1, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { SupplierFormDialog } from './supplier-form-dialog';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { Supplier, SuppliersState } from '@invento/owner-dashboard-data-access-supplier';
+import { Pagination } from '@invento/shared-ui-pagination';
 
 type ActiveFilter = 'all' | 'active' | 'inactive';
 
@@ -61,6 +59,7 @@ type ActiveFilter = 'all' | 'active' | 'inactive';
     HlmH1,
     HlmMuted,
     HlmSmall,
+    Pagination,
   ],
   providers: [
     provideIcons({
@@ -74,9 +73,6 @@ type ActiveFilter = 'all' | 'active' | 'inactive';
       lucideSearch,
       lucideRefreshCw,
       lucideChevronRight,
-      lucideChevronsLeft,
-      lucideChevronLeft,
-      lucideChevronsRight,
       lucideTriangleAlert,
       lucideNotebookText,
       lucideUsers,

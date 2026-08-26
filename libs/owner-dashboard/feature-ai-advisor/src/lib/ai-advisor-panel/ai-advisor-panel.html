@@ -673,39 +673,15 @@
           </div>
 
           <!-- Pagination Footer -->
-          <div
-            class="p-3.5 bg-card border rounded-xl flex items-center justify-between text-xs text-muted-foreground shadow-sm"
-          >
-            <span>
-              Page {{ historyPage() }} of {{ historyTotalPages() }} ({{ historyTotal() }} briefs
-              total)
-            </span>
-            <div class="flex items-center gap-1.5">
-              <button
-                hlmBtn
-                size="sm"
-                variant="outline"
-                class="h-8 px-2.5"
-                [disabled]="historyPage() <= 1 || isHistoryLoading()"
-                (click)="setHistoryPage(historyPage() - 1)"
-                [attr.aria-label]="'ai_advisor.prev_page' | translate"
-                [hlmTooltip]="'ai_advisor.prev_page' | translate"
-              >
-                <ng-icon name="lucideChevronLeft" size="14" class="rtl:rotate-180" />
-              </button>
-              <button
-                hlmBtn
-                size="sm"
-                variant="outline"
-                class="h-8 px-2.5"
-                [disabled]="historyPage() >= historyTotalPages() || isHistoryLoading()"
-                (click)="setHistoryPage(historyPage() + 1)"
-                [attr.aria-label]="'ai_advisor.next_page' | translate"
-                [hlmTooltip]="'ai_advisor.next_page' | translate"
-              >
-                <ng-icon name="lucideChevronRight" size="14" class="rtl:rotate-180" />
-              </button>
-            </div>
+          <div class="p-3.5 bg-card border rounded-xl shadow-sm">
+            <app-pagination
+              [currentPage]="historyPage()"
+              [totalPages]="historyTotalPages()"
+              [totalItems]="historyTotal()"
+              [pageSize]="historyLimit()"
+              [disabled]="isHistoryLoading()"
+              (pageChange)="setHistoryPage($event)"
+            />
           </div>
         }
       </div>

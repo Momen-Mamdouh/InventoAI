@@ -19,7 +19,6 @@ import {
   lucideSearch,
   lucideFilter,
   lucideCalendar,
-  lucideChevronRight,
   lucideMoreHorizontal,
   lucideEye,
   lucideCheckCircle2,
@@ -27,9 +26,6 @@ import {
   lucideClock,
   lucideRefreshCw,
   lucideShoppingCart,
-  lucideChevronLeft,
-  lucideChevronsLeft,
-  lucideChevronsRight,
   lucideTrendingUp,
   lucideTrendingDown,
   lucideMinus,
@@ -78,6 +74,7 @@ import {
   type OrderDetail,
   type OrderStatus,
 } from '@invento/owner-dashboard-data-access-order';
+import { Pagination } from '@invento/shared-ui-pagination';
 
 @Component({
   selector: 'app-orders',
@@ -108,6 +105,7 @@ import {
     HlmMuted,
     HlmSmall,
     HlmCheckboxImports,
+    Pagination,
   ],
   providers: [
     provideIcons({
@@ -115,7 +113,6 @@ import {
       lucideSearch,
       lucideFilter,
       lucideCalendar,
-      lucideChevronRight,
       lucideMoreHorizontal,
       lucideEye,
       lucideCheckCircle2,
@@ -123,9 +120,6 @@ import {
       lucideClock,
       lucideRefreshCw,
       lucideShoppingCart,
-      lucideChevronLeft,
-      lucideChevronsLeft,
-      lucideChevronsRight,
       lucideTrendingUp,
       lucideTrendingDown,
       lucideMinus,

@@ -17,11 +17,10 @@ import {
   lucideUser,
   lucideMessageSquare,
   lucideAlertCircle,
-  lucideChevronLeft,
-  lucideChevronRight,
 } from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
 import { ChatSessionsResponse } from '../../types/chat-admin.types';
+import { Pagination } from '@invento/shared-ui-pagination';
 
 @Component({
   selector: 'app-chatbot-history',
@@ -41,6 +40,7 @@ import { ChatSessionsResponse } from '../../types/chat-admin.types';
     HlmSmall,
     NgIcon,
     DatePipe,
+    Pagination,
   ],
   providers: [
     provideIcons({
@@ -50,8 +50,6 @@ import { ChatSessionsResponse } from '../../types/chat-admin.types';
       lucideUser,
       lucideMessageSquare,
       lucideAlertCircle,
-      lucideChevronLeft,
-      lucideChevronRight,
     }),
   ],
   templateUrl: './history.html',
@@ -96,9 +94,6 @@ export class HistoryComponent implements OnInit {
 
   // Temp form models
   searchInput = '';
-
-  // Template helpers
-  Math = Math;
 
   ngOnInit(): void {
     this.loadSessions();

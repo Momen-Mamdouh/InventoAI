@@ -148,6 +148,7 @@
 
         <!-- Pagination Bar (if multiple pages). Client-side: see OrdersDataService.filteredOrders. -->
         <app-pagination
+          class="mt-8"
           [currentPage]="ordersService.clientPage()"
           [totalPages]="ordersService.clientTotalPages()"
           [totalItems]="ordersService.filteredOrders().length"

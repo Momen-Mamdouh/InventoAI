@@ -224,27 +224,11 @@
     </div>
     <div class="flex justify-between items-center gap-3 p-4 border-border border-t text-sm">
       <span class="text-muted-foreground">{{ total() }} total requests</span>
-      <div class="flex items-center gap-1">
-        <button
-          hlmBtn
-          variant="outline"
-          size="icon"
-          [disabled]="page() <= 1"
-          (click)="page.set(page() - 1); load()"
-        >
-          <ng-icon name="lucideChevronLeft" size="16" />
-        </button>
-        <span class="px-3 text-muted-foreground">Page {{ page() }} of {{ totalPages() }}</span>
-        <button
-          hlmBtn
-          variant="outline"
-          size="icon"
-          [disabled]="page() >= totalPages()"
-          (click)="page.set(page() + 1); load()"
-        >
-          <ng-icon name="lucideChevronRight" size="16" />
-        </button>
-      </div>
+      <app-pagination
+        [currentPage]="page()"
+        [totalPages]="totalPages()"
+        (pageChange)="page.set($event); load()"
+      />
     </div>
   </div>
 </div>

@@ -67,6 +67,7 @@
 
       @if (productsResponse()?.totalPages && productsResponse()!.totalPages > 1) {
         <app-pagination
+          class="mt-8"
           [currentPage]="productsResponse()!.page"
           [totalPages]="productsResponse()!.totalPages"
           [totalItems]="productsResponse()!.total"

@@ -182,38 +182,18 @@
       </div>
 
       <!-- Pagination -->
-      @if (data() && data()!.totalPages > 1) {
-        <div class="p-4 border-t border-border flex items-center justify-between">
-          <p hlmMuted>
-            Showing <span class="font-medium">{{ (data()!.page - 1) * data()!.limit + 1 }}</span> to
-            <span class="font-medium">{{
-              Math.min(data()!.page * data()!.limit, data()!.total)
-            }}</span>
-            of <span class="font-medium">{{ data()!.total }}</span> results
-          </p>
-          <div class="flex gap-1">
-            <button
-              hlmBtn
-              variant="outline"
-              size="sm"
-              class="w-8 h-8 p-0"
-              [disabled]="data()!.page === 1"
-              (click)="changePage(data()!.page - 1)"
-            >
-              <ng-icon name="lucideChevronLeft" size="16" />
-            </button>
-            <button
-              hlmBtn
-              variant="outline"
-              size="sm"
-              class="w-8 h-8 p-0"
-              [disabled]="data()!.page === data()!.totalPages"
-              (click)="changePage(data()!.page + 1)"
-            >
-              <ng-icon name="lucideChevronRight" size="16" />
-            </button>
+      @if (data(); as d) {
+        @if (d.totalPages > 1) {
+          <div class="p-4 border-t border-border">
+            <app-pagination
+              [currentPage]="d.page"
+              [totalPages]="d.totalPages"
+              [totalItems]="d.total"
+              [pageSize]="d.limit"
+              (pageChange)="changePage($event)"
+            />
           </div>
-        </div>
+        }
       }
     }
   </div>
