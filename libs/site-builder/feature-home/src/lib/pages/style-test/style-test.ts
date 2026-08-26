@@ -16,6 +16,7 @@ import { HlmSeparatorImports } from '@spartan/helm/separator';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmAvatarImports } from '@spartan/helm/avatar';
 import { HlmItemImports } from '@spartan/helm/item';
+import { HlmH2, HlmCode, HlmP, HlmMuted } from '@spartan/helm/typography';
 import { HlmStyleService, type HlmStyle } from '@spartan/styles';
 import { Palette } from '@invento/core';
 
@@ -86,6 +87,10 @@ const light: Palette = {
     HlmCardImports,
     HlmAvatarImports,
     HlmItemImports,
+    HlmH2,
+    HlmCode,
+    HlmP,
+    HlmMuted,
   ],
   templateUrl: './style-test.html',
   styleUrl: './style-test.css',

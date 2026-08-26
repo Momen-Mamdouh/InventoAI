@@ -41,7 +41,7 @@ import {
   PreviewDataClient,
 } from '@invento/site-builder-data-access-builder';
 import { ContainerWidth } from '@invento/shared-ui-container-width';
-import { hlmH2, hlmH3, hlmH4, hlmP } from '@spartan/helm/typography';
+import { HlmH2, HlmH3, HlmH4, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
@@ -80,6 +80,11 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
     ContainerWidth,
     DoubleSlash,
     TranslatePipe,
+    HlmH2,
+    HlmH3,
+    HlmH4,
+    HlmMuted,
+    HlmSmall,
   ],
   providers: [
     provideIcons({
@@ -99,11 +104,6 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Preview {
-  protected readonly hlmH2 = hlmH2;
-  protected readonly hlmH3 = hlmH3;
-  protected readonly hlmH4 = hlmH4;
-  protected readonly hlmP = hlmP;
-
   private readonly builderState = inject(BuilderState);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly _localeService = inject(LocaleService);

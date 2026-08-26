@@ -17,19 +17,16 @@
 
     <!-- Content -->
     <div class="relative z-10 flex flex-col items-center gap-6 max-w-3xl">
-      <h2
-        appScrollAnimate="fade-up"
-        [animDelay]="100"
-        class="font-extrabold text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-tight"
-      >
+      <h2 hlmH2 appScrollAnimate="fade-up" [animDelay]="100">
         {{ 'cta_title' | translate }}
         <span class="block text-primary drop-shadow-md">{{ 'cta_title_accent' | translate }}</span>
       </h2>
 
       <p
+        hlmP
         appScrollAnimate="fade-up"
         [animDelay]="200"
-        class="text-background/80 text-lg md:text-xl font-medium max-w-2xl leading-relaxed mt-2"
+        class="text-background/80 max-w-2xl mt-2"
       >
         {{ 'cta_desc' | translate }}
       </p>

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmSheetImports } from '@spartan/helm/sheet';
+import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 import { FaqStore } from '@invento/owner-dashboard-data-access-faq';
 import { FaqListComponent } from '../faq-list/faq-list';
 import { FaqFormComponent } from '../faq-form/faq-form';
@@ -12,7 +13,15 @@ import { lucideChevronRight, lucidePlus } from '@ng-icons/lucide';
   selector: 'app-faq-management-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmButtonImports, HlmSheetImports, FaqListComponent, FaqFormComponent, NgIcon],
+  imports: [
+    HlmButtonImports,
+    HlmSheetImports,
+    FaqListComponent,
+    FaqFormComponent,
+    NgIcon,
+    HlmH1,
+    HlmMuted,
+  ],
   providers: [provideIcons({ lucideChevronRight, lucidePlus })],
   templateUrl: './faq-management.page.html',
 })

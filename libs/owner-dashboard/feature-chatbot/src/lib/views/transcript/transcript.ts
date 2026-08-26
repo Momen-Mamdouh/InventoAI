@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmBadge } from '@spartan/helm/badge';
 import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmH2, HlmH3, HlmMuted, HlmP } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideArrowLeft,
@@ -22,7 +23,19 @@ import { ChatTranscript } from '../../types/chat-admin.types';
 @Component({
   selector: 'app-chatbot-transcript',
   standalone: true,
-  imports: [CommonModule, RouterLink, HlmCard, HlmBadge, HlmSpinner, NgIcon, DatePipe],
+  imports: [
+    CommonModule,
+    RouterLink,
+    HlmCard,
+    HlmBadge,
+    HlmSpinner,
+    NgIcon,
+    DatePipe,
+    HlmH2,
+    HlmH3,
+    HlmMuted,
+    HlmP,
+  ],
   providers: [
     provideIcons({
       lucideArrowLeft,

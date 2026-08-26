@@ -5,8 +5,8 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 class="font-bold text-xl sm:text-2xl tracking-tight">Account Settings</h1>
-      <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+      <h1 hlmH1>Account Settings</h1>
+      <p hlmMuted class="mt-0.5">
         Manage your subscription plan, payment details, and invoice history.
       </p>
     </div>
@@ -79,8 +79,8 @@
     >
       <!-- Card Header -->
       <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 class="font-semibold text-base sm:text-lg leading-tight">Current Plan</h2>
-        <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+        <h2 hlmH2>Current Plan</h2>
+        <p hlmMuted class="mt-0.5">
           Your active Invento subscription.
         </p>
       </div>
@@ -94,7 +94,7 @@
           <div class="space-y-3 min-w-0">
             <!-- Plan Name & Active Badge -->
             <div class="flex items-center gap-3">
-              <h3 class="font-bold text-lg sm:text-xl tracking-tight text-foreground">
+              <h3 hlmH3 class="text-foreground">
                 {{ plan().name }}
               </h3>
               <span
@@ -172,8 +172,8 @@
     >
       <!-- Card Header -->
       <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 class="font-semibold text-base sm:text-lg leading-tight">Payment Method</h2>
-        <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+        <h2 hlmH2>Payment Method</h2>
+        <p hlmMuted class="mt-0.5">
           The card used for your monthly subscription.
         </p>
       </div>
@@ -207,10 +207,10 @@
 
             <!-- Card Info -->
             <div class="space-y-0.5 min-w-0">
-              <h3 class="font-semibold text-sm sm:text-base text-foreground">
+              <h3 hlmH3 class="text-foreground">
                 {{ paymentCard().type }} ending in {{ paymentCard().last4 }}
               </h3>
-              <p class="text-muted-foreground text-xs truncate">
+              <p hlmMuted class="truncate">
                 Expires {{ paymentCard().expiry }} · Billing: {{ paymentCard().billingLocation }}
               </p>
             </div>
@@ -238,8 +238,8 @@
     >
       <!-- Card Header -->
       <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 class="font-semibold text-base sm:text-lg leading-tight">Billing History</h2>
-        <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+        <h2 hlmH2>Billing History</h2>
+        <p hlmMuted class="mt-0.5">
           Past invoices and payment records.
         </p>
       </div>
@@ -334,8 +334,8 @@
             (click)="selectPlan('Invento Starter', '$19')"
           >
             <div>
-              <h4 class="font-bold text-base text-foreground">Invento Starter</h4>
-              <p class="text-muted-foreground text-xs">1 Store · Up to 500 products</p>
+              <h4 hlmH4 class="text-foreground">Invento Starter</h4>
+              <p hlmMuted>1 Store · Up to 500 products</p>
             </div>
             <div class="text-end">
               <span class="font-bold text-lg text-foreground">$19</span>
@@ -352,8 +352,8 @@
               >CURRENT</span
             >
             <div>
-              <h4 class="font-bold text-base text-primary">Invento Pro</h4>
-              <p class="text-muted-foreground text-xs">
+              <h4 hlmH4 class="text-primary">Invento Pro</h4>
+              <p hlmMuted>
                 5 Stores · Unlimited products · Full analytics
               </p>
             </div>
@@ -370,8 +370,8 @@
             (click)="selectPlan('Invento Enterprise', '$199')"
           >
             <div>
-              <h4 class="font-bold text-base text-foreground">Invento Enterprise</h4>
-              <p class="text-muted-foreground text-xs">
+              <h4 hlmH4 class="text-foreground">Invento Enterprise</h4>
+              <p hlmMuted>
                 Unlimited stores & products · Dedicated support
               </p>
             </div>

@@ -24,8 +24,8 @@
       >
         <ng-icon name="lucideAlertCircle" size="24" />
       </div>
-      <h3 class="text-lg font-semibold">Transcript Not Found</h3>
-      <p class="text-muted-foreground max-w-md mt-2">
+      <h3 hlmH3>Transcript Not Found</h3>
+      <p hlmMuted class="max-w-md mt-2">
         We couldn't retrieve the transcript for this chat session. It may have been deleted or the
         server is unavailable.
       </p>
@@ -43,7 +43,7 @@
           <ng-icon name="lucideUser" size="24" />
         </div>
         <div>
-          <h2 class="font-bold text-lg leading-tight flex items-center gap-2">
+          <h2 hlmH2 class="flex items-center gap-2">
             {{ transcript()!.customerName || 'Guest User' }}
             @if (!transcript()!.isSignedIn) {
               <span
@@ -54,20 +54,20 @@
               >
             }
           </h2>
-          <p class="text-sm text-muted-foreground">
+          <p hlmMuted>
             {{ transcript()!.customerEmail || 'No email provided' }}
           </p>
         </div>
       </div>
 
       <div class="flex flex-col sm:items-end gap-1 text-sm text-muted-foreground">
-        <p>
+        <p hlmMuted>
           Started:
           <span class="font-medium text-foreground">{{
             transcript()!.createdAt | date: 'medium'
           }}</span>
         </p>
-        <p>
+        <p hlmMuted>
           Messages:
           <span class="font-medium text-foreground">{{ transcript()!.messageCount }}</span>
         </p>
@@ -83,7 +83,7 @@
             <div
               class="bg-primary text-primary-foreground px-4 py-2.5 rounded-2xl rounded-tr-sm max-w-[85%] sm:max-w-[75%] shadow-sm"
             >
-              <p class="text-sm whitespace-pre-wrap">{{ msg.text }}</p>
+              <p hlmP class="whitespace-pre-wrap">{{ msg.text }}</p>
             </div>
             <span class="text-[10px] text-muted-foreground px-1">{{
               msg.createdAt | date: 'shortTime'
@@ -103,7 +103,7 @@
                 <div
                   class="bg-muted/50 border border-border px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm w-full"
                 >
-                  <p class="text-sm whitespace-pre-wrap text-foreground leading-relaxed">
+                  <p hlmP class="whitespace-pre-wrap text-foreground">
                     {{ msg.text }}
                   </p>
                 </div>

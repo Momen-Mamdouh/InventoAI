@@ -6,27 +6,28 @@ import { HlmButton } from '@spartan/helm/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideAlertCircle, lucideCheckCircle2, lucideLoader2 } from '@ng-icons/lucide';
 import { PurchaseRequestService } from '@invento/owner-dashboard-data-access-purchase-request';
+import { HlmH1 } from '@spartan/helm/typography';
 
 @Component({
   selector: 'app-mailbox-callback',
-  imports: [HlmSpinner, NgIcon, HlmCard, HlmButton],
+  imports: [HlmSpinner, NgIcon, HlmCard, HlmButton, HlmH1],
   providers: [provideIcons({ lucideAlertCircle, lucideCheckCircle2, lucideLoader2 })],
   template: `
     <div class="min-h-screen flex items-center justify-center p-6 bg-background">
       <div hlmCard class="w-full max-w-md p-8 text-center shadow-sm">
         @if (loading()) {
           <hlm-spinner class="text-[30px] text-primary mx-auto" />
-          <h1 class="text-xl font-bold mt-4">Connecting mailbox…</h1>
+          <h1 hlmH1 class="mt-4">Connecting mailbox…</h1>
           <p class="text-sm text-muted-foreground mt-2">
             Finishing the Google connection securely.
           </p>
         } @else if (success()) {
           <ng-icon name="lucideCheckCircle2" size="30" class="text-emerald-600 mx-auto" />
-          <h1 class="text-xl font-bold mt-4">Mailbox connected</h1>
+          <h1 hlmH1 class="mt-4">Mailbox connected</h1>
           <p class="text-sm text-muted-foreground mt-2">Automatic supplier replies are ready.</p>
         } @else {
           <ng-icon name="lucideAlertCircle" size="30" class="text-destructive mx-auto" />
-          <h1 class="text-xl font-bold mt-4">Could not connect mailbox</h1>
+          <h1 hlmH1 class="mt-4">Could not connect mailbox</h1>
           <p class="text-sm text-muted-foreground mt-2">{{ error() }}</p>
           <button
             hlmBtn

@@ -2,8 +2,8 @@
   <!-- Header & Breadcrumbs -->
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      <h1 class="font-bold text-foreground text-2xl sm:text-3xl tracking-tight">Products</h1>
-      <p class="text-muted-foreground text-sm">
+      <h1 hlmH1 class="text-foreground">Products</h1>
+      <p hlmMuted>
         Manage your store catalog — {{ totalProducts() }} products total
       </p>
     </div>
@@ -185,8 +185,8 @@
                     <ng-icon name="lucideFolderOpen" size="20" />
                   </div>
                   <div class="space-y-1">
-                    <p class="font-medium text-sm text-foreground">No products found</p>
-                    <p class="text-muted-foreground text-sm">
+                    <p hlmSmall class="text-foreground">No products found</p>
+                    <p hlmMuted>
                       @if (attributes().length === 0) {
                         Get started by defining your product attributes first.
                       } @else {
@@ -333,8 +333,8 @@
                       <ng-icon name="lucideSearch" size="20" />
                     </div>
                     <div class="space-y-1">
-                      <p class="font-medium text-sm text-foreground">No matching products</p>
-                      <p class="text-muted-foreground text-sm">
+                      <p hlmSmall class="text-foreground">No matching products</p>
+                      <p hlmMuted>
                         No products match "{{ searchTerm() }}". Try adjusting your search query.
                       </p>
                     </div>
@@ -391,7 +391,8 @@
         <!-- SECTION: Basic Information -->
         <div class="space-y-4">
           <h3
-            class="text-xs font-bold text-foreground uppercase tracking-widest text-muted-foreground border-b border-border pb-2"
+            hlmH3
+            class="text-foreground uppercase text-muted-foreground border-b border-border pb-2"
           >
             Basic Information
           </h3>
@@ -438,9 +439,7 @@
         @if (productAttributes().length > 0) {
           <div class="space-y-4">
             <div class="flex items-center justify-between border-b border-border pb-2">
-              <h3
-                class="text-xs font-bold text-foreground uppercase tracking-widest text-muted-foreground"
-              >
+              <h3 hlmH3 class="text-foreground uppercase text-muted-foreground">
                 Attributes & Specifications
               </h3>
               <a routerLink="/attributes" class="text-xs text-primary hover:underline font-medium">
@@ -488,9 +487,7 @@
         <!-- SECTION: Variants -->
         <div class="space-y-4">
           <div class="flex items-center justify-between border-b border-border pb-2">
-            <h3
-              class="text-xs font-bold text-foreground uppercase tracking-widest text-muted-foreground"
-            >
+            <h3 hlmH3 class="text-foreground uppercase text-muted-foreground">
               Variants <span class="text-rose-500">*</span>
             </h3>
             <button
@@ -645,7 +642,8 @@
         <!-- SECTION: Optional Details -->
         <div class="space-y-4">
           <h3
-            class="text-xs font-bold text-foreground uppercase tracking-widest text-muted-foreground border-b border-border pb-2"
+            hlmH3
+            class="text-foreground uppercase text-muted-foreground border-b border-border pb-2"
           >
             Optional Details
           </h3>
@@ -746,7 +744,7 @@
                   </button>
                 }
               </div>
-              <p class="text-[10px] text-muted-foreground mt-1">
+              <p hlmMuted class="mt-1">
                 Click to select or deselect categories
               </p>
             </div>

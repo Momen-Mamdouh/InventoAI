@@ -2,8 +2,8 @@
   <!-- Header & Breadcrumbs -->
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      <h1 class="font-bold text-foreground text-2xl sm:text-3xl tracking-tight">Attributes</h1>
-      <p class="text-muted-foreground text-sm">
+      <h1 hlmH1 class="text-foreground">Attributes</h1>
+      <p hlmMuted>
         Manage product attributes — {{ attributes().length }} attributes total
       </p>
     </div>
@@ -89,8 +89,8 @@
                     <ng-icon name="lucideTags" size="20" />
                   </div>
                   <div class="space-y-1">
-                    <p class="font-medium text-sm text-foreground">No attributes found</p>
-                    <p class="text-muted-foreground text-sm">
+                    <p hlmSmall class="text-foreground">No attributes found</p>
+                    <p hlmMuted>
                       Get started by creating your first product attribute or generating with AI.
                     </p>
                   </div>
@@ -118,7 +118,7 @@
                   </div>
                 </td>
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
-                  <p class="font-medium text-foreground">{{ attr.name }}</p>
+                  <p hlmSmall class="text-foreground">{{ attr.name }}</p>
                 </td>
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ attr.key }}
@@ -184,8 +184,8 @@
                       <ng-icon name="lucideSearch" size="20" />
                     </div>
                     <div class="space-y-1">
-                      <p class="font-medium text-sm text-foreground">No matching attributes</p>
-                      <p class="text-muted-foreground text-sm">
+                      <p hlmSmall class="text-foreground">No matching attributes</p>
+                      <p hlmMuted>
                         No attributes match "{{ searchQuery() }}". Try adjusting your search query.
                       </p>
                     </div>

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideTerminal, lucideLayers, lucideDatabase, lucideGlobe } from '@ng-icons/lucide';
 import { ScrollAnimateDirective } from '@invento/shared-util-directives';
-import { hlmH3, hlmP } from '@spartan/helm/typography';
+import { HlmH2, HlmH3, HlmP } from '@spartan/helm/typography';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 
@@ -17,13 +17,10 @@ interface Capability {
   selector: 'app-capabilities',
   templateUrl: './capabilities.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIcon, ScrollAnimateDirective, RouterLink, TranslatePipe],
+  imports: [NgIcon, ScrollAnimateDirective, RouterLink, TranslatePipe, HlmH2, HlmH3, HlmP],
   providers: [provideIcons({ lucideTerminal, lucideLayers, lucideDatabase, lucideGlobe })],
 })
 export class Capabilities {
-  protected readonly hlmH3 = hlmH3;
-  protected readonly hlmP = hlmP;
-
   protected readonly capabilities = signal<Capability[]>([
     {
       icon: 'lucideTerminal',

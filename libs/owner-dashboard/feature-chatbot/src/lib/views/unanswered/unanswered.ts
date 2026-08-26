@@ -4,6 +4,7 @@ import { HlmCard } from '@spartan/helm/card';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmH2, HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideCheck,
@@ -18,7 +19,18 @@ import { UnansweredResponse, UnansweredTheme } from '../../types/chat-admin.type
 @Component({
   selector: 'app-chatbot-unanswered',
   standalone: true,
-  imports: [CommonModule, HlmCard, HlmButton, HlmSpinner, HlmSelectImports, NgIcon, DatePipe],
+  imports: [
+    CommonModule,
+    HlmCard,
+    HlmButton,
+    HlmSpinner,
+    HlmSelectImports,
+    NgIcon,
+    DatePipe,
+    HlmH2,
+    HlmH3,
+    HlmMuted,
+  ],
   providers: [
     provideIcons({
       lucideCheck,

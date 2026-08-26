@@ -5,8 +5,8 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 class="font-bold text-xl sm:text-2xl tracking-tight">Account Settings</h1>
-      <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+      <h1 hlmH1>Account Settings</h1>
+      <p hlmMuted class="mt-0.5">
         Manage your profile details, photo, and preferences used across Invento.
       </p>
     </div>
@@ -79,8 +79,8 @@
     >
       <!-- Card Header -->
       <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 class="font-semibold text-base sm:text-lg leading-tight">Profile Photo</h2>
-        <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+        <h2 hlmH2>Profile Photo</h2>
+        <p hlmMuted class="mt-0.5">
           Upload a profile photo visible to your team and customers.
         </p>
       </div>
@@ -156,7 +156,7 @@
             }
           </div>
 
-          <p class="text-muted-foreground text-xs leading-relaxed">
+          <p hlmMuted>
             JPG, PNG or WebP. Max 4 MB. Min 200×200 px.<br />
             Or drag and drop onto the avatar.
           </p>
@@ -171,8 +171,8 @@
     >
       <!-- Card Header -->
       <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 class="font-semibold text-base sm:text-lg leading-tight">Personal Information</h2>
-        <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+        <h2 hlmH2>Personal Information</h2>
+        <p hlmMuted class="mt-0.5">
           Your name and contact details used across Invento.
         </p>
       </div>
@@ -226,7 +226,7 @@
               [value]="phone()"
               (input)="onPhoneChange($any($event.target).value)"
             />
-            <p class="mt-1 text-[11px] text-muted-foreground">
+            <p hlmMuted class="mt-1">
               Used for account security and support only.
             </p>
           </div>

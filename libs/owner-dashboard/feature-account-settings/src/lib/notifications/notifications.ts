@@ -15,6 +15,7 @@ import {
 } from '@ng-icons/lucide';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmH1, HlmH2, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
 
 export interface PreferenceSetting {
   id: string;
@@ -33,7 +34,19 @@ export interface PreferenceGroup {
 @Component({
   selector: 'app-notifications',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NgIcon, HlmCard, HlmButton],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    NgIcon,
+    HlmCard,
+    HlmButton,
+    HlmH1,
+    HlmH2,
+    HlmH3,
+    HlmH4,
+    HlmMuted,
+  ],
   providers: [
     provideIcons({
       lucideMail,

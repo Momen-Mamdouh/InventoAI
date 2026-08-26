@@ -33,7 +33,7 @@
         </div>
         <div class="min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight truncate">
+            <h1 hlmH1 class="truncate" dir="auto">
               {{ supplier.name }}
             </h1>
             <span
@@ -45,7 +45,7 @@
               >{{ supplier.isActive ? 'Active' : 'Inactive' }}</span
             >
           </div>
-          <p class="text-sm text-muted-foreground mt-1">Supplier profile and procurement history</p>
+          <p hlmMuted class="mt-1">Supplier profile and procurement history</p>
         </div>
       </div>
       <div class="flex gap-2">
@@ -59,8 +59,8 @@
 
     <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <div hlmCard class="rounded-2xl p-4">
-        <p class="text-xs text-muted-foreground">Email</p>
-        <p class="font-semibold mt-2 break-all">{{ supplier.contactEmail }}</p>
+        <p hlmMuted>Email</p>
+        <p hlmLarge class="break-all">{{ supplier.contactEmail }}</p>
         <a
           class="text-xs text-primary mt-2 inline-flex items-center gap-1"
           [href]="'mailto:' + supplier.contactEmail"
@@ -68,8 +68,8 @@
         >
       </div>
       <div hlmCard class="rounded-2xl p-4">
-        <p class="text-xs text-muted-foreground">Phone</p>
-        <p class="font-semibold mt-2">{{ supplier.phone || '—' }}</p>
+        <p hlmMuted>Phone</p>
+        <p hlmLarge>{{ supplier.phone || '—' }}</p>
         @if (supplier.phone) {
           <a
             class="text-xs text-primary mt-2 inline-flex items-center gap-1"
@@ -79,19 +79,19 @@
         }
       </div>
       <div hlmCard class="rounded-2xl p-4">
-        <p class="text-xs text-muted-foreground">Lead time</p>
-        <p class="font-semibold text-xl mt-1">{{ supplier.leadTimeDays }} days</p>
+        <p hlmMuted>Lead time</p>
+        <p hlmLarge>{{ supplier.leadTimeDays }} days</p>
       </div>
       <div hlmCard class="rounded-2xl p-4">
-        <p class="text-xs text-muted-foreground">Requests</p>
-        <p class="font-semibold text-xl mt-1">{{ history().length }}</p>
+        <p hlmMuted>Requests</p>
+        <p hlmLarge>{{ history().length }}</p>
       </div>
     </div>
 
     @if (supplier.notes) {
       <div hlmCard class="rounded-2xl p-5">
-        <p class="text-sm font-semibold">Notes</p>
-        <p class="text-sm text-muted-foreground mt-2 whitespace-pre-wrap">{{ supplier.notes }}</p>
+        <p hlmSmall>Notes</p>
+        <p hlmMuted class="mt-2 whitespace-pre-wrap">{{ supplier.notes }}</p>
       </div>
     }
 
@@ -99,12 +99,12 @@
       <div class="p-5 border-b border-border">
         <div class="flex items-center justify-between gap-3">
           <div>
-            <h2 class="font-semibold text-lg">Purchase request history</h2>
-            <p class="text-sm text-muted-foreground mt-1">
+            <h2 hlmH2>Purchase request history</h2>
+            <p hlmMuted class="mt-1">
               Every request where this supplier was included, with their offer and outcome.
             </p>
           </div>
-          <span class="text-xs text-muted-foreground"
+          <span hlmMuted
             >{{ history().length }} request{{ history().length === 1 ? '' : 's' }}</span
           >
         </div>
@@ -140,8 +140,8 @@
                     <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
                       <ng-icon name="lucideTruck" size="20" class="text-muted-foreground" />
                     </div>
-                    <p class="font-semibold">No purchase request history</p>
-                    <p class="text-sm text-muted-foreground max-w-md">
+                    <p hlmSmall>No purchase request history</p>
+                    <p hlmMuted class="max-w-md">
                       This supplier has not appeared on a purchase request yet.
                     </p>
                   </div>
@@ -151,8 +151,8 @@
               @for (item of history(); track item.request.id) {
                 <tr hlmTr class="hover:bg-muted/30 transition-colors">
                   <td hlmTd class="px-4 py-4">
-                    <p class="font-medium">{{ item.request.productTitle }}</p>
-                    <p class="text-xs text-muted-foreground mt-1">
+                    <p hlmSmall>{{ item.request.productTitle }}</p>
+                    <p hlmMuted class="mt-1">
                       {{ item.request.variantLabel || 'Default variant' }}
                     </p>
                   </td>
@@ -162,19 +162,19 @@
                       [ngClass]="statusClass(item.request.status)"
                       >{{ item.request.status | titlecase }}</span
                     >
-                    <p class="text-xs text-muted-foreground mt-1">
+                    <p hlmMuted class="mt-1">
                       {{ item.request.quantity }} units
                     </p>
                   </td>
                   <td hlmTd class="px-4 py-4">
-                    <p class="font-semibold">
+                    <p hlmSmall>
                       {{
                         item.offer.unitAmount === null
                           ? 'No price'
                           : (item.offer.unitAmount / 100 | currency: 'EGP' : 'symbol' : '1.2-2')
                       }}
                     </p>
-                    <p class="text-xs text-muted-foreground mt-1">
+                    <p hlmMuted class="mt-1">
                       {{ item.offer.quantity ?? item.request.quantity }} units
                     </p>
                   </td>

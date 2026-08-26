@@ -4,6 +4,7 @@ import gsap from 'gsap';
 
 // Spartan UI Imports
 import { HlmButton } from '@spartan/helm/button';
+import { HlmH2, HlmMuted } from '@spartan/helm/typography';
 
 import { animateElementsOnRender } from '@invento/user-site-util-animation';
 import { TranslatePipe } from '@invento/shared-util-i18n';
@@ -12,7 +13,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   selector: 'app-not-found',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, HlmButton, TranslatePipe],
+  imports: [RouterLink, HlmButton, TranslatePipe, HlmH2, HlmMuted],
   templateUrl: './not-found.html',
 })
 export class NotFoundComponent {

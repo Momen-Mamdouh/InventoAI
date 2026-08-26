@@ -11,7 +11,7 @@
       >
         {{ 'caps_header' | translate }}
       </div>
-      <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
+      <h2 hlmH2 class="text-foreground">
         {{ 'caps_title' | translate }}
       </h2>
     </div>
@@ -45,12 +45,13 @@
             </div>
 
             <h3
-              class="font-bold text-2xl tracking-tight text-foreground mb-3 group-hover:text-primary transition-colors"
+              hlmH3
+              class="text-foreground mb-3 group-hover:text-primary transition-colors"
             >
               {{ cap.title | translate }}
             </h3>
 
-            <p class="text-muted-foreground text-base leading-relaxed font-medium">
+            <p hlmP class="text-muted-foreground">
               {{ cap.description | translate }}
             </p>
           </div>

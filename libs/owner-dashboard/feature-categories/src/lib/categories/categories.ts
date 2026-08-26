@@ -31,6 +31,7 @@ import { HlmTableImports } from '@spartan/helm/table';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmAlertImports } from '@spartan/helm/alert';
+import { HlmH1, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { CategoryFormDialog } from './category-form-dialog';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { Category, CategoriesState } from '@invento/owner-dashboard-data-access-category';
@@ -54,6 +55,9 @@ type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
     DragDropModule,
     CategoryFormDialog,
     DeleteConfirmDialog,
+    HlmH1,
+    HlmMuted,
+    HlmSmall,
   ],
   providers: [
     provideIcons({

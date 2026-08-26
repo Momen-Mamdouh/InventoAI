@@ -127,7 +127,7 @@
              which can exceed what `ORDERS_SERVER_LOAD_LIMIT` actually pulled into memory, while
              `orders()` is exactly what's loaded and being searched/filtered against here. -->
         @if (ordersService.searchQuery().trim() || ordersService.selectedFilter() !== 'all') {
-          <p class="text-muted-foreground text-xs font-medium tabular-nums">
+          <p hlmMuted class="tabular-nums">
             {{
               'orders.result_count'
                 | translate

@@ -34,7 +34,7 @@ import {
   BrainstormApi,
   MIN_BRAINSTORM_LENGTH,
 } from '@invento/site-builder-data-access-builder';
-import { hlmH2, hlmP } from '@spartan/helm/typography';
+import { HlmH2 } from '@spartan/helm/typography';
 import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { toast } from '@spartan/helm/sonner';
 import { Router } from '@angular/router';
@@ -67,6 +67,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     PageHeader,
     DoubleSlash,
     TranslatePipe,
+    HlmH2,
   ],
   templateUrl: './brainstorm.html',
   styleUrl: './brainstorm.css',
@@ -95,9 +96,6 @@ export class Brainstorm implements OnInit {
   private readonly router = inject(Router);
   private readonly localeService = inject(LocaleService);
   private readonly destroyRef = inject(DestroyRef);
-
-  protected readonly hlmH2 = hlmH2;
-  protected readonly hlmP = hlmP;
 
   logoFile = signal<File | null>(null);
   logoPreview = signal<string | null>(null);

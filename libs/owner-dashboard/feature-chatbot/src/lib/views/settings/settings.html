@@ -29,8 +29,8 @@
     >
       <div class="px-4 sm:px-6 py-4 border-border border-b flex items-center justify-between">
         <div>
-          <h2 class="font-semibold text-base sm:text-lg leading-tight">Chatbot Configuration</h2>
-          <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+          <h2 hlmH2>Chatbot Configuration</h2>
+          <p hlmMuted class="mt-0.5">
             Manage your AI advisor's identity and availability.
           </p>
         </div>
@@ -58,7 +58,7 @@
             [value]="greeting()"
             (input)="greeting.set($any($event.target).value)"
           />
-          <p class="mt-1 text-[11px] text-muted-foreground">
+          <p hlmMuted class="mt-1">
             Current effective greeting:
             <span class="italic">"{{ settings()?.effectiveGreeting }}"</span>
           </p>
@@ -99,7 +99,7 @@
             [value]="contactEmail()"
             (input)="contactEmail.set($any($event.target).value)"
           />
-          <p class="mt-1 text-[11px] text-muted-foreground">
+          <p hlmMuted class="mt-1">
             Provided to users when the chatbot cannot answer a question.
           </p>
         </div>

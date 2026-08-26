@@ -8,8 +8,8 @@
   <div
     class="flex flex-col justify-center items-center gap-1 py-16 border border-dashed rounded-lg text-center"
   >
-    <p class="font-medium text-foreground text-sm">No FAQ entries yet</p>
-    <p class="text-muted-foreground text-sm">Add your first question and answer to get started.</p>
+    <p hlmSmall class="text-foreground">No FAQ entries yet</p>
+    <p hlmMuted>Add your first question and answer to get started.</p>
   </div>
 } @else {
   <div cdkDropList class="flex flex-col gap-2" (cdkDropListDropped)="onDrop($event)">
@@ -33,7 +33,7 @@
 
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
-            <p class="font-medium text-foreground truncate">{{ entry.question }}</p>
+            <p hlmSmall class="text-foreground truncate">{{ entry.question }}</p>
             @if (!entry.isPublished) {
               <span class="bg-muted px-1.5 py-0.5 rounded text-muted-foreground text-xs shrink-0"
                 >Draft</span
@@ -42,7 +42,7 @@
           </div>
           <!-- answer is plain text from the API, never sanitised server-side:
                interpolation (not innerHTML) keeps this safe, pre-line keeps the line breaks -->
-          <p class="mt-1 text-muted-foreground text-sm whitespace-pre-line">{{ entry.answer }}</p>
+          <p hlmMuted class="mt-1 whitespace-pre-line">{{ entry.answer }}</p>
         </div>
 
         <div class="flex items-center gap-2 shrink-0">

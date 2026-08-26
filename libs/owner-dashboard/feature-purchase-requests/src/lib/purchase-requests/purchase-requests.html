@@ -4,8 +4,8 @@
       <div class="flex items-center gap-2 mb-2 text-muted-foreground text-xs">
         <ng-icon name="lucidePackage" size="14" /> Procurement
       </div>
-      <h1 class="font-bold text-2xl sm:text-3xl tracking-tight">Purchase Requests</h1>
-      <p class="mt-1 text-muted-foreground text-sm">
+      <h1 hlmH1>Purchase Requests</h1>
+      <p hlmMuted class="mt-1">
         Ask suppliers for quotes, compare their replies, and close the best deal.
       </p>
     </div>
@@ -46,8 +46,8 @@
         <div class="flex items-start gap-3">
           <ng-icon name="lucideShieldCheck" size="20" class="mt-0.5 text-muted-foreground" />
           <div>
-            <p class="font-semibold">Supplier mailbox automation is not configured</p>
-            <p class="mt-1 text-muted-foreground text-sm">
+            <p hlmSmall>Supplier mailbox automation is not configured</p>
+            <p hlmMuted class="mt-1">
               Purchase requests still work through SMTP and pasted supplier replies.
             </p>
           </div>
@@ -55,8 +55,8 @@
       } @else if (!mb.isConnected) {
         <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
           <div>
-            <p class="font-semibold">Connect Gmail for automatic supplier replies</p>
-            <p class="mt-1 text-muted-foreground text-sm">
+            <p hlmSmall>Connect Gmail for automatic supplier replies</p>
+            <p hlmMuted class="mt-1">
               Replies to watched offers are checked automatically. Manual paste remains available.
             </p>
           </div>
@@ -78,8 +78,8 @@
               <ng-icon name="lucideMailCheck" size="18" class="text-emerald-600" />
             </div>
             <div>
-              <p class="font-semibold">{{ mb.accountEmail }}</p>
-              <p class="mt-1 text-muted-foreground text-sm">
+              <p hlmSmall>{{ mb.accountEmail }}</p>
+              <p hlmMuted class="mt-1">
                 @if (mb.status === 'connected') {
                   Automatic replies are being watched.
                 } @else {
@@ -168,8 +168,8 @@
                   <div class="flex justify-center items-center bg-muted rounded-full w-12 h-12">
                     <ng-icon name="lucidePackage" size="20" class="text-muted-foreground" />
                   </div>
-                  <p class="font-semibold">No purchase requests</p>
-                  <p class="text-muted-foreground text-sm">
+                  <p hlmSmall>No purchase requests</p>
+                  <p hlmMuted>
                     Start a request when you need supplier quotes for a product variant.
                   </p>
                   <button hlmBtn variant="outline" class="gap-2 mt-1" (click)="openCreate()">
@@ -267,11 +267,11 @@
             >{{ request.status | titlecase }}</span
           >
           @if (request.draftStatus === 'fallback') {
-            <span class="text-muted-foreground text-xs">Fallback email</span>
+            <span hlmMuted>Fallback email</span>
           }
         </div>
-        <h2 class="font-bold text-lg truncate">{{ request.productTitle }}</h2>
-        <p class="text-muted-foreground text-xs">
+        <h2 hlmH2 class="truncate" dir="auto">{{ request.productTitle }}</h2>
+        <p hlmMuted>
           {{ request.variantLabel || 'Default variant' }} · {{ request.quantity }} units
         </p>
       </div>
@@ -288,22 +288,22 @@
     <div class="space-y-6 p-5">
       <div class="gap-3 grid grid-cols-2 md:grid-cols-4">
         <div class="p-4 border border-border rounded-xl">
-          <p class="text-muted-foreground text-xs">Suppliers</p>
-          <p class="mt-1 font-bold text-xl">{{ request.offerCount }}</p>
+          <p hlmMuted>Suppliers</p>
+          <p class="mt-1">{{ request.offerCount }}</p>
         </div>
         <div class="p-4 border border-border rounded-xl">
-          <p class="text-muted-foreground text-xs">Replies</p>
-          <p class="mt-1 font-bold text-xl">{{ request.receivedCount }}</p>
+          <p hlmMuted>Replies</p>
+          <p class="mt-1">{{ request.receivedCount }}</p>
         </div>
         <div class="p-4 border border-border rounded-xl">
-          <p class="text-muted-foreground text-xs">Deadline</p>
-          <p class="mt-1 font-bold text-xl">
+          <p hlmMuted>Deadline</p>
+          <p class="mt-1">
             {{ request.neededWithinDays ? request.neededWithinDays + 'd' : '—' }}
           </p>
         </div>
         <div class="p-4 border border-border rounded-xl">
-          <p class="text-muted-foreground text-xs">Created</p>
-          <p class="mt-2 font-semibold">{{ request.createdAt | date: 'mediumDate' }}</p>
+          <p hlmMuted>Created</p>
+          <p class="mt-1">{{ request.createdAt | date: 'mediumDate' }}</p>
         </div>
       </div>
 
@@ -335,8 +335,8 @@
       <section hlmCard class="p-5 rounded-2xl">
         <div class="flex justify-between items-start gap-4 mb-4">
           <div>
-            <p class="font-semibold">Supplier offers</p>
-            <p class="mt-1 text-muted-foreground text-xs">
+            <p hlmSmall>Supplier offers</p>
+            <p hlmMuted class="mt-1">
               Offers are returned ranked best-first. Unpriced offers stay last.
             </p>
           </div>
@@ -384,12 +384,12 @@
                       >
                     }
                   </div>
-                  <p class="mt-1 text-muted-foreground text-xs">{{ offer.supplierEmail }}</p>
+                  <p hlmMuted class="mt-1">{{ offer.supplierEmail }}</p>
                 </div>
                 <div class="gap-4 grid grid-cols-2 sm:grid-cols-4 min-w-0 xl:min-w-[430px]">
                   <div>
-                    <p class="text-[11px] text-muted-foreground">Unit price</p>
-                    <p class="mt-1 font-semibold">
+                    <p hlmMuted>Unit price</p>
+                    <p class="mt-1">
                       {{
                         offer.unitAmount === null
                           ? '—'
@@ -398,18 +398,18 @@
                     </p>
                   </div>
                   <div>
-                    <p class="text-[11px] text-muted-foreground">Qty</p>
-                    <p class="mt-1 font-semibold">{{ offer.quantity ?? request.quantity }}</p>
+                    <p hlmMuted>Qty</p>
+                    <p class="mt-1">{{ offer.quantity ?? request.quantity }}</p>
                   </div>
                   <div>
-                    <p class="text-[11px] text-muted-foreground">Delivery</p>
-                    <p class="mt-1 font-semibold">
+                    <p hlmMuted>Delivery</p>
+                    <p class="mt-1">
                       {{ offer.deliveryDays === null ? '—' : offer.deliveryDays + 'd' }}
                     </p>
                   </div>
                   <div>
-                    <p class="text-[11px] text-muted-foreground">Total</p>
-                    <p class="mt-1 font-semibold">
+                    <p hlmMuted>Total</p>
+                    <p class="mt-1">
                       {{
                         offer.totalAmount === null
                           ? '—'
@@ -500,7 +500,7 @@
                 </div>
               }
               @if (offer.notes) {
-                <p class="mt-3 text-muted-foreground text-xs">
+                <p hlmMuted class="mt-3">
                   <span class="font-medium text-foreground">Note:</span> {{ offer.notes }}
                 </p>
               }
@@ -512,8 +512,8 @@
       <section hlmCard class="p-5 rounded-2xl">
         <div class="flex justify-between items-center gap-3 mb-4">
           <div>
-            <p class="font-semibold">Email draft</p>
-            <p class="mt-1 text-muted-foreground text-xs">{{ request.subject }}</p>
+            <p hlmSmall>Email draft</p>
+            <p hlmMuted class="mt-1">{{ request.subject }}</p>
           </div>
           @if (request.status === 'draft') {
             <button hlmBtn variant="ghost" size="sm" class="gap-1.5" (click)="openEdit()">
@@ -527,7 +527,7 @@
           {{ request.body }}
         </div>
         @if (request.note) {
-          <p class="mt-3 text-muted-foreground text-xs">
+          <p hlmMuted class="mt-3">
             <span class="font-medium">Internal note:</span> {{ request.note }}
           </p>
         }
@@ -616,7 +616,7 @@
         /></label>
       </div>
       <div class="mt-5">
-        <p class="mb-2 font-semibold text-sm">Active suppliers</p>
+        <p hlmSmall class="mb-2">Active suppliers</p>
         <div
           class="gap-2 grid sm:grid-cols-2 p-2 border border-border rounded-xl max-h-48 overflow-y-auto"
         >
@@ -712,7 +712,7 @@
       </label>
     </div>
     <div class="mt-6">
-      <p class="mb-2 font-semibold text-sm">Recipients</p>
+      <p hlmSmall class="mb-2">Recipients</p>
       <div
         class="gap-2 grid sm:grid-cols-2 p-2 border border-border rounded-xl max-h-48 overflow-y-auto"
       >

@@ -1,17 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmH2, HlmP } from '@spartan/helm/typography';
 import { ScrollAnimateDirective } from '@invento/shared-util-directives';
-import { hlmH2, hlmP } from '@spartan/helm/typography';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-cta',
   templateUrl: './cta.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, HlmButton, ScrollAnimateDirective, TranslatePipe],
+  imports: [RouterLink, HlmButton, ScrollAnimateDirective, TranslatePipe, HlmH2, HlmP],
 })
-export class Cta {
-  protected readonly hlmH2 = hlmH2;
-  protected readonly hlmP = hlmP;
-}
+export class Cta {}

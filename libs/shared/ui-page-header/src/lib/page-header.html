@@ -8,7 +8,8 @@
   </div>
 
   <h1
-    class="${hlmH1} mb-2 font-work font-bold text-3xl md:text-4xl tracking-tight"
+    hlmH1
+    class="mb-2 font-work"
     style="color: var(--foreground)"
   >
     {{ title() | translate }}
@@ -16,7 +17,7 @@
   </h1>
 
   @if (description()) {
-    <p class="${hlmP}" style="color: var(--foreground)">
+    <p hlmP style="color: var(--foreground)">
       {{ description() | translate }}
     </p>
   }

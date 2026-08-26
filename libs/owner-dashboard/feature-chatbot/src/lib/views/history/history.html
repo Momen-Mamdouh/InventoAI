@@ -83,8 +83,8 @@
         >
           <ng-icon name="lucideAlertCircle" size="24" />
         </div>
-        <h3 class="text-lg font-semibold">Failed to Load Sessions</h3>
-        <p class="text-muted-foreground max-w-md mt-2">
+        <h3 hlmH3>Failed to Load Sessions</h3>
+        <p hlmMuted class="max-w-md mt-2">
           We couldn't retrieve the chat history. Please make sure the server is running.
         </p>
       </div>
@@ -104,7 +104,7 @@
             @if (data()?.items?.length === 0) {
               <tr hlmTr>
                 <td hlmTd colspan="5" class="px-6 py-12 text-center text-muted-foreground">
-                  <p>No chat sessions found matching your filters.</p>
+                  <p hlmSmall>No chat sessions found matching your filters.</p>
                 </td>
               </tr>
             } @else {
@@ -184,7 +184,7 @@
       <!-- Pagination -->
       @if (data() && data()!.totalPages > 1) {
         <div class="p-4 border-t border-border flex items-center justify-between">
-          <p class="text-sm text-muted-foreground">
+          <p hlmMuted>
             Showing <span class="font-medium">{{ (data()!.page - 1) * data()!.limit + 1 }}</span> to
             <span class="font-medium">{{
               Math.min(data()!.page * data()!.limit, data()!.total)

@@ -9,6 +9,7 @@ import { AUTH_CONFIG, AuthService, resolveAuthBasePath } from '@invento/shared-d
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
@@ -17,7 +18,7 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-forgot-password',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton, HlmH1, HlmMuted],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
 })

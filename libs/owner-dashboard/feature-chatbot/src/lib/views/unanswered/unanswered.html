@@ -11,8 +11,8 @@
         <ng-icon name="lucideAlertCircle" size="20" />
       </div>
       <div>
-        <h2 class="font-semibold">Unanswered Themes</h2>
-        <p class="text-xs text-muted-foreground">
+        <h2 hlmH2>Unanswered Themes</h2>
+        <p hlmMuted>
           Topics the chatbot couldn't answer from its knowledge base.
         </p>
       </div>
@@ -62,8 +62,8 @@
         >
           <ng-icon name="lucideAlertCircle" size="24" />
         </div>
-        <h3 class="text-lg font-semibold">Failed to Load Unanswered Questions</h3>
-        <p class="text-muted-foreground max-w-md mt-2">
+        <h3 hlmH3>Failed to Load Unanswered Questions</h3>
+        <p hlmMuted class="max-w-md mt-2">
           We couldn't retrieve the list of unanswered questions. Please make sure the server is
           running.
         </p>
@@ -77,8 +77,8 @@
             >
               <ng-icon name="lucideCheck" size="24" class="text-emerald-500" />
             </div>
-            <h3 class="font-medium text-foreground text-lg mb-1">All Caught Up!</h3>
-            <p>No unanswered themes found for the selected criteria.</p>
+            <h3 hlmH3 class="text-foreground mb-1">All Caught Up!</h3>
+            <p hlmMuted>No unanswered themes found for the selected criteria.</p>
           </div>
         } @else {
           @for (theme of data()?.items; track theme.key) {
@@ -88,7 +88,7 @@
             >
               <div class="space-y-2 flex-1 min-w-0">
                 <div class="flex items-center gap-2">
-                  <h3 class="font-semibold text-base truncate">{{ theme.label }}</h3>
+                  <h3 hlmH3 class="truncate">{{ theme.label }}</h3>
                   @if (theme.isReviewed) {
                     <span
                       class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400"
@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="bg-muted px-4 py-3 rounded-lg border border-border">
-                  <p class="text-sm italic text-muted-foreground">"{{ theme.exampleQuestion }}"</p>
+                  <p hlmMuted class="italic">"{{ theme.exampleQuestion }}"</p>
                 </div>
 
                 <div class="flex items-center gap-4 text-xs text-muted-foreground pt-1">
@@ -141,7 +141,7 @@
       <!-- Pagination -->
       @if (data() && data()!.totalPages > 1) {
         <div class="p-4 border-t border-border flex items-center justify-between">
-          <p class="text-sm text-muted-foreground">
+          <p hlmMuted>
             Showing <span class="font-medium">{{ (data()!.page - 1) * data()!.limit + 1 }}</span> to
             <span class="font-medium">{{
               Math.min(data()!.page * data()!.limit, data()!.total)

@@ -26,7 +26,7 @@ import { Router } from '@angular/router';
 import { CdkStepper, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { PageHeader } from '@invento/shared-ui-page-header';
 import { BuilderState } from '@invento/site-builder-data-access-builder';
-import { hlmP } from '@spartan/helm/typography';
+import { HlmSmall } from '@spartan/helm/typography';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmInputImports } from '@spartan/helm/input';
 import { SpartanStepperImports } from '@spartan/helm/stepper';
@@ -50,6 +50,7 @@ import { toastApiError } from '../../utils/toast-api-error';
     PageHeader,
     SpartanStepperImports,
     TranslatePipe,
+    HlmSmall,
   ],
   providers: [
     provideIcons({
@@ -69,7 +70,6 @@ export class AiInterview implements OnInit {
   private readonly _localeService = inject(LocaleService);
   private readonly aiInterviewApi = inject(AiInterviewApi);
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly hlmP = hlmP;
 
   readonly isSubmitting = signal(false);
   readonly invalidQuestionId = signal<string | null>(null);

@@ -2,8 +2,8 @@
   <!-- Header & Breadcrumbs -->
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      <h1 class="font-bold text-foreground text-2xl sm:text-3xl tracking-tight">Categories</h1>
-      <p class="text-muted-foreground text-sm">
+      <h1 hlmH1 class="text-foreground">Categories</h1>
+      <p hlmMuted>
         Organize how products are grouped and displayed in the storefront.
       </p>
     </div>
@@ -151,8 +151,8 @@
                     <ng-icon name="lucideFolderOpen" size="20" />
                   </div>
                   <div class="space-y-1">
-                    <p class="font-medium text-sm text-foreground">No categories found</p>
-                    <p class="text-muted-foreground text-sm">
+                    <p hlmSmall class="text-foreground">No categories found</p>
+                    <p hlmMuted>
                       Try adjusting your search or filters, or add a new category.
                     </p>
                   </div>
@@ -195,7 +195,8 @@
                     </div>
                     <div>
                       <p
-                        class="font-medium text-primary hover:underline cursor-pointer"
+                        hlmSmall
+                        class="text-primary hover:underline cursor-pointer"
                         role="button"
                         tabindex="0"
                         (click)="onEdit(c)"
@@ -204,7 +205,7 @@
                       >
                         {{ c.name }}
                       </p>
-                      <div class="text-muted-foreground text-sm">{{ c.slug }}</div>
+                      <div hlmMuted>{{ c.slug }}</div>
                     </div>
                   </div>
                 </td>
@@ -269,7 +270,7 @@
     <!-- Pagination -->
     <div class="flex sm:flex-row flex-col justify-between items-center gap-3 p-4 border-t">
       <div class="flex items-center gap-2">
-        <span class="text-muted-foreground text-sm">Rows per page</span>
+        <span hlmMuted>Rows per page</span>
         <hlm-select [value]="store.limit()" (valueChange)="onLimitChange($event)" class="w-[80px]">
           <hlm-select-trigger>
             <hlm-select-value />
@@ -281,7 +282,7 @@
             <hlm-select-item [value]="50">50</hlm-select-item>
           </hlm-select-content>
         </hlm-select>
-        <span class="text-muted-foreground text-sm">{{ store.total() }} total</span>
+        <span hlmMuted>{{ store.total() }} total</span>
       </div>
 
       <div class="flex items-center gap-1">

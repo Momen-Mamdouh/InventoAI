@@ -8,6 +8,7 @@ import { AUTH_CONFIG, AuthService, resolveAuthBasePath } from '@invento/shared-d
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
@@ -16,7 +17,7 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-reset-password',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, HlmInput, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, HlmInput, HlmLabel, HlmButton, HlmH1, HlmMuted],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })

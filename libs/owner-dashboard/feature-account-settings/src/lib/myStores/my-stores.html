@@ -5,8 +5,8 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 class="font-bold text-xl sm:text-2xl tracking-tight">Account Settings</h1>
-      <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+      <h1 hlmH1>Account Settings</h1>
+      <p hlmMuted class="mt-0.5">
         Manage all store instances linked to your Invento account.
       </p>
     </div>
@@ -75,7 +75,7 @@
 
     <!-- Top Action Bar (Store Counter + Generate New Store Button) -->
     <div class="flex flex-wrap justify-between items-center gap-4">
-      <p class="font-medium text-muted-foreground text-xs sm:text-sm">
+      <p hlmMuted>
         <span class="font-bold text-foreground">{{ stores().length }}</span> stores linked to your
         account
       </p>
@@ -117,7 +117,7 @@
             <div class="space-y-1.5 min-w-0">
               <!-- Name & Status Badge -->
               <div class="flex flex-wrap items-center gap-2.5">
-                <h3 class="font-bold text-base sm:text-lg tracking-tight truncate">
+                <h3 hlmH3 class="truncate">
                   {{ store.name }}
                 </h3>
 
@@ -146,7 +146,7 @@
               </div>
 
               <!-- Description -->
-              <p class="text-muted-foreground text-xs sm:text-sm line-clamp-1">
+              <p hlmMuted class="line-clamp-1">
                 {{ store.description }}
               </p>
 

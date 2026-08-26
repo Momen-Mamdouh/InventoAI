@@ -15,6 +15,7 @@ import {
   HlmCardTitle,
 } from '@spartan/helm/card';
 import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { PageHeader } from '@invento/shared-ui-page-header';
 import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { BuilderState, DomainApi, ThemesApi } from '@invento/site-builder-data-access-builder';
@@ -43,6 +44,8 @@ type WorkflowStep = 'INPUT' | 'AI_ANALYSIS';
     HlmCardDescription,
     HlmCardContent,
     HlmSpinner,
+    HlmH3,
+    HlmMuted,
     PageHeader,
     DoubleSlash,
     TranslatePipe,

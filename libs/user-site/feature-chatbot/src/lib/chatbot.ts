@@ -16,6 +16,7 @@ import { ChatService, ChatMessage } from './service/chat.service';
 import { RouterModule } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { StoreSlugService } from '@invento/user-site-data-access-store';
+import { HlmP, HlmMuted } from '@spartan/helm/typography';
 
 @Component({
   selector: 'app-chatbot',
@@ -30,6 +31,8 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
     RouterModule,
     CurrencyPipe,
     DatePipe,
+    HlmP,
+    HlmMuted,
   ],
   templateUrl: './chatbot.html',
   viewProviders: [

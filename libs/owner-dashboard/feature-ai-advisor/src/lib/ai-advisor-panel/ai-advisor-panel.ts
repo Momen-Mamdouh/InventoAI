@@ -51,6 +51,7 @@ import {
   lucideX,
 } from '@ng-icons/lucide';
 import { toast } from '@spartan/helm/sonner';
+import { HlmH1, HlmH3, HlmH4, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import {
   Insight,
   InsightKind,
@@ -82,6 +83,11 @@ export type AdvisorPanelTab = 'today' | 'history' | 'settings';
     HlmLabelImports,
     HlmSpinner,
     NgIcon,
+    HlmH1,
+    HlmH3,
+    HlmH4,
+    HlmMuted,
+    HlmSmall,
   ],
   providers: [
     provideIcons({

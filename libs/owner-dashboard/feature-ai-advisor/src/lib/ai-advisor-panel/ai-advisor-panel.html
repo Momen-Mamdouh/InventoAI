@@ -25,7 +25,7 @@
           </div>
           <div>
             <div class="flex items-center gap-2 flex-wrap">
-              <h1 class="font-bold text-foreground text-xl sm:text-2xl tracking-tight">
+              <h1 hlmH1 class="text-foreground">
                 AI Advisor
               </h1>
               @if (isStale() && brief() && activeView() === 'today') {
@@ -40,23 +40,23 @@
               }
             </div>
             @if (activeView() === 'today' && headline()) {
-              <p class="text-muted-foreground text-xs sm:text-sm font-medium mt-0.5 line-clamp-1">
+              <p hlmMuted class="mt-0.5 line-clamp-1">
                 {{ headline() }}
               </p>
             } @else if (activeView() === 'history' && selectedBriefId() && selectedBrief()) {
-              <p class="text-muted-foreground text-xs sm:text-sm font-medium mt-0.5 line-clamp-1">
+              <p hlmMuted class="mt-0.5 line-clamp-1">
                 {{ selectedBrief()!.headline }}
               </p>
             } @else if (activeView() === 'history') {
-              <p class="text-muted-foreground text-xs sm:text-sm mt-0.5">
+              <p hlmMuted class="mt-0.5">
                 Past daily briefs, historical recommendations, and performance archive
               </p>
             } @else if (activeView() === 'settings') {
-              <p class="text-muted-foreground text-xs sm:text-sm mt-0.5">
+              <p hlmMuted class="mt-0.5">
                 Automated schedule, delivery preferences, location forecasting & supplier lead time
               </p>
             } @else {
-              <p class="text-muted-foreground text-xs sm:text-sm mt-0.5">
+              <p hlmMuted class="mt-0.5">
                 Powered by Invento Intelligence
               </p>
             }
@@ -283,8 +283,8 @@
           class="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
         />
         <div class="flex-1">
-          <p class="font-medium">Showing brief from {{ formattedBriefDate() }}</p>
-          <p class="text-amber-700/80 dark:text-amber-300/80 text-[11px] mt-0.5">
+          <p hlmSmall>Showing brief from {{ formattedBriefDate() }}</p>
+          <p hlmMuted class="text-amber-700/80 dark:text-amber-300/80">
             Your store's latest generated brief is displayed. Click "Generate Now" for fresh
             analysis.
           </p>
@@ -379,8 +379,8 @@
         >
           <ng-icon name="lucideShieldAlert" size="24" />
         </div>
-        <h4 class="font-semibold text-base text-foreground">Access Restricted</h4>
-        <p class="mt-1 text-xs text-muted-foreground">
+        <h4 hlmH4 class="text-foreground">Access Restricted</h4>
+        <p hlmMuted class="mt-1">
           AI Advisor recommendations are restricted to Store Owners and Admins.
         </p>
       </div>
@@ -391,8 +391,8 @@
         >
           <ng-icon name="lucideAlertCircle" size="24" />
         </div>
-        <h4 class="font-semibold text-base text-foreground">Couldn't load recommendations</h4>
-        <p class="mt-1 text-xs text-muted-foreground">
+        <h4 hlmH4 class="text-foreground">Couldn't load recommendations</h4>
+        <p hlmMuted class="mt-1">
           Please check your connection and try again.
         </p>
         <button hlmBtn size="sm" variant="outline" class="mt-3 gap-1.5" (click)="reload()">
@@ -410,10 +410,10 @@
           >
             <ng-icon name="lucideCheck" size="26" />
           </div>
-          <h4 class="font-semibold text-base text-foreground">
+          <h4 hlmH4 class="text-foreground">
             Nothing needs your attention today
           </h4>
-          <p class="mt-1.5 text-xs text-muted-foreground max-w-sm mx-auto">
+          <p hlmMuted class="mt-1.5 max-w-sm mx-auto">
             Your inventory is healthy. No stockouts, slow movers, or critical demand gaps were
             detected.
           </p>
@@ -426,10 +426,10 @@
           >
             <ng-icon name="lucideSparkles" size="26" />
           </div>
-          <h4 class="font-semibold text-base text-foreground">
+          <h4 hlmH4 class="text-foreground">
             Your first brief arrives tomorrow morning
           </h4>
-          <p class="mt-1.5 text-xs text-muted-foreground max-w-sm mx-auto">
+          <p hlmMuted class="mt-1.5 max-w-sm mx-auto">
             Invento analyzes your catalog, sales pace, and trends overnight. Or click "Generate Now"
             to run analysis immediately.
           </p>
@@ -491,8 +491,8 @@
             >
               <ng-icon name="lucideFileQuestion" size="24" />
             </div>
-            <h4 class="font-semibold text-base text-foreground">Brief Not Found</h4>
-            <p class="mt-1 text-xs text-muted-foreground">
+            <h4 hlmH4 class="text-foreground">Brief Not Found</h4>
+            <p hlmMuted class="mt-1">
               This past brief is not available or has expired.
             </p>
           </div>
@@ -503,20 +503,20 @@
             >
               <ng-icon name="lucideAlertCircle" size="24" />
             </div>
-            <h4 class="font-semibold text-base text-foreground">Couldn't load brief</h4>
-            <p class="mt-1 text-xs text-muted-foreground">
+            <h4 hlmH4 class="text-foreground">Couldn't load brief</h4>
+            <p hlmMuted class="mt-1">
               Failed to fetch the historical brief details.
             </p>
           </div>
         } @else if (selectedBrief(); as sb) {
           <div class="bg-card border rounded-xl p-4 space-y-2 shadow-sm">
             <div class="flex items-center justify-between gap-2">
-              <h3 class="font-semibold text-base text-foreground">{{ sb.headline }}</h3>
+              <h3 hlmH3 class="text-foreground">{{ sb.headline }}</h3>
               <span hlmBadge class="text-xs">
                 {{ sb.generatedBy === 'manual' ? 'Manual Generation' : 'Scheduled Daily' }}
               </span>
             </div>
-            <p class="text-xs text-muted-foreground">
+            <p hlmMuted>
               Created on {{ sb.createdAt | date: 'medium' }} · {{ sb.insightCount }} recommendations
             </p>
           </div>
@@ -598,7 +598,7 @@
               <ng-icon name="lucideAlertCircle" size="14" class="mt-0.5 shrink-0" />
               <div class="space-y-0.5">
                 @for (err of historyValidationErrors(); track err) {
-                  <p>{{ err }}</p>
+                  <p hlmSmall>{{ err }}</p>
                 }
               </div>
             </div>
@@ -619,8 +619,8 @@
             >
               <ng-icon name="lucideShieldAlert" size="24" />
             </div>
-            <h4 class="font-semibold text-base text-foreground">Access Restricted</h4>
-            <p class="mt-1 text-xs text-muted-foreground">
+            <h4 hlmH4 class="text-foreground">Access Restricted</h4>
+            <p hlmMuted class="mt-1">
               Historical briefs are restricted to Store Owners and Admins.
             </p>
           </div>
@@ -631,8 +631,8 @@
             >
               <ng-icon name="lucideInbox" size="24" />
             </div>
-            <h4 class="font-semibold text-base text-foreground">No historical briefs found</h4>
-            <p class="mt-1 text-xs text-muted-foreground">
+            <h4 hlmH4 class="text-foreground">No historical briefs found</h4>
+            <p hlmMuted class="mt-1">
               No daily briefs recorded for this time range.
             </p>
           </div>
@@ -657,7 +657,8 @@
                     }
                   </div>
                   <p
-                    class="text-sm font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors"
+                    hlmSmall
+                    class="text-foreground line-clamp-1 group-hover:text-primary transition-colors"
                   >
                     {{ item.headline }}
                   </p>
@@ -735,8 +736,8 @@
         >
           <ng-icon name="lucideShieldAlert" size="24" />
         </div>
-        <h4 class="font-semibold text-base text-foreground">Access Restricted</h4>
-        <p class="mt-1 text-xs text-muted-foreground">
+        <h4 hlmH4 class="text-foreground">Access Restricted</h4>
+        <p hlmMuted class="mt-1">
           Advisor configuration is restricted to Store Owners and Admins.
         </p>
       </div>
@@ -747,8 +748,8 @@
         >
           <ng-icon name="lucideAlertCircle" size="24" />
         </div>
-        <h4 class="font-semibold text-base text-foreground">Couldn't load settings</h4>
-        <p class="mt-1 text-xs text-muted-foreground">Please try again.</p>
+        <h4 hlmH4 class="text-foreground">Couldn't load settings</h4>
+        <p hlmMuted class="mt-1">Please try again.</p>
         <button hlmBtn size="sm" variant="outline" class="mt-3 gap-1.5" (click)="reloadSettings()">
           <ng-icon name="lucideRefreshCw" size="14" />
           Retry
@@ -761,8 +762,8 @@
       >
         <ng-icon name="lucideSliders" size="16" class="text-primary mt-0.5 shrink-0" />
         <div class="space-y-0.5">
-          <p class="font-semibold text-foreground">Store Intelligence Parameters</p>
-          <p class="text-muted-foreground leading-relaxed">
+          <p hlmSmall class="text-foreground">Store Intelligence Parameters</p>
+          <p hlmMuted>
             Configure your daily brief schedule, location forecasting, and restock lead times. Each
             section saves independently.
           </p>
@@ -775,7 +776,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <ng-icon name="lucideClock" size="16" class="text-primary" />
-              <h4 class="font-semibold text-xs sm:text-sm text-foreground">Daily Brief Schedule</h4>
+              <h4 hlmH4 class="text-foreground">Daily Brief Schedule</h4>
             </div>
             <div class="flex items-center gap-2">
               <button
@@ -815,7 +816,7 @@
             </div>
           }
 
-          <p class="text-xs text-muted-foreground leading-relaxed">
+          <p hlmMuted>
             @if (s.isEnabled) {
               Automated daily brief generates at
               <span class="font-semibold text-foreground">{{ s.sendHour }}:00</span> store local
@@ -868,7 +869,7 @@
                   />
                 </div>
               </div>
-              <p class="text-[11px] text-muted-foreground leading-tight">
+              <p hlmMuted>
                 Measurement windows (e.g. 7-day sales) and daily triggers operate within this
                 calendar timezone.
               </p>
@@ -904,7 +905,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <ng-icon name="lucideMail" size="16" class="text-primary" />
-              <h4 class="font-semibold text-xs sm:text-sm text-foreground">Email Delivery</h4>
+              <h4 hlmH4 class="text-foreground">Email Delivery</h4>
             </div>
             <button
               hlmBtn
@@ -930,7 +931,7 @@
             </div>
           }
 
-          <p class="text-xs text-muted-foreground leading-relaxed">
+          <p hlmMuted>
             {{
               s.emailEnabled
                 ? 'Morning brief summary is emailed daily to the Store Owner.'
@@ -948,7 +949,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <ng-icon name="lucideCloudSun" size="16" class="text-primary" />
-              <h4 class="font-semibold text-xs sm:text-sm text-foreground">
+              <h4 hlmH4 class="text-foreground">
                 Weather Intelligence & Location
               </h4>
             </div>
@@ -995,7 +996,7 @@
           }
 
           @if (s.hasWeatherLocation && !isEditingLocation()) {
-            <p class="text-xs text-muted-foreground">
+            <p hlmMuted>
               Forecasting active for
               <span class="font-semibold text-foreground">{{ s.city ?? 'Store Location' }}</span>
               ({{ s.latitude }}, {{ s.longitude }}).
@@ -1136,7 +1137,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <ng-icon name="lucideSliders" size="16" class="text-primary" />
-              <h4 class="font-semibold text-xs sm:text-sm text-foreground">
+              <h4 hlmH4 class="text-foreground">
                 Supplier Lead Time Benchmark
               </h4>
             </div>
@@ -1163,7 +1164,7 @@
           }
 
           @if (!isEditingLeadTime()) {
-            <p class="text-xs text-muted-foreground leading-relaxed">
+            <p hlmMuted>
               Store-wide restock recommendation threshold is currently set to
               <span class="font-semibold text-foreground">{{ s.leadTimeDays }} days</span>.
             </p>
@@ -1249,7 +1250,7 @@
 
         <div class="flex-1 min-w-0">
           <div class="flex justify-between items-start gap-2">
-            <h4 class="font-semibold text-sm text-foreground" [title]="item.title">
+            <h4 hlmH4 class="text-foreground" [title]="item.title">
               {{ item.title }}
             </h4>
             <span
@@ -1277,7 +1278,7 @@
           <!-- Payload Details depending on kind -->
           @if (item.kind === 'stockout') {
             @if (asStockout(item.payload); as p) {
-              <p class="mt-1 text-muted-foreground text-xs font-medium">
+              <p hlmMuted class="mt-1">
                 {{ p.productTitle }}
                 @if (p.variantLabel) {
                   <span class="text-foreground/70 font-normal">({{ p.variantLabel }})</span>
@@ -1295,7 +1296,7 @@
             }
           } @else if (item.kind === 'restock') {
             @if (asRestock(item.payload); as p) {
-              <p class="mt-1 text-muted-foreground text-xs font-medium">
+              <p hlmMuted class="mt-1">
                 {{ p.productTitle }}
                 @if (p.variantLabel) {
                   <span class="text-foreground/70 font-normal">({{ p.variantLabel }})</span>
@@ -1310,7 +1311,7 @@
             }
           } @else if (item.kind === 'trending') {
             @if (asTrending(item.payload); as p) {
-              <p class="mt-1 text-muted-foreground text-xs font-medium">
+              <p hlmMuted class="mt-1">
                 {{ p.productTitle }}
                 · Recent:
                 <span class="text-foreground font-semibold">{{ p.recentUnits }}</span> (Baseline:
@@ -1322,7 +1323,7 @@
             }
           } @else if (item.kind === 'slow_mover') {
             @if (asSlowMover(item.payload); as p) {
-              <p class="mt-1 text-muted-foreground text-xs font-medium">
+              <p hlmMuted class="mt-1">
                 {{ p.productTitle }}
                 · In stock:
                 <span class="text-foreground font-semibold">{{ p.stockQuantity }}</span> · Tied
@@ -1338,7 +1339,7 @@
             }
           } @else if (item.kind === 'demand_gap') {
             @if (asDemandGap(item.payload); as p) {
-              <p class="mt-1 text-muted-foreground text-xs font-medium">
+              <p hlmMuted class="mt-1">
                 Topic: <span class="text-foreground font-semibold">{{ p.label }}</span> · Asked
                 <span class="text-foreground font-semibold">{{ p.occurrences }} times</span> · Last:
                 {{ p.lastAskedAt | date: 'shortDate' }}
@@ -1346,7 +1347,7 @@
             }
           } @else if (item.kind === 'seasonal_event') {
             @if (asSeasonal(item.payload); as p) {
-              <p class="mt-1 text-muted-foreground text-xs font-medium">
+              <p hlmMuted class="mt-1">
                 Event: <span class="text-foreground font-semibold">{{ p.eventName }}</span> · Starts
                 on {{ p.startsOn }} (<span class="text-primary font-semibold"
                   >{{ p.daysUntil }} days</span
@@ -1355,7 +1356,7 @@
             }
           } @else if (item.kind === 'weather') {
             @if (asWeather(item.payload); as p) {
-              <p class="mt-1 text-muted-foreground text-xs font-medium">
+              <p hlmMuted class="mt-1">
                 {{ p.anomaly }}
                 · Temp: {{ p.minTempC }}°C - {{ p.maxTempC }}°C · Date: {{ p.onDate }}
               </p>
@@ -1425,7 +1426,7 @@
     </div>
   } @empty {
     <div class="py-16 text-center border rounded-2xl bg-card col-span-full">
-      <p class="text-muted-foreground text-sm">No recommendations matching this filter.</p>
+      <p hlmMuted>No recommendations matching this filter.</p>
     </div>
   }
 </ng-template>

@@ -210,14 +210,14 @@
       </button>
     </div>
     <div class="flex flex-col md:flex-1 gap-4">
-      <h2 class="text-muted-foreground/50 text-xs uppercase" [class]="hlmH2">
+      <h2 hlmH2 class="text-muted-foreground/50 uppercase">
         <app-double-slash /> {{ 'brainstorm_context' | translate }}
       </h2>
       <hlm-item-group>
         @for (item of contextChecklist; track item.id) {
           <hlm-item variant="muted" class="border border-border">
             <hlm-item-content>
-              <p hlmItemDescription [class]="hlmP">
+              <p hlmItemDescription>
                 <span hlmBadge class="bg-muted mr-2 rounded-full size-5 text-muted-foreground">{{
                   item.id
                 }}</span

@@ -8,6 +8,7 @@ import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
+import { HlmH1, HlmH2, HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideWand2, lucideLoader2, lucideAlertCircle, lucideCheck } from '@ng-icons/lucide';
 import { CatalogAiService } from '../../data-access/catalog-ai.service';
@@ -29,7 +30,21 @@ interface SelectableAttribute extends GeneratedAttribute {
 @Component({
   selector: 'app-catalog-ai-review',
   standalone: true,
-  imports: [CommonModule, FormsModule, HlmButtonImports, HlmInputImports, HlmSelectImports, HlmSpinner, NgIcon, HlmLabelImports, HlmTextareaImports],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HlmButtonImports,
+    HlmInputImports,
+    HlmSelectImports,
+    HlmSpinner,
+    NgIcon,
+    HlmLabelImports,
+    HlmTextareaImports,
+    HlmH1,
+    HlmH2,
+    HlmH3,
+    HlmMuted,
+  ],
   providers: [provideIcons({ lucideWand2, lucideLoader2, lucideAlertCircle, lucideCheck })],
   templateUrl: './catalog-ai-review.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

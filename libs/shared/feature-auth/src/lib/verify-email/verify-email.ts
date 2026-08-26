@@ -12,6 +12,7 @@ import {
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
@@ -20,7 +21,7 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-verify-email',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, HlmLabel, HlmButton, HlmInput],
+  imports: [TranslatePipe, ReactiveFormsModule, HlmLabel, HlmButton, HlmInput, HlmH1, HlmMuted],
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.css',
 })

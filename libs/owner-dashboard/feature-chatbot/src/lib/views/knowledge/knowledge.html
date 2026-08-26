@@ -10,8 +10,8 @@
       >
         <ng-icon name="lucideAlertCircle" size="24" />
       </div>
-      <h3 class="text-lg font-semibold">Failed to Load Status</h3>
-      <p class="text-muted-foreground max-w-md mt-2">
+      <h3 hlmH3>Failed to Load Status</h3>
+      <p hlmMuted class="max-w-md mt-2">
         We couldn't retrieve the knowledge base status. Ensure the backend server is running and
         your database connections are healthy.
       </p>
@@ -24,7 +24,7 @@
       >
         <ng-icon name="lucideAlertTriangle" size="20" class="mt-0.5 flex-shrink-0" />
         <div>
-          <h4 class="font-semibold">Vector Search is Unavailable</h4>
+          <h4 hlmH4>Vector Search is Unavailable</h4>
           <p class="mt-1">
             Semantic search is currently disabled because the database extension (pgvector) is
             missing. The chatbot will degrade to exact-match keyword search, which significantly
@@ -37,8 +37,8 @@
     <!-- Header Actions -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h2 class="font-semibold text-lg">Indexing Status</h2>
-        <p class="text-sm text-muted-foreground mt-1">
+        <h2 hlmH2>Indexing Status</h2>
+        <p hlmMuted class="mt-1">
           Last indexed:
           {{ status()?.lastIndexedAt ? (status()!.lastIndexedAt | date: 'medium') : 'Never' }}
           &middot; Model: {{ status()?.embeddingModel }}
@@ -116,7 +116,7 @@
     <!-- Breakdown by Source -->
     <div hlmCard class="border-border rounded-xl shadow-xs overflow-hidden">
       <div class="px-4 py-3 bg-muted/50 border-b border-border">
-        <h3 class="text-sm font-semibold">Breakdown by Source</h3>
+        <h3 hlmH3>Breakdown by Source</h3>
       </div>
 
       <div class="divide-y divide-border">

@@ -22,7 +22,7 @@
     <div class="gap-6 grid grid-cols-1 xl:grid-cols-4">
       <div class="space-y-5 xl:col-span-1">
         <div class="preview-body-theme">
-          <p class="flex items-center gap-2 uppercase preview-tag" [class]="hlmP">
+          <p class="flex items-center gap-2 uppercase preview-tag">
             <app-double-slash /> {{ 'preview_active_theme' | translate }}
             @if (!isLoading() && themeSuggestions().length > 1) {
               <span class="ms-auto font-mono text-[10px] text-muted-foreground normal-case">
@@ -52,7 +52,7 @@
               <div
                 class="col-span-full flex flex-col items-start gap-2 rounded-lg border border-border border-dashed p-4"
               >
-                <p class="text-muted-foreground text-xs" [class]="hlmP">
+                <p hlmMuted>
                   {{ 'preview_themes_unavailable' | translate }}
                 </p>
                 <button hlmBtn variant="outline" size="sm" (click)="retryThemes()">
@@ -83,7 +83,7 @@
         </div>
 
         <div class="preview-body-mode space-y-2">
-          <p class="uppercase preview-tag" [class]="hlmP">
+          <p class="uppercase preview-tag">
             <app-double-slash /> {{ 'preview_mode' | translate }}
           </p>
           <div class="flex gap-2">
@@ -111,7 +111,7 @@
         </div>
 
         <div class="preview-body-viewport">
-          <p class="uppercase preview-tag" [class]="hlmP">
+          <p class="uppercase preview-tag">
             <app-double-slash /> {{ 'preview_viewport' | translate }}
           </p>
           <div class="flex gap-2">
@@ -214,13 +214,10 @@
                       class="z-10 relative flex flex-col justify-end h-full"
                       [ngStyle]="heroTextPadding()"
                     >
-                      <p
-                        class="opacity-80 mb-1 text-primary text-xs uppercase tracking-widest"
-                        [class]="hlmP"
-                      >
+                      <p hlmSmall class="opacity-80 text-primary uppercase">
                         {{ product.badge | translate }}
                       </p>
-                      <h2 class="mb-3 font-bold text-foreground/90 text-2xl" [class]="hlmH2">
+                      <h2 hlmH2 class="mb-3 text-foreground/90">
                         {{ product.name | translate }}
                       </h2>
                       <button
@@ -282,10 +279,7 @@
                 </div>
 
                 <div class="bg-foreground/10 px-4 pb-4 preview-visual-sizes">
-                  <p
-                    class="opacity-60 mb-2 pt-2 font-bold text-foreground/90 text-xs uppercase"
-                    [class]="hlmP"
-                  >
+                  <p hlmSmall class="opacity-60 pt-2 text-foreground/90 uppercase">
                     <app-double-slash /> {{ 'preview_select_size' | translate }}
                   </p>
 
@@ -320,7 +314,7 @@
         </div>
 
         <div class="mt-2 p-4 border border-foreground/10 rounded build-summary">
-          <p class="mb-4 text-xs uppercase preview-tag" [class]="hlmP">
+          <p class="uppercase preview-tag">
             <app-double-slash /> {{ 'preview_build_summary' | translate }}
           </p>
           <div
@@ -337,10 +331,10 @@
             } @else {
               @for (stat of buildSummary(); track stat.label) {
                 <div class="lg:text-left text-center">
-                  <p class="mb-1 text-foreground/25 text-xs" [class]="hlmP">
+                  <p hlmMuted class="text-foreground/25">
                     {{ stat.label | translate }}
                   </p>
-                  <p class="font-semibold text-foreground/80 text-sm" [class]="hlmP">
+                  <p hlmSmall class="text-foreground/80">
                     {{ stat.value }}
                   </p>
                 </div>
@@ -393,13 +387,10 @@
         <div class="absolute inset-0 bg-linear-120 from-background/30 to-background/50"></div>
         @if (featuredProduct(); as product) {
           <div class="z-10 relative flex flex-col justify-end p-6 h-full">
-            <p
-              class="opacity-80 mb-1 text-primary text-xs uppercase tracking-widest"
-              [class]="hlmP"
-            >
+            <p hlmSmall class="opacity-80 text-primary uppercase">
               {{ product.badge | translate }}
             </p>
-            <h2 class="mb-3 font-bold text-foreground/90 text-3xl" [class]="hlmH2">
+            <h2 hlmH2 class="mb-3 text-foreground/90">
               {{ product.name | translate }}
             </h2>
             <button
@@ -453,9 +444,9 @@
 <hlm-dialog [state]="deployDialogState()" (closed)="closeDeployDialog()">
   <hlm-dialog-content class="sm:max-w-lg" *hlmDialogPortal>
     <hlm-dialog-header>
-      <h3 hlmDialogTitle [class]="hlmH3">{{ 'preview_confirm_title' | translate }}</h3>
+      <h3 hlmDialogTitle hlmH3>{{ 'preview_confirm_title' | translate }}</h3>
 
-      <p hlmDialogDescription [class]="hlmP">
+      <p hlmDialogDescription>
         {{ 'preview_confirm_desc' | translate }}
         <strong>{{ activeTheme().name | translate }}</strong
         >.
@@ -472,18 +463,18 @@
           </div>
 
           <div class="space-y-1">
-            <h4 class="font-semibold" [class]="hlmH4">
+            <h4 hlmH4>
               {{ activeTheme().name | translate }}
             </h4>
 
-            <p class="text-muted-foreground text-sm" [class]="hlmP">
+            <p hlmMuted>
               {{ activeTheme().description | translate }}
             </p>
           </div>
         </div>
       </div>
 
-      <p class="text-muted-foreground text-sm leading-relaxed" [class]="hlmP">
+      <p hlmMuted>
         {{ 'preview_confirm_detail' | translate }}
       </p>
     </div>

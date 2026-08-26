@@ -1,6 +1,6 @@
 <div class="space-y-6 pt-6">
   <div class="flex items-center justify-between">
-    <h2 class="text-lg font-semibold tracking-tight">Chatbot Insights</h2>
+    <h2 hlmH2>Chatbot Insights</h2>
     <hlm-select
       [value]="daysFilter()"
       (valueChange)="onDaysChange($event)"
@@ -29,8 +29,8 @@
       >
         <ng-icon name="lucideAlertCircle" size="24" />
       </div>
-      <h3 class="text-lg font-semibold">Failed to Load Insights</h3>
-      <p class="text-muted-foreground max-w-md mt-2">
+      <h3 hlmH3>Failed to Load Insights</h3>
+      <p hlmMuted class="max-w-md mt-2">
         We couldn't retrieve the chatbot statistics at this time. Please make sure the server is
         running and try again.
       </p>
@@ -47,8 +47,8 @@
           </div>
         </div>
         <div>
-          <h3 class="text-2xl font-bold">{{ stats()!.sessions | number }}</h3>
-          <p class="text-xs text-muted-foreground mt-1">
+          <h3 hlmH3>{{ stats()!.sessions | number }}</h3>
+          <p hlmMuted class="mt-1">
             From {{ stats()!.from | date: 'mediumDate' }}
           </p>
         </div>
@@ -62,8 +62,8 @@
           </div>
         </div>
         <div>
-          <h3 class="text-2xl font-bold">{{ stats()!.messages | number }}</h3>
-          <p class="text-xs text-muted-foreground mt-1">Exchanged in chat</p>
+          <h3 hlmH3>{{ stats()!.messages | number }}</h3>
+          <p hlmMuted class="mt-1">Exchanged in chat</p>
         </div>
       </div>
 
@@ -75,8 +75,8 @@
           </div>
         </div>
         <div>
-          <h3 class="text-2xl font-bold">{{ stats()!.questions | number }}</h3>
-          <p class="text-xs text-muted-foreground mt-1">By customers</p>
+          <h3 hlmH3>{{ stats()!.questions | number }}</h3>
+          <p hlmMuted class="mt-1">By customers</p>
         </div>
       </div>
 
@@ -93,7 +93,7 @@
           </div>
         </div>
         <div>
-          <h3 class="text-2xl font-bold text-orange-700 dark:text-orange-300">
+          <h3 hlmH3 class="text-orange-700 dark:text-orange-300">
             {{ stats()!.unansweredThemes | number }}
           </h3>
           <a
@@ -111,8 +111,8 @@
       <!-- Resolutions Breakdown -->
       <div hlmCard class="lg:col-span-2 p-0 overflow-hidden flex flex-col">
         <div class="px-5 py-4 border-b border-border">
-          <h3 class="font-semibold">Question Resolutions</h3>
-          <p class="text-xs text-muted-foreground mt-0.5">
+          <h3 hlmH3>Question Resolutions</h3>
+          <p hlmMuted class="mt-0.5">
             How the chatbot handled the {{ stats()!.questions }} questions
           </p>
         </div>
@@ -246,8 +246,8 @@
       <!-- Top Mentioned Products -->
       <div hlmCard class="p-0 overflow-hidden flex flex-col">
         <div class="px-5 py-4 border-b border-border bg-muted/30">
-          <h3 class="font-semibold text-sm">Top Mentioned Products</h3>
-          <p class="text-xs text-muted-foreground mt-0.5">Products most frequently asked about</p>
+          <h3 hlmH3>Top Mentioned Products</h3>
+          <p hlmMuted class="mt-0.5">Products most frequently asked about</p>
         </div>
         <div class="divide-y divide-border overflow-y-auto" style="max-height: 350px">
           @if (stats()!.topProducts.length === 0) {
@@ -266,7 +266,7 @@
                     <ng-icon name="lucidePackage" size="14" />
                   </div>
                   <div class="min-w-0">
-                    <p class="text-sm font-medium truncate" [title]="product.title">
+                    <p hlmSmall class="truncate" [title]="product.title">
                       {{ product.title }}
                     </p>
                     <a

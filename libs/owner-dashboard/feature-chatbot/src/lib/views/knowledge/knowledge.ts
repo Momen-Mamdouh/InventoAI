@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmH2, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideRefreshCw,
@@ -20,7 +21,18 @@ import { KnowledgeStatus } from '../../types/chat-admin.types';
 @Component({
   selector: 'app-chatbot-knowledge',
   standalone: true,
-  imports: [CommonModule, HlmCard, HlmButton, HlmSpinner, NgIcon, DatePipe],
+  imports: [
+    CommonModule,
+    HlmCard,
+    HlmButton,
+    HlmSpinner,
+    NgIcon,
+    DatePipe,
+    HlmH2,
+    HlmH3,
+    HlmH4,
+    HlmMuted,
+  ],
   providers: [
     provideIcons({
       lucideRefreshCw,

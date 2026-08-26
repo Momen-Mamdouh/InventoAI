@@ -23,6 +23,7 @@ import {
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmH1 } from '@spartan/helm/typography';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
@@ -31,7 +32,7 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-register',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmButton, HlmSpinner],
+  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmButton, HlmSpinner, HlmH1],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

@@ -8,6 +8,7 @@ import { HlmInput } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSwitchImports } from '@spartan/helm/switch';
+import { HlmH2, HlmMuted } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideChevronDown, lucideSave } from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
@@ -26,6 +27,8 @@ import { ChatbotSettings, UpdateChatbotSettingsDto } from '../../types/chat-admi
     HlmLabelImports,
     HlmSelectImports,
     HlmSwitchImports,
+    HlmH2,
+    HlmMuted,
     NgIcon,
   ],
   providers: [

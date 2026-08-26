@@ -8,6 +8,7 @@ import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
+import { HlmH1, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -75,6 +76,10 @@ interface Product {
     HlmInputImports,
     HlmLabelImports,
     HlmTextareaImports,
+    HlmH1,
+    HlmH3,
+    HlmH4,
+    HlmMuted,
   ],
   templateUrl: './home.html',
   styleUrl: './home.css',

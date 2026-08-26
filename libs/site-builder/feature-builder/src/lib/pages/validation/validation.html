@@ -185,10 +185,10 @@
             <hlm-spinner class="text-3xl text-primary" />
           </div>
           <div class="space-y-2">
-            <h3 class="text-lg font-semibold tracking-tight">
+            <h3 hlmH3>
               {{ 'validation_analyzing' | translate }}
             </h3>
-            <p class="text-sm text-muted-foreground max-w-sm mx-auto">
+            <p hlmMuted class="max-w-sm mx-auto">
               {{ 'validation_processing' | translate }} "<span class="font-bold text-foreground">{{
                 businessName()
               }}</span
@@ -219,10 +219,10 @@
           </div>
 
           <div class="space-y-1.5">
-            <p class="text-[10px] font-mono uppercase text-muted-foreground tracking-widest">
+            <p hlmMuted class="font-mono uppercase">
               {{ 'validation_engine_status' | translate }}
             </p>
-            <h3 class="text-sm font-semibold tracking-tight text-foreground">
+            <h3 hlmH3 class="text-foreground">
               @if (currentStep() === 'AI_ANALYSIS') {
                 {{ 'validation_analyzing_matrix' | translate }}
               } @else {

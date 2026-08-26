@@ -3,6 +3,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmH2, HlmH3, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideUsers,
@@ -22,7 +23,19 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-chatbot-insights',
   standalone: true,
-  imports: [CommonModule, HlmCard, HlmSpinner, HlmSelectImports, NgIcon, DecimalPipe, RouterLink],
+  imports: [
+    CommonModule,
+    HlmCard,
+    HlmSpinner,
+    HlmSelectImports,
+    NgIcon,
+    DecimalPipe,
+    RouterLink,
+    HlmH2,
+    HlmH3,
+    HlmMuted,
+    HlmSmall,
+  ],
   providers: [
     provideIcons({
       lucideUsers,

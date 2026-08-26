@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { HlmPaginationImports } from '@spartan/helm/pagination';
+import { HlmMuted } from '@spartan/helm/typography';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 
 /**
@@ -21,7 +22,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   selector: 'app-pagination',
   templateUrl: './pagination.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmPaginationImports, TranslatePipe],
+  imports: [HlmPaginationImports, TranslatePipe, HlmMuted],
 })
 export class Pagination {
   public readonly currentPage = input.required<number>();

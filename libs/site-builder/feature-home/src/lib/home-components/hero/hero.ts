@@ -17,7 +17,7 @@ import { HlmButton } from '@spartan/helm/button';
 import { HlmCard } from '@spartan/helm/card';
 import { BlurText } from '../../blur-text/blur-text';
 import { ScrollAnimateDirective } from '@invento/shared-util-directives';
-import { hlmH1, hlmP } from '@spartan/helm/typography';
+import { HlmH1, HlmP } from '@spartan/helm/typography';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
@@ -25,7 +25,17 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   templateUrl: './hero.html',
   styleUrl: './hero.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, NgIcon, HlmButton, HlmCard, ScrollAnimateDirective, BlurText, TranslatePipe],
+  imports: [
+    RouterLink,
+    NgIcon,
+    HlmButton,
+    HlmCard,
+    ScrollAnimateDirective,
+    BlurText,
+    TranslatePipe,
+    HlmH1,
+    HlmP,
+  ],
   providers: [
     provideIcons({
       lucideBolt,
@@ -43,8 +53,6 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
 })
 export class Hero {
   private readonly router = inject(Router);
-  protected readonly hlmH1 = hlmH1;
-  protected readonly hlmP = hlmP;
 
   protected readonly welcomeWords = [
     'hero_welcome_1',

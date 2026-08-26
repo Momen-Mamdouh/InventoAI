@@ -31,6 +31,7 @@ import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
 // project's `@spartan/helm` alias, so import them directly (see category-form-dialog.ts).
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
+import { HlmH1, HlmH3, HlmMuted } from '@spartan/helm/typography';
 
 export interface StoreItem {
   id: string;
@@ -59,6 +60,9 @@ export interface StoreItem {
     HlmAlertDialogImports,
     BrnDialogImports,
     BrnAlertDialogImports,
+    HlmH1,
+    HlmH3,
+    HlmMuted,
   ],
   providers: [
     provideIcons({

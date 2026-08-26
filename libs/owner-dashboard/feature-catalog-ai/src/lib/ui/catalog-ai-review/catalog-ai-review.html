@@ -1,6 +1,6 @@
 <div class="max-w-5xl mx-auto p-6 space-y-8">
   <div class="flex items-center justify-between">
-    <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+    <h1 hlmH1 class="text-gray-900 dark:text-white">
       AI Catalog Generator
     </h1>
   </div>
@@ -10,10 +10,10 @@
     <div
       class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8"
     >
-      <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+      <h2 hlmH2 class="mb-4 text-gray-800 dark:text-gray-100">
         Describe your catalog needs
       </h2>
-      <p class="text-gray-500 dark:text-gray-400 mb-6">
+      <p hlmMuted class="text-gray-500 dark:text-gray-400 mb-6">
         Our AI will generate a complete catalog structure including categories and attributes based
         on your store's profile and any specific instructions you provide below.
       </p>
@@ -50,14 +50,14 @@
       class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
     >
       <hlm-spinner class="text-[48px] text-blue-600 dark:text-blue-400 mb-4" />
-      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+      <h3 hlmH3 class="text-gray-900 dark:text-white">
         {{
           status() === 'generating'
             ? 'AI is generating your catalog...'
             : 'Applying catalog to your store...'
         }}
       </h3>
-      <p class="text-gray-500 dark:text-gray-400 mt-2">Please wait a moment.</p>
+      <p hlmMuted class="text-gray-500 dark:text-gray-400 mt-2">Please wait a moment.</p>
     </div>
   }
 
@@ -69,8 +69,8 @@
           <ng-icon name="lucideAlertCircle" size="24"></ng-icon>
         </div>
         <div class="flex-1">
-          <h3 class="text-lg font-medium text-destructive">Something went wrong</h3>
-          <p class="text-destructive mt-1">{{ errorMessage() }}</p>
+          <h3 hlmH3 class="text-destructive">Something went wrong</h3>
+          <p hlmMuted class="text-destructive mt-1">{{ errorMessage() }}</p>
           <button hlmBtn variant="outline" (click)="reset()" class="mt-4">Try Again</button>
         </div>
       </div>
@@ -84,8 +84,8 @@
         class="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between"
       >
         <div>
-          <h3 class="text-primary font-medium">Review your AI-generated catalog</h3>
-          <p class="text-sm text-primary/80 mt-1">
+          <h3 hlmH3 class="text-primary">Review your AI-generated catalog</h3>
+          <p hlmMuted class="text-primary/80 mt-1">
             Make any adjustments before applying it to your store.
           </p>
         </div>
@@ -103,8 +103,8 @@
           <div
             class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
           >
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Categories</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
+            <h2 hlmH2 class="text-gray-900 dark:text-white">Categories</h2>
+            <p hlmMuted class="text-gray-500 dark:text-gray-400">
               {{ categories().length }} proposed categories
             </p>
           </div>
@@ -138,8 +138,8 @@
           <div
             class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
           >
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Attributes</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
+            <h2 hlmH2 class="text-gray-900 dark:text-white">Attributes</h2>
+            <p hlmMuted class="text-gray-500 dark:text-gray-400">
               {{ attributes().length }} proposed attributes
             </p>
           </div>
@@ -236,8 +236,8 @@
       >
         <ng-icon name="lucideCheck" size="32"></ng-icon>
       </div>
-      <h2 class="text-2xl font-bold mb-2">Catalog Applied Successfully!</h2>
-      <p class="text-muted-foreground mb-6">
+      <h2 hlmH2 class="mb-2">Catalog Applied Successfully!</h2>
+      <p hlmMuted class="mb-6">
         Your new AI-generated categories and attributes have been saved.
       </p>
       <button hlmBtn (click)="goToDashboard()">Go to Dashboard</button>

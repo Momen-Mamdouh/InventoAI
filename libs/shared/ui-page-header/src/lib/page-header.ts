@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, input, InputSignal } from '@angular/core';
+import { HlmH1, HlmP } from '@spartan/helm/typography';
 import { PageBadge } from '@invento/shared-ui-page-badge';
 import { ScrollAnimateDirective } from '@invento/shared-util-directives';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-page-header',
-  imports: [PageBadge, ScrollAnimateDirective, TranslatePipe],
+  imports: [PageBadge, ScrollAnimateDirective, TranslatePipe, HlmH1, HlmP],
   templateUrl: './page-header.html',
   styleUrl: './page-header.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

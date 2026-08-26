@@ -25,6 +25,7 @@ import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
+import { HlmH1, HlmH2, HlmMuted } from '@spartan/helm/typography';
 
 export interface ActiveSession {
   id: string;
@@ -48,6 +49,9 @@ export interface ActiveSession {
     HlmButton,
     HlmInput,
     HlmLabelImports,
+    HlmH1,
+    HlmH2,
+    HlmMuted,
   ],
   providers: [
     provideIcons({

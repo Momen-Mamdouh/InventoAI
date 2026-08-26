@@ -5,8 +5,8 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 class="font-bold text-xl sm:text-2xl tracking-tight">Account Settings</h1>
-      <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+      <h1 hlmH1>Account Settings</h1>
+      <p hlmMuted class="mt-0.5">
         Manage how and where you receive notifications across Invento.
       </p>
     </div>
@@ -79,8 +79,8 @@
     >
       <!-- Card Header -->
       <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 class="font-semibold text-base sm:text-lg leading-tight">Notification Preferences</h2>
-        <p class="mt-0.5 text-muted-foreground text-xs sm:text-sm">
+        <h2 hlmH2>Notification Preferences</h2>
+        <p hlmMuted class="mt-0.5">
           Choose how and where you receive notifications.
         </p>
       </div>
@@ -90,7 +90,7 @@
         @for (group of preferenceGroups(); track group.id) {
           <div class="space-y-3">
             <!-- Group Section Header -->
-            <h3 class="font-bold text-muted-foreground/90 text-xs tracking-wider uppercase">
+            <h3 hlmH3 class="text-muted-foreground/90 uppercase">
               {{ group.title }}
             </h3>
 
@@ -127,10 +127,10 @@
                   >
                     <!-- Item Info -->
                     <div class="space-y-0.5 min-w-0">
-                      <h4 class="font-semibold text-xs sm:text-sm text-foreground">
+                      <h4 hlmH4 class="text-foreground">
                         {{ item.title }}
                       </h4>
-                      <p class="text-muted-foreground text-xs">
+                      <p hlmMuted>
                         {{ item.description }}
                       </p>
                     </div>

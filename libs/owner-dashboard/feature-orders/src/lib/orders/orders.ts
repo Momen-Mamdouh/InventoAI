@@ -70,6 +70,7 @@ import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
 import { OrderStatCard } from './components/order-stat-card';
 import { TranslatePipe } from '@invento/shared-util-i18n';
+import { HlmH1, HlmH2, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import {
   OrderStore,
   type OrderListItem,
@@ -101,6 +102,10 @@ import {
     HlmAlertDialogImports,
     BrnDialogImports,
     BrnAlertDialogImports,
+    HlmH1,
+    HlmH2,
+    HlmMuted,
+    HlmSmall,
   ],
   providers: [
     provideIcons({
