@@ -242,11 +242,9 @@
               class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
             >
               <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-10 text-center">
-                <input
-                  type="checkbox"
+                <hlm-checkbox
                   [checked]="store.isAllCurrentPageSelected()"
-                  (change)="store.toggleSelectAll()"
-                  class="border-border rounded focus:ring-primary/20 text-primary cursor-pointer"
+                  (checkedChange)="store.toggleSelectAll()"
                 />
               </th>
               <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
@@ -323,12 +321,10 @@
               >
                 <!-- Selection checkbox -->
                 <td hlmTd class="px-2 sm:px-3 md:px-4 py-3.5 text-center">
-                  <input
-                    type="checkbox"
+                  <hlm-checkbox
                     [checked]="store.selectedOrderIds().has(order.id)"
                     (click)="$event.stopPropagation()"
-                    (change)="store.toggleSelectOrder(order.id)"
-                    class="border-border rounded focus:ring-primary/20 text-primary cursor-pointer"
+                    (checkedChange)="store.toggleSelectOrder(order.id)"
                   />
                 </td>
 
@@ -519,16 +515,20 @@
         >
           <div class="flex items-center gap-2">
             <span>{{ 'orders.rows_per_page' | translate }}</span>
-            <select
-              [value]="store.rowsPerPage()"
-              (change)="onRowsPerPageChange($event)"
-              class="bg-card px-2 pe-6 border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-primary h-8 font-medium text-foreground text-xs appearance-none cursor-pointer"
+            <hlm-select
+              [value]="store.rowsPerPage().toString()"
+              (valueChange)="onRowsPerPageChange($event)"
             >
-              <option [value]="5">5</option>
-              <option [value]="10">10</option>
-              <option [value]="20">20</option>
-              <option [value]="50">50</option>
-            </select>
+              <hlm-select-trigger size="sm" class="bg-card border-border font-medium text-xs">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content *hlmSelectPortal>
+                <hlm-select-item value="5">5</hlm-select-item>
+                <hlm-select-item value="10">10</hlm-select-item>
+                <hlm-select-item value="20">20</hlm-select-item>
+                <hlm-select-item value="50">50</hlm-select-item>
+              </hlm-select-content>
+            </hlm-select>
           </div>
 
           <span>

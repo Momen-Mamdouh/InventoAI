@@ -580,12 +580,7 @@
             </div>
 
             <div class="flex items-center gap-2 mt-4 sm:col-span-2">
-              <input
-                type="checkbox"
-                id="edit-featured"
-                [(ngModel)]="editProductForm.isFeatured"
-                class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
-              />
+              <hlm-checkbox inputId="edit-featured" [(ngModel)]="editProductForm.isFeatured" />
               <label hlmLabel for="edit-featured" class="text-sm font-medium text-foreground"
                 >Feature this product on storefront</label
               >

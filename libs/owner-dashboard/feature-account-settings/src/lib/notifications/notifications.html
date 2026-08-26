@@ -141,44 +141,36 @@
                     >
                       <!-- Email Toggle -->
                       <div class="flex justify-center w-14 sm:w-16">
-                        <button
-                          type="button"
-                          role="switch"
-                          [attr.aria-checked]="item.email"
-                          class="toggle-switch-sm cursor-pointer"
-                          [ngClass]="item.email ? 'bg-primary' : 'bg-input'"
-                          (click)="toggleChannel(group.id, item.id, 'email')"
-                          [title]="
-                            item.email ? 'Disable email notification' : 'Enable email notification'
+                        <hlm-switch
+                          size="sm"
+                          [checked]="item.email"
+                          (checkedChange)="toggleChannel(group.id, item.id, 'email')"
+                          [hlmTooltip]="
+                            (item.email ? 'notifications.disable_email' : 'notifications.enable_email')
+                              | translate
                           "
-                        >
-                          <span
-                            class="toggle-switch-thumb-sm"
-                            [ngClass]="item.email ? 'translate-x-4' : 'translate-x-0'"
-                          ></span>
-                        </button>
+                          [attr.aria-label]="
+                            (item.email ? 'notifications.disable_email' : 'notifications.enable_email')
+                              | translate
+                          "
+                        />
                       </div>
 
                       <!-- In-app Toggle -->
                       <div class="flex justify-center w-14 sm:w-16">
-                        <button
-                          type="button"
-                          role="switch"
-                          [attr.aria-checked]="item.inApp"
-                          class="toggle-switch-sm cursor-pointer"
-                          [ngClass]="item.inApp ? 'bg-primary' : 'bg-input'"
-                          (click)="toggleChannel(group.id, item.id, 'inApp')"
-                          [title]="
-                            item.inApp
-                              ? 'Disable in-app notification'
-                              : 'Enable in-app notification'
+                        <hlm-switch
+                          size="sm"
+                          [checked]="item.inApp"
+                          (checkedChange)="toggleChannel(group.id, item.id, 'inApp')"
+                          [hlmTooltip]="
+                            (item.inApp ? 'notifications.disable_inapp' : 'notifications.enable_inapp')
+                              | translate
                           "
-                        >
-                          <span
-                            class="toggle-switch-thumb-sm"
-                            [ngClass]="item.inApp ? 'translate-x-4' : 'translate-x-0'"
-                          ></span>
-                        </button>
+                          [attr.aria-label]="
+                            (item.inApp ? 'notifications.disable_inapp' : 'notifications.enable_inapp')
+                              | translate
+                          "
+                        />
                       </div>
                     </div>
                   </div>

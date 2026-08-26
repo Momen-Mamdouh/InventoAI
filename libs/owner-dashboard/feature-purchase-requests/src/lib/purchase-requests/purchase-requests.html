@@ -624,11 +624,13 @@
           class="gap-2 grid sm:grid-cols-2 p-2 border border-border rounded-xl max-h-48 overflow-y-auto"
         >
           @for (supplier of createSuppliers(); track supplier.id) {
-            <label class="flex items-center gap-3 hover:bg-muted/40 p-3 rounded-lg cursor-pointer"
-              ><input
-                type="checkbox"
+            <label
+              class="flex items-center gap-3 hover:bg-muted/40 p-3 rounded-lg cursor-pointer"
+              [for]="'create-supplier-' + supplier.id"
+              ><hlm-checkbox
+                [inputId]="'create-supplier-' + supplier.id"
                 [checked]="createSupplierIds.includes(supplier.id)"
-                (change)="toggleCreateSupplier(supplier.id)"
+                (checkedChange)="toggleCreateSupplier(supplier.id)"
               /><span class="min-w-0"
                 ><span class="block font-medium truncate">{{ supplier.name }}</span
                 ><span class="block text-muted-foreground text-xs truncate">{{
@@ -720,11 +722,13 @@
         class="gap-2 grid sm:grid-cols-2 p-2 border border-border rounded-xl max-h-48 overflow-y-auto"
       >
         @for (supplier of createSuppliers(); track supplier.id) {
-          <label class="flex items-center gap-3 hover:bg-muted/40 p-3 rounded-lg cursor-pointer"
-            ><input
-              type="checkbox"
+          <label
+            class="flex items-center gap-3 hover:bg-muted/40 p-3 rounded-lg cursor-pointer"
+            [for]="'edit-supplier-' + supplier.id"
+            ><hlm-checkbox
+              [inputId]="'edit-supplier-' + supplier.id"
               [checked]="editSupplierIds.includes(supplier.id)"
-              (change)="
+              (checkedChange)="
                 editSupplierIds = editSupplierIds.includes(supplier.id)
                   ? editSupplierIds.filter((id) => id !== supplier.id)
                   : [...editSupplierIds, supplier.id]

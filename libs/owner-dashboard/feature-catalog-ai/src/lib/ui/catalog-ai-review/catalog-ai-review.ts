@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HlmButtonImports } from '@spartan/helm/button';
+import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSpinner } from '@spartan/helm/spinner';
@@ -44,6 +45,7 @@ interface SelectableAttribute extends GeneratedAttribute {
     HlmH2,
     HlmH3,
     HlmMuted,
+    HlmCheckboxImports,
   ],
   providers: [provideIcons({ lucideWand2, lucideLoader2, lucideAlertCircle, lucideCheck })],
   templateUrl: './catalog-ai-review.html',

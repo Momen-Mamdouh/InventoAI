@@ -19,12 +19,11 @@
     </div>
 
     <div class="flex items-center gap-4">
-      <label class="flex items-center gap-2 text-sm cursor-pointer">
-        <input
-          type="checkbox"
+      <label class="flex items-center gap-2 text-sm cursor-pointer" for="include-reviewed">
+        <hlm-checkbox
+          inputId="include-reviewed"
           [checked]="includeReviewed()"
-          (change)="onIncludeReviewedChange($event)"
-          class="rounded border-input text-primary focus:ring-primary"
+          (checkedChange)="onIncludeReviewedChange($event)"
         />
         <span>Show Reviewed</span>
       </label>

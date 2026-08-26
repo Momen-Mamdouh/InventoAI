@@ -277,23 +277,15 @@
         </div>
 
         <div class="space-y-3 pt-4 border-t border-border">
-          <label class="flex items-center gap-3 cursor-pointer group">
-            <input
-              type="checkbox"
-              [(ngModel)]="attrIsFilterable"
-              class="w-4 h-4 rounded border-border text-primary focus:ring-primary/20 cursor-pointer bg-card"
-            />
+          <label class="flex items-center gap-3 cursor-pointer group" for="attr-is-filterable">
+            <hlm-checkbox inputId="attr-is-filterable" [(ngModel)]="attrIsFilterable" />
             <span
               class="text-sm font-medium text-foreground group-hover:text-primary transition-colors"
               >Is Filterable</span
             >
           </label>
-          <label class="flex items-center gap-3 cursor-pointer group">
-            <input
-              type="checkbox"
-              [(ngModel)]="attrShowOnProductPage"
-              class="w-4 h-4 rounded border-border text-primary focus:ring-primary/20 cursor-pointer bg-card"
-            />
+          <label class="flex items-center gap-3 cursor-pointer group" for="attr-show-on-product-page">
+            <hlm-checkbox inputId="attr-show-on-product-page" [(ngModel)]="attrShowOnProductPage" />
             <span
               class="text-sm font-medium text-foreground group-hover:text-primary transition-colors"
               >Show on Product Page</span

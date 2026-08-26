@@ -266,19 +266,12 @@
           </div>
 
           <!-- Toggle Switch Button -->
-          <button
-            type="button"
-            role="switch"
-            [attr.aria-checked]="twoFactorEnabled()"
-            class="toggle-switch self-start sm:self-auto cursor-pointer"
-            [ngClass]="twoFactorEnabled() ? 'bg-primary' : 'bg-input'"
-            (click)="toggle2FA()"
-          >
-            <span
-              class="toggle-switch-thumb"
-              [ngClass]="twoFactorEnabled() ? 'translate-x-5' : 'translate-x-0'"
-            ></span>
-          </button>
+          <hlm-switch
+            class="self-start sm:self-auto"
+            [checked]="twoFactorEnabled()"
+            (checkedChange)="toggle2FA()"
+            [attr.aria-label]="'security.two_factor_toggle' | translate"
+          />
         </div>
       </div>
     </div>

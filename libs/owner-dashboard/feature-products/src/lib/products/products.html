@@ -96,12 +96,7 @@
         <thead hlmTHead class="bg-muted/30 border-b border-border/60">
           <tr hlmTr>
             <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-10 text-center">
-              <input
-                type="checkbox"
-                [checked]="isAllSelected()"
-                (change)="toggleSelectAll()"
-                class="border-border rounded focus:ring-primary/20 text-primary cursor-pointer"
-              />
+              <hlm-checkbox [checked]="isAllSelected()" (checkedChange)="toggleSelectAll()" />
             </th>
             <th hlmTh
               class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
@@ -218,11 +213,9 @@
             @for (product of products() | search: searchTerm() : ['title']; track product.id) {
               <tr hlmTr cdkDrag class="group hover:bg-muted/40 transition-colors cursor-move">
                 <td hlmTd class="px-2 sm:px-3 md:px-4 py-3 text-center">
-                  <input
-                    type="checkbox"
+                  <hlm-checkbox
                     [checked]="selectedProductIds().includes(product.id)"
-                    (change)="toggleSelect(product.id)"
-                    class="border-border rounded focus:ring-primary/20 text-primary cursor-pointer"
+                    (checkedChange)="toggleSelect(product.id)"
                   />
                 </td>
 
@@ -751,12 +744,7 @@
             </div>
 
             <div class="flex items-center gap-2 mt-4 sm:col-span-2">
-              <input
-                type="checkbox"
-                id="product-featured"
-                [(ngModel)]="newProduct.isFeatured"
-                class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
-              />
+              <hlm-checkbox inputId="product-featured" [(ngModel)]="newProduct.isFeatured" />
               <label hlmLabel for="product-featured" class="text-sm font-medium text-foreground"
                 >Feature this product on storefront</label
               >

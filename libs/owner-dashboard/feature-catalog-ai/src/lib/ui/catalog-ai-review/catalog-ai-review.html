@@ -112,11 +112,7 @@
             @for (cat of categories(); track $index) {
               <li class="p-6 hover:bg-muted/50 transition-colors">
                 <div class="flex items-center gap-4">
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="cat.selected"
-                    class="w-5 h-5 rounded border-border text-primary focus:ring-primary"
-                  />
+                  <hlm-checkbox [(ngModel)]="cat.selected" />
                   <div class="flex-1">
                     <input
                       hlmInput
@@ -147,11 +143,7 @@
             @for (attr of attributes(); track $index; let i = $index) {
               <li class="p-6 hover:bg-muted/50 transition-colors">
                 <div class="flex items-start gap-4">
-                  <input
-                    type="checkbox"
-                    [(ngModel)]="attr.selected"
-                    class="mt-4 w-5 h-5 rounded border-border text-primary focus:ring-primary"
-                  />
+                  <hlm-checkbox [(ngModel)]="attr.selected" class="mt-4" />
                   <div class="flex-1 space-y-4">
                     <div class="flex gap-4">
                       <div class="flex-1">
@@ -183,11 +175,9 @@
 
                     <div>
                       <div class="flex items-center gap-2 mb-2">
-                        <input
-                          type="checkbox"
+                        <hlm-checkbox
                           [(ngModel)]="attr.isVariantAxis"
-                          [id]="'variant-' + i"
-                          class="rounded border-border text-primary focus:ring-primary"
+                          [inputId]="'variant-' + i"
                         />
                         <label hlmLabel [for]="'variant-' + i" class="text-sm"
                           >Is Variant Axis (Changes Price/Stock)</label

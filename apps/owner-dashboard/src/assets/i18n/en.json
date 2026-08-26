@@ -236,5 +236,10 @@
   "purchase_requests.edit_numbers": "Edit numbers",
   "purchase_requests.paste_reply": "Paste reply",
   "suppliers.refresh": "Refresh",
-  "suppliers.open_request": "Open request"
+  "suppliers.open_request": "Open request",
+  "security.two_factor_toggle": "Toggle two-factor authentication",
+  "notifications.enable_email": "Enable email notification",
+  "notifications.disable_email": "Disable email notification",
+  "notifications.enable_inapp": "Enable in-app notification",
+  "notifications.disable_inapp": "Disable in-app notification"
 }

@@ -19,6 +19,7 @@ import {
   lucideGripVertical,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
@@ -60,6 +61,7 @@ import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog'
     HlmSmall,
     HlmTooltipImports,
     TranslatePipe,
+    HlmCheckboxImports,
   ],
   providers: [
     provideIcons({

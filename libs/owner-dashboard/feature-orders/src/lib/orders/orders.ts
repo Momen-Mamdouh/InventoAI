@@ -52,6 +52,7 @@ import {
   lucideArrowDown,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
@@ -106,6 +107,7 @@ import {
     HlmH2,
     HlmMuted,
     HlmSmall,
+    HlmCheckboxImports,
   ],
   providers: [
     provideIcons({
@@ -242,9 +244,8 @@ export class Orders implements OnInit, OnDestroy {
     this.store.setTimeFilter(value ?? 'all_time');
   }
 
-  onRowsPerPageChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.store.setRowsPerPage(Number(target.value));
+  onRowsPerPageChange(value: string | null | undefined): void {
+    this.store.setRowsPerPage(Number(value ?? this.store.rowsPerPage()));
   }
 
   // State machine actions

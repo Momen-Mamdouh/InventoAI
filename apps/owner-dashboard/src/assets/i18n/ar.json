@@ -236,5 +236,10 @@
   "purchase_requests.edit_numbers": "تعديل الأرقام",
   "purchase_requests.paste_reply": "لصق الرد",
   "suppliers.refresh": "تحديث",
-  "suppliers.open_request": "فتح الطلب"
+  "suppliers.open_request": "فتح الطلب",
+  "security.two_factor_toggle": "تبديل المصادقة الثنائية",
+  "notifications.enable_email": "تفعيل إشعارات البريد الإلكتروني",
+  "notifications.disable_email": "تعطيل إشعارات البريد الإلكتروني",
+  "notifications.enable_inapp": "تفعيل الإشعارات داخل التطبيق",
+  "notifications.disable_inapp": "تعطيل الإشعارات داخل التطبيق"
 }

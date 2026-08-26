@@ -16,6 +16,9 @@ import {
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmH1, HlmH2, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
+import { HlmSwitchImports } from '@spartan/helm/switch';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 export interface PreferenceSetting {
   id: string;
@@ -46,6 +49,9 @@ export interface PreferenceGroup {
     HlmH3,
     HlmH4,
     HlmMuted,
+    HlmSwitchImports,
+    HlmTooltipImports,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({

@@ -26,6 +26,7 @@ import {
   lucidePlus,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmBadgeImports } from '@spartan/helm/badge';
@@ -79,6 +80,7 @@ import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
     HlmMuted,
     HlmP,
     HlmSmall,
+    HlmCheckboxImports,
   ],
   providers: [
     provideIcons({

@@ -38,6 +38,7 @@ import {
   lucideX,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
@@ -96,6 +97,7 @@ import {
     HlmSmall,
     HlmTooltipImports,
     TranslatePipe,
+    HlmCheckboxImports,
   ],
   providers: [
     provideIcons({

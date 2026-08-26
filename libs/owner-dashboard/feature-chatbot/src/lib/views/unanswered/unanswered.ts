@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSelectImports } from '@spartan/helm/select';
@@ -30,6 +31,7 @@ import { UnansweredResponse, UnansweredTheme } from '../../types/chat-admin.type
     HlmH2,
     HlmH3,
     HlmMuted,
+    HlmCheckboxImports,
   ],
   providers: [
     provideIcons({
@@ -98,8 +100,7 @@ export class UnansweredComponent implements OnInit {
       });
   }
 
-  onIncludeReviewedChange(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
+  onIncludeReviewedChange(checked: boolean) {
     this.includeReviewed.set(checked);
     this.page.set(1);
     this.loadThemes();
