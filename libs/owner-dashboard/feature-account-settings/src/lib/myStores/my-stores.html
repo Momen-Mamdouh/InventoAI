@@ -200,7 +200,8 @@
                 variant="ghost"
                 class="hover:bg-red-50 dark:hover:bg-red-950/40 p-0 w-9 h-9 text-muted-foreground hover:text-red-600 rounded-lg cursor-pointer"
                 (click)="confirmDeleteStore(store)"
-                title="Delete store"
+                [hlmTooltip]="'my_stores.delete_store' | translate"
+                [attr.aria-label]="'my_stores.delete_store' | translate"
               >
                 <ng-icon name="lucideTrash2" size="15" />
               </button>

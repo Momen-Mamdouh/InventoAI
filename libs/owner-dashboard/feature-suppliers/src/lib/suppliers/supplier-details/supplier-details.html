@@ -51,7 +51,14 @@
       <div class="flex gap-2">
         <a routerLink="/purchase-requests" hlmBtn variant="outline" class="gap-2"
           ><ng-icon name="lucidePackage" size="15" /> Purchase requests</a
-        ><button hlmBtn variant="outline" size="icon" (click)="load()" title="Refresh">
+        ><button
+          hlmBtn
+          variant="outline"
+          size="icon"
+          (click)="load()"
+          [hlmTooltip]="'suppliers.refresh' | translate"
+          [attr.aria-label]="'suppliers.refresh' | translate"
+        >
           <ng-icon name="lucideRefreshCw" size="16" />
         </button>
       </div>
@@ -201,7 +208,8 @@
                       hlmBtn
                       variant="ghost"
                       size="icon"
-                      title="Open request"
+                      [hlmTooltip]="'suppliers.open_request' | translate"
+                      [attr.aria-label]="'suppliers.open_request' | translate"
                       ><ng-icon name="lucideArrowLeft" size="15" class="rotate-180"
                     /></a>
                   </td>

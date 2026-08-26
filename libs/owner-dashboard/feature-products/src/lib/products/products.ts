@@ -34,6 +34,8 @@ import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { HlmH1, HlmH3, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { forkJoin } from 'rxjs';
@@ -89,6 +91,8 @@ interface FormVariant {
     HlmH3,
     HlmMuted,
     HlmSmall,
+    HlmTooltipImports,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({

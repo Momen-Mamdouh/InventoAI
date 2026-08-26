@@ -147,7 +147,8 @@
                       size="icon"
                       class="h-8 w-8 text-muted-foreground hover:text-foreground"
                       (click)="openValuesDrawer(attr)"
-                      title="Manage Values"
+                      [hlmTooltip]="'attributes.manage_values' | translate"
+                      [attr.aria-label]="'attributes.manage_values' | translate"
                     >
                       <ng-icon name="lucideSettings2" size="16" />
                     </button>
@@ -157,7 +158,8 @@
                       size="icon"
                       class="h-8 w-8 text-muted-foreground hover:text-primary"
                       (click)="openEditAttributeDrawer(attr)"
-                      title="Edit Attribute"
+                      [hlmTooltip]="'attributes.edit' | translate"
+                      [attr.aria-label]="'attributes.edit' | translate"
                     >
                       <ng-icon name="lucideEdit" size="16" />
                     </button>
@@ -167,7 +169,8 @@
                       size="icon"
                       class="h-8 w-8 text-muted-foreground hover:text-destructive"
                       (click)="deleteAttribute(attr)"
-                      title="Delete Attribute"
+                      [hlmTooltip]="'attributes.delete' | translate"
+                      [attr.aria-label]="'attributes.delete' | translate"
                     >
                       <ng-icon name="lucideTrash2" size="16" />
                     </button>

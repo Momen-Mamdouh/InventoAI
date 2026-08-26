@@ -428,7 +428,8 @@
                     hlmBtn
                     variant="ghost"
                     size="icon"
-                    title="View supplier"
+                    [hlmTooltip]="'purchase_requests.view_supplier' | translate"
+                    [attr.aria-label]="'purchase_requests.view_supplier' | translate"
                     (click)="openSupplier(offer)"
                   >
                     <ng-icon name="lucideExternalLink" size="15" />
@@ -443,7 +444,8 @@
                       hlmBtn
                       variant="ghost"
                       size="icon"
-                      title="Edit numbers"
+                      [hlmTooltip]="'purchase_requests.edit_numbers' | translate"
+                      [attr.aria-label]="'purchase_requests.edit_numbers' | translate"
                       (click)="openOfferEdit(offer)"
                     >
                       <ng-icon name="lucideEdit3" size="15" />
@@ -459,7 +461,8 @@
                       hlmBtn
                       variant="ghost"
                       size="icon"
-                      title="Paste reply"
+                      [hlmTooltip]="'purchase_requests.paste_reply' | translate"
+                      [attr.aria-label]="'purchase_requests.paste_reply' | translate"
                       (click)="openReply(offer)"
                     >
                       <ng-icon name="lucideMail" size="15" />

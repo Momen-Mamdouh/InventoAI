@@ -32,6 +32,8 @@ import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
 import { HlmH1, HlmH3, HlmMuted } from '@spartan/helm/typography';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 export interface StoreItem {
   id: string;
@@ -63,6 +65,8 @@ export interface StoreItem {
     HlmH1,
     HlmH3,
     HlmMuted,
+    HlmTooltipImports,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({

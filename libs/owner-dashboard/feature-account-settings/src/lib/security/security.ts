@@ -26,6 +26,8 @@ import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmH1, HlmH2, HlmMuted } from '@spartan/helm/typography';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 export interface ActiveSession {
   id: string;
@@ -52,6 +54,8 @@ export interface ActiveSession {
     HlmH1,
     HlmH2,
     HlmMuted,
+    HlmTooltipImports,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({

@@ -17,6 +17,8 @@ import { RouterModule } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { StoreSlugService } from '@invento/user-site-data-access-store';
 import { HlmP, HlmMuted } from '@spartan/helm/typography';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-chatbot',
@@ -33,6 +35,8 @@ import { HlmP, HlmMuted } from '@spartan/helm/typography';
     DatePipe,
     HlmP,
     HlmMuted,
+    HlmTooltipImports,
+    TranslatePipe,
   ],
   templateUrl: './chatbot.html',
   viewProviders: [

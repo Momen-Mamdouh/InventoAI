@@ -569,5 +569,8 @@
       "preference_point_1": "Default payments are used automatically for renewals and invoices.",
       "preference_point_2": "You can update your method whenever your account needs it."
     }
+  },
+  "chatbot": {
+    "new_chat": "New Chat"
   }
 }

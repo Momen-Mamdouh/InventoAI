@@ -139,7 +139,8 @@
               type="button"
               class="top-1/2 absolute hover:bg-muted p-1 rounded-md text-muted-foreground hover:text-foreground -translate-y-1/2 transition-colors cursor-pointer end-2"
               (click)="showCurrentPassword.set(!showCurrentPassword())"
-              title="Toggle password visibility"
+              [hlmTooltip]="'security.toggle_password' | translate"
+              [attr.aria-label]="'security.toggle_password' | translate"
             >
               <ng-icon [name]="showCurrentPassword() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
             </button>
@@ -167,7 +168,8 @@
                 type="button"
                 class="top-1/2 absolute hover:bg-muted p-1 rounded-md text-muted-foreground hover:text-foreground -translate-y-1/2 transition-colors cursor-pointer end-2"
                 (click)="showNewPassword.set(!showNewPassword())"
-                title="Toggle password visibility"
+                [hlmTooltip]="'security.toggle_password' | translate"
+                [attr.aria-label]="'security.toggle_password' | translate"
               >
                 <ng-icon [name]="showNewPassword() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
               </button>
@@ -193,7 +195,8 @@
                 type="button"
                 class="top-1/2 absolute hover:bg-muted p-1 rounded-md text-muted-foreground hover:text-foreground -translate-y-1/2 transition-colors cursor-pointer end-2"
                 (click)="showConfirmPassword.set(!showConfirmPassword())"
-                title="Toggle password visibility"
+                [hlmTooltip]="'security.toggle_password' | translate"
+                [attr.aria-label]="'security.toggle_password' | translate"
               >
                 <ng-icon [name]="showConfirmPassword() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
               </button>

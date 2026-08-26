@@ -50,6 +50,8 @@ import { HlmDialogImports } from '@spartan/helm/dialog';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
 import { HlmH1, HlmH2, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 // Brain primitives are the plain npm package — they are NOT re-exported through the
 // project's `@spartan/helm` alias, so import them directly instead of reaching into
 // node_modules' compiled type declarations (which is fragile and breaks on upgrades).
@@ -92,6 +94,8 @@ import {
     HlmH2,
     HlmMuted,
     HlmSmall,
+    HlmTooltipImports,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({

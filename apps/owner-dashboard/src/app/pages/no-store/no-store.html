@@ -47,8 +47,8 @@
         size="icon"
         class="!rounded-full text-destructive/80 hover:text-destructive hover:bg-destructive/10 transition-colors duration-200 cursor-pointer ms-1"
         (click)="logout()"
-        title="Logout"
-        [attr.aria-label]="'Logout'"
+        [hlmTooltip]="'nav_logout' | translate"
+        [attr.aria-label]="'nav_logout' | translate"
       >
         <ng-icon name="lucideLogOut" size="18" />
       </button>

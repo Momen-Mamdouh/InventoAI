@@ -32,7 +32,7 @@
               variant="ghost"
               (click)="startNewChat()"
               class="text-[10px] h-7 px-2 rounded-lg text-primary font-medium hover:bg-primary/10"
-              title="New Chat"
+              [hlmTooltip]="'chatbot.new_chat' | translate"
             >
               <ng-icon name="lucidePlus" size="14" class="mr-1" /> New
             </button>

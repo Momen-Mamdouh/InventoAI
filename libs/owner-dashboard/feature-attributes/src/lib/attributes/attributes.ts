@@ -27,6 +27,8 @@ import { HlmTableImports } from '@spartan/helm/table';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmH1, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 import {
   AttributeDisplayStyle,
@@ -56,6 +58,8 @@ import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog'
     HlmH1,
     HlmMuted,
     HlmSmall,
+    HlmTooltipImports,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({

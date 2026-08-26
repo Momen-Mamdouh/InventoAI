@@ -17,11 +17,21 @@ import { toast } from '@spartan/helm/sonner';
 import { AuthService } from '@invento/shared-data-access-auth';
 import { environment } from '../../../environments/environment';
 import { HlmH1, HlmMuted } from '@spartan/helm/typography';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
 
 @Component({
   selector: 'app-no-store',
   standalone: true,
-  imports: [CommonModule, NgIcon, HlmButton, TranslatePipe, HlmCard, HlmH1, HlmMuted],
+  imports: [
+    CommonModule,
+    NgIcon,
+    HlmButton,
+    TranslatePipe,
+    HlmCard,
+    HlmH1,
+    HlmMuted,
+    HlmTooltipImports,
+  ],
   templateUrl: './no-store.html',
   styleUrl: './no-store.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

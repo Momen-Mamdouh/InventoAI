@@ -509,7 +509,8 @@
                   type="button"
                   (click)="removeVariant(vi)"
                   class="absolute -top-2 -right-2 bg-rose-100 text-rose-600 hover:bg-rose-200 dark:bg-rose-900/50 dark:text-rose-400 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="Remove variant"
+                  [hlmTooltip]="'products.remove_variant' | translate"
+                  [attr.aria-label]="'products.remove_variant' | translate"
                 >
                   <ng-icon name="lucideX" size="14" />
                 </button>

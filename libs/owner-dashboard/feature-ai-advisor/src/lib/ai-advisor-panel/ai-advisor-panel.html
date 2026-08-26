@@ -101,8 +101,8 @@
             [class.text-foreground]="activeView() === 'settings'"
             [class.text-muted-foreground]="activeView() !== 'settings'"
             (click)="setActiveView('settings')"
-            aria-label="Advisor Settings"
-            title="Advisor Settings"
+            [attr.aria-label]="'ai_advisor.settings' | translate"
+            [hlmTooltip]="'ai_advisor.settings' | translate"
           >
             <ng-icon name="lucideSettings" size="13" />
             Settings
@@ -135,8 +135,8 @@
           size="icon"
           class="bg-card hover:bg-accent shadow-sm size-9"
           (click)="reload()"
-          title="Refresh AI Advisor"
-          aria-label="Refresh AI Advisor"
+          [hlmTooltip]="'ai_advisor.refresh' | translate"
+          [attr.aria-label]="'ai_advisor.refresh' | translate"
         >
           <ng-icon name="lucideRefreshCw" size="15" />
         </button>
@@ -242,8 +242,8 @@
               [class.text-foreground]="activeView() === 'settings'"
               [class.text-muted-foreground]="activeView() !== 'settings'"
               (click)="setActiveView('settings')"
-              aria-label="Advisor Settings"
-              title="Advisor Settings"
+              [attr.aria-label]="'ai_advisor.settings' | translate"
+              [hlmTooltip]="'ai_advisor.settings' | translate"
             >
               <ng-icon name="lucideSettings" size="12" />
             </button>
@@ -566,8 +566,8 @@
                 [value]="historyFrom()"
                 (change)="setHistoryDates($any($event.target).value, historyTo())"
                 class="w-full bg-background border rounded-md px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                aria-label="Filter history from date"
-                title="Filter history from date"
+                [attr.aria-label]="'ai_advisor.filter_from' | translate"
+                [hlmTooltip]="'ai_advisor.filter_from' | translate"
               />
             </div>
             <div>
@@ -585,8 +585,8 @@
                 [value]="historyTo()"
                 (change)="setHistoryDates(historyFrom(), $any($event.target).value)"
                 class="w-full bg-background border rounded-md px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                aria-label="Filter history to date"
-                title="Filter history to date"
+                [attr.aria-label]="'ai_advisor.filter_to' | translate"
+                [hlmTooltip]="'ai_advisor.filter_to' | translate"
               />
             </div>
           </div>
@@ -688,8 +688,8 @@
                 class="h-8 px-2.5"
                 [disabled]="historyPage() <= 1 || isHistoryLoading()"
                 (click)="setHistoryPage(historyPage() - 1)"
-                aria-label="Previous page"
-                title="Previous page"
+                [attr.aria-label]="'ai_advisor.prev_page' | translate"
+                [hlmTooltip]="'ai_advisor.prev_page' | translate"
               >
                 <ng-icon name="lucideChevronLeft" size="14" class="rtl:rotate-180" />
               </button>
@@ -700,8 +700,8 @@
                 class="h-8 px-2.5"
                 [disabled]="historyPage() >= historyTotalPages() || isHistoryLoading()"
                 (click)="setHistoryPage(historyPage() + 1)"
-                aria-label="Next page"
-                title="Next page"
+                [attr.aria-label]="'ai_advisor.next_page' | translate"
+                [hlmTooltip]="'ai_advisor.next_page' | translate"
               >
                 <ng-icon name="lucideChevronRight" size="14" class="rtl:rotate-180" />
               </button>
@@ -799,8 +799,8 @@
                 class="h-7 text-xs px-2"
                 [disabled]="isSectionSaving('schedule')"
                 (click)="isEditingSchedule.set(!isEditingSchedule())"
-                aria-label="Edit schedule time"
-                title="Edit schedule time"
+                [attr.aria-label]="'ai_advisor.edit_schedule' | translate"
+                [hlmTooltip]="'ai_advisor.edit_schedule' | translate"
               >
                 <ng-icon [name]="isEditingSchedule() ? 'lucideX' : 'lucideEdit3'" size="13" />
               </button>
@@ -962,7 +962,7 @@
                   class="h-7 text-xs text-destructive hover:text-destructive gap-1 px-2"
                   [disabled]="isSectionSaving('location')"
                   (click)="clearLocation()"
-                  title="Remove location and disable weather insights"
+                  [hlmTooltip]="'ai_advisor.remove_location' | translate"
                 >
                   @if (isSectionSaving('location')) {
                     <hlm-spinner />
@@ -1398,7 +1398,7 @@
               class="h-7 text-xs px-2.5 hover:bg-muted font-medium"
               [disabled]="isInsightUpdating(item.id)"
               (click)="markInsight(item, 'dismissed')"
-              title="Won't show again for 7 days"
+              [hlmTooltip]="'ai_advisor.snooze_7_days' | translate"
             >
               @if (isInsightUpdating(item.id)) {
                 <hlm-spinner class="me-1" />
@@ -1411,7 +1411,7 @@
               class="h-7 text-xs px-3 bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 font-medium shadow-sm"
               [disabled]="isInsightUpdating(item.id)"
               (click)="markInsight(item, 'acted')"
-              title="Record that you ordered stock or took this action"
+              [hlmTooltip]="'ai_advisor.mark_actioned' | translate"
             >
               @if (isInsightUpdating(item.id)) {
                 <hlm-spinner class="me-1" />
