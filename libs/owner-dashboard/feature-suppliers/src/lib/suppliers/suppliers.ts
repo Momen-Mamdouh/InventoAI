@@ -33,11 +33,12 @@ import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmAlertImports } from '@spartan/helm/alert';
 import { HlmTableImports } from '@spartan/helm/table';
-import { HlmH1, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 import { SupplierFormDialog } from './supplier-form-dialog';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { Supplier, SuppliersState } from '@invento/owner-dashboard-data-access-supplier';
 import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 
 type ActiveFilter = 'all' | 'active' | 'inactive';
 
@@ -58,8 +59,8 @@ type ActiveFilter = 'all' | 'active' | 'inactive';
     HlmTableImports,
     HlmH1,
     HlmMuted,
-    HlmSmall,
     Pagination,
+    EmptyState,
   ],
   providers: [
     provideIcons({

@@ -164,18 +164,15 @@
           } @else if (requests().length === 0) {
             <tr hlmTr>
               <td hlmTd colspan="6" class="p-16 text-center">
-                <div class="flex flex-col items-center gap-3">
-                  <div class="flex justify-center items-center bg-muted rounded-full w-12 h-12">
-                    <ng-icon name="lucidePackage" size="20" class="text-muted-foreground" />
-                  </div>
-                  <p hlmSmall>No purchase requests</p>
-                  <p hlmMuted>
-                    Start a request when you need supplier quotes for a product variant.
-                  </p>
+                <app-empty-state
+                  icon="lucidePackage"
+                  title="No purchase requests"
+                  description="Start a request when you need supplier quotes for a product variant."
+                >
                   <button hlmBtn variant="outline" class="gap-2 mt-1" (click)="openCreate()">
                     <ng-icon name="lucidePlus" size="15" /> Create request
                   </button>
-                </div>
+                </app-empty-state>
               </td>
             </tr>
           } @else {

@@ -212,23 +212,16 @@
           } @else if (suppliers().length === 0) {
             <tr hlmTr>
               <td hlmTd colspan="6" class="p-16 text-center">
-                <div class="flex flex-col justify-center items-center gap-3">
-                  <div
-                    class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
-                  >
-                    <ng-icon name="lucideTruck" size="20" />
-                  </div>
-                  <div class="space-y-1">
-                    <p hlmSmall>No suppliers found</p>
-                    <p hlmMuted>
-                      Try adjusting your search or filters, or add a new supplier.
-                    </p>
-                  </div>
+                <app-empty-state
+                  icon="lucideTruck"
+                  title="No suppliers found"
+                  description="Try adjusting your search or filters, or add a new supplier."
+                >
                   <button hlmBtn (click)="onAdd()" class="gap-1.5 mt-2" variant="outline">
                     <ng-icon name="lucidePlus" size="16" />
                     Add Supplier
                   </button>
-                </div>
+                </app-empty-state>
               </td>
             </tr>
           } @else {

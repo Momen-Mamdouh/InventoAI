@@ -39,6 +39,7 @@ import {
 } from '@invento/owner-dashboard-data-access-attribute';
 import { AttributeSearchPipe } from './attribute-search.pipe';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 
 @Component({
   selector: 'app-attributes',
@@ -62,6 +63,7 @@ import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog'
     HlmTooltipImports,
     TranslatePipe,
     HlmCheckboxImports,
+    EmptyState,
   ],
   providers: [
     provideIcons({

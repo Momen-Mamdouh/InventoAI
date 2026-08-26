@@ -21,10 +21,11 @@ import {
 import { ProductApiService, ProductStore } from '@invento/user-site-data-access-product';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { HlmSpinner } from '@spartan/helm/spinner';
-import { NgIcon, provideIcons } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
 import { lucideAlertCircle } from '@ng-icons/lucide';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreSlugService } from '@invento/user-site-data-access-store';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 
 @Component({
   selector: 'app-product-details',
@@ -41,8 +42,8 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
     ProductDetailsAccordion,
     RecommendedProducts,
     HlmTypographyImports,
-    NgIcon,
     TranslatePipe,
+    EmptyState,
   ],
 })
 export class ProductDetails implements OnInit, OnDestroy {

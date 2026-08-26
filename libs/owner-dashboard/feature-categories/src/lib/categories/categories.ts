@@ -32,6 +32,7 @@ import { CategoryFormDialog } from './category-form-dialog';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { Category, CategoriesState } from '@invento/owner-dashboard-data-access-category';
 import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 
 type PublishedFilter = 'all' | 'published' | 'unpublished';
 type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
@@ -56,6 +57,7 @@ type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
     HlmMuted,
     HlmSmall,
     Pagination,
+    EmptyState,
   ],
   providers: [
     provideIcons({

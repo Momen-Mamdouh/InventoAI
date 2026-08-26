@@ -6,13 +6,11 @@
       <hlm-spinner class="text-[32px] text-primary" />
     </div>
   } @else if (notFound()) {
-    <div class="py-20 text-muted-foreground text-center">
-      <ng-icon name="lucideAlertCircle" size="64" class="mx-auto mb-4" />
-      <h2 hlmH2 class="text-xl font-semibold text-foreground mb-2">
-        {{ 'product.product_details.not_found_title' | translate }}
-      </h2>
-      <p hlmP>{{ 'product.product_details.not_found_desc' | translate }}</p>
-    </div>
+    <app-empty-state
+      icon="lucideAlertCircle"
+      [title]="'product.product_details.not_found_title' | translate"
+      [description]="'product.product_details.not_found_desc' | translate"
+    />
   } @else {
     @let p = store.product();
     @if (p) {

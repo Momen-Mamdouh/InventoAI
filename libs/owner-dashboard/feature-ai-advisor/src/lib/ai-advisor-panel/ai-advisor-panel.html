@@ -486,15 +486,11 @@
           </div>
         } @else if (isSelectedBriefNotFound()) {
           <div class="py-16 text-center border rounded-2xl bg-card">
-            <div
-              class="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground"
-            >
-              <ng-icon name="lucideFileQuestion" size="24" />
-            </div>
-            <h4 hlmH4 class="text-foreground">Brief Not Found</h4>
-            <p hlmMuted class="mt-1">
-              This past brief is not available or has expired.
-            </p>
+            <app-empty-state
+              icon="lucideFileQuestion"
+              title="Brief Not Found"
+              description="This past brief is not available or has expired."
+            />
           </div>
         } @else if (selectedBriefError()) {
           <div class="py-16 text-center border rounded-2xl bg-card">
@@ -626,15 +622,11 @@
           </div>
         } @else if (!historyItems().length) {
           <div class="py-16 text-center border rounded-2xl bg-card p-6">
-            <div
-              class="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground"
-            >
-              <ng-icon name="lucideInbox" size="24" />
-            </div>
-            <h4 hlmH4 class="text-foreground">No historical briefs found</h4>
-            <p hlmMuted class="mt-1">
-              No daily briefs recorded for this time range.
-            </p>
+            <app-empty-state
+              icon="lucideInbox"
+              title="No historical briefs found"
+              description="No daily briefs recorded for this time range."
+            />
           </div>
         } @else {
           <div class="space-y-3">

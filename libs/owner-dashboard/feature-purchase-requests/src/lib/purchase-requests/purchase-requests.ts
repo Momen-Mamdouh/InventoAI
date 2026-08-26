@@ -67,6 +67,7 @@ import {
   SupplierOffer,
 } from '@invento/owner-dashboard-data-access-purchase-request';
 import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 
 @Component({
   selector: 'app-purchase-requests',
@@ -99,6 +100,7 @@ import { Pagination } from '@invento/shared-ui-pagination';
     TranslatePipe,
     HlmCheckboxImports,
     Pagination,
+    EmptyState,
   ],
   providers: [
     provideIcons({

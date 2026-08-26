@@ -173,29 +173,17 @@
           } @else if (products().length === 0) {
             <tr hlmTr>
               <td hlmTd colspan="8" class="p-16 text-center">
-                <div class="flex flex-col items-center justify-center gap-3">
-                  <div
-                    class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
-                  >
-                    <ng-icon name="lucideFolderOpen" size="20" />
-                  </div>
-                  <div class="space-y-1">
-                    <p hlmSmall class="text-foreground">No products found</p>
-                    <p hlmMuted>
-                      @if (attributes().length === 0) {
-                        Get started by defining your product attributes first.
-                      } @else {
-                        Get started by creating your first product or generating with AI.
-                      }
-                    </p>
-                  </div>
+                <app-empty-state
+                  icon="lucideFolderOpen"
+                  title="No products found"
+                  [description]="
+                    attributes().length === 0
+                      ? 'Get started by defining your product attributes first.'
+                      : 'Get started by creating your first product or generating with AI.'
+                  "
+                >
                   @if (attributes().length === 0) {
-                    <button
-                      hlmBtn
-                      (click)="goToAttributes()"
-                      class="gap-1.5 mt-2"
-                      variant="outline"
-                    >
+                    <button hlmBtn (click)="goToAttributes()" class="gap-1.5 mt-2" variant="outline">
                       <ng-icon name="lucidePlus" size="16" />
                       Define Attributes First
                     </button>
@@ -205,7 +193,7 @@
                       Add Product
                     </button>
                   }
-                </div>
+                </app-empty-state>
               </td>
             </tr>
           } @else {
@@ -319,28 +307,16 @@
             } @empty {
               <tr hlmTr>
                 <td hlmTd colspan="8" class="p-16 text-center">
-                  <div class="flex flex-col items-center justify-center gap-3">
-                    <div
-                      class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
-                    >
-                      <ng-icon name="lucideSearch" size="20" />
-                    </div>
-                    <div class="space-y-1">
-                      <p hlmSmall class="text-foreground">No matching products</p>
-                      <p hlmMuted>
-                        No products match "{{ searchTerm() }}". Try adjusting your search query.
-                      </p>
-                    </div>
-                    <button
-                      hlmBtn
-                      (click)="searchTerm.set('')"
-                      class="gap-1.5 mt-2"
-                      variant="outline"
-                    >
+                  <app-empty-state
+                    icon="lucideSearch"
+                    title="No matching products"
+                    description='No products match "{{ searchTerm() }}". Try adjusting your search query.'
+                  >
+                    <button hlmBtn (click)="searchTerm.set('')" class="gap-1.5 mt-2" variant="outline">
                       <ng-icon name="lucideX" size="16" />
                       Clear Search
                     </button>
-                  </div>
+                  </app-empty-state>
                 </td>
               </tr>
             }

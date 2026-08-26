@@ -34,7 +34,7 @@ import { HlmTableImports } from '@spartan/helm/table';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
-import { HlmH1, HlmH3, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { HlmH1, HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -53,6 +53,7 @@ import { CategoriesService, Category } from '@invento/owner-dashboard-data-acces
 import { toast } from '@spartan-ng/brain/sonner';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { SearchPipe } from '@invento/shared-util-pipes';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 
 interface FormVariant {
   sku: string;
@@ -91,10 +92,10 @@ interface FormVariant {
     HlmH1,
     HlmH3,
     HlmMuted,
-    HlmSmall,
     HlmTooltipImports,
     TranslatePipe,
     HlmCheckboxImports,
+    EmptyState,
   ],
   providers: [
     provideIcons({

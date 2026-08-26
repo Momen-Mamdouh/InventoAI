@@ -82,28 +82,16 @@
           } @else if (attributes().length === 0) {
             <tr hlmTr>
               <td hlmTd colspan="8" class="p-16 text-center">
-                <div class="flex flex-col items-center justify-center gap-3">
-                  <div
-                    class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
-                  >
-                    <ng-icon name="lucideTags" size="20" />
-                  </div>
-                  <div class="space-y-1">
-                    <p hlmSmall class="text-foreground">No attributes found</p>
-                    <p hlmMuted>
-                      Get started by creating your first product attribute or generating with AI.
-                    </p>
-                  </div>
-                  <button
-                    hlmBtn
-                    (click)="openAddAttributeDrawer()"
-                    class="gap-1.5 mt-2"
-                    variant="outline"
-                  >
+                <app-empty-state
+                  icon="lucideTags"
+                  title="No attributes found"
+                  description="Get started by creating your first product attribute or generating with AI."
+                >
+                  <button hlmBtn (click)="openAddAttributeDrawer()" class="gap-1.5 mt-2" variant="outline">
                     <ng-icon name="lucidePlus" size="16" />
                     Add Attribute
                   </button>
-                </div>
+                </app-empty-state>
               </td>
             </tr>
           } @else {
@@ -180,28 +168,16 @@
             } @empty {
               <tr hlmTr>
                 <td hlmTd colspan="8" class="p-16 text-center">
-                  <div class="flex flex-col items-center justify-center gap-3">
-                    <div
-                      class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
-                    >
-                      <ng-icon name="lucideSearch" size="20" />
-                    </div>
-                    <div class="space-y-1">
-                      <p hlmSmall class="text-foreground">No matching attributes</p>
-                      <p hlmMuted>
-                        No attributes match "{{ searchQuery() }}". Try adjusting your search query.
-                      </p>
-                    </div>
-                    <button
-                      hlmBtn
-                      (click)="searchQuery.set('')"
-                      class="gap-1.5 mt-2"
-                      variant="outline"
-                    >
+                  <app-empty-state
+                    icon="lucideSearch"
+                    title="No matching attributes"
+                    description='No attributes match "{{ searchQuery() }}". Try adjusting your search query.'
+                  >
+                    <button hlmBtn (click)="searchQuery.set('')" class="gap-1.5 mt-2" variant="outline">
                       <ng-icon name="lucideX" size="16" />
                       Clear Search
                     </button>
-                  </div>
+                  </app-empty-state>
                 </td>
               </tr>
             }
