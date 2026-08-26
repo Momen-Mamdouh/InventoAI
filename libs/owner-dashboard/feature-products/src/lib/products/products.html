@@ -92,10 +92,10 @@
   <!-- Products Data Table Card -->
   <div hlmCard class="bg-card shadow-sm border-border rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full text-sm text-left border-collapse">
-        <thead class="bg-muted/30 border-b border-border/60">
-          <tr>
-            <th class="px-2 sm:px-3 md:px-4 py-3 w-10 text-center">
+      <table hlmTable class="w-full text-sm text-left border-collapse">
+        <thead hlmTHead class="bg-muted/30 border-b border-border/60">
+          <tr hlmTr>
+            <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-10 text-center">
               <input
                 type="checkbox"
                 [checked]="isAllSelected()"
@@ -103,44 +103,44 @@
                 class="border-border rounded focus:ring-primary/20 text-primary cursor-pointer"
               />
             </th>
-            <th
+            <th hlmTh
               class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
             >
               Product
             </th>
-            <th
+            <th hlmTh
               class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
             >
               Variants
             </th>
-            <th
+            <th hlmTh
               class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
             >
               Category
             </th>
-            <th
+            <th hlmTh
               class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-right"
             >
               Price
             </th>
-            <th
+            <th hlmTh
               class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-right"
             >
               Stock
             </th>
-            <th
+            <th hlmTh
               class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
             >
               Status
             </th>
-            <th
+            <th hlmTh
               class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
             >
               Date Added
             </th>
           </tr>
         </thead>
-        <tbody
+        <tbody hlmTBody
           cdkDropList
           (cdkDropListDropped)="drop($event)"
           class="divide-y divide-border/60 text-sm"
@@ -148,11 +148,11 @@
           <!-- Loading State -->
           @if (isLoading()) {
             @for (item of [1, 2, 3, 4, 5]; track item) {
-              <tr>
-                <td class="px-2 sm:px-3 md:px-4 py-3 text-center">
+              <tr hlmTr>
+                <td hlmTd class="px-2 sm:px-3 md:px-4 py-3 text-center">
                   <hlm-skeleton class="h-4 w-4 rounded mx-auto" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
                   <div class="flex items-center gap-3">
                     <hlm-skeleton class="w-10 h-10 sm:w-12 sm:h-12 rounded-md shrink-0" />
                     <div class="space-y-1.5 flex-1">
@@ -161,23 +161,23 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-12" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-20" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-12" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-20" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-right">
                   <hlm-skeleton class="h-4 w-16 ml-auto" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-right">
                   <hlm-skeleton class="h-4 w-12 ml-auto" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <hlm-skeleton class="h-5 w-16 rounded-full" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
               </tr>
             }
           } @else if (products().length === 0) {
-            <tr>
-              <td colspan="8" class="p-16 text-center">
+            <tr hlmTr>
+              <td hlmTd colspan="8" class="p-16 text-center">
                 <div class="flex flex-col items-center justify-center gap-3">
                   <div
                     class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
@@ -216,8 +216,8 @@
           } @else {
             <!-- Products Iteration -->
             @for (product of products() | search: searchTerm() : ['title']; track product.id) {
-              <tr cdkDrag class="group hover:bg-muted/40 transition-colors cursor-move">
-                <td class="px-2 sm:px-3 md:px-4 py-3 text-center">
+              <tr hlmTr cdkDrag class="group hover:bg-muted/40 transition-colors cursor-move">
+                <td hlmTd class="px-2 sm:px-3 md:px-4 py-3 text-center">
                   <input
                     type="checkbox"
                     [checked]="selectedProductIds().includes(product.id)"
@@ -226,7 +226,7 @@
                   />
                 </td>
 
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
                   <div class="flex items-center gap-3">
                     <div
                       class="w-10 h-10 sm:w-12 sm:h-12 bg-muted rounded-md overflow-hidden shrink-0 border border-border/50"
@@ -256,11 +256,11 @@
                   </div>
                 </td>
 
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ product.variantCount }} variant{{ product.variantCount !== 1 ? 's' : '' }}
                 </td>
 
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <div class="flex flex-wrap gap-1">
                     @for (cat of product.categories; track cat.id) {
                       <span
@@ -272,7 +272,7 @@
                   </div>
                 </td>
 
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right font-medium">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-right font-medium">
                   @if (product.minPriceAmount === product.maxPriceAmount) {
                     {{ product.minPriceAmount / 100 | currency: 'USD' }}
                   } @else {
@@ -291,11 +291,11 @@
                   }
                 </td>
 
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-right text-muted-foreground">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-right text-muted-foreground">
                   {{ product.totalStock }}
                 </td>
 
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <span
                     class="inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium capitalize"
                     [ngClass]="{
@@ -319,13 +319,13 @@
                   </span>
                 </td>
 
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ product.createdAt | date: 'MMM d, y' }}
                 </td>
               </tr>
             } @empty {
-              <tr>
-                <td colspan="8" class="p-16 text-center">
+              <tr hlmTr>
+                <td hlmTd colspan="8" class="p-16 text-center">
                   <div class="flex flex-col items-center justify-center gap-3">
                     <div
                       class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
@@ -360,32 +360,14 @@
 
 <!-- ADD PRODUCT DRAWER -->
 @if (isDrawerOpen()) {
-  <div class="fixed inset-0 z-50 flex justify-end">
-    <!-- Backdrop -->
-    <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
-      (click)="toggleDrawer()"
-      role="button"
-      tabindex="0"
-      aria-label="Close drawer"
-    ></div>
-
-    <!-- Drawer Panel -->
-    <div
-      class="relative w-full sm:w-[500px] h-full bg-card shadow-2xl border-l border-border flex flex-col animate-in slide-in-from-right duration-300"
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[500px]"
     >
-      <div class="p-6 border-b border-border flex justify-between items-center">
-        <h2 class="text-xl font-bold text-foreground tracking-tight">Add New Product</h2>
-        <button
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          (click)="toggleDrawer()"
-          class="text-muted-foreground hover:text-foreground"
-        >
-          <ng-icon name="lucideX" size="20" />
-        </button>
-      </div>
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Add New Product</h2>
+      </hlm-sheet-header>
 
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-8">
@@ -416,7 +398,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
-              <label for="product-name" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="product-name" class="text-sm font-semibold mb-2 block text-foreground"
                 >Product Title <span class="text-rose-500">*</span></label
               >
               <input
@@ -430,7 +412,7 @@
             </div>
 
             <div>
-              <label for="product-status" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="product-status" class="text-sm font-semibold mb-2 block text-foreground"
                 >Status</label
               >
               <hlm-select
@@ -469,7 +451,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               @for (attr of productAttributes(); track attr.id) {
                 <div>
-                  <label
+                  <label hlmLabel
                     [for]="'new-product-attr-' + attr.id"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >{{ attr.name }}</label
@@ -519,7 +501,7 @@
               type="button"
               class="h-8 px-3"
             >
-              <ng-icon name="lucidePlus" size="14" class="mr-1.5" /> Add Variant
+              <ng-icon name="lucidePlus" size="14" class="me-1.5" /> Add Variant
             </button>
           </div>
 
@@ -541,7 +523,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   @for (attr of variantAttributes(); track attr.id) {
                     <div>
-                      <label
+                      <label hlmLabel
                         [for]="'variant-' + vi + '-attr-' + attr.id"
                         class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                         >{{ attr.name }}</label
@@ -576,7 +558,7 @@
 
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 <div class="sm:col-span-2 lg:col-span-1">
-                  <label
+                  <label hlmLabel
                     [for]="'sku_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >SKU</label
@@ -592,7 +574,7 @@
                   />
                 </div>
                 <div>
-                  <label
+                  <label hlmLabel
                     [for]="'price_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >Price <span class="text-rose-500">*</span></label
@@ -608,7 +590,7 @@
                   />
                 </div>
                 <div>
-                  <label
+                  <label hlmLabel
                     [for]="'compare_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >Compare At</label
@@ -624,7 +606,7 @@
                   />
                 </div>
                 <div>
-                  <label
+                  <label hlmLabel
                     [for]="'stock_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >Stock</label
@@ -640,7 +622,7 @@
                   />
                 </div>
                 <div>
-                  <label
+                  <label hlmLabel
                     [for]="'lowStock_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >Low Stock</label
@@ -670,7 +652,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
-              <label for="product-slug" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="product-slug" class="text-sm font-semibold mb-2 block text-foreground"
                 >Slug</label
               >
               <input
@@ -684,7 +666,7 @@
             </div>
 
             <div class="sm:col-span-2">
-              <label
+              <label hlmLabel
                 for="product-short-desc"
                 class="text-sm font-semibold mb-2 block text-foreground"
                 >Short Description</label
@@ -700,10 +682,10 @@
             </div>
 
             <div class="sm:col-span-2">
-              <label for="product-desc" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="product-desc" class="text-sm font-semibold mb-2 block text-foreground"
                 >Full Description</label
               >
-              <textarea
+              <textarea hlmTextarea
                 id="product-desc"
                 [(ngModel)]="newProduct.description"
                 rows="4"
@@ -713,7 +695,7 @@
             </div>
 
             <div class="sm:col-span-2">
-              <label for="product-keywords" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="product-keywords" class="text-sm font-semibold mb-2 block text-foreground"
                 >Search Keywords</label
               >
               <input
@@ -727,7 +709,7 @@
             </div>
 
             <div>
-              <label for="product-weight" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="product-weight" class="text-sm font-semibold mb-2 block text-foreground"
                 >Weight (grams)</label
               >
               <input
@@ -776,7 +758,7 @@
                 [(ngModel)]="newProduct.isFeatured"
                 class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
               />
-              <label for="product-featured" class="text-sm font-medium text-foreground"
+              <label hlmLabel for="product-featured" class="text-sm font-medium text-foreground"
                 >Feature this product on storefront</label
               >
             </div>
@@ -785,19 +767,19 @@
       </div>
 
       <!-- Footer -->
-      <div class="p-6 border-t border-border flex justify-end gap-3 bg-muted/20">
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
         <button hlmBtn variant="outline" (click)="toggleDrawer()">Cancel</button>
         <button hlmBtn (click)="submitProduct()" [disabled]="isSubmitting()">
           @if (isSubmitting()) {
-            <ng-icon name="lucideLoader2" size="16" class="animate-spin mr-2" />
+            <hlm-spinner class="text-[16px] me-2" />
             Saving...
           } @else {
             Save Product
           }
         </button>
-      </div>
-    </div>
-  </div>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
 }
 
 @if (isBulkDeleteModalOpen()) {

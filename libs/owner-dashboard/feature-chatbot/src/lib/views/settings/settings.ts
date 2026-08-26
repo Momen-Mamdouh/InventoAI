@@ -2,8 +2,10 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
+import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSwitchImports } from '@spartan/helm/switch';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -18,8 +20,10 @@ import { ChatbotSettings, UpdateChatbotSettingsDto } from '../../types/chat-admi
     CommonModule,
     FormsModule,
     HlmCard,
+    HlmSpinner,
     HlmButton,
     HlmInput,
+    HlmLabelImports,
     HlmSelectImports,
     HlmSwitchImports,
     NgIcon,

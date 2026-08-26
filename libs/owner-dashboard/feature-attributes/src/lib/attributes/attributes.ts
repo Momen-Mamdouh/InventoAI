@@ -23,6 +23,9 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmTableImports } from '@spartan/helm/table';
+import { HlmSheetImports } from '@spartan/helm/sheet';
+import { HlmLabelImports } from '@spartan/helm/label';
 
 import {
   AttributeDisplayStyle,
@@ -46,6 +49,9 @@ import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog'
     AttributeSearchPipe,
     DeleteConfirmDialog,
     HlmSkeleton,
+    HlmTableImports,
+    HlmSheetImports,
+    HlmLabelImports,
   ],
   providers: [
     provideIcons({
@@ -155,6 +161,10 @@ export class AttributesComponent implements OnInit {
     this.isAttributeDrawerOpen.set(false);
   }
 
+  onAttributeDrawerStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closeAttributeDrawer();
+  }
+
   saveAttribute(): void {
     const isEdit = this.editingAttribute();
 
@@ -240,6 +250,10 @@ export class AttributesComponent implements OnInit {
   closeValuesDrawer(): void {
     this.isValuesDrawerOpen.set(false);
     this.activeAttributeForValues.set(null);
+  }
+
+  onValuesDrawerStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closeValuesDrawer();
   }
 
   addValue(): void {

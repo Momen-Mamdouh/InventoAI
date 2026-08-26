@@ -12,10 +12,11 @@
 
   @if (isLoading()) {
     <div class="flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <hlm-spinner class="text-[32px] text-primary" />
     </div>
   } @else if (errorState()) {
     <div
+      hlmCard
       class="flex flex-col items-center justify-center py-16 text-center border border-border rounded-xl bg-card"
     >
       <div
@@ -46,7 +47,9 @@
             {{ transcript()!.customerName || 'Guest User' }}
             @if (!transcript()!.isSignedIn) {
               <span
-                class="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-normal tracking-wide uppercase"
+                hlmBadge
+                variant="secondary"
+                class="text-[10px] font-normal tracking-wide uppercase"
                 >Guest</span
               >
             }

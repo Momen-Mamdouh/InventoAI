@@ -38,50 +38,50 @@
   <!-- Attributes Data Table Card -->
   <div hlmCard class="bg-card shadow-sm border-border rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full text-start border-collapse min-w-[800px]">
-        <thead>
-          <tr
+      <table hlmTable class="w-full text-start border-collapse min-w-[800px]">
+        <thead hlmTHead>
+          <tr hlmTr
             class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
           >
-            <th class="w-10"></th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Name</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Key</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Filterable</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+            <th hlmTh class="w-10"></th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Name</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Key</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Filterable</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
               Show on Product Page
             </th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Display Style</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Values count</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap">Actions</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Display Style</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Values count</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap">Actions</th>
           </tr>
         </thead>
-        <tbody
+        <tbody hlmTBody
           class="divide-y divide-border/60 text-sm"
           cdkDropList
           (cdkDropListDropped)="dropAttribute($event)"
         >
           @if (isLoading()) {
             @for (item of [1, 2, 3, 4, 5]; track item) {
-              <tr>
-                <td class="px-2 md:px-3 align-middle w-10 text-center">
+              <tr hlmTr>
+                <td hlmTd class="px-2 md:px-3 align-middle w-10 text-center">
                   <hlm-skeleton class="h-4 w-4 mx-auto" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-16" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-8" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-8" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-16" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-8" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-8" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <hlm-skeleton class="h-5 w-16 rounded-full" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-6" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-6" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
                   <hlm-skeleton class="h-8 w-24 ml-auto" />
                 </td>
               </tr>
             }
           } @else if (attributes().length === 0) {
-            <tr>
-              <td colspan="8" class="p-16 text-center">
+            <tr hlmTr>
+              <td hlmTd colspan="8" class="p-16 text-center">
                 <div class="flex flex-col items-center justify-center gap-3">
                   <div
                     class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
@@ -108,8 +108,8 @@
             </tr>
           } @else {
             @for (attr of attributes() | attributeSearch: searchQuery(); track attr.id) {
-              <tr class="group hover:bg-muted/40 transition-colors bg-card" cdkDrag>
-                <td class="px-2 md:px-3 text-muted-foreground/40 align-middle w-10">
+              <tr hlmTr class="group hover:bg-muted/40 transition-colors bg-card" cdkDrag>
+                <td hlmTd class="px-2 md:px-3 text-muted-foreground/40 align-middle w-10">
                   <div
                     cdkDragHandle
                     class="cursor-grab active:cursor-grabbing hover:text-foreground inline-flex items-center justify-center p-1 rounded transition-colors"
@@ -117,29 +117,29 @@
                     <ng-icon name="lucideGripVertical" size="18"></ng-icon>
                   </div>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
                   <p class="font-medium text-foreground">{{ attr.name }}</p>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ attr.key }}
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ attr.isFilterable ? 'Yes' : 'No' }}
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ attr.showOnProductPage ? 'Yes' : 'No' }}
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   <span
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-xs border bg-muted text-muted-foreground border-border"
                   >
                     {{ attr.displayStyle }}
                   </span>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ attr.values.length || 0 }}
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap text-end">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap text-end">
                   <div class="flex items-center justify-end gap-2">
                     <button
                       hlmBtn
@@ -175,8 +175,8 @@
                 </td>
               </tr>
             } @empty {
-              <tr>
-                <td colspan="8" class="p-16 text-center">
+              <tr hlmTr>
+                <td hlmTd colspan="8" class="p-16 text-center">
                   <div class="flex flex-col items-center justify-center gap-3">
                     <div
                       class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
@@ -211,36 +211,21 @@
 
 <!-- ATTRIBUTE DRAWER -->
 @if (isAttributeDrawerOpen()) {
-  <div class="fixed inset-0 z-50 flex justify-end">
-    <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
-      (click)="closeAttributeDrawer()"
-      (keydown.enter)="closeAttributeDrawer()"
-      tabindex="0"
-      role="button"
-    ></div>
-    <div
-      class="relative w-full sm:w-[500px] h-full bg-card shadow-2xl border-l border-border flex flex-col animate-in slide-in-from-right duration-300"
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onAttributeDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 p-0 w-full sm:w-[500px] sm:max-w-[500px]"
     >
-      <div class="p-6 border-b border-border flex justify-between items-center">
-        <h2 class="text-xl font-bold text-foreground tracking-tight">
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold tracking-tight">
           {{ editingAttribute() ? 'Edit Attribute' : 'Add New Attribute' }}
         </h2>
-        <button
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          (click)="closeAttributeDrawer()"
-          class="text-muted-foreground hover:text-foreground"
-        >
-          <ng-icon name="lucideX" size="20" />
-        </button>
-      </div>
+      </hlm-sheet-header>
 
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-6">
         <div class="space-y-4">
           <div>
-            <label for="attr-name" class="text-sm font-semibold mb-2 block text-foreground"
+            <label hlmLabel for="attr-name" class="text-sm font-semibold mb-2 block text-foreground"
               >Attribute Name</label
             >
             <input
@@ -253,7 +238,7 @@
             />
           </div>
           <div>
-            <label for="attr-key" class="text-sm font-semibold mb-2 block text-foreground"
+            <label hlmLabel for="attr-key" class="text-sm font-semibold mb-2 block text-foreground"
               >Key (Optional)</label
             >
             <input
@@ -266,7 +251,7 @@
             />
           </div>
           <div>
-            <label for="attr-style" class="text-sm font-semibold mb-2 block text-foreground"
+            <label hlmLabel for="attr-style" class="text-sm font-semibold mb-2 block text-foreground"
               >Display Style</label
             >
             <hlm-select
@@ -314,43 +299,28 @@
         </div>
       </div>
 
-      <div class="p-6 border-t border-border flex justify-end gap-3 bg-muted/20">
+      <hlm-sheet-footer class="p-6 border-t border-border flex-row justify-end gap-3 bg-muted/20">
         <button hlmBtn variant="outline" (click)="closeAttributeDrawer()">Cancel</button>
         <button hlmBtn (click)="saveAttribute()">
           {{ editingAttribute() ? 'Update' : 'Save' }}
         </button>
-      </div>
-    </div>
-  </div>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
 }
 
 <!-- VALUES DRAWER -->
 @if (isValuesDrawerOpen() && activeAttributeForValues()) {
-  <div class="fixed inset-0 z-50 flex justify-end">
-    <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
-      (click)="closeValuesDrawer()"
-      (keydown.enter)="closeValuesDrawer()"
-      tabindex="0"
-      role="button"
-    ></div>
-    <div
-      class="relative w-full sm:w-[500px] h-full bg-card shadow-2xl border-l border-border flex flex-col animate-in slide-in-from-right duration-300"
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onValuesDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 p-0 w-full sm:w-[500px] sm:max-w-[500px]"
     >
-      <div class="p-6 border-b border-border flex justify-between items-center">
-        <h2 class="text-xl font-bold text-foreground tracking-tight">
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold tracking-tight">
           Manage {{ activeAttributeForValues()?.name }} Values
         </h2>
-        <button
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          (click)="closeValuesDrawer()"
-          class="text-muted-foreground hover:text-foreground"
-        >
-          <ng-icon name="lucideX" size="20" />
-        </button>
-      </div>
+      </hlm-sheet-header>
 
       <!-- Values List -->
       <div
@@ -393,10 +363,10 @@
       </div>
 
       <!-- Add New Value Form -->
-      <div class="p-6 border-t border-border flex flex-col gap-3 bg-muted/20">
-        <div class="grid grid-cols-2 gap-3">
+      <hlm-sheet-footer class="p-6 border-t border-border flex-col gap-3 bg-muted/20">
+        <div class="grid grid-cols-2 gap-3 w-full">
           <div>
-            <label for="val-name" class="text-xs font-semibold mb-1 block">Value</label>
+            <label hlmLabel for="val-name" class="text-xs font-semibold mb-1 block">Value</label>
             <input
               id="val-name"
               hlmInput
@@ -407,7 +377,7 @@
             />
           </div>
           <div>
-            <label for="val-slug" class="text-xs font-semibold mb-1 block">Slug (Optional)</label>
+            <label hlmLabel for="val-slug" class="text-xs font-semibold mb-1 block">Slug (Optional)</label>
             <input
               id="val-slug"
               hlmInput
@@ -421,9 +391,9 @@
         <button hlmBtn class="w-full" (click)="addValue()" [disabled]="!newValueName()">
           Add Value
         </button>
-      </div>
-    </div>
-  </div>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
 }
 
 <!-- DELETE MODALS -->

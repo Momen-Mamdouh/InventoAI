@@ -6,6 +6,8 @@ import { HlmCard } from '@spartan/helm/card';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmTableImports } from '@spartan/helm/table';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideSearch,
@@ -31,6 +33,8 @@ import { ChatSessionsResponse } from '../../types/chat-admin.types';
     HlmInput,
     HlmButton,
     HlmSelectImports,
+    HlmSpinner,
+    HlmTableImports,
     NgIcon,
     DatePipe,
   ],

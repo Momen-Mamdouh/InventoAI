@@ -191,7 +191,10 @@
             >
               @for (category of filteredCategories(); track category.id) {
                 <button
-                  class="faq-category-tab flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-200 whitespace-nowrap shrink-0 text-sm font-medium group cursor-pointer"
+                  hlmBtn
+                  variant="link"
+                  type="button"
+                  class="faq-category-tab flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-200 whitespace-nowrap shrink-0 text-sm font-medium group cursor-pointer hover:no-underline"
                   [ngClass]="
                     activeCategory() === category.id
                       ? 'bg-primary text-primary-foreground shadow-md font-semibold'
@@ -261,8 +264,11 @@
 
                 @if (searchQuery()) {
                   <button
+                    hlmBtn
+                    variant="link"
+                    type="button"
                     (click)="clearSearch()"
-                    class="text-xs text-primary hover:underline font-medium"
+                    class="h-auto p-0 text-xs text-primary hover:underline font-medium"
                   >
                     {{ 'faq.show_all' | translate }}
                   </button>

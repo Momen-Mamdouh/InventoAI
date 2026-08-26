@@ -18,8 +18,10 @@ import gsap from 'gsap';
 
 // Spartan UI & Icons
 import { HlmButton } from '@spartan/helm/button';
+import { HlmSeparator } from '@spartan/helm/separator';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmTypographyImports } from '@spartan/helm/typography';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { provideIcons, NgIconComponent } from '@ng-icons/core';
 import {
   lucideCheckCircle,
@@ -46,8 +48,10 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
     RouterLink,
     CurrencyPipe,
     HlmButton,
+    HlmSeparator,
     HlmCard,
     ...HlmTypographyImports,
+    HlmSpinner,
     NgIconComponent,
     FormatOrderDatePipe,
     TranslatePipe,

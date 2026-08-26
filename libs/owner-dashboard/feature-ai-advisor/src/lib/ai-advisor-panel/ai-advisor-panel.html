@@ -117,7 +117,7 @@
           (click)="generateNow()"
         >
           @if (isGenerating()) {
-            <ng-icon name="lucideLoader2" size="14" class="animate-spin" />
+            <hlm-spinner class="text-[14px]" />
             <span>Analyzing...</span>
           } @else if (cooldownSeconds() > 0) {
             <ng-icon name="lucideClock" size="14" />
@@ -553,12 +553,14 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             <div>
               <label
+                hlmLabel
                 for="advisor-history-from-date"
                 class="text-[11px] font-medium text-muted-foreground block mb-1"
               >
                 From Date
               </label>
               <input
+                hlmInput
                 id="advisor-history-from-date"
                 type="date"
                 [value]="historyFrom()"
@@ -570,12 +572,14 @@
             </div>
             <div>
               <label
+                hlmLabel
                 for="advisor-history-to-date"
                 class="text-[11px] font-medium text-muted-foreground block mb-1"
               >
                 To Date
               </label>
               <input
+                hlmInput
                 id="advisor-history-to-date"
                 type="date"
                 [value]="historyTo()"
@@ -783,7 +787,7 @@
                 (click)="toggleSchedule()"
               >
                 @if (isSectionSaving('schedule')) {
-                  <ng-icon name="lucideLoader2" size="12" class="animate-spin" />
+                  <hlm-spinner />
                 }
                 {{ s.isEnabled ? 'Pause Schedule' : 'Enable Schedule' }}
               </button>
@@ -828,12 +832,14 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div>
                   <label
+                    hlmLabel
                     for="advisor-send-hour"
                     class="text-[11px] font-medium text-muted-foreground block mb-1"
                   >
                     Send Hour (0–23)
                   </label>
                   <input
+                    hlmInput
                     #hourInput
                     id="advisor-send-hour"
                     type="number"
@@ -845,12 +851,14 @@
                 </div>
                 <div>
                   <label
+                    hlmLabel
                     for="advisor-timezone"
                     class="text-[11px] font-medium text-muted-foreground block mb-1"
                   >
                     Timezone (IANA)
                   </label>
                   <input
+                    hlmInput
                     #tzInput
                     id="advisor-timezone"
                     type="text"
@@ -882,7 +890,7 @@
                   (click)="saveSchedule(hourInput.value, tzInput.value)"
                 >
                   @if (isSectionSaving('schedule')) {
-                    <ng-icon name="lucideLoader2" size="12" class="animate-spin" />
+                    <hlm-spinner />
                   }
                   Save Schedule
                 </button>
@@ -907,7 +915,7 @@
               (click)="toggleEmail()"
             >
               @if (isSectionSaving('email')) {
-                <ng-icon name="lucideLoader2" size="12" class="animate-spin" />
+                <hlm-spinner />
               }
               {{ s.emailEnabled ? 'Turn Off Email' : 'Enable Email' }}
             </button>
@@ -956,7 +964,7 @@
                   title="Remove location and disable weather insights"
                 >
                   @if (isSectionSaving('location')) {
-                    <ng-icon name="lucideLoader2" size="12" class="animate-spin" />
+                    <hlm-spinner />
                   } @else {
                     <ng-icon name="lucideTrash2" size="12" />
                   }
@@ -1011,12 +1019,14 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div>
                   <label
+                    hlmLabel
                     for="advisor-city"
                     class="text-[11px] font-medium text-muted-foreground block mb-1"
                   >
                     City Name
                   </label>
                   <input
+                    hlmInput
                     #cityInput
                     id="advisor-city"
                     type="text"
@@ -1027,12 +1037,14 @@
                 </div>
                 <div>
                   <label
+                    hlmLabel
                     for="advisor-country"
                     class="text-[11px] font-medium text-muted-foreground block mb-1"
                   >
                     Country Code (2-letters)
                   </label>
                   <input
+                    hlmInput
                     #countryInput
                     id="advisor-country"
                     type="text"
@@ -1044,12 +1056,14 @@
                 </div>
                 <div>
                   <label
+                    hlmLabel
                     for="advisor-latitude"
                     class="text-[11px] font-medium text-muted-foreground block mb-1"
                   >
                     Latitude (-90 to 90)
                   </label>
                   <input
+                    hlmInput
                     #latInput
                     id="advisor-latitude"
                     type="number"
@@ -1063,12 +1077,14 @@
                 </div>
                 <div>
                   <label
+                    hlmLabel
                     for="advisor-longitude"
                     class="text-[11px] font-medium text-muted-foreground block mb-1"
                   >
                     Longitude (-180 to 180)
                   </label>
                   <input
+                    hlmInput
                     #lngInput
                     id="advisor-longitude"
                     type="number"
@@ -1106,7 +1122,7 @@
                   "
                 >
                   @if (isSectionSaving('location')) {
-                    <ng-icon name="lucideLoader2" size="12" class="animate-spin" />
+                    <hlm-spinner />
                   }
                   Save Location
                 </button>
@@ -1155,12 +1171,14 @@
             <div class="bg-muted/40 p-3 rounded-lg border space-y-3 pt-2">
               <div class="max-w-xs">
                 <label
+                  hlmLabel
                   for="advisor-lead-time"
                   class="text-[11px] font-medium text-muted-foreground block mb-1"
                 >
                   Store-wide Lead Time (0–120 days)
                 </label>
                 <input
+                  hlmInput
                   #leadTimeInput
                   id="advisor-lead-time"
                   type="number"
@@ -1188,7 +1206,7 @@
                   (click)="saveLeadTime(leadTimeInput.value)"
                 >
                   @if (isSectionSaving('leadTime')) {
-                    <ng-icon name="lucideLoader2" size="12" class="animate-spin" />
+                    <hlm-spinner />
                   }
                   Save Lead Time
                 </button>
@@ -1382,7 +1400,7 @@
               title="Won't show again for 7 days"
             >
               @if (isInsightUpdating(item.id)) {
-                <ng-icon name="lucideLoader2" size="12" class="animate-spin mr-1" />
+                <hlm-spinner class="me-1" />
               }
               Dismiss
             </button>
@@ -1395,7 +1413,7 @@
               title="Record that you ordered stock or took this action"
             >
               @if (isInsightUpdating(item.id)) {
-                <ng-icon name="lucideLoader2" size="12" class="animate-spin mr-1" />
+                <hlm-spinner class="me-1" />
               } @else {
                 <ng-icon name="lucideCheck" size="13" />
               }

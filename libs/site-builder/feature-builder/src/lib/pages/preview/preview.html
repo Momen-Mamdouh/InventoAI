@@ -500,7 +500,7 @@
         class="flex items-center gap-2 cursor-pointer"
       >
         @if (isDeploying()) {
-          <ng-icon name="lucideLoader2" class="animate-spin text-sm" />
+          <hlm-spinner class="text-sm" />
           <span>{{ 'toast_deploying_site' | translate }}</span>
         } @else {
           <span>{{ 'preview_deploy' | translate }}</span>

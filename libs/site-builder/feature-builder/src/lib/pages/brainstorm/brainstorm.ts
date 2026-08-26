@@ -41,6 +41,7 @@ import { Router } from '@angular/router';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { HlmItemImports } from '@spartan/helm/item';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { toastApiError } from '../../utils/toast-api-error';
 
 type ValidationStatus = 'EMPTY' | 'TOO_SHORT' | 'MEANINGLESS' | 'VALID';
@@ -61,6 +62,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     HlmButtonImports,
     NgIcon,
     HlmItemImports,
+    HlmSpinner,
     ReactiveFormsModule,
     PageHeader,
     DoubleSlash,

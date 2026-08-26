@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmButton } from '@spartan/helm/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -19,7 +20,7 @@ import { KnowledgeStatus } from '../../types/chat-admin.types';
 @Component({
   selector: 'app-chatbot-knowledge',
   standalone: true,
-  imports: [CommonModule, HlmCard, HlmButton, NgIcon, DatePipe],
+  imports: [CommonModule, HlmCard, HlmButton, HlmSpinner, NgIcon, DatePipe],
   providers: [
     provideIcons({
       lucideRefreshCw,

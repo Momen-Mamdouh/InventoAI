@@ -51,7 +51,7 @@
   <div hlmCard class="border-border rounded-xl shadow-xs overflow-hidden">
     @if (isLoading()) {
       <div class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <hlm-spinner class="text-[32px] text-primary" />
       </div>
     } @else if (errorState()) {
       <div
@@ -121,9 +121,7 @@
                     (click)="markAsReviewed(theme)"
                   >
                     @if (reviewingIds().has(theme.key)) {
-                      <div
-                        class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"
-                      ></div>
+                      <hlm-spinner class="text-primary-foreground" />
                     } @else {
                       <ng-icon name="lucideCheck" size="16" />
                       Mark as Dealt With

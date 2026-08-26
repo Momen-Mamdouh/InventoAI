@@ -14,6 +14,7 @@ import {
   lucideSparkles,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmCard } from '@spartan/helm/card';
 import { BlurText } from '../../blur-text/blur-text';
 import { ScrollAnimateDirective } from '@invento/shared-util-directives';
 import { hlmH1, hlmP } from '@spartan/helm/typography';
@@ -24,7 +25,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   templateUrl: './hero.html',
   styleUrl: './hero.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, NgIcon, HlmButton, ScrollAnimateDirective, BlurText, TranslatePipe],
+  imports: [RouterLink, NgIcon, HlmButton, HlmCard, ScrollAnimateDirective, BlurText, TranslatePipe],
   providers: [
     provideIcons({
       lucideBolt,

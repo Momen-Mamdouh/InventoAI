@@ -172,24 +172,24 @@
   ══════════════════════════════════════════════════════════ -->
   <div hlmCard class="bg-card shadow-sm border-border rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[840px] text-start border-collapse">
-        <thead>
-          <tr
+      <table hlmTable class="w-full min-w-[840px] text-start border-collapse">
+        <thead hlmTHead>
+          <tr hlmTr
             class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
           >
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Supplier</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Phone</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 w-32 text-start whitespace-nowrap">Lead Time</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 w-28 text-start whitespace-nowrap">Status</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 w-32 text-start whitespace-nowrap">Added</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 w-28 text-end whitespace-nowrap">Actions</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Supplier</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Phone</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-32 text-start whitespace-nowrap">Lead Time</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-28 text-start whitespace-nowrap">Status</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-32 text-start whitespace-nowrap">Added</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-28 text-end whitespace-nowrap">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-border/60 text-sm">
+        <tbody hlmTBody class="divide-y divide-border/60 text-sm">
           @if (loading() && suppliers().length === 0) {
             @for (item of [1, 2, 3, 4, 5]; track item) {
-              <tr>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[220px]">
+              <tr hlmTr>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[220px]">
                   <div class="flex items-center gap-3">
                     <hlm-skeleton class="rounded-xl w-10 h-10 shrink-0" />
                     <div class="flex-1 space-y-1.5">
@@ -198,20 +198,20 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="w-24 h-4" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="w-12 h-4" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="w-24 h-4" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="w-12 h-4" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <hlm-skeleton class="rounded-full w-16 h-5" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="w-20 h-4" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="w-20 h-4" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
                   <hlm-skeleton class="ms-auto w-20 h-8" />
                 </td>
               </tr>
             }
           } @else if (suppliers().length === 0) {
-            <tr>
-              <td colspan="6" class="p-16 text-center">
+            <tr hlmTr>
+              <td hlmTd colspan="6" class="p-16 text-center">
                 <div class="flex flex-col justify-center items-center gap-3">
                   <div
                     class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
@@ -233,8 +233,8 @@
             </tr>
           } @else {
             @for (supplier of suppliers(); track supplier.id) {
-              <tr class="group hover:bg-muted/40 transition-colors">
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
+              <tr hlmTr class="group hover:bg-muted/40 transition-colors">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
                   <div class="flex items-center gap-3">
                     <div
                       class="flex flex-shrink-0 justify-center items-center bg-indigo-50 dark:bg-indigo-500/10 rounded-xl w-10 h-10"
@@ -271,7 +271,7 @@
                     }
                   </div>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   @if (supplier.phone) {
                     <span class="flex items-center gap-1.5">
                       <ng-icon name="lucidePhone" size="12" class="flex-shrink-0" />
@@ -281,10 +281,10 @@
                     <span class="text-muted-foreground/50">—</span>
                   }
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ supplier.leadTimeDays }} {{ supplier.leadTimeDays === 1 ? 'day' : 'days' }}
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
                   <button
                     type="button"
                     class="inline-flex items-center px-2.5 py-0.5 border rounded-full font-medium text-xs transition-colors"
@@ -307,10 +307,10 @@
                     {{ supplier.isActive ? 'Active' : 'Inactive' }}
                   </button>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
                   {{ supplier.createdAt | date: 'mediumDate' }}
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap">
                   <div class="flex justify-end items-center gap-2">
                     <button
                       hlmBtn

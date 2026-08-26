@@ -40,9 +40,20 @@ import {
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmTableImports } from '@spartan/helm/table';
+import { HlmDialogImports } from '@spartan/helm/dialog';
+import { HlmSheetImports } from '@spartan/helm/sheet';
+import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
+// Brain primitives are the plain npm package — they are NOT re-exported through the
+// project's `@spartan/helm` alias, so import them directly instead of reaching into
+// node_modules' compiled type declarations (which is fragile and breaks on upgrades).
+import { BrnDialogImports } from '@spartan-ng/brain/dialog';
+import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
 import { ProductService, ApiProductDetail } from '@invento/owner-dashboard-data-access-product';
 import { SupplierService, Supplier } from '@invento/owner-dashboard-data-access-supplier';
 import {
@@ -65,9 +76,17 @@ import {
     HlmButton,
     HlmCardImports,
     HlmInputImports,
+    HlmLabelImports,
     HlmSelectImports,
     HlmTextareaImports,
     HlmSkeleton,
+    HlmSpinner,
+    HlmTableImports,
+    HlmDialogImports,
+    HlmSheetImports,
+    HlmAlertDialogImports,
+    BrnDialogImports,
+    BrnAlertDialogImports,
   ],
   providers: [
     provideIcons({
@@ -244,6 +263,10 @@ export class PurchaseRequests implements OnInit {
     this.router.navigate([], { queryParams: {}, replaceUrl: true });
   }
 
+  onDetailStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closeDetail();
+  }
+
   refreshDetail(): void {
     const id = this.selected()?.id;
     if (id) this.openDetail(id);
@@ -257,6 +280,10 @@ export class PurchaseRequests implements OnInit {
     this.createProductId.set('');
     this.createVariantId = '';
     this.showCreate.set(true);
+  }
+
+  onCreateStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.showCreate.set(false);
   }
 
   onCreateProductChange(value: string): void {
@@ -315,6 +342,10 @@ export class PurchaseRequests implements OnInit {
     this.showEdit.set(true);
   }
 
+  onEditStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.showEdit.set(false);
+  }
+
   saveEdit(): void {
     const request = this.selected();
     if (!request) return;
@@ -370,10 +401,18 @@ export class PurchaseRequests implements OnInit {
     });
   }
 
+  onCancelConfirmStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.showCancelConfirm.set(false);
+  }
+
   openReply(offer: SupplierOffer): void {
     this.selectedOffer.set(offer);
     this.replyBody = '';
     this.showReply.set(true);
+  }
+
+  onReplyStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.showReply.set(false);
   }
 
   pasteReply(): void {
@@ -399,6 +438,10 @@ export class PurchaseRequests implements OnInit {
     this.offerDeliveryDays = offer.deliveryDays;
     this.offerNotes = offer.notes;
     this.showOfferEdit.set(true);
+  }
+
+  onOfferEditStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.showOfferEdit.set(false);
   }
 
   saveOffer(): void {
@@ -438,6 +481,10 @@ export class PurchaseRequests implements OnInit {
 
   cancelConfirmOffer(): void {
     this.offerToConfirm.set(null);
+  }
+
+  onConfirmOfferStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.cancelConfirmOffer();
   }
 
   proceedConfirmOffer(): void {
@@ -502,6 +549,10 @@ export class PurchaseRequests implements OnInit {
 
   cancelDisconnectMailbox(): void {
     this.showDisconnectMailboxConfirm.set(false);
+  }
+
+  onDisconnectMailboxStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.cancelDisconnectMailbox();
   }
 
   proceedDisconnectMailbox(): void {

@@ -1,7 +1,9 @@
 import { HlmTextareaImports } from '@spartan/helm/textarea';
+import { HlmLabel } from '@spartan/helm/label';
 import { HlmDialogImports } from '@spartan/helm/dialog';
 import { BrnDialogContent } from '@spartan-ng/brain/dialog';
 import { HlmTypographyImports } from '@spartan/helm/typography';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
@@ -56,9 +58,11 @@ interface PresetReason {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     HlmTextareaImports,
+    HlmLabel,
     HlmDialogImports,
     BrnDialogContent,
     ...HlmTypographyImports,
+    HlmSpinner,
     SkeletonBlock,
     CommonModule,
     CurrencyPipe,

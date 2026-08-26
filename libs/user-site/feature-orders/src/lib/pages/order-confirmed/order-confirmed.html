@@ -43,7 +43,7 @@
         </p>
       } @else if (isLoading()) {
         <div class="flex items-center justify-center gap-2 text-xs text-muted-foreground mt-2">
-          <ng-icon name="lucideLoader2" class="animate-spin text-sm"></ng-icon>
+          <hlm-spinner class="text-sm" />
           <span>{{ 'order_confirmed.retrieving' | translate }}</span>
         </div>
       } @else {
@@ -67,7 +67,7 @@
         >
           {{ 'order_confirmed.order_summary' | translate }}
         </h2>
-        <hr class="mb-4 sm:mb-6 border-border" />
+        <hlm-separator class="mb-4 sm:mb-6" />
 
         @if (isLoading() && !order()) {
           <!-- Skeleton while loading -->
@@ -170,7 +170,7 @@
               </span>
             </div>
           </div>
-          <hr class="mb-4 border-border" />
+          <hlm-separator class="mb-4" />
           <div
             class="flex justify-between items-center font-bold text-foreground text-base sm:text-lg"
           >
@@ -265,7 +265,7 @@
             <h2 hlmH2 class="mb-3 font-bold text-foreground text-base sm:text-lg border-none pb-0">
               {{ 'order_confirmed.delivery_address' | translate }}
             </h2>
-            <hr class="mb-3 border-border" />
+            <hlm-separator class="mb-3" />
             <h4 hlmH4 dir="auto" class="font-bold text-foreground text-sm">
               {{ ord.contactName }}
             </h4>

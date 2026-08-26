@@ -24,6 +24,7 @@ import {
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
+import { HlmLabelImports } from '@spartan/helm/label';
 
 export interface ActiveSession {
   id: string;
@@ -38,7 +39,16 @@ export interface ActiveSession {
 @Component({
   selector: 'app-security',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NgIcon, HlmCard, HlmButton, HlmInput],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    NgIcon,
+    HlmCard,
+    HlmButton,
+    HlmInput,
+    HlmLabelImports,
+  ],
   providers: [
     provideIcons({
       lucideLock,

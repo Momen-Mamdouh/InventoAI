@@ -18,6 +18,8 @@
         <div class="flex gap-3 flex-wrap">
           @for (opt of axis.options; track opt.slug) {
             <button
+              hlmBtn
+              variant="ghost"
               type="button"
               [attr.aria-label]="'Select ' + opt.value"
               [attr.aria-pressed]="store.selectedOptions()[axis.key] === opt.slug"
@@ -45,12 +47,14 @@
         <div class="flex flex-wrap gap-3">
           @for (opt of axis.options; track opt.slug) {
             <button
+              hlmBtn
+              variant="ghost"
               type="button"
               dir="auto"
               [attr.aria-label]="'Select ' + axis.name + ' ' + opt.value"
               [attr.aria-pressed]="store.selectedOptions()[axis.key] === opt.slug"
               (click)="store.selectOption(axis.key, opt.slug)"
-              class="rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+              class="h-auto rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
               [class.border-primary]="store.selectedOptions()[axis.key] === opt.slug"
               [class.bg-primary/5]="store.selectedOptions()[axis.key] === opt.slug"
               [class.text-primary]="store.selectedOptions()[axis.key] === opt.slug"

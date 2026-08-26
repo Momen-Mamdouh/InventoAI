@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmBadge } from '@spartan/helm/badge';
 
 export interface FilterTab<T extends string = string> {
   id: T;
@@ -18,7 +19,7 @@ export interface FilterTab<T extends string = string> {
 @Component({
   selector: 'app-filter-tabs',
   standalone: true,
-  imports: [HlmButton],
+  imports: [HlmButton, HlmBadge],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
@@ -68,6 +69,8 @@ export interface FilterTab<T extends string = string> {
           <span>{{ tab.label }}</span>
           @if (tab.count !== undefined) {
             <span
+              hlmBadge
+              [variant]="tab.id === active() ? 'default' : 'secondary'"
               class="rounded-full px-1.5 py-0.5 text-[11px] font-bold"
               [class]="
                 tab.id === active()

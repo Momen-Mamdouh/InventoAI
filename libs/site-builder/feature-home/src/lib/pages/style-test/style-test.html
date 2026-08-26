@@ -4,6 +4,9 @@
     <div class="style-tabs">
       @for (style of styles; track style) {
         <button
+          hlmBtn
+          variant="ghost"
+          type="button"
           class="style-tab"
           [class.active]="activeStyle() === style"
           (click)="setStyle(style)"

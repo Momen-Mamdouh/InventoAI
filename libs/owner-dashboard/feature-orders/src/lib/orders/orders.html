@@ -191,42 +191,42 @@
     @if (store.isLoading() && store.orders().length === 0) {
       <!-- Initial Loading Skeleton -->
       <div class="overflow-x-auto">
-        <table class="w-full text-start border-collapse">
-          <thead>
-            <tr
+        <table hlmTable class="w-full text-start border-collapse">
+          <thead hlmTHead>
+            <tr hlmTr
               class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
             >
-              <th class="px-2 sm:px-3 md:px-4 py-3 w-10"></th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_id' | translate }}</th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_customer' | translate }}</th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_date' | translate }}</th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_items' | translate }}</th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_total' | translate }}</th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_payment' | translate }}</th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3">
+              <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-10"></th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_id' | translate }}</th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_customer' | translate }}</th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_date' | translate }}</th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_items' | translate }}</th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_total' | translate }}</th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3">{{ 'orders.col_payment' | translate }}</th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3">
                 {{ 'orders.col_fulfillment' | translate }}
               </th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3 w-14"></th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-14"></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border/60 text-sm">
+          <tbody hlmTBody class="divide-y divide-border/60 text-sm">
             @for (item of [1, 2, 3, 4, 5]; track item) {
-              <tr>
-                <td class="px-2 sm:px-3 md:px-4 py-3 text-center">
+              <tr hlmTr>
+                <td hlmTd class="px-2 sm:px-3 md:px-4 py-3 text-center">
                   <hlm-skeleton class="h-4 w-4 rounded mx-auto" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-20" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-32" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-12" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-16" /></td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-20" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-32" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-24" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-12" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3"><hlm-skeleton class="h-4 w-16" /></td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <hlm-skeleton class="h-5 w-20 rounded-full" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <hlm-skeleton class="h-5 w-20 rounded-full" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <hlm-skeleton class="h-8 w-8 rounded-md" />
                 </td>
               </tr>
@@ -236,12 +236,12 @@
       </div>
     } @else if (store.orders().length > 0) {
       <div class="overflow-x-auto">
-        <table class="w-full text-start border-collapse">
-          <thead>
-            <tr
+        <table hlmTable class="w-full text-start border-collapse">
+          <thead hlmTHead>
+            <tr hlmTr
               class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
             >
-              <th class="px-2 sm:px-3 md:px-4 py-3 w-10 text-center">
+              <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-10 text-center">
                 <input
                   type="checkbox"
                   [checked]="store.isAllCurrentPageSelected()"
@@ -249,14 +249,14 @@
                   class="border-border rounded focus:ring-primary/20 text-primary cursor-pointer"
                 />
               </th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
                 {{ 'orders.col_id' | translate }}
               </th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
                 {{ 'orders.col_customer' | translate }}
               </th>
               <!-- Clickable Sortable Date Column -->
-              <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
                 <button
                   type="button"
                   (click)="onSort('createdAt')"
@@ -278,11 +278,11 @@
                   }
                 </button>
               </th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
                 {{ 'orders.col_items' | translate }}
               </th>
               <!-- Clickable Sortable Total Column -->
-              <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
                 <button
                   type="button"
                   (click)="onSort('totalAmount')"
@@ -304,25 +304,25 @@
                   }
                 </button>
               </th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
                 {{ 'orders.col_payment' | translate }}
               </th>
-              <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
                 {{ 'orders.col_fulfillment' | translate }}
               </th>
-              <th class="px-2 sm:px-3 md:px-4 py-3 w-14 text-center whitespace-nowrap">
+              <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-14 text-center whitespace-nowrap">
                 {{ 'orders.col_actions' | translate }}
               </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border/60 text-sm">
+          <tbody hlmTBody class="divide-y divide-border/60 text-sm">
             @for (order of store.orders(); track order.id) {
-              <tr
+              <tr hlmTr
                 class="group hover:bg-muted/40 transition-colors"
                 [class.bg-primary/5]="store.selectedOrderIds().has(order.id)"
               >
                 <!-- Selection checkbox -->
-                <td class="px-2 sm:px-3 md:px-4 py-3.5 text-center">
+                <td hlmTd class="px-2 sm:px-3 md:px-4 py-3.5 text-center">
                   <input
                     type="checkbox"
                     [checked]="store.selectedOrderIds().has(order.id)"
@@ -333,7 +333,7 @@
                 </td>
 
                 <!-- Order Number & ID -->
-                <td class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
                   <button
                     type="button"
                     class="focus:outline-none font-bold text-primary hover:underline flex flex-col text-start"
@@ -349,7 +349,7 @@
                 </td>
 
                 <!-- Customer -->
-                <td
+                <td hlmTd
                   class="px-2.5 sm:px-3 md:px-4 py-3.5 min-w-[130px] max-w-[170px] sm:max-w-[210px] lg:max-w-none"
                 >
                   <div class="font-semibold text-foreground truncate">{{ order.contactName }}</div>
@@ -359,7 +359,7 @@
                 </td>
 
                 <!-- Date & Time -->
-                <td class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
                   <div class="font-medium text-foreground">{{ getDatePart(order.createdAt) }}</div>
                   <div class="text-muted-foreground text-xs">
                     {{ getTimePart(order.createdAt) }}
@@ -367,7 +367,7 @@
                 </td>
 
                 <!-- Items Count -->
-                <td class="px-2.5 sm:px-3 md:px-4 py-3.5 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3.5 text-muted-foreground whitespace-nowrap">
                   <span>{{ order.itemCount }} </span>
                   <span>{{
                     (order.itemCount === 1 ? 'orders.item' : 'orders.items') | translate
@@ -375,14 +375,14 @@
                 </td>
 
                 <!-- Total Price (Converted from minor units) -->
-                <td
+                <td hlmTd
                   class="px-2.5 sm:px-3 md:px-4 py-3.5 font-bold text-foreground whitespace-nowrap"
                 >
                   {{ formatMinorUnits(order.totalAmount) | currency: order.currency }}
                 </td>
 
                 <!-- Payment Status -->
-                <td class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
                   <span
                     class="inline-flex items-center gap-1.5 px-2.5 py-0.5 border rounded-full font-medium text-xs capitalize"
                     [ngClass]="getPaymentBadgeClass(order.paymentStatus)"
@@ -399,7 +399,7 @@
                 </td>
 
                 <!-- Fulfillment Status -->
-                <td class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
                   <span
                     class="inline-flex justify-center items-center px-3 py-0.5 rounded-full text-xs font-medium"
                     [class]="getFulfillmentBadgeClass(order.status)"
@@ -412,7 +412,7 @@
                 </td>
 
                 <!-- Actions menu -->
-                <td class="px-2 sm:px-3 md:px-4 py-3.5 text-center whitespace-nowrap">
+                <td hlmTd class="px-2 sm:px-3 md:px-4 py-3.5 text-center whitespace-nowrap">
                   <button
                     hlmBtn
                     variant="ghost"
@@ -618,24 +618,15 @@
 
   <!-- Detailed Order Modal / Slide-over -->
   @if (isDetailsOpen()) {
-    <div class="z-50 fixed inset-0 flex justify-center items-center p-3 sm:p-4 overflow-y-auto">
-      <!-- Backdrop -->
-      <button
-        type="button"
-        class="fixed inset-0 w-full h-full bg-black/60 backdrop-blur-xs border-0 cursor-default animate-in duration-200 fade-in"
-        (click)="closeDetails()"
-        aria-label="Close modal"
-      ></button>
-
-      <!-- Modal Dialog -->
-      <div
-        class="relative z-10 my-8 bg-card shadow-2xl p-4 sm:p-6 border border-border rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto text-foreground animate-in duration-200 fade-in zoom-in-95"
-        role="dialog"
-        aria-modal="true"
+    <hlm-dialog [state]="'open'" (stateChanged)="onDetailsStateChanged($event)">
+      <hlm-dialog-content
+        *brnDialogContent="let ctx"
+        [showCloseButton]="false"
+        class="flex flex-col gap-0 p-4 sm:p-6 sm:max-w-2xl max-h-[90vh] overflow-y-auto"
       >
         @if (store.isDetailLoading()) {
           <div class="flex flex-col justify-center items-center py-20 text-muted-foreground gap-3">
-            <ng-icon name="lucideLoader2" size="32" class="animate-spin text-primary" />
+            <hlm-spinner class="text-[32px] text-primary" />
             <p class="font-medium text-sm">{{ 'orders.loading' | translate }}</p>
           </div>
         } @else if (store.selectedOrder(); as detail) {
@@ -865,21 +856,21 @@
             </div>
 
             <div class="border border-border rounded-xl overflow-hidden">
-              <table class="w-full text-start text-xs border-collapse">
-                <thead
+              <table hlmTable class="w-full text-start text-xs border-collapse">
+                <thead hlmTHead
                   class="bg-muted/40 border-b border-border text-muted-foreground font-semibold"
                 >
-                  <tr>
-                    <th class="p-2.5 text-start">Product</th>
-                    <th class="p-2.5 text-center">Qty</th>
-                    <th class="p-2.5 text-end">Price</th>
-                    <th class="p-2.5 text-end">Total</th>
+                  <tr hlmTr>
+                    <th hlmTh class="p-2.5 text-start">Product</th>
+                    <th hlmTh class="p-2.5 text-center">Qty</th>
+                    <th hlmTh class="p-2.5 text-end">Price</th>
+                    <th hlmTh class="p-2.5 text-end">Total</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-border/50">
+                <tbody hlmTBody class="divide-y divide-border/50">
                   @for (item of detail.items; track item.id) {
-                    <tr class="hover:bg-muted/20 transition-colors">
-                      <td class="p-2.5">
+                    <tr hlmTr class="hover:bg-muted/20 transition-colors">
+                      <td hlmTd class="p-2.5">
                         <div class="font-semibold text-foreground">{{ item.productTitle }}</div>
                         <!-- Variant options badges -->
                         @if (getObjectKeys(item.variantOptions).length > 0) {
@@ -902,13 +893,13 @@
                           </div>
                         }
                       </td>
-                      <td class="p-2.5 text-center font-medium text-foreground">
+                      <td hlmTd class="p-2.5 text-center font-medium text-foreground">
                         x{{ item.quantity }}
                       </td>
-                      <td class="p-2.5 text-end text-muted-foreground">
+                      <td hlmTd class="p-2.5 text-end text-muted-foreground">
                         {{ formatMinorUnits(item.unitAmount) | currency: detail.currency }}
                       </td>
-                      <td class="p-2.5 text-end font-bold text-foreground">
+                      <td hlmTd class="p-2.5 text-end font-bold text-foreground">
                         {{ formatMinorUnits(item.lineTotalAmount) | currency: detail.currency }}
                       </td>
                     </tr>
@@ -958,6 +949,7 @@
           <div class="my-4 p-3.5 bg-card border border-border/80 rounded-xl space-y-2">
             <div class="flex justify-between items-center">
               <label
+                hlmLabel
                 for="internalNote"
                 class="font-bold text-foreground text-xs flex items-center gap-1.5"
               >
@@ -969,6 +961,7 @@
               </span>
             </div>
             <textarea
+              hlmTextarea
               id="internalNote"
               rows="3"
               maxlength="2000"
@@ -986,7 +979,7 @@
                 (click)="saveInternalNote()"
               >
                 @if (store.isUpdatingNote()) {
-                  <ng-icon name="lucideLoader2" size="13" class="animate-spin text-primary" />
+                  <hlm-spinner class="text-[13px] text-primary" />
                   <span>{{ 'orders.saving_note' | translate }}</span>
                 } @else {
                   <ng-icon name="lucideSave" size="13" />
@@ -1003,26 +996,16 @@
             </button>
           </div>
         }
-      </div>
-    </div>
+      </hlm-dialog-content>
+    </hlm-dialog>
   }
 
   <!-- Cancel Order Reason Confirmation Dialog Modal (Single or Bulk) -->
   @if (isCancelModalOpen()) {
-    <div class="z-50 fixed inset-0 flex justify-center items-center p-4">
-      <!-- Backdrop -->
-      <button
-        type="button"
-        class="fixed inset-0 w-full h-full bg-black/60 backdrop-blur-xs border-0 cursor-default animate-in duration-200 fade-in"
-        (click)="closeCancelModal()"
-        aria-label="Close dialog"
-      ></button>
-
-      <!-- Dialog Card -->
-      <div
-        class="relative z-10 bg-card shadow-2xl p-5 sm:p-6 border border-border rounded-2xl w-full max-w-md text-foreground animate-in duration-200 fade-in zoom-in-95 space-y-4"
-        role="dialog"
-        aria-modal="true"
+    <hlm-alert-dialog [state]="'open'" (stateChanged)="onCancelModalStateChanged($event)">
+      <hlm-alert-dialog-content
+        *brnAlertDialogContent="let ctx"
+        class="data-[size=default]:sm:max-w-md space-y-4"
       >
         <div class="flex justify-between items-center pb-2 border-b border-border">
           <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-base">
@@ -1058,6 +1041,7 @@
         </p>
 
         <textarea
+          hlmTextarea
           rows="3"
           maxlength="200"
           [placeholder]="'orders.cancel_reason_placeholder' | translate"
@@ -1083,12 +1067,12 @@
             (click)="submitCancelOrder()"
           >
             @if (store.isUpdatingStatus()) {
-              <ng-icon name="lucideLoader2" size="14" class="animate-spin me-1.5" />
+              <hlm-spinner class="text-[14px] me-1.5" />
             }
             {{ 'orders.confirm_cancel_btn' | translate }}
           </button>
         </div>
-      </div>
-    </div>
+      </hlm-alert-dialog-content>
+    </hlm-alert-dialog>
   }
 </div>

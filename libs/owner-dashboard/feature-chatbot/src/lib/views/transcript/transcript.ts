@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmBadge } from '@spartan/helm/badge';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideArrowLeft,
@@ -20,7 +22,7 @@ import { ChatTranscript } from '../../types/chat-admin.types';
 @Component({
   selector: 'app-chatbot-transcript',
   standalone: true,
-  imports: [CommonModule, RouterLink, HlmCard, NgIcon, DatePipe],
+  imports: [CommonModule, RouterLink, HlmCard, HlmBadge, HlmSpinner, NgIcon, DatePipe],
   providers: [
     provideIcons({
       lucideArrowLeft,

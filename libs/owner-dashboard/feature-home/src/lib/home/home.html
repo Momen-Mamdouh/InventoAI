@@ -152,10 +152,11 @@
               </p>
 
               <div class="space-y-1.5">
-                <label for="hero-title-input" class="font-medium text-foreground text-xs">{{
+                <label hlmLabel for="hero-title-input" class="font-medium text-foreground text-xs">{{
                   'home.headline' | translate
                 }}</label>
                 <input
+                  hlmInput
                   id="hero-title-input"
                   type="text"
                   class="flex bg-transparent shadow-xs px-3 py-1 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-9 placeholder:text-muted-foreground text-xs transition-colors"
@@ -166,10 +167,11 @@
               </div>
 
               <div class="space-y-1.5">
-                <label for="hero-subtitle-input" class="font-medium text-foreground text-xs">{{
+                <label hlmLabel for="hero-subtitle-input" class="font-medium text-foreground text-xs">{{
                   'home.subtitle' | translate
                 }}</label>
                 <textarea
+                  hlmTextarea
                   id="hero-subtitle-input"
                   class="flex bg-transparent shadow-xs px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full min-h-[70px] placeholder:text-muted-foreground text-xs transition-colors resize-none"
                   [value]="heroSubtitle()"
@@ -179,10 +181,11 @@
               </div>
 
               <div class="space-y-1.5">
-                <label for="hero-cta-label-input" class="font-medium text-foreground text-xs">{{
+                <label hlmLabel for="hero-cta-label-input" class="font-medium text-foreground text-xs">{{
                   'home.button_label' | translate
                 }}</label>
                 <input
+                  hlmInput
                   id="hero-cta-label-input"
                   type="text"
                   class="flex bg-transparent shadow-xs px-3 py-1 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-9 placeholder:text-muted-foreground text-xs transition-colors"
@@ -193,10 +196,11 @@
               </div>
 
               <div class="space-y-1.5">
-                <label for="hero-cta-href-input" class="font-medium text-foreground text-xs">{{
+                <label hlmLabel for="hero-cta-href-input" class="font-medium text-foreground text-xs">{{
                   'home.button_link' | translate
                 }}</label>
                 <input
+                  hlmInput
                   id="hero-cta-href-input"
                   type="url"
                   [placeholder]="'home.button_link_placeholder' | translate"
@@ -762,7 +766,7 @@
         (click)="saveChanges()"
       >
         @if (isSavingHero()) {
-          <ng-icon name="lucideRefreshCw" size="14" class="animate-spin" />
+          <hlm-spinner class="text-[14px]" />
           <span>Saving...</span>
         } @else {
           <ng-icon name="lucideCheck" size="14" />

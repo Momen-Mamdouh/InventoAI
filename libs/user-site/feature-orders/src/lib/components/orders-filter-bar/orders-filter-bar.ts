@@ -9,6 +9,7 @@ import {
 import gsap from 'gsap';
 import { FilterTabs, type FilterTab } from '@invento/shared-ui-filter-tabs';
 import { SearchInput } from '@invento/shared-ui-search-input';
+import { HlmCard } from '@spartan/helm/card';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { OrdersDataService, type OrderFilter } from '@invento/user-site-data-access-order';
 import { animateElementsOnRender } from '@invento/user-site-util-animation';
@@ -26,7 +27,7 @@ const ORDER_FILTER_IDS: readonly OrderFilter[] = [
   selector: 'app-orders-filter-bar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FilterTabs, SearchInput, TranslatePipe],
+  imports: [FilterTabs, SearchInput, TranslatePipe, HlmCard],
   templateUrl: './orders-filter-bar.html',
 })
 export class OrdersFilterBarComponent {

@@ -21,6 +21,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmTextarea } from '@spartan/helm/textarea';
 import { HlmSeparator } from '@spartan/helm/separator';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { Router } from '@angular/router';
 import { CdkStepper, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { PageHeader } from '@invento/shared-ui-page-header';
@@ -44,6 +45,7 @@ import { toastApiError } from '../../utils/toast-api-error';
     HlmLabelImports,
     HlmInputImports,
     HlmSeparator,
+    HlmSpinner,
     ReactiveFormsModule,
     PageHeader,
     SpartanStepperImports,

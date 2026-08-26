@@ -28,6 +28,11 @@ import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmBadgeImports } from '@spartan/helm/badge';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmTableImports } from '@spartan/helm/table';
+import { HlmSheetImports } from '@spartan/helm/sheet';
+import { HlmLabelImports } from '@spartan/helm/label';
+import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { forkJoin } from 'rxjs';
@@ -73,7 +78,12 @@ interface FormVariant {
     DeleteConfirmDialog,
     SearchPipe,
     HlmSkeleton,
+    HlmSpinner,
+    HlmTableImports,
     RouterLink,
+    HlmSheetImports,
+    HlmLabelImports,
+    HlmTextareaImports,
   ],
   providers: [
     provideIcons({
@@ -266,6 +276,10 @@ export class Products implements OnInit {
     } else {
       this.fetchAttributes();
     }
+  }
+
+  onDrawerStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed' && this.isDrawerOpen()) this.toggleDrawer();
   }
 
   resetNewProduct(): void {

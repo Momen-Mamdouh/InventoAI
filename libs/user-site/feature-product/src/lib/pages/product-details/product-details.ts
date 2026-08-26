@@ -20,6 +20,7 @@ import {
 } from '../../components';
 import { ProductApiService, ProductStore } from '@invento/user-site-data-access-product';
 import { HlmTypographyImports } from '@spartan/helm/typography';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideAlertCircle } from '@ng-icons/lucide';
 import { TranslatePipe } from '@invento/shared-util-i18n';
@@ -31,6 +32,7 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProductStore, provideIcons({ lucideAlertCircle })],
   imports: [
+    HlmSpinner,
     BreadcrumbTrail,
     ProductGallery,
     ProductSummary,

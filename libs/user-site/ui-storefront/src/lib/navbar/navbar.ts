@@ -20,6 +20,7 @@ import {
 import { HlmNavigationMenuImports } from '@spartan/helm/navigation-menu';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmButtonImports } from '@spartan/helm/button';
+import { HlmSeparator } from '@spartan/helm/separator';
 import { HlmBadge } from '@spartan/helm/badge';
 import { HlmPopoverImports } from '@spartan/helm/popover';
 import { BrnPopoverContent } from '@spartan-ng/brain/popover';
@@ -48,6 +49,7 @@ interface NavLink {
     HlmNavigationMenuImports,
     HlmSheetImports,
     HlmButtonImports,
+    HlmSeparator,
     HlmBadge,
     HlmPopoverImports,
     BrnPopoverContent,

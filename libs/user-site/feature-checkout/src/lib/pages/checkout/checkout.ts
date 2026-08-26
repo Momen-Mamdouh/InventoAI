@@ -18,12 +18,14 @@ import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmSeparator } from '@spartan/helm/separator';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmDialogImports } from '@spartan/helm/dialog';
 import { BrnDialogContent } from '@spartan-ng/brain/dialog';
 import { HlmTypographyImports } from '@spartan/helm/typography';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { provideIcons, NgIconComponent } from '@ng-icons/core';
 import {
   lucideShoppingCart,
@@ -57,11 +59,13 @@ import { animateElementsOnRender } from '@invento/user-site-util-animation';
     HlmLabel,
     HlmInput,
     HlmButton,
+    HlmSeparator,
     HlmCard,
     HlmTextareaImports,
     HlmDialogImports,
     BrnDialogContent,
     HlmTypographyImports,
+    HlmSpinner,
     EmptyState,
     NgIconComponent,
     TranslatePipe,

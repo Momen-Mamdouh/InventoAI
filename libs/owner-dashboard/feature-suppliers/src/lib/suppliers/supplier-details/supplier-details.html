@@ -110,32 +110,32 @@
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="w-full min-w-[950px] text-sm">
-          <thead
+        <table hlmTable class="w-full min-w-[950px] text-sm">
+          <thead hlmTHead
             class="bg-muted/30 border-b border-border text-xs text-muted-foreground uppercase tracking-wider"
           >
-            <tr>
-              <th class="px-4 py-3 text-start">Product</th>
-              <th class="px-4 py-3 text-start">Request</th>
-              <th class="px-4 py-3 text-start">Offer</th>
-              <th class="px-4 py-3 text-start">Delivery</th>
-              <th class="px-4 py-3 text-start">Result</th>
-              <th class="px-4 py-3 text-start">Date</th>
-              <th class="px-4 py-3"></th>
+            <tr hlmTr>
+              <th hlmTh class="px-4 py-3 text-start">Product</th>
+              <th hlmTh class="px-4 py-3 text-start">Request</th>
+              <th hlmTh class="px-4 py-3 text-start">Offer</th>
+              <th hlmTh class="px-4 py-3 text-start">Delivery</th>
+              <th hlmTh class="px-4 py-3 text-start">Result</th>
+              <th hlmTh class="px-4 py-3 text-start">Date</th>
+              <th hlmTh class="px-4 py-3"></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border/60">
+          <tbody hlmTBody class="divide-y divide-border/60">
             @if (historyLoading()) {
               @for (row of [1, 2, 3, 4]; track row) {
-                <tr>
+                <tr hlmTr>
                   @for (cell of [1, 2, 3, 4, 5, 6, 7]; track cell) {
-                    <td class="px-4 py-4"><hlm-skeleton class="w-20 h-4" /></td>
+                    <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-20 h-4" /></td>
                   }
                 </tr>
               }
             } @else if (history().length === 0) {
-              <tr>
-                <td colspan="7" class="p-14 text-center">
+              <tr hlmTr>
+                <td hlmTd colspan="7" class="p-14 text-center">
                   <div class="flex flex-col items-center gap-3">
                     <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
                       <ng-icon name="lucideTruck" size="20" class="text-muted-foreground" />
@@ -149,14 +149,14 @@
               </tr>
             } @else {
               @for (item of history(); track item.request.id) {
-                <tr class="hover:bg-muted/30 transition-colors">
-                  <td class="px-4 py-4">
+                <tr hlmTr class="hover:bg-muted/30 transition-colors">
+                  <td hlmTd class="px-4 py-4">
                     <p class="font-medium">{{ item.request.productTitle }}</p>
                     <p class="text-xs text-muted-foreground mt-1">
                       {{ item.request.variantLabel || 'Default variant' }}
                     </p>
                   </td>
-                  <td class="px-4 py-4">
+                  <td hlmTd class="px-4 py-4">
                     <span
                       class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
                       [ngClass]="statusClass(item.request.status)"
@@ -166,7 +166,7 @@
                       {{ item.request.quantity }} units
                     </p>
                   </td>
-                  <td class="px-4 py-4">
+                  <td hlmTd class="px-4 py-4">
                     <p class="font-semibold">
                       {{
                         item.offer.unitAmount === null
@@ -178,10 +178,10 @@
                       {{ item.offer.quantity ?? item.request.quantity }} units
                     </p>
                   </td>
-                  <td class="px-4 py-4 text-muted-foreground">
+                  <td hlmTd class="px-4 py-4 text-muted-foreground">
                     {{ item.offer.deliveryDays === null ? '—' : item.offer.deliveryDays + ' days' }}
                   </td>
-                  <td class="px-4 py-4">
+                  <td hlmTd class="px-4 py-4">
                     <span
                       class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
                       [ngClass]="offerClass(item.offer.status)"
@@ -191,10 +191,10 @@
                       <span class="block text-[11px] text-primary mt-1">Recommended</span>
                     }
                   </td>
-                  <td class="px-4 py-4 text-muted-foreground whitespace-nowrap">
+                  <td hlmTd class="px-4 py-4 text-muted-foreground whitespace-nowrap">
                     {{ item.request.createdAt | date: 'mediumDate' }}
                   </td>
-                  <td class="px-4 py-4 text-end">
+                  <td hlmTd class="px-4 py-4 text-end">
                     <a
                       routerLink="/purchase-requests"
                       [queryParams]="{ request: item.request.id }"

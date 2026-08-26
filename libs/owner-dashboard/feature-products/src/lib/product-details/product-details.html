@@ -35,7 +35,7 @@
         [disabled]="isDeleting()"
       >
         @if (isDeleting()) {
-          <ng-icon name="lucideLoader2" size="16" class="animate-spin"></ng-icon>
+          <hlm-spinner />
         } @else {
           <ng-icon name="lucideTrash2" size="16"></ng-icon>
         }
@@ -46,7 +46,7 @@
 
   @if (isLoading()) {
     <div class="flex flex-col items-center justify-center p-20 text-muted-foreground gap-4">
-      <ng-icon name="lucideLoader2" size="32" class="animate-spin text-primary"></ng-icon>
+      <hlm-spinner class="text-[32px] text-primary" />
       <p>Loading details...</p>
     </div>
   } @else if (error()) {
@@ -86,30 +86,30 @@
             </div>
           </div>
           <div hlmCardContent class="p-0">
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm text-left border-collapse">
-                <thead class="bg-muted/30 border-b border-border/60">
-                  <tr>
-                    <th class="px-4 py-3 font-semibold text-muted-foreground">SKU</th>
-                    <th class="px-4 py-3 font-semibold text-muted-foreground">Attributes</th>
-                    <th class="px-4 py-3 font-semibold text-muted-foreground">Price</th>
-                    <th class="px-4 py-3 font-semibold text-muted-foreground">Stock</th>
-                    <th class="px-4 py-3 font-semibold text-muted-foreground text-right">
+            <div hlmTableContainer class="overflow-x-auto">
+              <table hlmTable class="w-full text-sm text-left border-collapse">
+                <thead hlmTHead class="bg-muted/30 border-b border-border/60">
+                  <tr hlmTr>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">SKU</th>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">Attributes</th>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">Price</th>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">Stock</th>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground text-right">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-border/60">
+                <tbody hlmTBody class="divide-y divide-border/60">
                   @for (variant of product()!.variants; track variant.id) {
-                    <tr class="hover:bg-muted/20">
-                      <td class="px-4 py-3 font-medium">
+                    <tr hlmTr class="hover:bg-muted/20">
+                      <td hlmTd class="px-4 py-3 font-medium">
                         @if (variant.sku) {
                           {{ variant.sku }}
                         } @else {
                           <span class="text-muted-foreground italic text-xs">not set</span>
                         }
                       </td>
-                      <td class="px-4 py-3 text-muted-foreground">
+                      <td hlmTd class="px-4 py-3 text-muted-foreground">
                         @if (variant.attributeValues.length) {
                           <div class="flex gap-1 flex-wrap">
                             @for (attr of variant.attributeValues; track attr.id) {
@@ -122,7 +122,7 @@
                           <span class="text-xs italic">Default</span>
                         }
                       </td>
-                      <td class="px-4 py-3">
+                      <td hlmTd class="px-4 py-3">
                         ${{ variant.priceAmount / 100 | number: '1.2-2' }}
                         @if (variant.compareAtAmount) {
                           <span class="text-xs line-through text-muted-foreground ml-1"
@@ -130,7 +130,7 @@
                           >
                         }
                       </td>
-                      <td class="px-4 py-3">
+                      <td hlmTd class="px-4 py-3">
                         <span
                           [ngClass]="{
                             'text-rose-500 font-medium':
@@ -140,7 +140,7 @@
                           {{ variant.stockQuantity }}
                         </span>
                       </td>
-                      <td class="px-4 py-3 text-right">
+                      <td hlmTd class="px-4 py-3 text-right">
                         <div class="flex items-center justify-end gap-2">
                           <button
                             hlmBtn
@@ -185,7 +185,7 @@
                 [disabled]="isUploadingImages()"
               />
               @if (isUploadingImages()) {
-                <ng-icon name="lucideLoader2" size="20" class="animate-spin"></ng-icon>
+                <hlm-spinner class="text-[20px]" />
               } @else {
                 <ng-icon name="lucideUpload" size="20"></ng-icon>
               }
@@ -374,32 +374,14 @@
 
 <!-- EDIT PRODUCT DRAWER -->
 @if (isEditDrawerOpen()) {
-  <div class="fixed inset-0 z-50 flex justify-end">
-    <!-- Backdrop -->
-    <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
-      (click)="toggleEditDrawer()"
-      role="button"
-      tabindex="0"
-      aria-label="Close drawer"
-    ></div>
-
-    <!-- Drawer Panel -->
-    <div
-      class="relative w-full sm:w-[500px] h-full bg-card shadow-2xl border-l border-border flex flex-col animate-in slide-in-from-right duration-300"
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onEditDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[500px]"
     >
-      <div class="p-6 border-b border-border flex justify-between items-center">
-        <h2 class="text-xl font-bold text-foreground tracking-tight">Edit Product</h2>
-        <button
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          (click)="toggleEditDrawer()"
-          class="text-muted-foreground hover:text-foreground"
-        >
-          <ng-icon name="lucideX" size="20" />
-        </button>
-      </div>
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Edit Product</h2>
+      </hlm-sheet-header>
 
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-8">
@@ -413,7 +395,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
-              <label for="edit-title" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="edit-title" class="text-sm font-semibold mb-2 block text-foreground"
                 >Product Title <span class="text-rose-500">*</span></label
               >
               <input
@@ -427,7 +409,7 @@
             </div>
 
             <div>
-              <label for="edit-status" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="edit-status" class="text-sm font-semibold mb-2 block text-foreground"
                 >Status</label
               >
               <hlm-select
@@ -469,7 +451,7 @@
               </div>
               @for (attr of productAttributes(); track attr.id) {
                 <div>
-                  <label
+                  <label hlmLabel
                     [for]="'attr-select-' + attr.id"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
                     >{{ attr.name }}</label
@@ -498,7 +480,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
-              <label for="edit-slug" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="edit-slug" class="text-sm font-semibold mb-2 block text-foreground"
                 >Slug</label
               >
               <input
@@ -512,7 +494,7 @@
             </div>
 
             <div class="sm:col-span-2">
-              <label for="edit-short-desc" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="edit-short-desc" class="text-sm font-semibold mb-2 block text-foreground"
                 >Short Description</label
               >
               <input
@@ -526,10 +508,10 @@
             </div>
 
             <div class="sm:col-span-2">
-              <label for="edit-desc" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="edit-desc" class="text-sm font-semibold mb-2 block text-foreground"
                 >Full Description</label
               >
-              <textarea
+              <textarea hlmTextarea
                 id="edit-desc"
                 [(ngModel)]="editProductForm.description"
                 rows="4"
@@ -539,7 +521,7 @@
             </div>
 
             <div class="sm:col-span-2">
-              <label for="edit-keywords" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="edit-keywords" class="text-sm font-semibold mb-2 block text-foreground"
                 >Search Keywords</label
               >
               <input
@@ -553,7 +535,7 @@
             </div>
 
             <div>
-              <label for="edit-weight" class="text-sm font-semibold mb-2 block text-foreground"
+              <label hlmLabel for="edit-weight" class="text-sm font-semibold mb-2 block text-foreground"
                 >Weight (grams)</label
               >
               <input
@@ -602,7 +584,7 @@
                 [(ngModel)]="editProductForm.isFeatured"
                 class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
               />
-              <label for="edit-featured" class="text-sm font-medium text-foreground"
+              <label hlmLabel for="edit-featured" class="text-sm font-medium text-foreground"
                 >Feature this product on storefront</label
               >
             </div>
@@ -611,54 +593,37 @@
       </div>
 
       <!-- Footer -->
-      <div class="p-6 border-t border-border flex justify-end gap-3 bg-muted/20">
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
         <button hlmBtn variant="outline" (click)="toggleEditDrawer()">Cancel</button>
         <button hlmBtn (click)="saveProductChanges()" [disabled]="isSaving()">
           @if (isSaving()) {
-            <ng-icon name="lucideLoader2" size="16" class="animate-spin mr-2" />
+            <hlm-spinner class="text-[16px] me-2" />
             Saving...
           } @else {
             Save Changes
           }
         </button>
-      </div>
-    </div>
-  </div>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
 }
 
 <!-- GENERATE VARIANTS DRAWER -->
 @if (isGenerateDrawerOpen()) {
-  <div class="fixed inset-0 z-50 flex justify-end">
-    <!-- Backdrop -->
-    <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
-      tabindex="-1"
-      (click)="toggleGenerateDrawer()"
-      (keydown.escape)="toggleGenerateDrawer()"
-    ></div>
-
-    <!-- Drawer Panel -->
-    <div
-      class="relative w-full sm:w-[600px] h-full bg-card shadow-2xl border-l border-border flex flex-col animate-in slide-in-from-right duration-300"
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onGenerateDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[600px]"
     >
-      <div class="p-6 border-b border-border flex justify-between items-center">
-        <h2 class="text-xl font-bold text-foreground tracking-tight">Generate Variants</h2>
-        <button
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          (click)="toggleGenerateDrawer()"
-          class="text-muted-foreground hover:text-foreground"
-        >
-          <ng-icon name="lucideX" size="20" />
-        </button>
-      </div>
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Generate Variants</h2>
+      </hlm-sheet-header>
 
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-6">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label
+            <label hlmLabel
               for="generate-base-price"
               class="text-sm font-semibold mb-2 block text-foreground"
               >Base Price (minor units)</label
@@ -672,7 +637,7 @@
             />
           </div>
           <div>
-            <label
+            <label hlmLabel
               for="generate-base-stock"
               class="text-sm font-semibold mb-2 block text-foreground"
               >Base Stock</label
@@ -702,7 +667,7 @@
               }
 
               <div>
-                <label [for]="'axis-attribute-' + i" class="text-xs font-semibold mb-1 block"
+                <label hlmLabel [for]="'axis-attribute-' + i" class="text-xs font-semibold mb-1 block"
                   >Attribute</label
                 >
                 <hlm-select
@@ -759,7 +724,7 @@
 
           @if (generateVariantsForm.axes.length < 3) {
             <button hlmBtn variant="outline" class="w-full border-dashed" (click)="addAxis()">
-              <ng-icon name="lucidePlus" size="16" class="mr-2"></ng-icon>
+              <ng-icon name="lucidePlus" size="16" class="me-2"></ng-icon>
               Add Axis
             </button>
           }
@@ -767,53 +732,36 @@
       </div>
 
       <!-- Footer -->
-      <div class="p-6 border-t border-border flex justify-end gap-3 bg-muted/20">
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
         <button hlmBtn variant="outline" (click)="toggleGenerateDrawer()">Cancel</button>
         <button hlmBtn (click)="submitGenerateVariants()" [disabled]="isGenerating()">
           @if (isGenerating()) {
-            <ng-icon name="lucideLoader2" size="16" class="animate-spin mr-2" />
+            <hlm-spinner class="text-[16px] me-2" />
             Generating...
           } @else {
             Generate Variants
           }
         </button>
-      </div>
-    </div>
-  </div>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
 }
 
 <!-- ADD SINGLE VARIANT DRAWER -->
 @if (isAddVariantDrawerOpen()) {
-  <div class="fixed inset-0 z-50 flex justify-end">
-    <!-- Backdrop -->
-    <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
-      tabindex="-1"
-      (click)="toggleAddVariantDrawer()"
-      (keydown.escape)="toggleAddVariantDrawer()"
-    ></div>
-
-    <!-- Drawer Panel -->
-    <div
-      class="relative w-full sm:w-[500px] h-full bg-card shadow-2xl border-l border-border flex flex-col animate-in slide-in-from-right duration-300"
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onAddVariantDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[500px]"
     >
-      <div class="p-6 border-b border-border flex justify-between items-center">
-        <h2 class="text-xl font-bold text-foreground tracking-tight">Add Variant</h2>
-        <button
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          (click)="toggleAddVariantDrawer()"
-          class="text-muted-foreground hover:text-foreground"
-        >
-          <ng-icon name="lucideX" size="20" />
-        </button>
-      </div>
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Add Variant</h2>
+      </hlm-sheet-header>
 
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-4">
         <div>
-          <label for="add-variant-sku" class="text-sm font-semibold mb-1 block"
+          <label hlmLabel for="add-variant-sku" class="text-sm font-semibold mb-1 block"
             >SKU (Optional)</label
           >
           <input
@@ -827,7 +775,7 @@
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="add-variant-price" class="text-sm font-semibold mb-1 block">Price</label>
+            <label hlmLabel for="add-variant-price" class="text-sm font-semibold mb-1 block">Price</label>
             <input
               id="add-variant-price"
               hlmInput
@@ -837,7 +785,7 @@
             />
           </div>
           <div>
-            <label for="add-variant-compare-at" class="text-sm font-semibold mb-1 block"
+            <label hlmLabel for="add-variant-compare-at" class="text-sm font-semibold mb-1 block"
               >Compare At (Opt)</label
             >
             <input
@@ -852,7 +800,7 @@
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="add-variant-stock" class="text-sm font-semibold mb-1 block"
+            <label hlmLabel for="add-variant-stock" class="text-sm font-semibold mb-1 block"
               >Stock Quantity</label
             >
             <input
@@ -864,7 +812,7 @@
             />
           </div>
           <div>
-            <label for="add-variant-low-stock" class="text-sm font-semibold mb-1 block"
+            <label hlmLabel for="add-variant-low-stock" class="text-sm font-semibold mb-1 block"
               >Low Stock Threshold</label
             >
             <input
@@ -914,53 +862,36 @@
       </div>
 
       <!-- Footer -->
-      <div class="p-6 border-t border-border flex justify-end gap-3 bg-muted/20">
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
         <button hlmBtn variant="outline" (click)="toggleAddVariantDrawer()">Cancel</button>
         <button hlmBtn (click)="submitAddVariant()" [disabled]="isAddingVariant()">
           @if (isAddingVariant()) {
-            <ng-icon name="lucideLoader2" size="16" class="animate-spin mr-2" />
+            <hlm-spinner class="text-[16px] me-2" />
             Adding...
           } @else {
             Add Variant
           }
         </button>
-      </div>
-    </div>
-  </div>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
 }
 
 <!-- EDIT VARIANT DRAWER -->
 @if (isEditVariantDrawerOpen()) {
-  <div class="fixed inset-0 z-50 flex justify-end">
-    <!-- Backdrop -->
-    <div
-      class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
-      tabindex="-1"
-      (click)="closeEditVariantDrawer()"
-      (keydown.escape)="closeEditVariantDrawer()"
-    ></div>
-
-    <!-- Drawer Panel -->
-    <div
-      class="relative w-full sm:w-[400px] h-full bg-card shadow-2xl border-l border-border flex flex-col animate-in slide-in-from-right duration-300"
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onEditVariantDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[400px]"
     >
-      <div class="p-6 border-b border-border flex justify-between items-center">
-        <h2 class="text-xl font-bold text-foreground tracking-tight">Edit Variant</h2>
-        <button
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          (click)="closeEditVariantDrawer()"
-          class="text-muted-foreground hover:text-foreground"
-        >
-          <ng-icon name="lucideX" size="20" />
-        </button>
-      </div>
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Edit Variant</h2>
+      </hlm-sheet-header>
 
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-4">
         <div>
-          <label for="edit-variant-sku" class="text-sm font-semibold mb-1 block">SKU</label>
+          <label hlmLabel for="edit-variant-sku" class="text-sm font-semibold mb-1 block">SKU</label>
           <input
             id="edit-variant-sku"
             hlmInput
@@ -972,7 +903,7 @@
         </div>
 
         <div>
-          <label for="edit-variant-price" class="text-sm font-semibold mb-1 block">Price</label>
+          <label hlmLabel for="edit-variant-price" class="text-sm font-semibold mb-1 block">Price</label>
           <input
             id="edit-variant-price"
             hlmInput
@@ -983,7 +914,7 @@
         </div>
 
         <div>
-          <label for="edit-variant-compare-at" class="text-sm font-semibold mb-1 block"
+          <label hlmLabel for="edit-variant-compare-at" class="text-sm font-semibold mb-1 block"
             >Compare At Amount</label
           >
           <input
@@ -998,7 +929,7 @@
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="edit-variant-stock" class="text-sm font-semibold mb-1 block">Stock</label>
+            <label hlmLabel for="edit-variant-stock" class="text-sm font-semibold mb-1 block">Stock</label>
             <input
               id="edit-variant-stock"
               hlmInput
@@ -1008,7 +939,7 @@
             />
           </div>
           <div>
-            <label for="edit-variant-low-stock" class="text-sm font-semibold mb-1 block"
+            <label hlmLabel for="edit-variant-low-stock" class="text-sm font-semibold mb-1 block"
               >Low Stock</label
             >
             <input
@@ -1023,19 +954,19 @@
       </div>
 
       <!-- Footer -->
-      <div class="p-6 border-t border-border flex justify-end gap-3 bg-muted/20">
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
         <button hlmBtn variant="outline" (click)="closeEditVariantDrawer()">Cancel</button>
         <button hlmBtn (click)="submitEditVariant()" [disabled]="isSaving()">
           @if (isSaving()) {
-            <ng-icon name="lucideLoader2" size="16" class="animate-spin mr-2" />
+            <hlm-spinner class="text-[16px] me-2" />
             Saving...
           } @else {
             Save Changes
           }
         </button>
-      </div>
-    </div>
-  </div>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
 }
 
 @if (isDeleteProductOpen()) {

@@ -22,6 +22,12 @@ import {
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
+import { HlmLabelImports } from '@spartan/helm/label';
+import { HlmTableImports } from '@spartan/helm/table';
+import { HlmDialogImports } from '@spartan/helm/dialog';
+// Brain primitives are the plain npm package — not re-exported through the
+// project's `@spartan/helm` alias, so import them directly (see category-form-dialog.ts).
+import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 
 export interface InvoiceRecord {
   id: string;
@@ -52,7 +58,19 @@ export interface PlanInfo {
 @Component({
   selector: 'app-biling-plan',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, NgIcon, HlmCard, HlmButton, HlmInput],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    NgIcon,
+    HlmCard,
+    HlmButton,
+    HlmInput,
+    HlmLabelImports,
+    HlmTableImports,
+    HlmDialogImports,
+    BrnDialogImports,
+  ],
   providers: [
     provideIcons({
       lucideZap,
@@ -160,6 +178,10 @@ export class BilingPlanComponent {
     this.isUpgradeModalOpen.set(false);
   }
 
+  onUpgradeModalStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closeUpgradeModal();
+  }
+
   selectPlan(planName: string, price: string) {
     this.plan.update((p) => ({
       ...p,
@@ -183,6 +205,10 @@ export class BilingPlanComponent {
 
   closePaymentModal() {
     this.isPaymentModalOpen.set(false);
+  }
+
+  onPaymentModalStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closePaymentModal();
   }
 
   savePaymentMethod(event: Event) {

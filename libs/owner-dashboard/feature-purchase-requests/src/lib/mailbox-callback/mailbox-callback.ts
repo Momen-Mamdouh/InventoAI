@@ -1,20 +1,21 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmButton } from '@spartan/helm/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideAlertCircle, lucideCheckCircle2, lucideLoader2 } from '@ng-icons/lucide';
 import { PurchaseRequestService } from '@invento/owner-dashboard-data-access-purchase-request';
 
 @Component({
   selector: 'app-mailbox-callback',
-  imports: [NgIcon],
+  imports: [HlmSpinner, NgIcon, HlmCard, HlmButton],
   providers: [provideIcons({ lucideAlertCircle, lucideCheckCircle2, lucideLoader2 })],
   template: `
     <div class="min-h-screen flex items-center justify-center p-6 bg-background">
-      <div
-        class="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-sm"
-      >
+      <div hlmCard class="w-full max-w-md p-8 text-center shadow-sm">
         @if (loading()) {
-          <ng-icon name="lucideLoader2" size="30" class="animate-spin text-primary mx-auto" />
+          <hlm-spinner class="text-[30px] text-primary mx-auto" />
           <h1 class="text-xl font-bold mt-4">Connecting mailbox…</h1>
           <p class="text-sm text-muted-foreground mt-2">
             Finishing the Google connection securely.
@@ -28,7 +29,8 @@ import { PurchaseRequestService } from '@invento/owner-dashboard-data-access-pur
           <h1 class="text-xl font-bold mt-4">Could not connect mailbox</h1>
           <p class="text-sm text-muted-foreground mt-2">{{ error() }}</p>
           <button
-            class="mt-5 rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium"
+            hlmBtn
+            class="mt-5 min-h-11 px-4"
             (click)="router.navigate(['/purchase-requests'])"
           >
             Back to purchase requests

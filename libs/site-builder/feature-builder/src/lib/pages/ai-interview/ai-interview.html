@@ -150,7 +150,7 @@
             class="flex justify-center items-center gap-2 disabled:opacity-50 font-bold dark:text-white uppercase cursor-pointer disabled:cursor-not-allowed"
           >
             @if (isSubmitting()) {
-              <ng-icon name="lucideLoader2" class="animate-spin text-lg" />
+              <hlm-spinner class="text-lg" />
               <span>{{ 'loading_analyzing' | translate }}</span>
             } @else {
               <span>{{ 'validation_initialize' | translate }}</span>

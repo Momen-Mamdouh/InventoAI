@@ -95,31 +95,33 @@
   </div>
 
   <div hlmCard class="bg-card shadow-sm border-border rounded-xl overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-start border-collapse min-w-[800px]">
-        <thead>
+    <div hlmTableContainer class="overflow-x-auto">
+      <table hlmTable class="w-full text-start border-collapse min-w-[800px]">
+        <thead hlmTHead>
           <tr
+            hlmTr
             class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
           >
-            <th class="w-10"></th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Category</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Status</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-28">Position</th>
-            <th class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-40">Actions</th>
+            <th hlmTh class="w-10"></th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Category</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Status</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-28">Position</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-40">Actions</th>
           </tr>
         </thead>
         <tbody
+          hlmTBody
           cdkDropList
           (cdkDropListDropped)="onDrop($event)"
           class="divide-y divide-border/60 text-sm"
         >
           @if (loading() && categories().length === 0) {
             @for (item of [1, 2, 3, 4, 5]; track item) {
-              <tr>
-                <td class="px-2 md:px-3 align-middle w-10 text-center">
+              <tr hlmTr>
+                <td hlmTd class="px-2 md:px-3 align-middle w-10 text-center">
                   <hlm-skeleton class="h-4 w-4 mx-auto" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
                   <div class="flex items-center gap-3">
                     <hlm-skeleton class="w-10 h-10 sm:w-12 sm:h-12 rounded-md shrink-0" />
                     <div class="space-y-1.5 flex-1">
@@ -128,20 +130,20 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <hlm-skeleton class="h-5 w-20 rounded-full" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
                   <hlm-skeleton class="h-4 w-8 ml-auto" />
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
                   <hlm-skeleton class="h-8 w-24 ml-auto" />
                 </td>
               </tr>
             }
           } @else if (categories().length === 0) {
-            <tr>
-              <td colspan="5" class="p-16 text-center">
+            <tr hlmTr>
+              <td hlmTd colspan="5" class="p-16 text-center">
                 <div class="flex flex-col items-center justify-center gap-3">
                   <div
                     class="flex justify-center items-center bg-muted rounded-full w-12 h-12 text-muted-foreground"
@@ -163,7 +165,7 @@
             </tr>
           } @else {
             @for (c of categories(); track c.id) {
-              <tr class="group hover:bg-muted/40 transition-colors cursor-move" cdkDrag>
+              <tr hlmTr class="group hover:bg-muted/40 transition-colors cursor-move" cdkDrag>
                 <div
                   *cdkDragPreview
                   class="flex items-center gap-3 bg-card shadow-lg p-3 border rounded-md"
@@ -172,7 +174,7 @@
                   <span class="font-medium text-sm">{{ c.name }}</span>
                 </div>
 
-                <td class="px-2 md:px-3 text-muted-foreground/40 align-middle w-10">
+                <td hlmTd class="px-2 md:px-3 text-muted-foreground/40 align-middle w-10">
                   <div
                     cdkDragHandle
                     class="cursor-grab active:cursor-grabbing hover:text-foreground inline-flex items-center justify-center p-1 rounded transition-colors"
@@ -180,7 +182,7 @@
                     <ng-icon name="lucideGripVertical" size="18"></ng-icon>
                   </div>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
                   <div class="flex items-center gap-3">
                     <div
                       class="flex flex-shrink-0 justify-center items-center bg-muted border border-border/50 rounded-md w-10 sm:w-12 h-10 sm:h-12 overflow-hidden text-muted-foreground"
@@ -206,7 +208,7 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
                   <div class="flex items-center gap-1.5">
                     @if (c.isPublished) {
                       <span
@@ -228,11 +230,12 @@
                   </div>
                 </td>
                 <td
+                  hlmTd
                   class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap text-end"
                 >
                   {{ c.position }}
                 </td>
-                <td class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap text-end">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap text-end">
                   <div class="flex justify-end items-center gap-2">
                     <button
                       hlmBtn

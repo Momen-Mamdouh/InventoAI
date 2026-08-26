@@ -3,7 +3,7 @@
 
   @if (isLoading()) {
     <div class="absolute inset-0 z-10 flex items-center justify-center">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <hlm-spinner class="text-[32px] text-primary" />
     </div>
   } @else if (notFound()) {
     <div class="py-20 text-muted-foreground text-center">

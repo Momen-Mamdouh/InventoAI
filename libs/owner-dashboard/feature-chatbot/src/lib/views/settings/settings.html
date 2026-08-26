@@ -20,7 +20,7 @@
 
   @if (isLoading()) {
     <div class="flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <hlm-spinner class="text-[32px] text-primary" />
     </div>
   } @else {
     <div
@@ -35,7 +35,7 @@
           </p>
         </div>
         <div class="flex items-center gap-2">
-          <label for="chatbotEnabledToggle" class="text-sm font-medium">Enable Chatbot</label>
+          <label hlmLabel for="chatbotEnabledToggle" class="text-sm font-medium">Enable Chatbot</label>
           <hlm-switch
             inputId="chatbotEnabledToggle"
             [checked]="isEnabled()"
@@ -46,7 +46,7 @@
 
       <div class="space-y-5 p-4 sm:p-6">
         <div class="space-y-1.5">
-          <label for="greetingInput" class="font-medium text-foreground text-xs sm:text-sm"
+          <label hlmLabel for="greetingInput" class="font-medium text-foreground text-xs sm:text-sm"
             >Custom Greeting Message</label
           >
           <input
@@ -65,7 +65,7 @@
         </div>
 
         <div class="space-y-1.5">
-          <label for="toneSelect" class="font-medium text-foreground text-xs sm:text-sm"
+          <label hlmLabel for="toneSelect" class="font-medium text-foreground text-xs sm:text-sm"
             >Conversation Tone</label
           >
           <hlm-select
@@ -87,7 +87,7 @@
         </div>
 
         <div class="space-y-1.5">
-          <label for="emailInput" class="font-medium text-foreground text-xs sm:text-sm"
+          <label hlmLabel for="emailInput" class="font-medium text-foreground text-xs sm:text-sm"
             >Contact Email / Handover Email</label
           >
           <input
@@ -113,7 +113,7 @@
             (click)="saveSettings()"
           >
             @if (isSaving()) {
-              <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <hlm-spinner class="text-white" />
               <span>Saving...</span>
             } @else {
               <ng-icon name="lucideSave" size="16" />

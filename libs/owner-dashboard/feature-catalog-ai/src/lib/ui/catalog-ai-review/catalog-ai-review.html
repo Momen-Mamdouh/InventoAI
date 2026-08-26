@@ -20,15 +20,14 @@
 
       <div class="space-y-4">
         <div>
-          <label for="instructions" class="block text-sm font-medium mb-1"
+          <label hlmLabel for="instructions" class="block text-sm font-medium mb-1"
             >Optional Instructions (Max 500 chars)</label
           >
-          <textarea
+          <textarea hlmTextarea
             id="instructions"
             [(ngModel)]="instructions"
             rows="4"
             placeholder="e.g. focus on modest eveningwear, we do not sell shoes"
-            hlmInput
             class="w-full text-base px-4 py-3"
           ></textarea>
         </div>
@@ -50,9 +49,7 @@
     <div
       class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
     >
-      <div
-        class="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"
-      ></div>
+      <hlm-spinner class="text-[48px] text-blue-600 dark:text-blue-400 mb-4" />
       <h3 class="text-lg font-medium text-gray-900 dark:text-white">
         {{
           status() === 'generating'
@@ -192,7 +189,7 @@
                           [id]="'variant-' + i"
                           class="rounded border-border text-primary focus:ring-primary"
                         />
-                        <label [for]="'variant-' + i" class="text-sm"
+                        <label hlmLabel [for]="'variant-' + i" class="text-sm"
                           >Is Variant Axis (Changes Price/Stock)</label
                         >
                       </div>

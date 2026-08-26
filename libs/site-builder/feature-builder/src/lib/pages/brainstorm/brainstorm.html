@@ -200,7 +200,7 @@
         class="flex items-center gap-2 disabled:hover:bg-primary md:px-9 py-7 md:w-fit disabled:cursor-not-allowed disabled:pointer-events-auto"
       >
         @if (isSubmitting()) {
-          <ng-icon name="lucideLoader2" class="animate-spin text-lg" />
+          <hlm-spinner class="text-lg" />
           <span class="uppercase">{{ 'loading_analyzing' | translate }}</span>
         } @else {
           <ng-icon name="heroBolt" />

@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmBadge } from '@spartan/helm/badge';
 import {
   lucideTrendingUp,
   lucideTrendingDown,
@@ -17,7 +19,7 @@ export type StatCardColorVariant = 'indigo' | 'amber' | 'sky' | 'emerald' | 'ros
 
 @Component({
   selector: 'app-order-stat-card',
-  imports: [NgIcon],
+  imports: [NgIcon, HlmCard, HlmBadge],
   providers: [
     provideIcons({
       lucideTrendingUp,
@@ -34,7 +36,8 @@ export type StatCardColorVariant = 'indigo' | 'amber' | 'sky' | 'emerald' | 'ros
   ],
   template: `
     <div
-      class="group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-4 sm:p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md h-full flex flex-col justify-between"
+      hlmCard
+      class="group relative overflow-hidden border border-border/80 p-4 sm:p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md h-full flex flex-col justify-between"
       [class]="cardBorderClass()"
     >
       <!-- Ambient background glow -->
@@ -74,7 +77,9 @@ export type StatCardColorVariant = 'indigo' | 'amber' | 'sky' | 'emerald' | 'ros
         <div class="mt-2.5 flex items-center gap-1.5 text-[11px] sm:text-xs">
           @if (trendValue()) {
             <span
-              class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full font-semibold border shrink-0"
+              hlmBadge
+              variant="outline"
+              class="font-semibold"
               [class]="trendBadgeClass()"
             >
               @switch (trend()) {

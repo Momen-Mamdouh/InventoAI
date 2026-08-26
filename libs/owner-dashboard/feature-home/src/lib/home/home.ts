@@ -4,6 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import type { ThemeApiResponse, Palette } from '@invento/shared-util-theme';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmInputImports } from '@spartan/helm/input';
+import { HlmLabelImports } from '@spartan/helm/label';
+import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -60,7 +64,18 @@ interface Product {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgIcon, TranslatePipe, HlmSkeleton, EmptyState, HlmButtonImports],
+  imports: [
+    CommonModule,
+    NgIcon,
+    TranslatePipe,
+    HlmSkeleton,
+    HlmSpinner,
+    EmptyState,
+    HlmButtonImports,
+    HlmInputImports,
+    HlmLabelImports,
+    HlmTextareaImports,
+  ],
   templateUrl: './home.html',
   styleUrl: './home.css',
   providers: [

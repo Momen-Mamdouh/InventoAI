@@ -10,6 +10,7 @@ import {
   lucideLogOut,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmCard } from '@spartan/helm/card';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { ThemeService } from '@invento/shared-util-theme';
 import { toast } from '@spartan/helm/sonner';
@@ -19,7 +20,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-no-store',
   standalone: true,
-  imports: [CommonModule, NgIcon, HlmButton, TranslatePipe],
+  imports: [CommonModule, NgIcon, HlmButton, TranslatePipe, HlmCard],
   templateUrl: './no-store.html',
   styleUrl: './no-store.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

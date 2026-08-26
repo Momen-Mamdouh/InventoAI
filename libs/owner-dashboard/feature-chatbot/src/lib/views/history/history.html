@@ -74,7 +74,7 @@
   <div hlmCard class="border-border rounded-xl shadow-xs overflow-hidden">
     @if (isLoading()) {
       <div class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <hlm-spinner class="text-[32px] text-primary" />
       </div>
     } @else if (errorState()) {
       <div class="flex flex-col items-center justify-center py-16 text-center">
@@ -89,28 +89,28 @@
         </p>
       </div>
     } @else {
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-          <thead class="text-xs text-muted-foreground bg-muted/50 uppercase border-b border-border">
-            <tr>
-              <th scope="col" class="px-6 py-3 font-medium">Customer</th>
-              <th scope="col" class="px-6 py-3 font-medium">Messages</th>
-              <th scope="col" class="px-6 py-3 font-medium hidden md:table-cell">Preview</th>
-              <th scope="col" class="px-6 py-3 font-medium hidden sm:table-cell">Date</th>
-              <th scope="col" class="px-6 py-3 font-medium text-right">Actions</th>
+      <div hlmTableContainer class="overflow-x-auto">
+        <table hlmTable class="w-full text-sm text-left">
+          <thead hlmTHead class="text-xs text-muted-foreground bg-muted/50 uppercase border-b border-border">
+            <tr hlmTr>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium">Customer</th>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium">Messages</th>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium hidden md:table-cell">Preview</th>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium hidden sm:table-cell">Date</th>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium text-right">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border">
+          <tbody hlmTBody class="divide-y divide-border">
             @if (data()?.items?.length === 0) {
-              <tr>
-                <td colspan="5" class="px-6 py-12 text-center text-muted-foreground">
+              <tr hlmTr>
+                <td hlmTd colspan="5" class="px-6 py-12 text-center text-muted-foreground">
                   <p>No chat sessions found matching your filters.</p>
                 </td>
               </tr>
             } @else {
               @for (session of data()?.items; track session.id) {
-                <tr class="hover:bg-muted/50 transition-colors">
-                  <td class="px-6 py-4">
+                <tr hlmTr class="hover:bg-muted/50 transition-colors">
+                  <td hlmTd class="px-6 py-4">
                     <div class="flex items-center gap-3">
                       <div
                         class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0"
@@ -133,7 +133,7 @@
                       </div>
                     </div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td hlmTd class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center gap-3">
                       <div class="flex items-center gap-1 text-muted-foreground">
                         <ng-icon name="lucideMessageSquare" size="14" />
@@ -150,17 +150,19 @@
                     </div>
                   </td>
                   <td
+                    hlmTd
                     class="px-6 py-4 hidden md:table-cell max-w-xs truncate text-muted-foreground"
                     [title]="session.preview"
                   >
                     {{ session.preview || 'No preview available' }}
                   </td>
                   <td
+                    hlmTd
                     class="px-6 py-4 hidden sm:table-cell whitespace-nowrap text-muted-foreground"
                   >
                     {{ session.createdAt | date: 'mediumDate' }}
                   </td>
-                  <td class="px-6 py-4 text-right">
+                  <td hlmTd class="px-6 py-4 text-right">
                     <a
                       [routerLink]="['/chatbot/history', session.id]"
                       hlmBtn

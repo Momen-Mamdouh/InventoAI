@@ -52,11 +52,22 @@ import {
   lucideArrowDown,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmTextareaImports } from '@spartan/helm/textarea';
+import { HlmTableImports } from '@spartan/helm/table';
+import { HlmDialogImports } from '@spartan/helm/dialog';
+import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
+// Brain primitives are the plain npm package — they are NOT re-exported through the
+// project's `@spartan/helm` alias, so import them directly instead of reaching into
+// node_modules' compiled type declarations (which is fragile and breaks on upgrades).
+import { BrnDialogImports } from '@spartan-ng/brain/dialog';
+import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
 import { OrderStatCard } from './components/order-stat-card';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import {
@@ -69,6 +80,7 @@ import {
 @Component({
   selector: 'app-orders',
   imports: [
+    HlmSpinner,
     CurrencyPipe,
     NgClass,
     FormsModule,
@@ -77,11 +89,18 @@ import {
     HlmCardImports,
     HlmDropdownMenuImports,
     HlmInputImports,
+    HlmLabelImports,
     HlmSelectImports,
     OrderStatCard,
     EmptyState,
     TranslatePipe,
     HlmSkeleton,
+    HlmTableImports,
+    HlmTextareaImports,
+    HlmDialogImports,
+    HlmAlertDialogImports,
+    BrnDialogImports,
+    BrnAlertDialogImports,
   ],
   providers: [
     provideIcons({
@@ -258,6 +277,10 @@ export class Orders implements OnInit, OnDestroy {
     this.cancelReason.set('');
   }
 
+  onCancelModalStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closeCancelModal();
+  }
+
   submitCancelOrder(): void {
     const reason = this.cancelReason().trim();
     if (!reason) return;
@@ -287,6 +310,10 @@ export class Orders implements OnInit, OnDestroy {
   closeDetails(): void {
     this.isDetailsOpen.set(false);
     this.store.selectedOrder.set(null);
+  }
+
+  onDetailsStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closeDetails();
   }
 
   saveInternalNote(): void {

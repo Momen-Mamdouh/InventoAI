@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -17,7 +18,7 @@ import { UnansweredResponse, UnansweredTheme } from '../../types/chat-admin.type
 @Component({
   selector: 'app-chatbot-unanswered',
   standalone: true,
-  imports: [CommonModule, HlmCard, HlmButton, HlmSelectImports, NgIcon, DatePipe],
+  imports: [CommonModule, HlmCard, HlmButton, HlmSpinner, HlmSelectImports, NgIcon, DatePipe],
   providers: [
     provideIcons({
       lucideCheck,

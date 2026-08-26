@@ -34,6 +34,7 @@ import { ThemeSuggestion } from '@invento/shared-util-preview-types';
 import { ApiConfig } from '@invento/site-builder-data-access-preview';
 import { PageHeader } from '@invento/shared-ui-page-header';
 import { HlmDialogImports } from '@spartan/helm/dialog';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import {
   BuilderState,
   PublishApi,
@@ -73,6 +74,7 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
     PageHeader,
     HlmButtonImports,
     HlmDialogImports,
+    HlmSpinner,
     NgIcon,
     NgStyle,
     ContainerWidth,

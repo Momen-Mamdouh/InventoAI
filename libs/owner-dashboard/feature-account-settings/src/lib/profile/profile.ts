@@ -17,6 +17,7 @@ import {
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
+import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@invento/shared-data-access-auth';
@@ -32,6 +33,7 @@ import { AuthService } from '@invento/shared-data-access-auth';
     HlmCard,
     HlmButton,
     HlmInput,
+    HlmLabelImports,
     HlmSelectImports,
   ],
   providers: [

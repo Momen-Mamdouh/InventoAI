@@ -9,6 +9,7 @@ import {
   resolveVerifyEmailRedirect,
 } from '@invento/shared-data-access-auth';
 
+import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 
@@ -19,7 +20,7 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-verify-email',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, HlmLabel, HlmButton],
+  imports: [TranslatePipe, ReactiveFormsModule, HlmLabel, HlmButton, HlmInput],
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.css',
 })

@@ -26,10 +26,15 @@ import {
   lucidePlus,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmBadgeImports } from '@spartan/helm/badge';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmTableImports } from '@spartan/helm/table';
+import { HlmSheetImports } from '@spartan/helm/sheet';
+import { HlmLabelImports } from '@spartan/helm/label';
+import { HlmTextareaImports } from '@spartan/helm/textarea';
 
 import {
   ApiProductDetail,
@@ -50,6 +55,7 @@ import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
   selector: 'app-product-details',
   standalone: true,
   imports: [
+    HlmSpinner,
     CommonModule,
     DatePipe,
     DecimalPipe,
@@ -60,9 +66,13 @@ import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
     HlmBadgeImports,
     HlmInputImports,
     HlmSelectImports,
+    HlmTableImports,
     CdkDropList,
     CdkDrag,
     DeleteConfirmDialog,
+    HlmSheetImports,
+    HlmLabelImports,
+    HlmTextareaImports,
   ],
   providers: [
     provideIcons({
@@ -323,6 +333,10 @@ export class ProductDetails implements OnInit {
     this.isEditDrawerOpen.set(!currentOpen);
   }
 
+  onEditDrawerStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed' && this.isEditDrawerOpen()) this.toggleEditDrawer();
+  }
+
   saveProductChanges(): void {
     const p = this.product();
     if (!p) return;
@@ -505,6 +519,10 @@ export class ProductDetails implements OnInit {
     this.isGenerateDrawerOpen.set(!currentOpen);
   }
 
+  onGenerateDrawerStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed' && this.isGenerateDrawerOpen()) this.toggleGenerateDrawer();
+  }
+
   addAxis(): void {
     if (this.generateVariantsForm.axes.length >= 3) return;
     const defaultAxisId = this.activeVariantAxes().length > 0 ? this.activeVariantAxes()[0].id : '';
@@ -577,6 +595,10 @@ export class ProductDetails implements OnInit {
       };
     }
     this.isAddVariantDrawerOpen.set(!currentOpen);
+  }
+
+  onAddVariantDrawerStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed' && this.isAddVariantDrawerOpen()) this.toggleAddVariantDrawer();
   }
 
   toggleAddVariantValue(valueId: string): void {
@@ -663,6 +685,10 @@ export class ProductDetails implements OnInit {
   closeEditVariantDrawer(): void {
     this.isEditVariantDrawerOpen.set(false);
     this.editingVariantId.set(null);
+  }
+
+  onEditVariantDrawerStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closeEditVariantDrawer();
   }
 
   submitEditVariant(): void {

@@ -23,7 +23,14 @@ import {
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
+import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmDialogImports } from '@spartan/helm/dialog';
+import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
+// Brain primitives are the plain npm package — not re-exported through the
+// project's `@spartan/helm` alias, so import them directly (see category-form-dialog.ts).
+import { BrnDialogImports } from '@spartan-ng/brain/dialog';
+import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
 
 export interface StoreItem {
   id: string;
@@ -46,7 +53,12 @@ export interface StoreItem {
     HlmCard,
     HlmButton,
     HlmInput,
+    HlmLabelImports,
     HlmSelectImports,
+    HlmDialogImports,
+    HlmAlertDialogImports,
+    BrnDialogImports,
+    BrnAlertDialogImports,
   ],
   providers: [
     provideIcons({
@@ -160,6 +172,10 @@ export class MyStoresComponent {
     this.editingStoreId.set(null);
   }
 
+  onModalStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.closeModal();
+  }
+
   saveStoreForm(event: Event) {
     event.preventDefault();
     const name = this.formName().trim();
@@ -211,6 +227,10 @@ export class MyStoresComponent {
   cancelDeleteStore() {
     this.isDeleteModalOpen.set(false);
     this.storeToDelete.set(null);
+  }
+
+  onDeleteModalStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') this.cancelDeleteStore();
   }
 
   executeDeleteStore() {

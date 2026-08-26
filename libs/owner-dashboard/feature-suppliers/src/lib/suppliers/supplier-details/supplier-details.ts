@@ -18,6 +18,7 @@ import {
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmTableImports } from '@spartan/helm/table';
 import { SupplierService, Supplier } from '@invento/owner-dashboard-data-access-supplier';
 import {
   PurchaseRequestDetail,
@@ -43,6 +44,7 @@ interface SupplierRequestHistory {
     HlmButton,
     HlmCardImports,
     HlmSkeleton,
+    HlmTableImports,
   ],
   providers: [
     provideIcons({

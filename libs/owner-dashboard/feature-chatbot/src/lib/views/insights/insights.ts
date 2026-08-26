@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -21,7 +22,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-chatbot-insights',
   standalone: true,
-  imports: [CommonModule, HlmCard, HlmSelectImports, NgIcon, DecimalPipe, RouterLink],
+  imports: [CommonModule, HlmCard, HlmSpinner, HlmSelectImports, NgIcon, DecimalPipe, RouterLink],
   providers: [
     provideIcons({
       lucideUsers,
