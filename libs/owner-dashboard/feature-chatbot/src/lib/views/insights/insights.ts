@@ -3,6 +3,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmProgressImports } from '@spartan/helm/progress';
 import { HlmH2, HlmH3, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -35,6 +36,7 @@ import { RouterLink } from '@angular/router';
     HlmH3,
     HlmMuted,
     HlmSmall,
+    HlmProgressImports,
   ],
   providers: [
     provideIcons({

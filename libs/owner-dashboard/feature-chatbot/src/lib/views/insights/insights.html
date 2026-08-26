@@ -134,12 +134,12 @@
                   >
                 </div>
               </div>
-              <div class="w-full bg-secondary rounded-full h-2">
-                <div
-                  class="bg-emerald-500 h-2 rounded-full"
-                  [style.width.%]="getResolutionPercentage(stats()!.byResolution.answered)"
-                ></div>
-              </div>
+              <hlm-progress
+                class="w-full bg-secondary rounded-full h-2"
+                [value]="getResolutionPercentage(stats()!.byResolution.answered)"
+              >
+                <hlm-progress-indicator class="bg-emerald-500" />
+              </hlm-progress>
             </div>
 
             <!-- Unanswered -->
@@ -158,12 +158,12 @@
                   >
                 </div>
               </div>
-              <div class="w-full bg-secondary rounded-full h-2">
-                <div
-                  class="bg-red-500 h-2 rounded-full"
-                  [style.width.%]="getResolutionPercentage(stats()!.byResolution.unanswered)"
-                ></div>
-              </div>
+              <hlm-progress
+                class="w-full bg-secondary rounded-full h-2"
+                [value]="getResolutionPercentage(stats()!.byResolution.unanswered)"
+              >
+                <hlm-progress-indicator class="bg-red-500" />
+              </hlm-progress>
             </div>
 
             <!-- Off Topic -->
@@ -182,12 +182,12 @@
                   >
                 </div>
               </div>
-              <div class="w-full bg-secondary rounded-full h-2">
-                <div
-                  class="bg-amber-500 h-2 rounded-full"
-                  [style.width.%]="getResolutionPercentage(stats()!.byResolution.off_topic)"
-                ></div>
-              </div>
+              <hlm-progress
+                class="w-full bg-secondary rounded-full h-2"
+                [value]="getResolutionPercentage(stats()!.byResolution.off_topic)"
+              >
+                <hlm-progress-indicator class="bg-amber-500" />
+              </hlm-progress>
             </div>
 
             <!-- Needs Login -->
@@ -206,12 +206,12 @@
                   >
                 </div>
               </div>
-              <div class="w-full bg-secondary rounded-full h-2">
-                <div
-                  class="bg-blue-500 h-2 rounded-full"
-                  [style.width.%]="getResolutionPercentage(stats()!.byResolution.needs_login)"
-                ></div>
-              </div>
+              <hlm-progress
+                class="w-full bg-secondary rounded-full h-2"
+                [value]="getResolutionPercentage(stats()!.byResolution.needs_login)"
+              >
+                <hlm-progress-indicator class="bg-blue-500" />
+              </hlm-progress>
             </div>
 
             <!-- Error -->
@@ -231,12 +231,12 @@
                     >
                   </div>
                 </div>
-                <div class="w-full bg-secondary rounded-full h-2">
-                  <div
-                    class="bg-gray-500 h-2 rounded-full"
-                    [style.width.%]="getResolutionPercentage(stats()!.byResolution.error)"
-                  ></div>
-                </div>
+                <hlm-progress
+                  class="w-full bg-secondary rounded-full h-2"
+                  [value]="getResolutionPercentage(stats()!.byResolution.error)"
+                >
+                  <hlm-progress-indicator class="bg-gray-500" />
+                </hlm-progress>
               </div>
             }
           </div>
