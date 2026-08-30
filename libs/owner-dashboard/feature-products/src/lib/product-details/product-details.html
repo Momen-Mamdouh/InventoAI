@@ -552,20 +552,17 @@
 
             <div>
               <span class="text-sm font-semibold mb-2 block text-foreground">Categories</span>
-              <div
+              <hlm-toggle-group
+                type="multiple"
+                [value]="editProductForm.categoryIds"
+                (valueChange)="onEditCategoriesChange($event)"
                 class="flex flex-wrap gap-2 p-3 border border-input rounded-md bg-transparent min-h-[80px]"
               >
                 @for (cat of categories(); track cat.id) {
                   <button
-                    type="button"
-                    (click)="toggleEditCategory(cat.id)"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer"
-                    [class.bg-primary]="isEditCategorySelected(cat.id)"
-                    [class.text-primary-foreground]="isEditCategorySelected(cat.id)"
-                    [class.border-primary]="isEditCategorySelected(cat.id)"
-                    [class.bg-muted/50]="!isEditCategorySelected(cat.id)"
-                    [class.text-foreground]="!isEditCategorySelected(cat.id)"
-                    [class.border-border]="!isEditCategorySelected(cat.id)"
+                    hlmToggleGroupItem
+                    [value]="cat.id"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer bg-muted/50 text-foreground border-border data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:border-primary"
                   >
                     @if (isEditCategorySelected(cat.id)) {
                       <ng-icon name="lucideCheck" size="12" />
@@ -573,7 +570,7 @@
                     <span>{{ cat.name }}</span>
                   </button>
                 }
-              </div>
+              </hlm-toggle-group>
               <p hlmMuted class="mt-1">
                 Click to select or deselect categories
               </p>

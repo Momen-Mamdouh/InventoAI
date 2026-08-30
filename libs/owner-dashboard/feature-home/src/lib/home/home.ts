@@ -44,6 +44,7 @@ import { CategoriesService } from '@invento/owner-dashboard-data-access-category
 import { ProductService } from '@invento/owner-dashboard-data-access-product';
 import { AuthService } from '@invento/shared-data-access-auth';
 import { HlmButtonImports } from '@spartan/helm/button';
+import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
 import { SITE_BUILDER_URL } from '@invento/owner-dashboard-util-site-builder-url';
 
 interface Category {
@@ -80,6 +81,7 @@ interface Product {
     HlmH3,
     HlmH4,
     HlmMuted,
+    HlmToggleGroupImports,
   ],
   templateUrl: './home.html',
   styleUrl: './home.css',
@@ -388,6 +390,18 @@ export class HomeComponent implements OnInit {
   // View Mode Handler
   setViewMode(mode: 'desktop' | 'mobile') {
     this.viewMode.set(mode);
+  }
+
+  /**
+   * `hlm-toggle-group` (type="single", non-nullable) always emits a single, defined value —
+   * this guard just narrows the brain's broader `T | readonly T[] | null | undefined` output.
+   * `Array.isArray` does not narrow a `readonly T[]` out of the union, so `typeof` is used
+   * instead (both branch values are string literals).
+   */
+  onViewModeChange(mode: 'desktop' | 'mobile' | readonly ('desktop' | 'mobile')[] | null | undefined): void {
+    if (typeof mode === 'string') {
+      this.setViewMode(mode);
+    }
   }
 
   // Hero Section Handlers

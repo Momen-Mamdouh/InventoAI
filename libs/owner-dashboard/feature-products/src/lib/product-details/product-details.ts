@@ -37,6 +37,7 @@ import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { HlmH1, HlmH3, HlmMuted, HlmP, HlmSmall } from '@spartan/helm/typography';
+import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
 
 import {
   ApiProductDetail,
@@ -81,6 +82,7 @@ import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
     HlmP,
     HlmSmall,
     HlmCheckboxImports,
+    HlmToggleGroupImports,
   ],
   providers: [
     provideIcons({
@@ -237,17 +239,17 @@ export class ProductDetails implements OnInit {
     }
   }
 
-  toggleEditCategory(catId: string): void {
-    const ids = this.editProductForm.categoryIds || [];
-    if (ids.includes(catId)) {
-      this.editProductForm.categoryIds = ids.filter((id) => id !== catId);
-    } else {
-      this.editProductForm.categoryIds = [...ids, catId];
-    }
-  }
-
   isEditCategorySelected(catId: string): boolean {
     return (this.editProductForm.categoryIds || []).includes(catId);
+  }
+
+  /**
+   * `hlm-toggle-group` (type="multiple") emits `T | readonly T[] | null | undefined`.
+   * `Array.isArray` is typed `(arg: any) => arg is any[]`, so it does not narrow a
+   * `readonly T[]` out of this union — spread into a fresh mutable array instead.
+   */
+  onEditCategoriesChange(value: string | readonly string[] | null | undefined): void {
+    this.editProductForm.categoryIds = Array.isArray(value) ? [...value] : [];
   }
 
   loadCategories(): void {

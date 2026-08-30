@@ -360,32 +360,30 @@
             </div>
           </div>
           <div class="flex items-center gap-1 ms-auto">
-            <button
-              type="button"
-              [ngClass]="
-                viewMode() === 'desktop'
-                  ? 'bg-background border border-input shadow-xs text-foreground'
-                  : 'hover:bg-accent hover:text-accent-foreground text-muted-foreground'
-              "
-              class="inline-flex justify-center items-center gap-1 px-2.5 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] sm:text-xs transition-colors cursor-pointer"
-              (click)="setViewMode('desktop')"
+            <hlm-toggle-group
+              type="single"
+              [nullable]="false"
+              [value]="viewMode()"
+              (valueChange)="onViewModeChange($event)"
+              class="flex items-center gap-1"
             >
-              <ng-icon name="lucideMonitor" size="13" />
-              <span class="hidden sm:inline">Desktop</span>
-            </button>
-            <button
-              type="button"
-              [ngClass]="
-                viewMode() === 'mobile'
-                  ? 'bg-background border border-input shadow-xs text-foreground'
-                  : 'hover:bg-accent hover:text-accent-foreground text-muted-foreground'
-              "
-              class="inline-flex justify-center items-center gap-1 px-2.5 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] sm:text-xs transition-colors cursor-pointer"
-              (click)="setViewMode('mobile')"
-            >
-              <ng-icon name="lucideSmartphone" size="13" />
-              <span class="hidden sm:inline">Mobile</span>
-            </button>
+              <button
+                hlmToggleGroupItem
+                value="desktop"
+                class="inline-flex justify-center items-center gap-1 px-2.5 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] sm:text-xs transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground text-muted-foreground data-[state=on]:bg-background data-[state=on]:border data-[state=on]:border-input data-[state=on]:shadow-xs data-[state=on]:text-foreground"
+              >
+                <ng-icon name="lucideMonitor" size="13" />
+                <span class="hidden sm:inline">Desktop</span>
+              </button>
+              <button
+                hlmToggleGroupItem
+                value="mobile"
+                class="inline-flex justify-center items-center gap-1 px-2.5 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] sm:text-xs transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground text-muted-foreground data-[state=on]:bg-background data-[state=on]:border data-[state=on]:border-input data-[state=on]:shadow-xs data-[state=on]:text-foreground"
+              >
+                <ng-icon name="lucideSmartphone" size="13" />
+                <span class="hidden sm:inline">Mobile</span>
+              </button>
+            </hlm-toggle-group>
             <div class="mx-0.5 bg-border w-px h-4"></div>
             <button
               type="button"

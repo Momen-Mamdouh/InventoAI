@@ -70,7 +70,7 @@ export interface FilterTab<T extends string = string> {
         <button
           hlmToggleGroupItem
           [value]="tab.id"
-          class="shrink-0 gap-2 rounded-xl text-xs font-semibold whitespace-nowrap sm:text-sm"
+          class="shrink-0 gap-2 h-8 px-2.5 rounded-xl text-xs font-semibold whitespace-nowrap sm:text-sm"
           [class]="
             tab.id === active()
               ? 'bg-primary text-primary-foreground hover:bg-primary/80'

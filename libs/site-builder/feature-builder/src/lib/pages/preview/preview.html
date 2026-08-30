@@ -86,48 +86,54 @@
           <p class="uppercase preview-tag">
             <app-double-slash /> {{ 'preview_mode' | translate }}
           </p>
-          <div class="flex gap-2">
+          <hlm-toggle-group
+            type="single"
+            [nullable]="false"
+            [value]="themeMode()"
+            (valueChange)="onThemeModeChange($event)"
+            class="flex gap-2"
+          >
             <button
-              hlmBtn
-              class="flex-1 justify-center! gap-2 text-foreground cursor-pointer"
-              [class.bg-primary]="themeMode() === 'light'"
-              [class.bg-foreground/10]="themeMode() !== 'light'"
-              (click)="themeMode.set('light')"
+              hlmToggleGroupItem
+              value="light"
+              class="flex-1 justify-center gap-2 h-9 px-2.5 rounded-md text-sm font-medium text-foreground cursor-pointer bg-foreground/10 hover:bg-foreground/10 data-[state=on]:bg-primary data-[state=on]:hover:bg-primary"
             >
               <ng-icon name="lucideSun" class="text-xs" />
               <span class="text-xs font-mono uppercase">{{ 'preview_light' | translate }}</span>
             </button>
             <button
-              hlmBtn
-              class="flex-1 justify-center! gap-2 text-foreground cursor-pointer"
-              [class.bg-primary]="themeMode() === 'dark'"
-              [class.bg-foreground/10]="themeMode() !== 'dark'"
-              (click)="themeMode.set('dark')"
+              hlmToggleGroupItem
+              value="dark"
+              class="flex-1 justify-center gap-2 h-9 px-2.5 rounded-md text-sm font-medium text-foreground cursor-pointer bg-foreground/10 hover:bg-foreground/10 data-[state=on]:bg-primary data-[state=on]:hover:bg-primary"
             >
               <ng-icon name="lucideMoon" class="text-xs" />
               <span class="text-xs font-mono uppercase">{{ 'preview_dark' | translate }}</span>
             </button>
-          </div>
+          </hlm-toggle-group>
         </div>
 
         <div class="preview-body-viewport">
           <p class="uppercase preview-tag">
             <app-double-slash /> {{ 'preview_viewport' | translate }}
           </p>
-          <div class="flex gap-2">
+          <hlm-toggle-group
+            type="single"
+            [nullable]="false"
+            [value]="selectedViewport()"
+            (valueChange)="onViewportChange($event)"
+            class="flex gap-2"
+          >
             @for (viewport of viewports; track viewport.id) {
               <button
-                hlmBtn
-                class="flex-1 justify-center! text-foreground"
-                [class.bg-primary]="selectedViewport() === viewport.id"
-                [class.bg-foreground/10]="selectedViewport() !== viewport.id"
+                hlmToggleGroupItem
+                [value]="viewport.id"
                 [attr.aria-label]="viewport.label | translate"
-                (click)="selectedViewport.set(viewport.id)"
+                class="flex-1 justify-center h-9 px-2.5 rounded-md text-sm font-medium text-foreground bg-foreground/10 hover:bg-foreground/10 data-[state=on]:bg-primary data-[state=on]:hover:bg-primary"
               >
                 <ng-icon [name]="viewport.icon" />
               </button>
             }
-          </div>
+          </hlm-toggle-group>
         </div>
       </div>
 

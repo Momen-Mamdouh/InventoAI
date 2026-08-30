@@ -25,6 +25,7 @@ import {
   lucideTvMinimal,
 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan/helm/button';
+import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
 import {
   PreviewSize,
   PreviewViewport,
@@ -85,6 +86,7 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
     HlmH4,
     HlmMuted,
     HlmSmall,
+    HlmToggleGroupImports,
   ],
   providers: [
     provideIcons({
@@ -285,6 +287,24 @@ export class Preview {
   selectTheme(theme: ThemeSuggestion): void {
     this._userHasManuallySelectedTheme.set(true);
     this.selectedTheme.set(theme);
+  }
+
+  /**
+   * `hlm-toggle-group` (type="single", non-nullable) always emits a single, defined value —
+   * these guards just narrow the brain's broader `T | readonly T[] | null | undefined` output.
+   * `Array.isArray` does not narrow a `readonly T[]` out of the union, so `typeof` is used
+   * instead (both branch values are string literals).
+   */
+  onThemeModeChange(mode: 'light' | 'dark' | readonly ('light' | 'dark')[] | null | undefined): void {
+    if (typeof mode === 'string') {
+      this.themeMode.set(mode);
+    }
+  }
+
+  onViewportChange(viewport: PreviewViewport | readonly PreviewViewport[] | null | undefined): void {
+    if (typeof viewport === 'string') {
+      this.selectedViewport.set(viewport);
+    }
   }
 
   @HostListener('document:fullscreenchange')

@@ -36,6 +36,7 @@ import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { HlmH1, HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 
@@ -96,6 +97,7 @@ interface FormVariant {
     TranslatePipe,
     HlmCheckboxImports,
     EmptyState,
+    HlmToggleGroupImports,
   ],
   providers: [
     provideIcons({
@@ -204,17 +206,17 @@ export class Products implements OnInit {
     this.fetchCategories();
   }
 
-  toggleCategory(catId: string): void {
-    const ids = this.newProduct.categoryIds || [];
-    if (ids.includes(catId)) {
-      this.newProduct.categoryIds = ids.filter((id) => id !== catId);
-    } else {
-      this.newProduct.categoryIds = [...ids, catId];
-    }
-  }
-
   isCategorySelected(catId: string): boolean {
     return (this.newProduct.categoryIds || []).includes(catId);
+  }
+
+  /**
+   * `hlm-toggle-group` (type="multiple") emits `T | readonly T[] | null | undefined`.
+   * `Array.isArray` is typed `(arg: any) => arg is any[]`, so it does not narrow a
+   * `readonly T[]` out of this union — spread into a fresh mutable array instead.
+   */
+  onCategoriesChange(value: string | readonly string[] | null | undefined): void {
+    this.newProduct.categoryIds = Array.isArray(value) ? [...value] : [];
   }
 
   fetchCategories(): void {
