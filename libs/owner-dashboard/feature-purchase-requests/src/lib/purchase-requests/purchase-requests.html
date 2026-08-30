@@ -120,21 +120,23 @@
     </div>
   }
 
-  <div class="flex items-center gap-1 pb-1 border-border border-b overflow-x-auto">
+  <hlm-toggle-group
+    type="single"
+    [nullable]="false"
+    [value]="statusFilter()"
+    (valueChange)="onStatusChange($event)"
+    class="flex w-full items-center gap-1 overflow-x-auto border-border border-b pb-1"
+  >
     @for (tab of statusTabs; track tab.value) {
       <button
-        type="button"
-        class="px-3 py-2.5 border-b-2 font-medium text-sm whitespace-nowrap transition-colors"
-        [class.border-primary]="statusFilter() === tab.value"
-        [class.text-primary]="statusFilter() === tab.value"
-        [class.border-transparent]="statusFilter() !== tab.value"
-        [class.text-muted-foreground]="statusFilter() !== tab.value"
-        (click)="setStatus(tab.value)"
+        hlmToggleGroupItem
+        [value]="tab.value"
+        class="h-auto min-w-0 shrink-0 rounded-none border-b-2 border-transparent bg-transparent px-3 py-2.5 font-medium text-sm text-muted-foreground whitespace-nowrap transition-colors hover:bg-transparent data-[state=on]:border-primary data-[state=on]:bg-transparent data-[state=on]:text-primary"
       >
         {{ tab.label }}
       </button>
     }
-  </div>
+  </hlm-toggle-group>
 
   <div hlmCard class="shadow-sm border-border rounded-2xl overflow-hidden">
     <div hlmTableContainer class="overflow-x-auto">

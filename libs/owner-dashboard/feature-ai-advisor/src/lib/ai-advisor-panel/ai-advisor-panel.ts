@@ -4,6 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmSheetImports } from '@spartan/helm/sheet';
+import { HlmTabsImports } from '@spartan/helm/tabs';
 import { HlmBadgeImports } from '@spartan/helm/badge';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
@@ -81,6 +82,7 @@ export type AdvisorPanelTab = 'today' | 'history' | 'settings';
     DatePipe,
     HlmButtonImports,
     HlmSheetImports,
+    HlmTabsImports,
     HlmBadgeImports,
     HlmCardImports,
     HlmInputImports,
@@ -421,6 +423,18 @@ export class AiAdvisorPanel {
 
   setActiveView(view: AdvisorPanelTab) {
     this.activeView.set(view);
+  }
+
+  /**
+   * `hlm-tabs` (via `BrnTabs`) emits the activated tab id as a plain `string` since the
+   * directive is not generic over the id union. Narrow it back to `AdvisorPanelTab` before
+   * writing it into `activeView` — both header switchers (full-page and sheet) only ever
+   * register triggers for the three known ids, so this narrows safely.
+   */
+  onTabActivated(id: string): void {
+    if (id === 'today' || id === 'history' || id === 'settings') {
+      this.setActiveView(id);
+    }
   }
 
   setFilter(filter: AdvisorFilter) {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { HlmButton } from '@spartan/helm/button';
+import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
 import { HlmBadge } from '@spartan/helm/badge';
 
 export interface FilterTab<T extends string = string> {
@@ -15,11 +15,18 @@ export interface FilterTab<T extends string = string> {
  * Replaces the duplicated `<button>` + `[ngClass]` blocks in `faq` and `orders-filter-bar`.
  * Scrolls horizontally on small screens rather than wrapping, matching the previous
  * behaviour of the orders bar.
+ *
+ * Built on `hlm-toggle-group` rather than `hlm-tabs`: this component only ever filters a list
+ * rendered by a sibling component (never a panel it owns), so there is no `tabpanel` for
+ * `aria-controls` to point at. `BrnTabsTrigger` emits `aria-controls` unconditionally, which
+ * would have produced a dangling reference — a `role="group"` of pressable toggles is the
+ * correct, honest a11y shape here (fixes D7: the old markup claimed `role="tab"` without roving
+ * tabindex, arrow-key nav or `aria-controls`).
  */
 @Component({
   selector: 'app-filter-tabs',
   standalone: true,
-  imports: [HlmButton, HlmBadge],
+  imports: [HlmToggleGroupImports, HlmBadge],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
@@ -50,21 +57,25 @@ export interface FilterTab<T extends string = string> {
     `,
   ],
   template: `
-    <div
-      class="filter-tabs-scroller flex min-w-0 items-center gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0"
-      role="tablist"
+    <hlm-toggle-group
+      type="single"
+      size="sm"
+      [nullable]="false"
+      [value]="active()"
+      (valueChange)="onValueChange($event)"
       [attr.aria-label]="ariaLabel()"
+      class="filter-tabs-scroller flex w-full min-w-0 items-center gap-2 overflow-x-auto pb-2 lg:w-auto lg:overflow-x-visible lg:pb-0"
     >
       @for (tab of tabs(); track tab.id) {
         <button
-          hlmBtn
-          type="button"
-          size="sm"
-          [variant]="tab.id === active() ? 'default' : 'secondary'"
-          role="tab"
-          [attr.aria-selected]="tab.id === active()"
+          hlmToggleGroupItem
+          [value]="tab.id"
           class="shrink-0 gap-2 rounded-xl text-xs font-semibold whitespace-nowrap sm:text-sm"
-          (click)="tabChange.emit(tab.id)"
+          [class]="
+            tab.id === active()
+              ? 'bg-primary text-primary-foreground hover:bg-primary/80'
+              : 'bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]'
+          "
         >
           <span>{{ tab.label }}</span>
           @if (tab.count !== undefined) {
@@ -83,7 +94,7 @@ export interface FilterTab<T extends string = string> {
           }
         </button>
       }
-    </div>
+    </hlm-toggle-group>
   `,
 })
 export class FilterTabs<T extends string = string> {
@@ -92,4 +103,13 @@ export class FilterTabs<T extends string = string> {
   public readonly ariaLabel = input<string>('Filters');
 
   public readonly tabChange = output<T>();
+
+  protected onValueChange(value: T | readonly T[] | null | undefined): void {
+    // `Array.isArray` is typed `(arg: any) => arg is any[]`, so it does not narrow a
+    // `readonly T[]` out of this union (see purchase-requests.ts `onStatusChange` for the same
+    // trap). `T extends string`, so `typeof` narrows cleanly down to `T` instead.
+    if (typeof value === 'string') {
+      this.tabChange.emit(value);
+    }
+  }
 }

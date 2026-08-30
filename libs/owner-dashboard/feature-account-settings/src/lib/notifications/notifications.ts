@@ -70,9 +70,6 @@ export interface PreferenceGroup {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsComponent {
-  // Navigation tab state
-  activeTab = signal<string>('notifications');
-
   // Initial Default Preference Data
   private defaultGroups: PreferenceGroup[] = [
     {

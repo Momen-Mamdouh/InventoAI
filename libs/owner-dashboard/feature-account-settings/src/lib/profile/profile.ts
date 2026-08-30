@@ -61,9 +61,6 @@ import { AuthService } from '@invento/shared-data-access-auth';
 export class ProfileComponent {
   private readonly authService = inject(AuthService);
 
-  // Navigation tab state
-  activeTab = signal<string>('profile');
-
   // Form State initial values
   private readonly currentUser = this.authService.currentUser();
   private initialFullName = this.currentUser

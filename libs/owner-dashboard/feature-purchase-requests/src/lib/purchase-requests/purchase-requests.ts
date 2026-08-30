@@ -38,6 +38,7 @@ import {
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCheckboxImports } from '@spartan/helm/checkbox';
+import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
@@ -99,6 +100,7 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
     HlmTooltipImports,
     TranslatePipe,
     HlmCheckboxImports,
+    HlmToggleGroupImports,
     Pagination,
     EmptyState,
   ],
@@ -250,6 +252,25 @@ export class PurchaseRequests implements OnInit {
     this.statusFilter.set(status);
     this.page.set(1);
     this.load();
+  }
+
+  /**
+   * `hlm-toggle-group` (type="single", non-nullable) always emits a single, defined value —
+   * this guard just narrows the brain's broader `T | T[] | null | undefined` output type.
+   */
+  onStatusChange(
+    status:
+      | ('all' | PurchaseRequestStatus)
+      | readonly ('all' | PurchaseRequestStatus)[]
+      | null
+      | undefined,
+  ): void {
+    // `Array.isArray` is typed `(arg: any) => arg is any[]`, so it does not narrow a
+    // `readonly T[]` out of this union. Both branch values are string-literal unions, so
+    // `typeof` narrows cleanly instead.
+    if (typeof status === 'string') {
+      this.setStatus(status);
+    }
   }
 
   openDetail(id: string): void {

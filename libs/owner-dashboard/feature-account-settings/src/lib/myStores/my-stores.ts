@@ -94,9 +94,6 @@ export interface StoreItem {
 export class MyStoresComponent {
   private readonly router = inject(Router);
 
-  // Navigation tab state
-  activeTab = signal<string>('stores');
-
   // Stores Data List
   stores = signal<StoreItem[]>([
     {

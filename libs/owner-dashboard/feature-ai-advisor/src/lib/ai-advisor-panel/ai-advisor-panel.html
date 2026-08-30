@@ -2,7 +2,11 @@
   <!-- ========================================== -->
   <!-- FULL PAGE DASHBOARD VIEW (Route: /ai-advisor) -->
   <!-- ========================================== -->
-  <div class="space-y-6 mx-auto max-w-7xl">
+  <hlm-tabs
+    [tab]="activeView()"
+    (tabActivated)="onTabActivated($event)"
+    class="mx-auto flex max-w-7xl flex-col gap-6!"
+  >
     <!-- Top Dashboard Header Card -->
     <div
       class="bg-card border border-border/80 rounded-2xl p-5 md:p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
@@ -69,45 +73,24 @@
         class="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full md:w-auto justify-between md:justify-end"
       >
         <!-- View Switcher Tabs -->
-        <div class="flex items-center gap-1 bg-muted p-1 rounded-xl text-xs sm:text-sm">
-          <button
-            type="button"
-            class="px-3 py-1.5 rounded-lg font-medium text-xs transition-all"
-            [class.bg-card]="activeView() === 'today'"
-            [class.shadow-sm]="activeView() === 'today'"
-            [class.text-foreground]="activeView() === 'today'"
-            [class.text-muted-foreground]="activeView() !== 'today'"
-            (click)="setActiveView('today')"
-          >
+        <hlm-tabs-list class="gap-1 rounded-xl p-1 text-xs sm:text-sm">
+          <button hlmTabsTrigger="today" class="rounded-lg px-3 py-1.5 text-xs font-medium">
             Today's Brief
           </button>
-          <button
-            type="button"
-            class="px-3 py-1.5 rounded-lg font-medium text-xs transition-all flex items-center gap-1.5"
-            [class.bg-card]="activeView() === 'history'"
-            [class.shadow-sm]="activeView() === 'history'"
-            [class.text-foreground]="activeView() === 'history'"
-            [class.text-muted-foreground]="activeView() !== 'history'"
-            (click)="setActiveView('history')"
-          >
+          <button hlmTabsTrigger="history" class="gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium">
             <ng-icon name="lucideHistory" size="13" />
             History
           </button>
           <button
-            type="button"
-            class="px-3 py-1.5 rounded-lg font-medium text-xs transition-all flex items-center gap-1.5"
-            [class.bg-card]="activeView() === 'settings'"
-            [class.shadow-sm]="activeView() === 'settings'"
-            [class.text-foreground]="activeView() === 'settings'"
-            [class.text-muted-foreground]="activeView() !== 'settings'"
-            (click)="setActiveView('settings')"
+            hlmTabsTrigger="settings"
+            class="gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium"
             [attr.aria-label]="'ai_advisor.settings' | translate"
             [hlmTooltip]="'ai_advisor.settings' | translate"
           >
             <ng-icon name="lucideSettings" size="13" />
             Settings
           </button>
-        </div>
+        </hlm-tabs-list>
 
         <!-- Manual Generate Now Button -->
         <button
@@ -144,14 +127,22 @@
     </div>
 
     <!-- Main View Content -->
-    @if (activeView() === 'today') {
-      <ng-container *ngTemplateOutlet="todayViewTpl" />
-    } @else if (activeView() === 'history') {
-      <ng-container *ngTemplateOutlet="historyViewTpl" />
-    } @else if (activeView() === 'settings') {
-      <ng-container *ngTemplateOutlet="settingsViewTpl" />
-    }
-  </div>
+    <div hlmTabsContent="today">
+      <ng-template hlmTabsContentLazy>
+        <ng-container *ngTemplateOutlet="todayViewTpl" />
+      </ng-template>
+    </div>
+    <div hlmTabsContent="history">
+      <ng-template hlmTabsContentLazy>
+        <ng-container *ngTemplateOutlet="historyViewTpl" />
+      </ng-template>
+    </div>
+    <div hlmTabsContent="settings">
+      <ng-template hlmTabsContentLazy>
+        <ng-container *ngTemplateOutlet="settingsViewTpl" />
+      </ng-template>
+    </div>
+  </hlm-tabs>
 } @else {
   <!-- ========================================== -->
   <!-- DRAWER / SHEET VIEW (When embedded as a trigger button) -->
@@ -170,94 +161,83 @@
       *hlmSheetPortal="let ctx"
       class="flex flex-col p-0 w-105 sm:w-105 sm:max-w-none"
     >
-      <!-- Header -->
-      <hlm-sheet-header class="p-4 border-b">
-        <div class="flex items-start justify-between gap-3">
-          <div class="flex items-start gap-3 min-w-0">
-            <div
-              class="flex justify-center items-center bg-primary/10 rounded-full size-10 shrink-0"
-            >
-              <ng-icon name="lucideSparkles" size="18" class="text-primary" />
+      <hlm-tabs [tab]="activeView()" (tabActivated)="onTabActivated($event)" class="contents">
+        <!-- Header -->
+        <hlm-sheet-header class="p-4 border-b">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+              <div
+                class="flex justify-center items-center bg-primary/10 rounded-full size-10 shrink-0"
+              >
+                <ng-icon name="lucideSparkles" size="18" class="text-primary" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <h3 hlmSheetTitle>AI Advisor</h3>
+                @if (activeView() === 'today' && headline()) {
+                  <p
+                    hlmSheetDescription
+                    class="line-clamp-2 text-foreground/80 font-medium text-xs mt-0.5"
+                  >
+                    {{ headline() }}
+                  </p>
+                } @else if (activeView() === 'history' && selectedBriefId() && selectedBrief()) {
+                  <p
+                    hlmSheetDescription
+                    class="line-clamp-2 text-foreground/80 font-medium text-xs mt-0.5"
+                  >
+                    {{ selectedBrief()!.headline }}
+                  </p>
+                } @else if (activeView() === 'history') {
+                  <p hlmSheetDescription class="text-foreground/80 font-medium text-xs mt-0.5">
+                    Past daily briefs and performance archive
+                  </p>
+                } @else if (activeView() === 'settings') {
+                  <p hlmSheetDescription class="text-foreground/80 font-medium text-xs mt-0.5">
+                    Schedule, delivery & intelligence parameters
+                  </p>
+                } @else {
+                  <p hlmSheetDescription>Powered by Invento Intelligence</p>
+                }
+              </div>
             </div>
-            <div class="min-w-0 flex-1">
-              <h3 hlmSheetTitle>AI Advisor</h3>
-              @if (activeView() === 'today' && headline()) {
-                <p
-                  hlmSheetDescription
-                  class="line-clamp-2 text-foreground/80 font-medium text-xs mt-0.5"
-                >
-                  {{ headline() }}
-                </p>
-              } @else if (activeView() === 'history' && selectedBriefId() && selectedBrief()) {
-                <p
-                  hlmSheetDescription
-                  class="line-clamp-2 text-foreground/80 font-medium text-xs mt-0.5"
-                >
-                  {{ selectedBrief()!.headline }}
-                </p>
-              } @else if (activeView() === 'history') {
-                <p hlmSheetDescription class="text-foreground/80 font-medium text-xs mt-0.5">
-                  Past daily briefs and performance archive
-                </p>
-              } @else if (activeView() === 'settings') {
-                <p hlmSheetDescription class="text-foreground/80 font-medium text-xs mt-0.5">
-                  Schedule, delivery & intelligence parameters
-                </p>
-              } @else {
-                <p hlmSheetDescription>Powered by Invento Intelligence</p>
-              }
-            </div>
-          </div>
 
-          <!-- View Switcher -->
-          <div class="flex items-center gap-1 bg-muted p-0.5 rounded-lg text-xs shrink-0">
-            <button
-              type="button"
-              class="px-2.5 py-1 rounded-md font-medium text-xs transition-colors"
-              [class.bg-background]="activeView() === 'today'"
-              [class.shadow-sm]="activeView() === 'today'"
-              [class.text-foreground]="activeView() === 'today'"
-              [class.text-muted-foreground]="activeView() !== 'today'"
-              (click)="setActiveView('today')"
-            >
-              Today
-            </button>
-            <button
-              type="button"
-              class="px-2.5 py-1 rounded-md font-medium text-xs transition-colors flex items-center gap-1"
-              [class.bg-background]="activeView() === 'history'"
-              [class.shadow-sm]="activeView() === 'history'"
-              [class.text-foreground]="activeView() === 'history'"
-              [class.text-muted-foreground]="activeView() !== 'history'"
-              (click)="setActiveView('history')"
-            >
-              <ng-icon name="lucideHistory" size="12" />
-              History
-            </button>
-            <button
-              type="button"
-              class="px-2 py-1 rounded-md font-medium text-xs transition-colors flex items-center gap-1"
-              [class.bg-background]="activeView() === 'settings'"
-              [class.shadow-sm]="activeView() === 'settings'"
-              [class.text-foreground]="activeView() === 'settings'"
-              [class.text-muted-foreground]="activeView() !== 'settings'"
-              (click)="setActiveView('settings')"
-              [attr.aria-label]="'ai_advisor.settings' | translate"
-              [hlmTooltip]="'ai_advisor.settings' | translate"
-            >
-              <ng-icon name="lucideSettings" size="12" />
-            </button>
+            <!-- View Switcher -->
+            <hlm-tabs-list class="gap-1 rounded-lg p-0.5 text-xs shrink-0">
+              <button hlmTabsTrigger="today" class="rounded-md px-2.5 py-1 text-xs font-medium">
+                Today
+              </button>
+              <button hlmTabsTrigger="history" class="gap-1 rounded-md px-2.5 py-1 text-xs font-medium">
+                <ng-icon name="lucideHistory" size="12" />
+                History
+              </button>
+              <button
+                hlmTabsTrigger="settings"
+                class="gap-1 rounded-md px-2 py-1 text-xs font-medium"
+                [attr.aria-label]="'ai_advisor.settings' | translate"
+                [hlmTooltip]="'ai_advisor.settings' | translate"
+              >
+                <ng-icon name="lucideSettings" size="12" />
+              </button>
+            </hlm-tabs-list>
           </div>
+        </hlm-sheet-header>
+
+        <div hlmTabsContent="today">
+          <ng-template hlmTabsContentLazy>
+            <ng-container *ngTemplateOutlet="todayViewTpl" />
+          </ng-template>
         </div>
-      </hlm-sheet-header>
-
-      @if (activeView() === 'today') {
-        <ng-container *ngTemplateOutlet="todayViewTpl" />
-      } @else if (activeView() === 'history') {
-        <ng-container *ngTemplateOutlet="historyViewTpl" />
-      } @else if (activeView() === 'settings') {
-        <ng-container *ngTemplateOutlet="settingsViewTpl" />
-      }
+        <div hlmTabsContent="history">
+          <ng-template hlmTabsContentLazy>
+            <ng-container *ngTemplateOutlet="historyViewTpl" />
+          </ng-template>
+        </div>
+        <div hlmTabsContent="settings">
+          <ng-template hlmTabsContentLazy>
+            <ng-container *ngTemplateOutlet="settingsViewTpl" />
+          </ng-template>
+        </div>
+      </hlm-tabs>
     </hlm-sheet-content>
   </hlm-sheet>
 }

@@ -84,9 +84,6 @@ export interface ActiveSession {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecurityComponent {
-  // Navigation tab state
-  activeTab = signal<string>('security');
-
   // Password Form Signals
   currentPassword = signal<string>('');
   newPassword = signal<string>('');

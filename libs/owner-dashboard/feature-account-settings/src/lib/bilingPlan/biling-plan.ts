@@ -100,9 +100,6 @@ export interface PlanInfo {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BilingPlanComponent {
-  // Navigation tab state
-  activeTab = signal<string>('billing');
-
   // Plan Data Signal
   plan = signal<PlanInfo>({
     name: 'Invento Pro',
