@@ -1,6 +1,7 @@
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmDialogImports } from '@spartan/helm/dialog';
+import { HlmAccordionImports } from '@spartan/helm/accordion';
 import { BrnDialogContent } from '@spartan-ng/brain/dialog';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { HlmSpinner } from '@spartan/helm/spinner';
@@ -22,7 +23,6 @@ import {
   lucideRotateCcw,
   lucideDownload,
   lucidePrinter,
-  lucideChevronDown,
   lucideMapPin,
   lucideCreditCard,
   lucideCopy,
@@ -62,6 +62,7 @@ interface PresetReason {
     HlmLabel,
     HlmDialogImports,
     BrnDialogContent,
+    HlmAccordionImports,
     ...HlmTypographyImports,
     HlmBadge,
     HlmSpinner,
@@ -85,7 +86,6 @@ interface PresetReason {
       lucideRotateCcw,
       lucideDownload,
       lucidePrinter,
-      lucideChevronDown,
       lucideMapPin,
       lucideCreditCard,
       lucideCopy,
@@ -211,11 +211,10 @@ export class OrderCardComponent {
     return this.ordersService.getStatusConfig(status);
   }
 
-  protected toggleDetails(): void {
-    const nextState = !this.isExpanded();
-    this.isExpanded.set(nextState);
+  protected onDetailsToggled(opened: boolean): void {
+    this.isExpanded.set(opened);
 
-    if (nextState && !this.orderDetails()) {
+    if (opened && !this.orderDetails()) {
       this.ordersService.loadOrderDetails(this.order().orderNumber);
     }
   }
