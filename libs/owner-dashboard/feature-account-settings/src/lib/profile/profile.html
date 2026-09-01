@@ -59,20 +59,17 @@
     }
 
     <!-- Card 1: Profile Photo -->
-    <div
-      hlmCard
-      class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground"
-    >
+    <div hlmCard>
       <!-- Card Header -->
-      <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 hlmH2>Profile Photo</h2>
-        <p hlmMuted class="mt-0.5">
+      <div hlmCardHeader class="border-b">
+        <h2 hlmCardTitle>Profile Photo</h2>
+        <p hlmCardDescription>
           Upload a profile photo visible to your team and customers.
         </p>
       </div>
 
       <!-- Card Body -->
-      <div class="flex sm:flex-row flex-col items-start sm:items-center gap-4 sm:gap-6 p-4 sm:p-6">
+      <div hlmCardContent class="flex sm:flex-row flex-col items-start sm:items-center gap-4 sm:gap-6">
         <!-- Avatar Preview Zone with Drag & Drop -->
         <button
           type="button"
@@ -151,20 +148,17 @@
     </div>
 
     <!-- Card 2: Personal Information -->
-    <div
-      hlmCard
-      class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground"
-    >
+    <div hlmCard>
       <!-- Card Header -->
-      <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 hlmH2>Personal Information</h2>
-        <p hlmMuted class="mt-0.5">
+      <div hlmCardHeader class="border-b">
+        <h2 hlmCardTitle>Personal Information</h2>
+        <p hlmCardDescription>
           Your name and contact details used across Invento.
         </p>
       </div>
 
       <!-- Card Body Form -->
-      <div class="space-y-5 p-4 sm:p-6">
+      <div hlmCardContent class="space-y-5">
         <div class="gap-4 sm:gap-6 grid grid-cols-1 sm:grid-cols-2">
           <!-- Full Name -->
           <div class="space-y-1.5">

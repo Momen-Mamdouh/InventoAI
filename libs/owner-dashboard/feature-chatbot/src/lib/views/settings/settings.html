@@ -9,14 +9,11 @@
       <hlm-spinner class="text-[32px] text-primary" />
     </div>
   } @else {
-    <div
-      hlmCard
-      class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground"
-    >
-      <div class="px-4 sm:px-6 py-4 border-border border-b flex items-center justify-between">
+    <div hlmCard>
+      <div hlmCardHeader class="flex items-center justify-between border-b">
         <div>
-          <h2 hlmH2>Chatbot Configuration</h2>
-          <p hlmMuted class="mt-0.5">
+          <h2 hlmCardTitle>Chatbot Configuration</h2>
+          <p hlmCardDescription>
             Manage your AI advisor's identity and availability.
           </p>
         </div>
@@ -30,7 +27,7 @@
         </div>
       </div>
 
-      <div class="space-y-5 p-4 sm:p-6">
+      <div hlmCardContent class="space-y-5">
         <div class="space-y-1.5">
           <label hlmLabel for="greetingInput" class="font-medium text-foreground text-xs sm:text-sm"
             >Custom Greeting Message</label

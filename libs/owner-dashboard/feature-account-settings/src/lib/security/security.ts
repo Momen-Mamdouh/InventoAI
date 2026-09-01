@@ -20,11 +20,11 @@ import {
   lucideLogOut,
 } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan/helm/badge';
-import { HlmCard } from '@spartan/helm/card';
+import { HlmCardImports } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
-import { HlmH1, HlmH2, HlmMuted } from '@spartan/helm/typography';
+import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { HlmSwitchImports } from '@spartan/helm/switch';
@@ -49,12 +49,11 @@ export interface ActiveSession {
     RouterLink,
     NgIcon,
     HlmBadge,
-    HlmCard,
+    HlmCardImports,
     HlmButton,
     HlmInput,
     HlmLabelImports,
     HlmH1,
-    HlmH2,
     HlmMuted,
     HlmTooltipImports,
     TranslatePipe,

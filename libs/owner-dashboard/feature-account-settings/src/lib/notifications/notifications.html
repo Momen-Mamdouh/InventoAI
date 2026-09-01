@@ -59,20 +59,17 @@
     }
 
     <!-- Main Preferences Card -->
-    <div
-      hlmCard
-      class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground"
-    >
+    <div hlmCard>
       <!-- Card Header -->
-      <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 hlmH2>Notification Preferences</h2>
-        <p hlmMuted class="mt-0.5">
+      <div hlmCardHeader class="border-b">
+        <h2 hlmCardTitle>Notification Preferences</h2>
+        <p hlmCardDescription>
           Choose how and where you receive notifications.
         </p>
       </div>
 
       <!-- Groups List -->
-      <div class="space-y-6 p-4 sm:p-6">
+      <div hlmCardContent class="space-y-6">
         @for (group of preferenceGroups(); track group.id) {
           <div class="space-y-3">
             <!-- Group Section Header -->

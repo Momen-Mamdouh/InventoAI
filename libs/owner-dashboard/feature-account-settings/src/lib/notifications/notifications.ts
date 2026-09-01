@@ -12,9 +12,9 @@ import {
   lucideCreditCard,
   lucideStore,
 } from '@ng-icons/lucide';
-import { HlmCard } from '@spartan/helm/card';
+import { HlmCardImports } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
-import { HlmH1, HlmH2, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
+import { HlmH1, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
 import { HlmSwitchImports } from '@spartan/helm/switch';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { TranslatePipe } from '@invento/shared-util-i18n';
@@ -41,10 +41,9 @@ export interface PreferenceGroup {
     FormsModule,
     RouterLink,
     NgIcon,
-    HlmCard,
+    HlmCardImports,
     HlmButton,
     HlmH1,
-    HlmH2,
     HlmH3,
     HlmH4,
     HlmMuted,

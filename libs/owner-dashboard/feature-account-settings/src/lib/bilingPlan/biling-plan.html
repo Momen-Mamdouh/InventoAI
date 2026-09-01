@@ -73,20 +73,17 @@
     }
 
     <!-- Card 1: Current Plan -->
-    <div
-      hlmCard
-      class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground"
-    >
+    <div hlmCard>
       <!-- Card Header -->
-      <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 hlmH2>Current Plan</h2>
-        <p hlmMuted class="mt-0.5">
+      <div hlmCardHeader class="border-b">
+        <h2 hlmCardTitle>Current Plan</h2>
+        <p hlmCardDescription>
           Your active Invento subscription.
         </p>
       </div>
 
       <!-- Card Body Box -->
-      <div class="p-4 sm:p-6">
+      <div hlmCardContent>
         <div
           class="plan-card-bg flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-5 sm:p-6 border border-primary/20 rounded-2xl"
         >
@@ -162,20 +159,17 @@
     </div>
 
     <!-- Card 2: Payment Method -->
-    <div
-      hlmCard
-      class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground"
-    >
+    <div hlmCard>
       <!-- Card Header -->
-      <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 hlmH2>Payment Method</h2>
-        <p hlmMuted class="mt-0.5">
+      <div hlmCardHeader class="border-b">
+        <h2 hlmCardTitle>Payment Method</h2>
+        <p hlmCardDescription>
           The card used for your monthly subscription.
         </p>
       </div>
 
       <!-- Card Body -->
-      <div class="p-4 sm:p-6">
+      <div hlmCardContent>
         <div
           class="flex flex-wrap sm:flex-nowrap justify-between items-center gap-4 p-4 sm:p-5 border border-border/80 rounded-2xl bg-card hover:border-primary/30 transition-colors"
         >
@@ -228,19 +222,16 @@
     </div>
 
     <!-- Card 3: Billing History -->
-    <div
-      hlmCard
-      class="bg-card shadow-xs p-0 border border-border/80 rounded-2xl overflow-hidden text-card-foreground"
-    >
+    <div hlmCard>
       <!-- Card Header -->
-      <div class="px-4 sm:px-6 py-4 border-border border-b">
-        <h2 hlmH2>Billing History</h2>
-        <p hlmMuted class="mt-0.5">
+      <div hlmCardHeader class="border-b">
+        <h2 hlmCardTitle>Billing History</h2>
+        <p hlmCardDescription>
           Past invoices and payment records.
         </p>
       </div>
 
-      <!-- Table Body -->
+      <!-- Table Body (full-bleed, own row dividers — kept outside hlmCardContent) -->
       <div hlmTableContainer class="overflow-x-auto">
         <table hlmTable class="w-full text-start text-xs sm:text-sm">
           <thead hlmTHead>

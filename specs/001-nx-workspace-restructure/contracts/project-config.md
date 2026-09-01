@@ -1,0 +1,125 @@
+# Contract — Canonical Project Configuration
+
+**Satisfies**: FR-001, FR-005, FR-007, FR-008, FR-028
+
+## Library `project.json`
+
+`apps/invento/project.json` is the reference for applications; this is the reference for libraries.
+Note `"targets": {}` — libraries are **source-consumed** and must never carry a `build` target (R1).
+
+```json
+{
+  "name": "invento-feature-products",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/invento/feature-products/src",
+  "prefix": "app",
+  "tags": ["type:feature", "scope:invento"],
+  "implicitDependencies": [],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/invento/feature-products/**/*.ts",
+          "libs/invento/feature-products/**/*.html"
+        ]
+      }
+    }
+  }
+}
+```
+
+**The `lint` target is mandatory on every project** (R3). Without it the project is invisible to
+`nx run-many -t lint` and no rule — boundary or otherwise — ever runs against it.
+
+## The `libs/ui` repair (R1)
+
+The 18 existing `libs/ui/*/project.json` files currently carry this **broken** target:
+
+```json
+"targets": {
+  "build": {
+    "executor": "@nx/angular:ng-packagr-lite",
+    "options": {
+      "project": "libs/ui/table/ng-package.json",      // does not exist
+      "tsConfig": "libs/ui/table/tsconfig.lib.json"    // does not exist
+    }
+  }
+}
+```
+
+Replace with `"targets": { "lint": { … } }`. Packaging `libs/ui` is broken by design — `nx.json`
+documents the TS6059 cause. Never author the missing `ng-package.json` files.
+
+## Application `project.json` — site-builder (1.1)
+
+Created at `apps/site-builder/project.json`, mirroring `apps/invento/project.json`:
+
+| Field                | Value                                                                |
+| -------------------- | -------------------------------------------------------------------- |
+| `name`               | `site-builder`                                                       |
+| `sourceRoot`         | `apps/site-builder/src`                                              |
+| `tags`               | `["type:app", "scope:site-builder"]`                                 |
+| `outputPath`         | `dist/apps/site-builder` **(changed from `dist/site-builder`)** (R9) |
+| `browser`            | `apps/site-builder/src/main.ts`                                      |
+| `server`             | `apps/site-builder/src/main.server.ts`                               |
+| `ssr.entry`          | `apps/site-builder/src/server.ts`                                    |
+| `tsConfig`           | `apps/site-builder/tsconfig.app.json`                                |
+| `proxyConfig`        | `apps/site-builder/proxy.conf.json`                                  |
+| `serve.options.port` | `4200`                                                               |
+| targets              | `build`, `serve`, `serve-static`, `lint`, `test`                     |
+
+Preserve the existing `production` `fileReplacements` (`environment.ts` → `environment.prod.ts`) and
+budgets (1 MB warning / 2 MB error initial).
+
+**Then delete the root `project.json`.** This is what detaches the repository root as a project root
+(FR-001) and drops the 11 inferred npm-script targets.
+
+**Verification that it worked:**
+
+```bash
+npx nx show project site-builder --json | node -e "…"   # root must be 'apps/site-builder', not '.'
+touch apps/invento/src/app/app.ts
+npx nx show projects --affected                          # must NOT list site-builder
+```
+
+## tsconfig shapes (1.2)
+
+`apps/invento/tsconfig.app.json` is the reference — it sets **no** `rootDir` and **no**
+`include` of `../../libs/ui/*`, and resolves Spartan correctly through `tsconfig.base.json` `paths`.
+
+| File                                  | Required change                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `apps/site-builder/tsconfig.json`     | **Create**: `files: []`, `include: []`, `references: [./tsconfig.app.json, ./tsconfig.spec.json]` |
+| `apps/site-builder/tsconfig.app.json` | `extends: ./tsconfig.json`; `outDir` `../../out-tsc/app` → `../../dist/out-tsc`                   |
+| `apps/userSite/tsconfig.app.json`     | Drop `rootDir: "../.."` and the `../../libs/ui/*/src/**/*.ts` include                             |
+| `apps/site-builder/tsconfig.app.json` | Same                                                                                              |
+| root `tsconfig.json`                  | `references` lists all 3 apps + every lib (currently 6 entries, inconsistent)                     |
+
+## `tsconfig.base.json` aliases (FR-028)
+
+One entry per library, generated by the Nx generator rather than hand-written:
+
+```json
+"@invento/invento-feature-products": ["./libs/invento/feature-products/src/index.ts"]
+```
+
+**Retired**: `@invento/shared` (FR-004b), `@/*` (FR-014), `@/spartan/stepper`, `@/spartan/styles`
+(the latter duplicates `@spartan/styles`).
+**Unchanged**: all 36 `@spartan/helm/*` entries and `@invento/core` — the `libs/ui` split does not
+move any file, so no consuming import changes (FR-006).
+
+## Generator invocation
+
+```bash
+npx nx g @nx/angular:library <name> \
+  --directory=libs/<scope>/<type>-<name> \
+  --tags=scope:<scope>,type:<type> \
+  --dry-run
+```
+
+`nx.json` generator defaults already set `style: css`, `linter: none`, `unitTestRunner: none` —
+consistent with testing being deferred. **Always `--dry-run` first**, then add the `lint` target by
+hand (the generator omits it because `linter: none`).

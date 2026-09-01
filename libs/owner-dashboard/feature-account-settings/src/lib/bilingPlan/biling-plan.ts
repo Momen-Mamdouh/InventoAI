@@ -20,7 +20,7 @@ import {
   lucideBarChart3,
 } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan/helm/badge';
-import { HlmCard } from '@spartan/helm/card';
+import { HlmCardImports } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
@@ -29,7 +29,7 @@ import { HlmDialogImports } from '@spartan/helm/dialog';
 // Brain primitives are the plain npm package — not re-exported through the
 // project's `@spartan/helm` alias, so import them directly (see category-form-dialog.ts).
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
-import { HlmH1, HlmH2, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
+import { HlmH1, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
 
 export interface InvoiceRecord {
   id: string;
@@ -66,7 +66,7 @@ export interface PlanInfo {
     RouterLink,
     NgIcon,
     HlmBadge,
-    HlmCard,
+    HlmCardImports,
     HlmButton,
     HlmInput,
     HlmLabelImports,
@@ -74,7 +74,6 @@ export interface PlanInfo {
     HlmDialogImports,
     BrnDialogImports,
     HlmH1,
-    HlmH2,
     HlmH3,
     HlmH4,
     HlmMuted,

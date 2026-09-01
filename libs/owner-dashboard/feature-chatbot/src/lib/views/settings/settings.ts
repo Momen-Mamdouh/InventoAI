@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HlmCard } from '@spartan/helm/card';
+import { HlmCardImports } from '@spartan/helm/card';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSwitchImports } from '@spartan/helm/switch';
-import { HlmH2, HlmMuted } from '@spartan/helm/typography';
+import { HlmMuted } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronDown, lucideSave } from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
@@ -19,14 +19,13 @@ import { StatusBanner } from '@invento/shared-ui-status-banner';
   standalone: true,
   imports: [
     FormsModule,
-    HlmCard,
+    HlmCardImports,
     HlmSpinner,
     HlmButton,
     HlmInput,
     HlmLabelImports,
     HlmSelectImports,
     HlmSwitchImports,
-    HlmH2,
     HlmMuted,
     NgIcon,
     StatusBanner,

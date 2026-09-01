@@ -14,12 +14,12 @@ import {
   lucideCreditCard,
   lucideStore,
 } from '@ng-icons/lucide';
-import { HlmCard } from '@spartan/helm/card';
+import { HlmCardImports } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmH1, HlmH2, HlmMuted } from '@spartan/helm/typography';
+import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@invento/shared-data-access-auth';
 import { StatusBanner } from '@invento/shared-ui-status-banner';
@@ -32,13 +32,12 @@ import { StatusBanner } from '@invento/shared-ui-status-banner';
     FormsModule,
     RouterLink,
     NgIcon,
-    HlmCard,
+    HlmCardImports,
     HlmButton,
     HlmInput,
     HlmLabelImports,
     HlmSelectImports,
     HlmH1,
-    HlmH2,
     HlmMuted,
     StatusBanner,
   ],
