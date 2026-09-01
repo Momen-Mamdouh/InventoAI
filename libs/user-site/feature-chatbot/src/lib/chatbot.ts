@@ -7,10 +7,12 @@ import {
   lucidePlus,
   lucideHistory,
   lucideMessageSquare,
+  lucideChevronDown,
 } from '@ng-icons/lucide';
 import { HlmPopoverImports } from '@spartan/helm/popover';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmInputImports } from '@spartan/helm/input';
+import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
 import { FormsModule } from '@angular/forms';
 import { ChatService, ChatMessage } from './service/chat.service';
 import { RouterModule } from '@angular/router';
@@ -29,6 +31,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
     HlmPopoverImports,
     HlmButtonImports,
     HlmInputImports,
+    HlmDropdownMenuImports,
     FormsModule,
     RouterModule,
     CurrencyPipe,
@@ -47,6 +50,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
       lucidePlus,
       lucideHistory,
       lucideMessageSquare,
+      lucideChevronDown,
     }),
   ],
 })
@@ -61,7 +65,6 @@ export class Chatbot implements OnInit {
   readonly showWidget = signal<boolean>(false);
   readonly storeName = signal<string>('');
   readonly chatHistory = signal<{ sessionId: string; updatedAt: string }[]>([]);
-  readonly isHistoryOpen = signal<boolean>(false);
 
   private sessionId?: string;
   private initialGreeting = 'How can I help you today?';
@@ -294,16 +297,7 @@ export class Chatbot implements OnInit {
     localStorage.setItem('chatbot_history', JSON.stringify(history));
   }
 
-  toggleHistory() {
-    this.isHistoryOpen.update((v) => !v);
-  }
-
-  closeHistory() {
-    this.isHistoryOpen.set(false);
-  }
-
   selectSession(sessionId: string) {
-    this.isHistoryOpen.set(false);
     if (!sessionId) return;
 
     this.sessionId = sessionId;
