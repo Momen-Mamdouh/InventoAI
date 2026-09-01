@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmSpinner } from '@spartan/helm/spinner';
@@ -10,15 +9,15 @@ import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmSwitchImports } from '@spartan/helm/switch';
 import { HlmH2, HlmMuted } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCheck, lucideChevronDown, lucideSave } from '@ng-icons/lucide';
+import { lucideChevronDown, lucideSave } from '@ng-icons/lucide';
 import { ChatAdminService } from '../../services/chat-admin.service';
 import { ChatbotSettings, UpdateChatbotSettingsDto } from '../../types/chat-admin.types';
+import { StatusBanner } from '@invento/shared-ui-status-banner';
 
 @Component({
   selector: 'app-chatbot-settings',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     HlmCard,
     HlmSpinner,
@@ -30,10 +29,10 @@ import { ChatbotSettings, UpdateChatbotSettingsDto } from '../../types/chat-admi
     HlmH2,
     HlmMuted,
     NgIcon,
+    StatusBanner,
   ],
   providers: [
     provideIcons({
-      lucideCheck,
       lucideChevronDown,
       lucideSave,
     }),

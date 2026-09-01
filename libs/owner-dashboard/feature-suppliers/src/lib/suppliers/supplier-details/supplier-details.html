@@ -7,10 +7,8 @@
   </div>
 
   @if (error()) {
-    <div
-      class="rounded-xl border border-rose-200 bg-rose-50 dark:bg-rose-950/20 dark:border-rose-900/50 p-4 text-sm text-rose-800 dark:text-rose-300"
-    >
-      {{ error() }}
+    <div hlmAlert variant="destructive" class="bg-destructive/10 rounded-xl text-sm">
+      <p hlmAlertDescription>{{ error() }}</p>
     </div>
   }
 

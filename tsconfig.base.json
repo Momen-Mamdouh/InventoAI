@@ -68,6 +68,7 @@
       "@invento/shared-util-theme": ["./libs/shared/util-theme/src/index.ts"],
       "@invento/shared-util-preview-types": ["./libs/shared/util-preview-types/src/index.ts"],
       "@invento/shared-ui-ai-loader": ["./libs/shared/ui-ai-loader/src/index.ts"],
+      "@invento/shared-ui-status-banner": ["./libs/shared/ui-status-banner/src/index.ts"],
       "@invento/shared-ui-steps-bar": ["./libs/shared/ui-steps-bar/src/index.ts"],
       "@invento/shared-ui-page-header": ["./libs/shared/ui-page-header/src/index.ts"],
       "@invento/shared-ui-loader": ["./libs/shared/ui-loader/src/index.ts"],

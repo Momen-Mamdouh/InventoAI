@@ -65,11 +65,9 @@
         }
 
         @if (storeLoadError()) {
-          <div
-            class="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 p-3 rounded-xl text-xs font-medium"
-          >
-            <ng-icon name="lucideAlertTriangle" size="16" class="flex-shrink-0" />
-            <span>{{ storeLoadError() }}</span>
+          <div hlmAlert variant="destructive" class="bg-destructive/10 rounded-xl text-xs font-medium">
+            <ng-icon name="lucideAlertTriangle" size="16" />
+            <p hlmAlertDescription>{{ storeLoadError() }}</p>
           </div>
         }
 
@@ -211,10 +209,8 @@
               </div>
 
               @if (heroSaveError()) {
-                <div
-                  class="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 p-2.5 rounded-lg text-xs flex items-center gap-2"
-                >
-                  <span>{{ heroSaveError() }}</span>
+                <div hlmAlert variant="destructive" class="bg-destructive/10 text-xs">
+                  <p hlmAlertDescription>{{ heroSaveError() }}</p>
                 </div>
               }
             </div>

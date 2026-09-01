@@ -11,10 +11,8 @@
 
 <form class="flex flex-col gap-5 py-2" [formGroup]="form" (ngSubmit)="onSubmit()">
   @if (serverError()) {
-    <div
-      class="bg-destructive/10 px-3 py-2 border border-destructive/30 rounded-md text-destructive text-sm"
-    >
-      {{ serverError() }}
+    <div hlmAlert variant="destructive" class="bg-destructive/10 text-sm">
+      <p hlmAlertDescription>{{ serverError() }}</p>
     </div>
   }
 

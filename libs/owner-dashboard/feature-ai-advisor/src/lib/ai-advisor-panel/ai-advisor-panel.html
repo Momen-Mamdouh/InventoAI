@@ -254,21 +254,13 @@
   >
     <!-- Stale Indicator Banner -->
     @if (isStale() && brief() && asSheet()) {
-      <div
-        class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5"
-      >
-        <ng-icon
-          name="lucideClock"
-          size="16"
-          class="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
-        />
-        <div class="flex-1">
-          <p hlmSmall>Showing brief from {{ formattedBriefDate() }}</p>
-          <p hlmMuted class="text-amber-700/80 dark:text-amber-300/80">
-            Your store's latest generated brief is displayed. Click "Generate Now" for fresh
-            analysis.
-          </p>
-        </div>
+      <div hlmAlert class="bg-warning/10 text-warning text-xs rounded-xl">
+        <ng-icon name="lucideClock" size="16" />
+        <p hlmAlertTitle hlmSmall>Showing brief from {{ formattedBriefDate() }}</p>
+        <p hlmAlertDescription class="text-warning/80">
+          Your store's latest generated brief is displayed. Click "Generate Now" for fresh
+          analysis.
+        </p>
       </div>
     }
 
@@ -568,11 +560,9 @@
           </div>
 
           @if (historyValidationErrors().length) {
-            <div
-              class="bg-destructive/10 border border-destructive/20 rounded-lg p-2.5 text-xs text-destructive flex items-start gap-2"
-            >
-              <ng-icon name="lucideAlertCircle" size="14" class="mt-0.5 shrink-0" />
-              <div class="space-y-0.5">
+            <div hlmAlert variant="destructive" class="bg-destructive/10 text-xs">
+              <ng-icon name="lucideAlertCircle" size="14" />
+              <div hlmAlertDescription class="space-y-0.5">
                 @for (err of historyValidationErrors(); track err) {
                   <p hlmSmall>{{ err }}</p>
                 }
@@ -756,11 +746,9 @@
           </div>
 
           @if (getSectionError('schedule')) {
-            <div
-              class="bg-destructive/10 border border-destructive/20 rounded-lg p-2 text-xs text-destructive flex items-center gap-1.5"
-            >
-              <ng-icon name="lucideAlertCircle" size="13" class="shrink-0" />
-              <span>{{ getSectionError('schedule') }}</span>
+            <div hlmAlert variant="destructive" class="bg-destructive/10 text-xs">
+              <ng-icon name="lucideAlertCircle" size="13" />
+              <p hlmAlertDescription>{{ getSectionError('schedule') }}</p>
             </div>
           }
 
@@ -871,11 +859,9 @@
           </div>
 
           @if (getSectionError('email')) {
-            <div
-              class="bg-destructive/10 border border-destructive/20 rounded-lg p-2 text-xs text-destructive flex items-center gap-1.5"
-            >
-              <ng-icon name="lucideAlertCircle" size="13" class="shrink-0" />
-              <span>{{ getSectionError('email') }}</span>
+            <div hlmAlert variant="destructive" class="bg-destructive/10 text-xs">
+              <ng-icon name="lucideAlertCircle" size="13" />
+              <p hlmAlertDescription>{{ getSectionError('email') }}</p>
             </div>
           }
 
@@ -935,11 +921,9 @@
           </div>
 
           @if (getSectionError('location')) {
-            <div
-              class="bg-destructive/10 border border-destructive/20 rounded-lg p-2 text-xs text-destructive flex items-center gap-1.5"
-            >
-              <ng-icon name="lucideAlertCircle" size="13" class="shrink-0" />
-              <span>{{ getSectionError('location') }}</span>
+            <div hlmAlert variant="destructive" class="bg-destructive/10 text-xs">
+              <ng-icon name="lucideAlertCircle" size="13" />
+              <p hlmAlertDescription>{{ getSectionError('location') }}</p>
             </div>
           }
 
@@ -950,16 +934,12 @@
               ({{ s.latitude }}, {{ s.longitude }}).
             </p>
           } @else if (!s.hasWeatherLocation && !isEditingLocation()) {
-            <div
-              class="bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 text-xs text-amber-700 dark:text-amber-300"
-            >
-              <div class="flex items-start gap-1.5">
-                <ng-icon name="lucideAlertTriangle" size="13" class="mt-0.5 shrink-0" />
-                <span
-                  >No weather location configured. Weather anomaly insights are skipped until store
-                  coordinates are provided.</span
-                >
-              </div>
+            <div hlmAlert class="bg-warning/10 text-warning text-xs">
+              <ng-icon name="lucideAlertTriangle" size="13" />
+              <p hlmAlertDescription class="text-warning">
+                No weather location configured. Weather anomaly insights are skipped until store
+                coordinates are provided.
+              </p>
             </div>
           }
 
@@ -1103,11 +1083,9 @@
           </div>
 
           @if (getSectionError('leadTime')) {
-            <div
-              class="bg-destructive/10 border border-destructive/20 rounded-lg p-2 text-xs text-destructive flex items-center gap-1.5"
-            >
-              <ng-icon name="lucideAlertCircle" size="13" class="shrink-0" />
-              <span>{{ getSectionError('leadTime') }}</span>
+            <div hlmAlert variant="destructive" class="bg-destructive/10 text-xs">
+              <ng-icon name="lucideAlertCircle" size="13" />
+              <p hlmAlertDescription>{{ getSectionError('leadTime') }}</p>
             </div>
           }
 

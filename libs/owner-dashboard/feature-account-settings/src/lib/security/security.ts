@@ -8,8 +8,6 @@ import {
   lucideEye,
   lucideEyeOff,
   lucideShield,
-  lucideCheck,
-  lucideAlertCircle,
   lucideChevronRight,
   lucideUser,
   lucideBell,
@@ -30,6 +28,7 @@ import { HlmH1, HlmH2, HlmMuted } from '@spartan/helm/typography';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { HlmSwitchImports } from '@spartan/helm/switch';
+import { StatusBanner } from '@invento/shared-ui-status-banner';
 
 export interface ActiveSession {
   id: string;
@@ -60,6 +59,7 @@ export interface ActiveSession {
     HlmTooltipImports,
     TranslatePipe,
     HlmSwitchImports,
+    StatusBanner,
   ],
   providers: [
     provideIcons({
@@ -67,8 +67,6 @@ export interface ActiveSession {
       lucideEye,
       lucideEyeOff,
       lucideShield,
-      lucideCheck,
-      lucideAlertCircle,
       lucideChevronRight,
       lucideUser,
       lucideBell,

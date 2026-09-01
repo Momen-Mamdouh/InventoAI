@@ -124,12 +124,10 @@
                 />
               </div>
               @if (domainSuggestions().length > 0) {
-                <div class="mt-3 p-4 bg-destructive/10 border border-destructive/20 rounded-md">
-                  <p class="text-sm text-destructive font-medium mb-2 flex items-center gap-2">
-                    <ng-icon name="lucideAlertTriangle" />
-                    {{ 'validation_domain_taken' | translate }}
-                  </p>
-                  <div class="flex flex-wrap gap-2">
+                <div hlmAlert variant="destructive" class="bg-destructive/10 mt-3">
+                  <ng-icon name="lucideAlertTriangle" />
+                  <p hlmAlertTitle>{{ 'validation_domain_taken' | translate }}</p>
+                  <div hlmAlertDescription class="flex flex-wrap gap-2 mt-2">
                     @for (suggestion of domainSuggestions(); track suggestion) {
                       <button
                         hlmBtn

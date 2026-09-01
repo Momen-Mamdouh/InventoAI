@@ -22,6 +22,7 @@ import { HlmSelectImports } from '@spartan/helm/select';
 import { HlmH1, HlmH2, HlmMuted } from '@spartan/helm/typography';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@invento/shared-data-access-auth';
+import { StatusBanner } from '@invento/shared-ui-status-banner';
 
 @Component({
   selector: 'app-profile',
@@ -39,6 +40,7 @@ import { AuthService } from '@invento/shared-data-access-auth';
     HlmH1,
     HlmH2,
     HlmMuted,
+    StatusBanner,
   ],
   providers: [
     provideIcons({

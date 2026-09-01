@@ -341,19 +341,17 @@
       <!-- Form Content -->
       <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-8">
         @if (attributes().length === 0) {
-          <div
-            class="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-700 dark:text-amber-300 text-xs flex items-center justify-between gap-2"
-          >
-            <div class="flex items-center gap-2">
-              <ng-icon name="lucideAlertCircle" size="16" class="text-amber-500 shrink-0" />
+          <div hlmAlert class="bg-warning/10 text-warning rounded-xl text-xs">
+            <ng-icon name="lucideAlertCircle" size="16" />
+            <p hlmAlertDescription class="text-warning flex items-center justify-between gap-2">
               <span
                 >No product attributes defined yet. Products require attributes for catalog
                 classification.</span
               >
-            </div>
-            <a routerLink="/attributes" class="font-bold underline hover:opacity-80 shrink-0">
-              Add Attributes
-            </a>
+              <a routerLink="/attributes" class="font-bold underline hover:opacity-80 shrink-0">
+                Add Attributes
+              </a>
+            </p>
           </div>
         }
 

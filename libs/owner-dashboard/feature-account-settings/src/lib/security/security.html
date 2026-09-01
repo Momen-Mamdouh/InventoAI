@@ -55,35 +55,12 @@
   <div class="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 pb-12">
     <!-- Success Banner -->
     @if (passwordSuccess()) {
-      <div
-        class="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-950/40 p-4 border border-emerald-200 dark:border-emerald-800/80 rounded-xl text-emerald-800 dark:text-emerald-200 text-xs sm:text-sm transition-all duration-300 ease-in-out"
-        [ngClass]="
-          isFadingOut()
-            ? 'opacity-0 -translate-y-2 scale-95'
-            : 'opacity-100 translate-y-0 scale-100 animate-in fade-in slide-in-from-top-2'
-        "
-      >
-        <div
-          class="flex flex-shrink-0 justify-center items-center bg-emerald-500/20 rounded-full w-6 h-6 text-emerald-600 dark:text-emerald-400"
-        >
-          <ng-icon name="lucideCheck" size="14" />
-        </div>
-        <span class="font-medium">{{ passwordSuccess() }}</span>
-      </div>
+      <app-status-banner [message]="passwordSuccess() ?? ''" [fadingOut]="isFadingOut()" />
     }
 
     <!-- Error Banner -->
     @if (passwordError()) {
-      <div
-        class="flex items-center gap-3 bg-rose-50 dark:bg-rose-950/40 p-4 border border-rose-200 dark:border-rose-800/80 rounded-xl text-rose-800 dark:text-rose-200 text-xs sm:text-sm transition-all duration-300 animate-in fade-in slide-in-from-top-2"
-      >
-        <div
-          class="flex flex-shrink-0 justify-center items-center bg-rose-500/20 rounded-full w-6 h-6 text-rose-600 dark:text-rose-400"
-        >
-          <ng-icon name="lucideAlertCircle" size="14" />
-        </div>
-        <span class="font-medium">{{ passwordError() }}</span>
-      </div>
+      <app-status-banner variant="destructive" [message]="passwordError() ?? ''" />
     }
 
     <!-- 2FA Notification Banner -->

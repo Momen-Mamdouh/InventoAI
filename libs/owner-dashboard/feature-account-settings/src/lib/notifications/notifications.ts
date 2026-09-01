@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -19,6 +18,7 @@ import { HlmH1, HlmH2, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
 import { HlmSwitchImports } from '@spartan/helm/switch';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { TranslatePipe } from '@invento/shared-util-i18n';
+import { StatusBanner } from '@invento/shared-ui-status-banner';
 
 export interface PreferenceSetting {
   id: string;
@@ -38,7 +38,6 @@ export interface PreferenceGroup {
   selector: 'app-notifications',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     RouterLink,
     NgIcon,
@@ -52,6 +51,7 @@ export interface PreferenceGroup {
     HlmSwitchImports,
     HlmTooltipImports,
     TranslatePipe,
+    StatusBanner,
   ],
   providers: [
     provideIcons({
