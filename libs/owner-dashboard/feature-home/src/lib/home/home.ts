@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import type { ThemeApiResponse, Palette } from '@invento/shared-util-theme';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmSeparator } from '@spartan/helm/separator';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
@@ -82,6 +83,7 @@ interface Product {
     HlmH4,
     HlmMuted,
     HlmToggleGroupImports,
+    HlmSeparator,
   ],
   templateUrl: './home.html',
   styleUrl: './home.css',

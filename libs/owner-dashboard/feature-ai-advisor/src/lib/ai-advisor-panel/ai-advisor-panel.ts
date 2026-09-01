@@ -10,6 +10,7 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideSparkles,
@@ -88,6 +89,7 @@ export type AdvisorPanelTab = 'today' | 'history' | 'settings';
     HlmInputImports,
     HlmLabelImports,
     HlmSpinner,
+    HlmSkeleton,
     NgIcon,
     HlmH1,
     HlmH3,

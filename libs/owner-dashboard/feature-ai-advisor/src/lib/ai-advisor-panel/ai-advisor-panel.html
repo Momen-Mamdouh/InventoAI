@@ -341,7 +341,7 @@
     @if (briefResource.isLoading() && !isGenerating()) {
       <div class="grid grid-cols-1 gap-4" [class.lg:grid-cols-2]="!asSheet()">
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="bg-muted p-4 border rounded-xl h-36 animate-pulse"></div>
+          <div hlmSkeleton class="border rounded-xl h-36"></div>
         }
       </div>
     } @else if (isForbidden()) {
@@ -453,7 +453,7 @@
         @if (isSelectedBriefLoading()) {
           <div class="grid grid-cols-1 gap-4" [class.lg:grid-cols-2]="!asSheet()">
             @for (i of [1, 2, 3]; track i) {
-              <div class="bg-muted p-4 border rounded-xl h-36 animate-pulse"></div>
+              <div hlmSkeleton class="border rounded-xl h-36"></div>
             }
           </div>
         } @else if (isSelectedBriefNotFound()) {
@@ -575,7 +575,7 @@
         @if (isHistoryLoading()) {
           <div class="space-y-3">
             @for (i of [1, 2, 3, 4]; track i) {
-              <div class="bg-muted p-4 border rounded-xl h-20 animate-pulse"></div>
+              <div hlmSkeleton class="border rounded-xl h-20"></div>
             }
           </div>
         } @else if (isHistoryForbidden()) {
@@ -664,7 +664,7 @@
     @if (isSettingsLoading()) {
       <div class="space-y-4">
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="bg-muted p-4 border rounded-xl h-24 animate-pulse"></div>
+          <div hlmSkeleton class="border rounded-xl h-24"></div>
         }
       </div>
     } @else if (isSettingsForbidden()) {

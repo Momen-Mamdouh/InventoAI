@@ -21,6 +21,7 @@ import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmAccordionImports } from '@spartan/helm/accordion';
 import { HlmTypographyImports } from '@spartan/helm/typography';
+import { HlmSeparator } from '@spartan/helm/separator';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { ErrorState } from '@invento/shared-ui-error-state';
 import { SearchInput } from '@invento/shared-ui-search-input';
@@ -61,6 +62,7 @@ import { animateElementsOnRender } from '@invento/user-site-util-animation';
     HlmButton,
     NgIconComponent,
     HlmAccordionImports,
+    HlmSeparator,
     ...HlmTypographyImports,
     EmptyState,
     ErrorState,

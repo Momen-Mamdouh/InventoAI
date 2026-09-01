@@ -6,6 +6,7 @@ import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmSwitchImports } from '@spartan/helm/switch';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { FaqStore, type FaqEntry } from '@invento/owner-dashboard-data-access-faq';
 import { FaqFormComponent } from '../faq-form/faq-form';
@@ -21,6 +22,7 @@ import { FaqFormComponent } from '../faq-form/faq-form';
     HlmSwitchImports,
     HlmSheetImports,
     HlmAlertDialogImports,
+    HlmSkeleton,
     FaqFormComponent,
     HlmMuted,
     HlmSmall,

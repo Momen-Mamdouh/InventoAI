@@ -142,7 +142,7 @@
               </button>
             </div>
 
-            <div class="border-border border-t"></div>
+            <div hlmSeparator></div>
 
             <div class="space-y-3">
               <p hlmMuted class="uppercase">
@@ -255,7 +255,7 @@
               (input)="onFeaturedTitleChange($any($event.target).value)"
             />
           </div>
-          <div class="mx-3 sm:mx-5 border-border border-t"></div>
+          <div hlmSeparator class="mx-3 sm:mx-5"></div>
           <button
             type="button"
             class="flex justify-between items-center hover:bg-muted/50 px-3 sm:px-5 py-3 w-full font-medium text-xs sm:text-sm transition-colors cursor-pointer"
@@ -273,7 +273,7 @@
           </button>
           @if (productPickerOpen()) {
             <div class="space-y-1 pb-3">
-              <div class="mx-3 sm:mx-5 mb-2 border-border border-t"></div>
+              <div hlmSeparator class="mx-3 sm:mx-5 mb-2"></div>
               @for (product of products(); track product.id) {
                 <label
                   [for]="'product-checkbox-' + product.id"
@@ -380,7 +380,7 @@
                 <span class="hidden sm:inline">Mobile</span>
               </button>
             </hlm-toggle-group>
-            <div class="mx-0.5 bg-border w-px h-4"></div>
+            <div hlmSeparator orientation="vertical" class="mx-0.5 h-4"></div>
             <button
               type="button"
               [title]="'home.preview_theme' | translate"
@@ -395,7 +395,7 @@
                 (previewThemeMode() === 'dark' ? 'home.light' : 'home.dark') | translate
               }}</span>
             </button>
-            <div class="mx-0.5 bg-border w-px h-4"></div>
+            <div hlmSeparator orientation="vertical" class="mx-0.5 h-4"></div>
             <button
               type="button"
               class="inline-flex justify-center items-center gap-1 hover:bg-accent px-2 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] text-muted-foreground hover:text-foreground sm:text-xs transition-colors cursor-pointer"

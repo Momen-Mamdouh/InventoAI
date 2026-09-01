@@ -1,7 +1,7 @@
 @if (store.loading()) {
   <div class="flex flex-col gap-2">
     @for (i of [1, 2, 3, 4]; track i) {
-      <div class="bg-muted rounded-lg w-full h-20 animate-pulse"></div>
+      <div hlmSkeleton class="rounded-lg w-full h-20"></div>
     }
   </div>
 } @else if (store.entries().length === 0) {
