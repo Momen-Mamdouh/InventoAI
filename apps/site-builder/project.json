@@ -93,6 +93,13 @@
         "lintFilePatterns": ["apps/site-builder/src/**/*.ts", "apps/site-builder/src/**/*.html"]
       },
       "outputs": ["{options.outputFile}"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ngc -p apps/site-builder/tsconfig.app.json --noEmit --rootDir .",
+        "cwd": "{workspaceRoot}"
+      }
     }
   }
 }

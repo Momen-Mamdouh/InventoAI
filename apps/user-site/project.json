@@ -81,6 +81,13 @@
       "options": {
         "lintFilePatterns": ["apps/user-site/src/**/*.ts", "apps/user-site/src/**/*.html"]
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ngc -p apps/user-site/tsconfig.app.json --noEmit --rootDir .",
+        "cwd": "{workspaceRoot}"
+      }
     }
   }
 }

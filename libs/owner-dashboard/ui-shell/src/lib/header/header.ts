@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { HlmButton } from '@spartan/helm/button';
-import { HlmBadge } from '@spartan/helm/badge';
 import {
   lucideBell,
   lucideGlobe,
@@ -20,7 +19,7 @@ import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, NgIcon, HlmButton, HlmBadge, TranslatePipe, HlmBreadcrumbImports],
+  imports: [RouterLink, NgIcon, HlmButton, TranslatePipe, HlmBreadcrumbImports],
   providers: [
     provideIcons({
       lucideBell,

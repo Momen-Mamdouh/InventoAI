@@ -135,6 +135,11 @@ export default defineConfig([
     files: ['libs/ui/**/*.ts', 'libs/stepper/**/*.ts'],
     extends: [...tseslint.configs.recommended, ...angular.configs.tsRecommended, prettierConfig],
     processor: angular.processInlineTemplates,
+    // Upstream Spartan codegen ships `eslint-disable` comments for rules this block already turns
+    // off, so ESLint reports every one of them as an unused directive. Those reports became fatal
+    // when `maxWarnings: 0` landed in nx.json. Silencing them here keeps libs/ui byte-identical to
+    // upstream rather than editing generated files we re-sync.
+    linterOptions: { reportUnusedDisableDirectives: 'off' },
     rules: {
       '@angular-eslint/directive-selector': 'off',
       '@angular-eslint/component-selector': 'off',

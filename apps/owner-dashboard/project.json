@@ -91,6 +91,13 @@
           "apps/owner-dashboard/src/**/*.html"
         ]
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ngc -p apps/owner-dashboard/tsconfig.app.json --noEmit --rootDir .",
+        "cwd": "{workspaceRoot}"
+      }
     }
   }
 }
