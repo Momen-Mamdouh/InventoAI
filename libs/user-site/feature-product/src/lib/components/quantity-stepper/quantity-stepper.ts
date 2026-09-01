@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMinus, lucidePlus } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
+import { HlmButtonGroupImports } from '@spartan/helm/button-group';
 import { ProductStore } from '@invento/user-site-data-access-product';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 
@@ -9,7 +10,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   selector: 'app-quantity-stepper',
   templateUrl: './quantity-stepper.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIcon, HlmButton, TranslatePipe],
+  imports: [NgIcon, HlmButton, TranslatePipe, ...HlmButtonGroupImports],
   providers: [provideIcons({ lucideMinus, lucidePlus })],
 })
 export class QuantityStepper {

@@ -3,12 +3,14 @@ import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
+import { BrnInputOtp } from '@spartan-ng/brain/input-otp';
 import { AUTH_CONFIG, AuthService, resolveAuthBasePath } from '@invento/shared-data-access-auth';
 
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmH1, HlmMuted } from '@spartan/helm/typography';
+import { HlmInputOtpImports } from '@spartan/helm/input-otp';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
@@ -17,7 +19,17 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-reset-password',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, HlmInput, HlmLabel, HlmButton, HlmH1, HlmMuted],
+  imports: [
+    TranslatePipe,
+    ReactiveFormsModule,
+    HlmInput,
+    HlmLabel,
+    HlmButton,
+    HlmH1,
+    HlmMuted,
+    BrnInputOtp,
+    ...HlmInputOtpImports,
+  ],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })
@@ -32,6 +44,7 @@ export class ResetPassword implements OnInit {
   private readonly authBasePath = resolveAuthBasePath(this.config);
 
   isLoading = signal(false);
+  isResending = signal(false);
   userEmail = '';
 
   currentStep = signal<'otp' | 'password'>('otp');
@@ -57,34 +70,6 @@ export class ResetPassword implements OnInit {
     },
     { validators: this.passwordMatchValidator },
   );
-
-  otpValues = ['', '', '', '', '', ''];
-
-  onOtpInput(index: number, event: Event, nextId?: string) {
-    const input = event.target as HTMLInputElement;
-    const value = input.value;
-
-    if (value && !/^\d$/.test(value)) {
-      input.value = '';
-      return;
-    }
-
-    this.otpValues[index] = value;
-    this.otpForm.get('otp')?.setValue(this.otpValues.join(''));
-
-    if (value && nextId) {
-      document.getElementById(nextId)?.focus();
-    }
-  }
-
-  onOtpKeyDown(event: KeyboardEvent, prevId?: string) {
-    if (event.key === 'Backspace') {
-      const input = event.target as HTMLInputElement;
-      if (!input.value && prevId) {
-        document.getElementById(prevId)?.focus();
-      }
-    }
-  }
 
   passwordMatchValidator(g: AbstractControl) {
     return g.get('newPassword')?.value === g.get('confirmPassword')?.value
@@ -170,6 +155,29 @@ export class ResetPassword implements OnInit {
             this.currentStep.set('otp');
             this.verifiedOtp = '';
           }
+        },
+      });
+  }
+
+  /** Re-issues the reset OTP — same `forgotPassword` call that sent the first one. */
+  resendCode() {
+    if (!this.userEmail) {
+      return;
+    }
+
+    const slug = this.config.resolveStoreSlug?.();
+
+    this.isResending.set(true);
+    this.authService
+      .forgotPassword(this.userEmail, slug ? { storeSlug: slug } : undefined)
+      .subscribe({
+        next: () => {
+          this.isResending.set(false);
+          toast.success('Reset code resent.');
+        },
+        error: (err) => {
+          this.isResending.set(false);
+          toast.error(extractErrorMessage(err, 'Failed to resend code.'));
         },
       });
   }

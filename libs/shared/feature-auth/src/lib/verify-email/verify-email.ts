@@ -3,16 +3,17 @@ import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toast } from '@spartan/helm/sonner';
+import { BrnInputOtp } from '@spartan-ng/brain/input-otp';
 import {
   AUTH_CONFIG,
   AuthService,
   resolveVerifyEmailRedirect,
 } from '@invento/shared-data-access-auth';
 
-import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmH1, HlmMuted } from '@spartan/helm/typography';
+import { HlmInputOtpImports } from '@spartan/helm/input-otp';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
@@ -21,7 +22,16 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-verify-email',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, HlmLabel, HlmButton, HlmInput, HlmH1, HlmMuted],
+  imports: [
+    TranslatePipe,
+    ReactiveFormsModule,
+    HlmLabel,
+    HlmButton,
+    HlmH1,
+    HlmMuted,
+    BrnInputOtp,
+    ...HlmInputOtpImports,
+  ],
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.css',
 })
@@ -39,34 +49,6 @@ export class VerifyEmail implements OnInit {
   verifyForm = this.fb.group({
     otp: ['', [Validators.required, Validators.minLength(6)]],
   });
-
-  otpValues = ['', '', '', '', '', ''];
-
-  onOtpInput(index: number, event: Event, nextId?: string) {
-    const input = event.target as HTMLInputElement;
-    const value = input.value;
-
-    if (value && !/^\d$/.test(value)) {
-      input.value = '';
-      return;
-    }
-
-    this.otpValues[index] = value;
-    this.verifyForm.get('otp')?.setValue(this.otpValues.join(''));
-
-    if (value && nextId) {
-      document.getElementById(nextId)?.focus();
-    }
-  }
-
-  onOtpKeyDown(event: KeyboardEvent, prevId?: string) {
-    if (event.key === 'Backspace') {
-      const input = event.target as HTMLInputElement;
-      if (!input.value && prevId) {
-        document.getElementById(prevId)?.focus();
-      }
-    }
-  }
 
   ngOnInit() {
     const emailFromQuery = this.route.snapshot.queryParamMap.get('email');

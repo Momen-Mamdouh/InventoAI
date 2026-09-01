@@ -14,62 +14,38 @@
       <label hlmLabel for="otp1" class="text-sm font-semibold text-slate-700 dark:text-white">{{
         'auth_verify_code_label' | translate
       }}</label>
-      <div class="flex justify-between gap-2 my-4">
-        <input
-          hlmInput
-          id="otp1"
-          (input)="onOtpInput(0, $event, 'otp2')"
-          (keydown)="onOtpKeyDown($event)"
-          type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          maxlength="1"
+      <brn-input-otp
+        hlmInputOtp
+        formControlName="otp"
+        maxLength="6"
+        inputId="otp1"
+        class="flex justify-between gap-2 my-4"
+      >
+        <hlm-input-otp-slot
+          [index]="0"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
         />
-        <input
-          hlmInput
-          id="otp2"
-          (input)="onOtpInput(1, $event, 'otp3')"
-          (keydown)="onOtpKeyDown($event, 'otp1')"
-          type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          maxlength="1"
+        <hlm-input-otp-slot
+          [index]="1"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
         />
-        <input
-          hlmInput
-          id="otp3"
-          (input)="onOtpInput(2, $event, 'otp4')"
-          (keydown)="onOtpKeyDown($event, 'otp2')"
-          type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          maxlength="1"
+        <hlm-input-otp-slot
+          [index]="2"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
         />
-        <input
-          hlmInput
-          id="otp4"
-          (input)="onOtpInput(3, $event, 'otp5')"
-          (keydown)="onOtpKeyDown($event, 'otp3')"
-          type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          maxlength="1"
+        <hlm-input-otp-slot
+          [index]="3"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
         />
-        <input
-          hlmInput
-          id="otp5"
-          (input)="onOtpInput(4, $event, 'otp6')"
-          (keydown)="onOtpKeyDown($event, 'otp4')"
-          type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          maxlength="1"
+        <hlm-input-otp-slot
+          [index]="4"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
         />
-        <input
-          hlmInput
-          id="otp6"
-          (input)="onOtpInput(5, $event)"
-          (keydown)="onOtpKeyDown($event, 'otp5')"
-          type="text"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          maxlength="1"
+        <hlm-input-otp-slot
+          [index]="5"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
         />
-      </div>
+      </brn-input-otp>
       @if (verifyForm.get('otp')?.touched && verifyForm.get('otp')?.invalid) {
         <div class="text-xs text-red-500 mt-1">{{ 'auth_verify_code_req' | translate }}</div>
       }
