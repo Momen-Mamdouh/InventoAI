@@ -196,11 +196,9 @@
                   ><span class="text-muted-foreground"> / {{ request.offerCount }} replied</span>
                 </td>
                 <td hlmTd class="px-4 py-4">
-                  <span
-                    class="inline-flex px-2.5 py-1 rounded-full font-semibold text-xs"
-                    [ngClass]="statusClass(request.status)"
-                    >{{ request.status | titlecase }}</span
-                  >
+                  <span hlmBadge [class]="statusClass(request.status)">{{
+                    request.status | titlecase
+                  }}</span>
                 </td>
                 <td hlmTd class="px-4 py-4 text-muted-foreground">
                   {{ request.createdAt | date: 'mediumDate' }}
@@ -244,11 +242,9 @@
     >
       <div class="min-w-0">
         <div class="flex items-center gap-2 mb-1">
-          <span
-            class="inline-flex px-2.5 py-1 rounded-full font-semibold text-xs"
-            [ngClass]="statusClass(request.status)"
-            >{{ request.status | titlecase }}</span
-          >
+          <span hlmBadge [class]="statusClass(request.status)">{{
+            request.status | titlecase
+          }}</span>
           @if (request.draftStatus === 'fallback') {
             <span hlmMuted>Fallback email</span>
           }
@@ -343,26 +339,28 @@
                       {{ offer.supplierName }}
                     </button>
                     @if (offer.isRecommended) {
-                      <span
-                        class="bg-primary/10 px-2 py-0.5 rounded-full font-semibold text-[11px] text-primary"
+                      <span hlmBadge class="bg-primary/10 text-[11px] text-primary"
                         >Recommended</span
                       >
                     }
                     @if (offer.isCheapest) {
                       <span
-                        class="bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full text-[11px] text-emerald-700 dark:text-emerald-300"
+                        hlmBadge
+                        class="bg-emerald-50 dark:bg-emerald-950/30 text-[11px] text-emerald-700 dark:text-emerald-300"
                         >Cheapest</span
                       >
                     }
                     @if (offer.isFastest) {
                       <span
-                        class="bg-blue-50 dark:bg-blue-950/30 px-2 py-0.5 rounded-full text-[11px] text-blue-700 dark:text-blue-300"
+                        hlmBadge
+                        class="bg-blue-50 dark:bg-blue-950/30 text-[11px] text-blue-700 dark:text-blue-300"
                         >Fastest</span
                       >
                     }
                     @if (offer.isLate) {
                       <span
-                        class="bg-rose-50 dark:bg-rose-950/30 px-2 py-0.5 rounded-full text-[11px] text-rose-700 dark:text-rose-300"
+                        hlmBadge
+                        class="bg-rose-50 dark:bg-rose-950/30 text-[11px] text-rose-700 dark:text-rose-300"
                         >Late</span
                       >
                     }
@@ -402,11 +400,9 @@
                   </div>
                 </div>
                 <div class="flex xl:justify-end items-center gap-1 xl:w-[250px]">
-                  <span
-                    class="inline-flex px-2.5 py-1 rounded-full font-semibold text-xs"
-                    [ngClass]="offerStatusClass(offer.status)"
-                    >{{ offer.status | titlecase }}</span
-                  >
+                  <span hlmBadge [class]="offerStatusClass(offer.status)">{{
+                    offer.status | titlecase
+                  }}</span>
                   <button
                     hlmBtn
                     variant="ghost"

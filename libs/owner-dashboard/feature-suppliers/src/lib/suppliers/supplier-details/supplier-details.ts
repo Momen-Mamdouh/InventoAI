@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -15,6 +15,7 @@ import {
   lucideRefreshCw,
   lucideTruck,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
@@ -40,10 +41,10 @@ interface SupplierRequestHistory {
   imports: [
     CurrencyPipe,
     DatePipe,
-    NgClass,
     TitleCasePipe,
     RouterLink,
     NgIcon,
+    HlmBadge,
     HlmButton,
     HlmCardImports,
     HlmSkeleton,
@@ -125,9 +126,9 @@ export class SupplierDetails implements OnInit {
     return {
       draft: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
       sent: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
-      replied: 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300',
-      confirmed: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
-      cancelled: 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300',
+      replied: 'bg-warning/10 text-warning',
+      confirmed: 'bg-success/10 text-success',
+      cancelled: 'bg-destructive/10 text-destructive',
     }[status];
   }
 
@@ -135,8 +136,8 @@ export class SupplierDetails implements OnInit {
     return {
       awaiting: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
       received: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
-      won: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
-      declined: 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300',
+      won: 'bg-success/10 text-success',
+      declined: 'bg-destructive/10 text-destructive',
     }[status];
   }
 

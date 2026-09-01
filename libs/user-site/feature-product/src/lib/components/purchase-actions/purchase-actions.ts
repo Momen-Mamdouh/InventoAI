@@ -6,6 +6,7 @@ import {
   lucideTriangleAlert,
   lucideBan,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { toast } from '@spartan/helm/sonner';
 import { flyToCart } from '../../utils';
@@ -19,7 +20,7 @@ import { ProductStore } from '@invento/user-site-data-access-product';
   selector: 'app-purchase-actions',
   templateUrl: './purchase-actions.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIcon, HlmButton, QuantityStepper, TranslatePipe],
+  imports: [NgIcon, HlmBadge, HlmButton, QuantityStepper, TranslatePipe],
   providers: [
     provideIcons({ lucideCircleCheck, lucideShoppingCart, lucideTriangleAlert, lucideBan }),
   ],

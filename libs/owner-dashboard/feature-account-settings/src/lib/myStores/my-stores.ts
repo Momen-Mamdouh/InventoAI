@@ -20,6 +20,7 @@ import {
   lucideCreditCard,
   lucideAlertTriangle,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
@@ -53,6 +54,7 @@ export interface StoreItem {
     FormsModule,
     RouterLink,
     NgIcon,
+    HlmBadge,
     HlmCard,
     HlmButton,
     HlmInput,

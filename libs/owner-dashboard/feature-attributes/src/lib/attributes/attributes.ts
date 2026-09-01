@@ -18,6 +18,7 @@ import {
   lucideSettings2,
   lucideGripVertical,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmCardImports } from '@spartan/helm/card';
@@ -46,6 +47,7 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
   imports: [
     FormsModule,
     NgIcon,
+    HlmBadge,
     HlmButton,
     HlmCardImports,
     HlmInputImports,

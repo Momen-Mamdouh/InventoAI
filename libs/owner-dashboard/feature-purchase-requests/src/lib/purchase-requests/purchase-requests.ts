@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -36,6 +36,7 @@ import {
   lucideTruck,
   lucideX,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
@@ -75,10 +76,10 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
   imports: [
     CurrencyPipe,
     DatePipe,
-    NgClass,
     TitleCasePipe,
     FormsModule,
     NgIcon,
+    HlmBadge,
     HlmButton,
     HlmCardImports,
     HlmInputImports,
@@ -618,9 +619,9 @@ export class PurchaseRequests implements OnInit {
     return {
       draft: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
       sent: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
-      replied: 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300',
-      confirmed: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
-      cancelled: 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300',
+      replied: 'bg-warning/10 text-warning',
+      confirmed: 'bg-success/10 text-success',
+      cancelled: 'bg-destructive/10 text-destructive',
     }[status];
   }
 
@@ -628,8 +629,8 @@ export class PurchaseRequests implements OnInit {
     return {
       awaiting: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
       received: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
-      won: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
-      declined: 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300',
+      won: 'bg-success/10 text-success',
+      declined: 'bg-destructive/10 text-destructive',
     }[status];
   }
 

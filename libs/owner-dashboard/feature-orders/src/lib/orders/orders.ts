@@ -47,6 +47,7 @@ import {
   lucideArrowUp,
   lucideArrowDown,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCheckboxImports } from '@spartan/helm/checkbox';
 import { HlmSpinner } from '@spartan/helm/spinner';
@@ -84,6 +85,7 @@ import { Pagination } from '@invento/shared-ui-pagination';
     NgClass,
     FormsModule,
     NgIcon,
+    HlmBadge,
     HlmButton,
     HlmCardImports,
     HlmDropdownMenuImports,
@@ -381,35 +383,39 @@ export class Orders implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Mirrors user-site's `OrdersDataService.getStatusConfig` so the same order reads the same in
+   * both apps: awaiting action is warning, in-flight is primary, terminal-good is success. Only
+   * `delivered` earns success — `confirmed` is early in the pipeline, not an outcome.
+   */
   getFulfillmentBadgeClass(status: string): string {
     switch (status) {
       case 'cancelled':
-        return 'bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-900/60 font-medium';
+        return 'bg-destructive/10 text-destructive';
       case 'delivered':
-        return 'bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/60 font-medium';
+        return 'bg-success/10 text-success';
       case 'shipped':
-        return 'bg-sky-50 text-sky-600 border border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-900/60 font-medium';
       case 'confirmed':
       case 'processing':
-        return 'bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-900/60 font-medium';
+        return 'bg-primary/10 text-primary';
       case 'pending':
       default:
-        return 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/60 font-medium';
+        return 'bg-warning/10 text-warning';
     }
   }
 
   getPaymentBadgeClass(paymentStatus: string): string {
     switch (paymentStatus) {
       case 'paid':
-        return 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800';
+        return 'bg-success/10 text-success';
       case 'refunded':
-        return 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border-rose-200 dark:border-rose-800';
+        return 'bg-destructive/10 text-destructive';
       case 'failed':
-        return 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400 border-red-200 dark:border-red-800';
+        return 'bg-destructive/10 text-destructive';
       case 'unpaid':
       case 'pending':
       default:
-        return 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border-amber-200 dark:border-amber-800';
+        return 'bg-warning/10 text-warning';
     }
   }
 

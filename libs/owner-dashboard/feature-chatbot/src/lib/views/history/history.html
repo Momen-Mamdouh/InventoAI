@@ -122,7 +122,9 @@
                           {{ session.customerName || 'Guest User' }}
                           @if (!session.isSignedIn) {
                             <span
-                              class="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-secondary-foreground font-normal tracking-wide uppercase"
+                              hlmBadge
+                              variant="secondary"
+                              class="text-[10px] font-normal tracking-wide uppercase"
                               >Guest</span
                             >
                           }
@@ -140,9 +142,7 @@
                         <span>{{ session.messageCount }}</span>
                       </div>
                       @if (session.unansweredCount > 0) {
-                        <div
-                          class="flex items-center gap-1 text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-950/50 px-2 py-0.5 rounded-full text-xs font-medium"
-                        >
+                        <div hlmBadge class="gap-1 bg-warning/10 text-warning">
                           <ng-icon name="lucideAlertCircle" size="12" />
                           <span>{{ session.unansweredCount }}</span>
                         </div>

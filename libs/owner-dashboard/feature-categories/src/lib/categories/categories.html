@@ -205,19 +205,14 @@
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
                   <div class="flex items-center gap-1.5">
                     @if (c.isPublished) {
-                      <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-xs border bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/60"
-                        >Published</span
-                      >
+                      <span hlmBadge class="bg-success/10 text-success">Published</span>
                     } @else {
-                      <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-xs border bg-muted text-muted-foreground border-border"
+                      <span hlmBadge class="border-border bg-muted text-muted-foreground"
                         >Unpublished</span
                       >
                     }
                     @if (c.isFeatured) {
-                      <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium text-xs border bg-primary/10 text-primary border-primary/20"
+                      <span hlmBadge class="border-primary/20 bg-primary/10 text-primary"
                         >Featured</span
                       >
                     }

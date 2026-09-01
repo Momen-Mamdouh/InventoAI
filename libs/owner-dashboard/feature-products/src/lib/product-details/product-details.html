@@ -692,7 +692,8 @@
                         @for (val of attr.values; track val.id) {
                           <button
                             type="button"
-                            class="px-3 py-1 rounded-full text-xs font-medium border transition-colors"
+                            hlmBadge
+                            class="cursor-pointer transition-colors"
                             [ngClass]="
                               axis.valueIds.includes(val.id)
                                 ? 'bg-primary text-primary-foreground border-primary'
@@ -836,7 +837,8 @@
                     @for (val of attr.values; track val.id) {
                       <button
                         type="button"
-                        class="px-3 py-1 rounded-full text-xs font-medium border transition-colors"
+                        hlmBadge
+                        class="cursor-pointer transition-colors"
                         [ngClass]="
                           addVariantForm.attributeValueIds.includes(val.id)
                             ? 'bg-primary text-primary-foreground border-primary'

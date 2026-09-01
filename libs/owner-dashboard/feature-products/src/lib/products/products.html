@@ -278,10 +278,10 @@
 
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
                   <span
-                    class="inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium capitalize"
+                    hlmBadge
+                    class="gap-1.5 capitalize"
                     [ngClass]="{
-                      'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400':
-                        product.status === 'active',
+                      'bg-success/10 text-success': product.status === 'active',
                       'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400':
                         product.status === 'draft',
                       'bg-stone-100 text-stone-700 dark:bg-stone-500/20 dark:text-stone-400':
@@ -291,7 +291,7 @@
                     <span
                       class="h-1.5 w-1.5 rounded-full"
                       [ngClass]="{
-                        'bg-emerald-500': product.status === 'active',
+                        'bg-success': product.status === 'active',
                         'bg-amber-500': product.status === 'draft',
                         'bg-stone-500': product.status === 'archived',
                       }"

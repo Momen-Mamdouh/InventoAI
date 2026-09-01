@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
@@ -29,6 +30,7 @@ import { Pagination } from '@invento/shared-ui-pagination';
     CommonModule,
     FormsModule,
     RouterLink,
+    HlmBadge,
     HlmCard,
     HlmInput,
     HlmButton,

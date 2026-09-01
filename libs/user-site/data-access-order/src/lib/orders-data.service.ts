@@ -425,35 +425,35 @@ export class OrdersDataService {
       case 'delivered':
         return {
           label: 'orders.status.delivered',
-          badgeClass: 'bg-success/10 text-success border border-success/20',
+          badgeClass: 'bg-success/10 text-success border-success/20',
           dotClass: 'bg-success',
           icon: 'lucideCircleCheck',
         };
       case 'shipped':
         return {
           label: 'orders.status.shipped',
-          badgeClass: 'bg-primary/10 text-primary border border-primary/20',
+          badgeClass: 'bg-primary/10 text-primary border-primary/20',
           dotClass: 'bg-primary animate-pulse',
           icon: 'lucideTruck',
         };
       case 'confirmed':
         return {
           label: 'orders.status.confirmed',
-          badgeClass: 'bg-primary/10 text-primary border border-primary/20',
+          badgeClass: 'bg-primary/10 text-primary border-primary/20',
           dotClass: 'bg-primary',
           icon: 'lucideCircleCheck',
         };
       case 'pending':
         return {
           label: 'orders.status.pending',
-          badgeClass: 'bg-warning/10 text-warning border border-warning/20',
+          badgeClass: 'bg-warning/10 text-warning border-warning/20',
           dotClass: 'bg-warning animate-pulse',
           icon: 'lucideClock',
         };
       case 'cancelled':
         return {
           label: 'orders.status.cancelled',
-          badgeClass: 'bg-destructive/10 text-destructive border border-destructive/20',
+          badgeClass: 'bg-destructive/10 text-destructive border-destructive/20',
           dotClass: 'bg-destructive',
           icon: 'lucideCircleX',
         };

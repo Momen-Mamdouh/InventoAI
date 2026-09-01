@@ -26,6 +26,7 @@ import {
   lucideCircleCheck,
   lucideCircleX,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmSkeletonImports } from '@spartan/helm/skeleton';
@@ -48,6 +49,7 @@ type ActiveFilter = 'all' | 'active' | 'inactive';
   imports: [
     DatePipe,
     NgIcon,
+    HlmBadge,
     HlmButtonImports,
     HlmCardImports,
     HlmSkeletonImports,

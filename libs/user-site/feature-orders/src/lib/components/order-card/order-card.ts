@@ -10,6 +10,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { provideIcons, NgIconComponent } from '@ng-icons/core';
 import {
@@ -62,6 +63,7 @@ interface PresetReason {
     HlmDialogImports,
     BrnDialogContent,
     ...HlmTypographyImports,
+    HlmBadge,
     HlmSpinner,
     SkeletonBlock,
     CommonModule,

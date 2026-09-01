@@ -11,10 +11,7 @@
           <h3 hlmH3 class="font-bold text-foreground text-base sm:text-lg">
             {{ 'orders.card.order_number' | translate: { orderNumber: order().orderNumber } }}
           </h3>
-          <span
-            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold text-xs"
-            [ngClass]="getStatusConfig(order().status).badgeClass"
-          >
+          <span hlmBadge [ngClass]="getStatusConfig(order().status).badgeClass">
             <span
               class="rounded-full w-1.5 h-1.5 shrink-0"
               [ngClass]="getStatusConfig(order().status).dotClass"
@@ -320,7 +317,8 @@
                     </span>
                     @if (step.current) {
                       <span
-                        class="px-2 py-0.5 rounded-full font-bold text-[10px] uppercase tracking-wider"
+                        hlmBadge
+                        class="font-bold text-[10px] uppercase tracking-wider"
                         [ngClass]="
                           step.isCancelled
                             ? 'bg-destructive/10 text-destructive'

@@ -37,11 +37,8 @@
               {{ supplier.name }}
             </h1>
             <span
-              class="rounded-full px-2.5 py-1 text-xs font-semibold"
-              [class.bg-emerald-50]="supplier.isActive"
-              [class.text-emerald-700]="supplier.isActive"
-              [class.bg-muted]="!supplier.isActive"
-              [class.text-muted-foreground]="!supplier.isActive"
+              hlmBadge
+              [class]="supplier.isActive ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'"
               >{{ supplier.isActive ? 'Active' : 'Inactive' }}</span
             >
           </div>
@@ -164,11 +161,9 @@
                     </p>
                   </td>
                   <td hlmTd class="px-4 py-4">
-                    <span
-                      class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
-                      [ngClass]="statusClass(item.request.status)"
-                      >{{ item.request.status | titlecase }}</span
-                    >
+                    <span hlmBadge [class]="statusClass(item.request.status)">{{
+                      item.request.status | titlecase
+                    }}</span>
                     <p hlmMuted class="mt-1">
                       {{ item.request.quantity }} units
                     </p>
@@ -189,11 +184,9 @@
                     {{ item.offer.deliveryDays === null ? '—' : item.offer.deliveryDays + ' days' }}
                   </td>
                   <td hlmTd class="px-4 py-4">
-                    <span
-                      class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold"
-                      [ngClass]="offerClass(item.offer.status)"
-                      >{{ item.offer.status | titlecase }}</span
-                    >
+                    <span hlmBadge [class]="offerClass(item.offer.status)">{{
+                      item.offer.status | titlecase
+                    }}</span>
                     @if (item.offer.isRecommended) {
                       <span class="block text-[11px] text-primary mt-1">Recommended</span>
                     }

@@ -246,17 +246,9 @@
               <div class="flex flex-wrap items-center gap-2">
                 <span class="font-semibold text-sm sm:text-base">Authenticator App</span>
                 @if (twoFactorEnabled()) {
-                  <span
-                    class="inline-flex items-center bg-emerald-100 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full font-semibold text-emerald-700 dark:text-emerald-300 text-xs"
-                  >
-                    Enabled
-                  </span>
+                  <span hlmBadge class="bg-success/10 text-success"> Enabled </span>
                 } @else {
-                  <span
-                    class="inline-flex items-center bg-muted/80 px-2.5 py-0.5 rounded-full font-medium text-muted-foreground text-xs"
-                  >
-                    Disabled
-                  </span>
+                  <span hlmBadge class="bg-destructive/10 text-destructive"> Disabled </span>
                 }
               </div>
               <p hlmMuted>

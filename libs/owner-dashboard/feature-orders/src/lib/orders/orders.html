@@ -379,10 +379,7 @@
 
                 <!-- Payment Status -->
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
-                  <span
-                    class="inline-flex items-center gap-1.5 px-2.5 py-0.5 border rounded-full font-medium text-xs capitalize"
-                    [ngClass]="getPaymentBadgeClass(order.paymentStatus)"
-                  >
+                  <span hlmBadge class="gap-1.5 capitalize" [class]="getPaymentBadgeClass(order.paymentStatus)">
                     <span
                       class="rounded-full w-1.5 h-1.5"
                       [ngClass]="order.paymentStatus === 'paid' ? 'bg-emerald-500' : 'bg-amber-500'"
@@ -396,10 +393,7 @@
 
                 <!-- Fulfillment Status -->
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3.5 whitespace-nowrap">
-                  <span
-                    class="inline-flex justify-center items-center px-3 py-0.5 rounded-full text-xs font-medium"
-                    [class]="getFulfillmentBadgeClass(order.status)"
-                  >
+                  <span hlmBadge [class]="getFulfillmentBadgeClass(order.status)">
                     {{
                       'orders.filter_' + (order.status ? order.status.toLowerCase() : '')
                         | translate
@@ -586,18 +580,12 @@
               <h2 hlmH2 class="text-foreground">
                 Order #{{ detail.orderNumber }}
               </h2>
-              <span
-                class="inline-flex justify-center items-center px-2.5 py-0.5 rounded-full font-medium text-xs"
-                [class]="getFulfillmentBadgeClass(detail.status)"
-              >
+              <span hlmBadge [class]="getFulfillmentBadgeClass(detail.status)">
                 {{
                   'orders.filter_' + (detail.status ? detail.status.toLowerCase() : '') | translate
                 }}
               </span>
-              <span
-                class="inline-flex items-center gap-1.5 px-2 py-0.5 border rounded-full font-medium text-xs capitalize"
-                [ngClass]="getPaymentBadgeClass(detail.paymentStatus)"
-              >
+              <span hlmBadge class="gap-1.5 capitalize" [class]="getPaymentBadgeClass(detail.paymentStatus)">
                 <span
                   class="rounded-full w-1.5 h-1.5"
                   [ngClass]="detail.paymentStatus === 'paid' ? 'bg-emerald-500' : 'bg-amber-500'"
