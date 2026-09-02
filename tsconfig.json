@@ -78,9 +78,6 @@
       "path": "./libs/shared/ui-container-width/tsconfig.lib.json"
     },
     {
-      "path": "./libs/shared/ui-home-components/tsconfig.lib.json"
-    },
-    {
       "path": "./libs/shared/ui-empty-state/tsconfig.lib.json"
     },
     {
