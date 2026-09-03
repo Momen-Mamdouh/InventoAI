@@ -58,7 +58,7 @@ export interface PlanInfo {
 }
 
 @Component({
-  selector: 'app-biling-plan',
+  selector: 'app-billing-plan',
   standalone: true,
   imports: [
     CommonModule,
@@ -96,11 +96,11 @@ export interface PlanInfo {
       lucideBarChart3,
     }),
   ],
-  templateUrl: './biling-plan.html',
-  styleUrl: './biling-plan.css',
+  templateUrl: './billing-plan.html',
+  styleUrl: './billing-plan.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BilingPlan {
+export class BillingPlan {
   // Plan Data Signal
   plan = signal<PlanInfo>({
     name: 'Invento Pro',

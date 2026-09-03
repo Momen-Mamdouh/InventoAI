@@ -19,11 +19,11 @@ export const accountSettingsRoutes: Routes = [
   },
   {
     path: 'my-stores',
-    loadComponent: () => import('./myStores/my-stores').then((m) => m.MyStores),
+    loadComponent: () => import('./my-stores/my-stores').then((m) => m.MyStores),
   },
   {
     path: 'acc-setting/my-stores',
-    loadComponent: () => import('./myStores/my-stores').then((m) => m.MyStores),
+    loadComponent: () => import('./my-stores/my-stores').then((m) => m.MyStores),
   },
   {
     path: 'notifications',
@@ -35,10 +35,10 @@ export const accountSettingsRoutes: Routes = [
   },
   {
     path: 'billing',
-    loadComponent: () => import('./bilingPlan/biling-plan').then((m) => m.BilingPlan),
+    loadComponent: () => import('./billing-plan/billing-plan').then((m) => m.BillingPlan),
   },
   {
     path: 'acc-setting/billing',
-    loadComponent: () => import('./bilingPlan/biling-plan').then((m) => m.BilingPlan),
+    loadComponent: () => import('./billing-plan/billing-plan').then((m) => m.BillingPlan),
   },
 ];
