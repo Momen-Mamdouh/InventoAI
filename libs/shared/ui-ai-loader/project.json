@@ -1,11 +1,11 @@
 {
-  "name": "ui-ai-loader",
+  "name": "shared-ui-ai-loader",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/ui-ai-loader/src",
   "prefix": "lib",
   "tags": ["scope:shared", "type:ui"],
   "projectType": "library",
-  "// targets": "to see all targets run: nx show project ui-ai-loader --web",
+  "// targets": "to see all targets run: nx show project shared-ui-ai-loader --web",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",

@@ -1,11 +1,11 @@
 {
-  "name": "util-environment",
+  "name": "shared-util-environment",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/util-environment/src",
   "prefix": "lib",
   "tags": ["scope:shared", "type:util"],
   "projectType": "library",
-  "// targets": "to see all targets run: nx show project util-environment --web",
+  "// targets": "to see all targets run: nx show project shared-util-environment --web",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",

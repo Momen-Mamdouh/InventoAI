@@ -1,11 +1,11 @@
 {
-  "name": "ui-generic-select",
+  "name": "shared-ui-generic-select",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/ui-generic-select/src",
   "prefix": "lib",
   "tags": ["scope:shared", "type:ui"],
   "projectType": "library",
-  "// targets": "to see all targets run: nx show project ui-generic-select --web",
+  "// targets": "to see all targets run: nx show project shared-ui-generic-select --web",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",

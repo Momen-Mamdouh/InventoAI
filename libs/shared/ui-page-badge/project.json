@@ -1,11 +1,11 @@
 {
-  "name": "ui-page-badge",
+  "name": "shared-ui-page-badge",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/ui-page-badge/src",
   "prefix": "lib",
   "tags": ["scope:shared", "type:ui"],
   "projectType": "library",
-  "// targets": "to see all targets run: nx show project ui-page-badge --web",
+  "// targets": "to see all targets run: nx show project shared-ui-page-badge --web",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
