@@ -1,17 +1,17 @@
 {
-  "name": "user-site-ui-storefront",
+  "name": "user-site-feature-storefront",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/user-site/ui-storefront/src",
+  "sourceRoot": "libs/user-site/feature-storefront/src",
   "prefix": "lib",
   "tags": ["scope:user-site", "type:feature"],
   "projectType": "library",
-  "// targets": "to see all targets run: nx show project user-site-ui-storefront --web",
+  "// targets": "to see all targets run: nx show project user-site-feature-storefront --web",
   "targets": {
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/user-site/ui-storefront/**/*.ts", "libs/user-site/ui-storefront/**/*.html"]
+        "lintFilePatterns": ["libs/user-site/feature-storefront/**/*.ts", "libs/user-site/feature-storefront/**/*.html"]
       }
     }
   }

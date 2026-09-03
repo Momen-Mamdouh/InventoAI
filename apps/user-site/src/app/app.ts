@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
-import { Footer, Navbar } from '@invento/user-site-ui-storefront';
+import { Footer, Navbar } from '@invento/user-site-feature-storefront';
 import { Chatbot } from '@invento/user-site-feature-chatbot';
 import { HlmToasterImports } from '@spartan/helm/sonner';
 import {

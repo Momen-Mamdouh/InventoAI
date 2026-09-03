@@ -103,7 +103,7 @@
         "./libs/user-site/feature-account-settings/src/index.ts"
       ],
       "@invento/user-site-feature-home": ["./libs/user-site/feature-home/src/index.ts"],
-      "@invento/user-site-ui-storefront": ["./libs/user-site/ui-storefront/src/index.ts"],
+      "@invento/user-site-feature-storefront": ["./libs/user-site/feature-storefront/src/index.ts"],
       "@invento/site-builder-data-access-preview": [
         "./libs/site-builder/data-access-preview/src/index.ts"
       ],
@@ -111,7 +111,7 @@
         "./libs/site-builder/data-access-builder/src/index.ts"
       ],
       "@invento/site-builder-feature-builder": ["./libs/site-builder/feature-builder/src/index.ts"],
-      "@invento/site-builder-ui-shell": ["./libs/site-builder/ui-shell/src/index.ts"],
+      "@invento/site-builder-feature-shell": ["./libs/site-builder/feature-shell/src/index.ts"],
       "@invento/site-builder-feature-home": ["./libs/site-builder/feature-home/src/index.ts"],
       "@invento/owner-dashboard-feature-products": [
         "./libs/owner-dashboard/feature-products/src/index.ts"
@@ -172,7 +172,9 @@
       "@invento/owner-dashboard-ui-confirm-dialog": [
         "./libs/owner-dashboard/ui-confirm-dialog/src/index.ts"
       ],
-      "@invento/owner-dashboard-ui-shell": ["./libs/owner-dashboard/ui-shell/src/index.ts"],
+      "@invento/owner-dashboard-feature-shell": [
+        "./libs/owner-dashboard/feature-shell/src/index.ts"
+      ],
       "@invento/owner-dashboard-util-breadcrumb": [
         "./libs/owner-dashboard/util-breadcrumb/src/index.ts"
       ],

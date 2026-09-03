@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 // Layouts (kept eager — they are the shells)
-import { MainLayout, BuilderLayout, AuthLayout } from '@invento/site-builder-ui-shell';
+import { MainLayout, BuilderLayout, AuthLayout } from '@invento/site-builder-feature-shell';
 
 // Guards
 import { authGuard, guestGuard } from '@invento/shared-data-access-auth';

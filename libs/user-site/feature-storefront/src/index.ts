@@ -1,13 +1,13 @@
 /**
  * Documented exception to "one component per index.ts" (`contracts/library-api.md`), same
- * precedent as `invento-ui-shell` (T122): the storefront's shell chrome is six small,
+ * precedent as `owner-dashboard-feature-shell` (T122): the storefront's shell chrome is six small,
  * structurally-related pieces composed together rather than routed features. Per the brief's
  * data-model, `navbar`/`footer` come from `shared/components/`, `no-store`/`store-not-found`
  * from `pages/`; `not-found` (also `shared/components/`, the wildcard-route 404) and
- * `auth-layout` (the only layout wrapper userSite has) are folded in alongside them as a minor
+ * `auth-layout` (the only layout wrapper user-site has) are folded in alongside them as a minor
  * extension of the same grouping rather than left as one-off app-owned exceptions.
  *
- * **Tagged `type:feature`, not `type:ui`** — same fix as `invento-ui-shell`. `Navbar` reads
+ * **Tagged `type:feature`, not `type:ui`** — same fix as `owner-dashboard-feature-shell`. `Navbar` reads
  * `AuthService.currentUser()`/`.logout()` (shared-data-access-auth) and `Footer`/
  * `StoreNotFoundComponent` read `StoreService`/`StoreSlugService`
  * (user-site-data-access-store); `type:ui` may only depend on `type:ui`/`type:util`, never

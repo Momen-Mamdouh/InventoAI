@@ -8,7 +8,7 @@ import {
   NoStoreComponent,
   StoreNotFoundComponent,
   AuthLayout,
-} from '@invento/user-site-ui-storefront';
+} from '@invento/user-site-feature-storefront';
 
 export const routes: Routes = [
   // No slug in the URL means no store to show. Previously this redirected to a slug baked

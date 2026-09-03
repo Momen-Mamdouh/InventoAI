@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { MainLayout, AuthLayout } from '@invento/owner-dashboard-ui-shell';
+import { MainLayout, AuthLayout } from '@invento/owner-dashboard-feature-shell';
 import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
 import { storeGuard } from './guards/store.guard';
 import { noStoreGuard } from './guards/no-store.guard';
