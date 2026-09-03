@@ -27,4 +27,4 @@ import {
   templateUrl: './chatbot.layout.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChatbotLayoutComponent {}
+export class ChatbotLayout {}

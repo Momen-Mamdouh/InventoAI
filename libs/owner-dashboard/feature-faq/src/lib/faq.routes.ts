@@ -4,6 +4,6 @@ export const faqRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./faq-management/faq-management.page').then((m) => m.FaqManagementPageComponent),
+      import('./faq-management/faq-management.page').then((m) => m.FaqManagementPage),
   },
 ];

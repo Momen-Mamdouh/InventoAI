@@ -11,7 +11,7 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
  * Shown when the slug in the URL/host resolved to no store (`GET /site/:slug` failed).
  *
  * Reached via `storeGuard` on the `:storeSlug` route rather than the router falling through
- * to `HomeComponent` — an unknown slug used to render the home page, which then fired a
+ * to `Home` — an unknown slug used to render the home page, which then fired a
  * doomed request and left the navbar on a permanent skeleton. See `no-store.ts` for the
  * sibling case (no slug at all).
  */
@@ -37,7 +37,7 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
     </div>
   `,
 })
-export class StoreNotFoundComponent {
+export class StoreNotFound {
   private readonly storeService = inject(StoreService);
   private readonly storeSlugService = inject(StoreSlugService);
 

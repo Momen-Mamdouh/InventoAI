@@ -4,20 +4,20 @@ import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
 import { storeGuard } from '@invento/user-site-data-access-store';
 
 import {
-  NotFoundComponent,
-  NoStoreComponent,
-  StoreNotFoundComponent,
+  NotFound,
+  NoStore,
+  StoreNotFound,
   AuthLayout,
 } from '@invento/user-site-feature-storefront';
 
 export const routes: Routes = [
   // No slug in the URL means no store to show. Previously this redirected to a slug baked
   // into the environment file, which guessed a tenant the database might not have.
-  { path: '', component: NoStoreComponent, pathMatch: 'full' },
+  { path: '', component: NoStore, pathMatch: 'full' },
 
   // Reached via `storeGuard` when a slug fails to resolve. A SIBLING of `:storeSlug`, not a
   // child of it, or the slug segment would swallow this path instead of matching it.
-  { path: 'store-not-found', component: StoreNotFoundComponent },
+  { path: 'store-not-found', component: StoreNotFound },
 
   // Multi-tenant route wrapper
   {
@@ -103,5 +103,5 @@ export const routes: Routes = [
   },
 
   // The wild component (404) MUST go at the very bottom
-  { path: '**', component: NotFoundComponent },
+  { path: '**', component: NotFound },
 ];

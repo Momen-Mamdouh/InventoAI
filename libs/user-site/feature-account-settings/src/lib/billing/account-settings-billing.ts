@@ -49,7 +49,7 @@ interface PaymentCard {
   templateUrl: './account-settings-billing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountSettingsBillingComponent {
+export class AccountSettingsBilling {
   private readonly fb = inject(FormBuilder);
 
   readonly showForm = signal(false);

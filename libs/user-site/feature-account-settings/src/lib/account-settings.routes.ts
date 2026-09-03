@@ -3,21 +3,21 @@ import { Routes } from '@angular/router';
 export const ACCOUNT_SETTINGS_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () => import('./account-settings').then((m) => m.AccountSettingsComponent),
+    loadComponent: () => import('./account-settings').then((m) => m.AccountSettings),
     children: [
       { path: '', redirectTo: 'profile', pathMatch: 'full' },
       {
         path: 'profile',
         loadComponent: () =>
           import('./profile/account-settings-profile').then(
-            (m) => m.AccountSettingsProfileComponent,
+            (m) => m.AccountSettingsProfile,
           ),
       },
       {
         path: 'security',
         loadComponent: () =>
           import('./security/account-settings-security').then(
-            (m) => m.AccountSettingsSecurityComponent,
+            (m) => m.AccountSettingsSecurity,
           ),
       },
       // 'billing' route intentionally removed: no payment-method endpoint exists on the backend

@@ -61,7 +61,7 @@ import { StatusBanner } from '@invento/shared-ui-status-banner';
   styleUrl: './profile.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileComponent {
+export class Profile {
   private readonly authService = inject(AuthService);
 
   // Form State initial values

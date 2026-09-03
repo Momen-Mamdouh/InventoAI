@@ -9,14 +9,14 @@
  *
  * **Tagged `type:feature`, not `type:ui`** — same fix as `owner-dashboard-feature-shell`. `Navbar` reads
  * `AuthService.currentUser()`/`.logout()` (shared-data-access-auth) and `Footer`/
- * `StoreNotFoundComponent` read `StoreService`/`StoreSlugService`
+ * `StoreNotFound` read `StoreService`/`StoreSlugService`
  * (user-site-data-access-store); `type:ui` may only depend on `type:ui`/`type:util`, never
  * `type:data-access`. Per "fix the split, don't add an allow entry," the honest fix is the tag,
  * not threading store/auth state through router-level inputs with no parent to bind them.
  */
 export { Navbar } from './lib/navbar/navbar';
 export { Footer } from './lib/footer/footer';
-export { NotFoundComponent } from './lib/not-found/not-found';
-export { NoStoreComponent } from './lib/no-store/no-store';
-export { StoreNotFoundComponent } from './lib/store-not-found/store-not-found';
+export { NotFound } from './lib/not-found/not-found';
+export { NoStore } from './lib/no-store/no-store';
+export { StoreNotFound } from './lib/store-not-found/store-not-found';
 export { AuthLayout } from './lib/auth-layout/auth-layout';

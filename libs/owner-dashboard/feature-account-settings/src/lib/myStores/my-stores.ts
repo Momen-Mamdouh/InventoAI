@@ -93,7 +93,7 @@ export interface StoreItem {
   styleUrl: './my-stores.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MyStoresComponent {
+export class MyStores {
   private readonly router = inject(Router);
 
   // Stores Data List

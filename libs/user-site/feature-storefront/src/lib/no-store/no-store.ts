@@ -35,4 +35,4 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
     </div>
   `,
 })
-export class NoStoreComponent {}
+export class NoStore {}

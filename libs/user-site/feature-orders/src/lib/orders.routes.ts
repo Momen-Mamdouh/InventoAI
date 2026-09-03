@@ -6,13 +6,13 @@ import type { Routes } from '@angular/router';
  * `user-site-feature-product` for the same pattern.
  */
 export const ordersListRoutes: Routes = [
-  { path: '', loadComponent: () => import('./pages/orders/orders').then((m) => m.OrdersComponent) },
+  { path: '', loadComponent: () => import('./pages/orders/orders').then((m) => m.Orders) },
 ];
 
 export const orderConfirmedRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./pages/order-confirmed/order-confirmed').then((m) => m.OrderConfirmedComponent),
+      import('./pages/order-confirmed/order-confirmed').then((m) => m.OrderConfirmed),
   },
 ];

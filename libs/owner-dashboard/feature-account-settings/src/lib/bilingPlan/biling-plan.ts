@@ -100,7 +100,7 @@ export interface PlanInfo {
   styleUrl: './biling-plan.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BilingPlanComponent {
+export class BilingPlan {
   // Plan Data Signal
   plan = signal<PlanInfo>({
     name: 'Invento Pro',

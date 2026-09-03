@@ -37,7 +37,7 @@ import { animateElementsOnRender } from '@invento/user-site-util-animation';
   ],
   templateUrl: './orders-hero.html',
 })
-export class OrdersHeroComponent {
+export class OrdersHero {
   protected readonly ordersService = inject(OrdersDataService);
 
   /**

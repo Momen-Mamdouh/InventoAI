@@ -1,1 +1,1 @@
-export { AccountSettingsSidebarComponent } from './account-settings-sidebar/account-settings-sidebar';
+export { AccountSettingsSidebar } from './account-settings-sidebar/account-settings-sidebar';

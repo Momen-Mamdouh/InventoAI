@@ -40,7 +40,7 @@ import { ApiErrorBody, FaqEntry, FaqStore } from '@invento/owner-dashboard-data-
   ],
   templateUrl: './faq-form.html',
 })
-export class FaqFormComponent implements OnInit {
+export class FaqForm implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly store = inject(FaqStore);
 

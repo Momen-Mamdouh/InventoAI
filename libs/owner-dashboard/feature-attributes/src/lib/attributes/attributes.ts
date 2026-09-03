@@ -86,7 +86,7 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
   templateUrl: './attributes.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AttributesComponent implements OnInit {
+export class Attributes implements OnInit {
   private readonly attributeService = inject(AttributeService);
 
   readonly attributes = signal<ProductAttribute[]>([]);

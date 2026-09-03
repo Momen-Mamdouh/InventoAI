@@ -1,1 +1,1 @@
-export { NoStoreComponent } from './no-store';
+export { NoStore } from './no-store';

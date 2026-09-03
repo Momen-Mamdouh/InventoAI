@@ -57,7 +57,7 @@ import { Pagination } from '@invento/shared-ui-pagination';
   templateUrl: './history.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HistoryComponent implements OnInit {
+export class History implements OnInit {
   private readonly chatService = inject(ChatAdminService);
 
   data = signal<ChatSessionsResponse | null>(null);

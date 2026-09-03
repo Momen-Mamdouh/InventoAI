@@ -82,7 +82,7 @@ export interface ActiveSession {
   styleUrl: './security.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SecurityComponent {
+export class Security {
   // Password Form Signals
   currentPassword = signal<string>('');
   newPassword = signal<string>('');

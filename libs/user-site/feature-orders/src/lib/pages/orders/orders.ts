@@ -14,7 +14,7 @@ import {
   lucideShoppingBag,
   lucideSearch,
 } from '@ng-icons/lucide';
-import { OrdersHeroComponent, OrdersFilterBarComponent, OrderCardComponent } from '../../components';
+import { OrdersHero, OrdersFilterBar, OrderCard } from '../../components';
 import { OrdersDataService, ORDERS_SERVER_LOAD_LIMIT } from '@invento/user-site-data-access-order';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { ErrorState } from '@invento/shared-ui-error-state';
@@ -33,9 +33,9 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
     HlmButtonImports,
     ...HlmTypographyImports,
     NgIconComponent,
-    OrdersHeroComponent,
-    OrdersFilterBarComponent,
-    OrderCardComponent,
+    OrdersHero,
+    OrdersFilterBar,
+    OrderCard,
     EmptyState,
     ErrorState,
     SkeletonBlock,
@@ -57,7 +57,7 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
-export class OrdersComponent implements OnInit {
+export class Orders implements OnInit {
   protected readonly ordersService = inject(OrdersDataService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

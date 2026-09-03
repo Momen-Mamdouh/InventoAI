@@ -30,7 +30,7 @@ function resolveRawStoreSlug(route: ActivatedRouteSnapshot): string {
 /**
  * Guards the `:storeSlug` route: resolves `GET /site/:slug` before the route activates and
  * redirects to `/store-not-found` when the slug names no store, instead of letting an unknown
- * slug fall through to `HomeComponent` (which used to fire a doomed request and leave the navbar
+ * slug fall through to `Home` (which used to fire a doomed request and leave the navbar
  * on a permanent loading skeleton).
  *
  * Runs on the server for every SSR render — `StoreService.resolve()` returns an `Observable`

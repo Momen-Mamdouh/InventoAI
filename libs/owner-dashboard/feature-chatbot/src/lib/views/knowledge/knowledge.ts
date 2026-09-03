@@ -48,7 +48,7 @@ import { KnowledgeStatus } from '../../types/chat-admin.types';
   templateUrl: './knowledge.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KnowledgeComponent implements OnInit {
+export class Knowledge implements OnInit {
   private readonly chatService = inject(ChatAdminService);
 
   status = signal<KnowledgeStatus | null>(null);

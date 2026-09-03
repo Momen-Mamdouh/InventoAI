@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AccountSettingsSidebarComponent } from './components/account-settings-sidebar/account-settings-sidebar';
+import { AccountSettingsSidebar } from './components/account-settings-sidebar/account-settings-sidebar';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideTrash2 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan/helm/button';
@@ -12,7 +12,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   standalone: true,
   imports: [
     RouterOutlet,
-    AccountSettingsSidebarComponent,
+    AccountSettingsSidebar,
     NgIcon,
     HlmButtonImports,
     HlmTypographyImports,
@@ -22,4 +22,4 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   templateUrl: './account-settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountSettingsComponent {}
+export class AccountSettings {}

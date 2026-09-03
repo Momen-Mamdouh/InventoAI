@@ -39,7 +39,7 @@ import { StatusBanner } from '@invento/shared-ui-status-banner';
   templateUrl: './settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent implements OnInit {
+export class Settings implements OnInit {
   private readonly chatService = inject(ChatAdminService);
 
   settings = signal<ChatbotSettings | null>(null);

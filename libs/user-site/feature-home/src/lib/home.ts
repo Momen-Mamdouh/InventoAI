@@ -86,7 +86,7 @@ const GENERIC_CTA_LABELS = new Set(['shop now', 'shop', 'buy now', 'browse']);
   ],
   templateUrl: './home.html',
 })
-export class HomeComponent {
+export class Home {
   protected readonly storeService = inject(StoreService);
   private readonly locale = inject(LocaleService);
 

@@ -68,7 +68,7 @@ export interface PreferenceGroup {
   styleUrl: './notifications.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NotificationsComponent {
+export class Notifications {
   // Initial Default Preference Data
   private defaultGroups: PreferenceGroup[] = [
     {

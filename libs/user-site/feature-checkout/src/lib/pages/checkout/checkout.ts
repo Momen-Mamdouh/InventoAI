@@ -86,7 +86,7 @@ import { animateElementsOnRender } from '@invento/user-site-util-animation';
   ],
   templateUrl: './checkout.html',
 })
-export class CheckoutComponent implements OnInit {
+export class Checkout implements OnInit {
   /** Resolved from the URL/host, never a build-time constant. */
   private readonly resolvedStoreSlug = inject(StoreSlugService).slug;
 

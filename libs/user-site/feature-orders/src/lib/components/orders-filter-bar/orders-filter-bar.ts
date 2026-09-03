@@ -30,7 +30,7 @@ const ORDER_FILTER_IDS: readonly OrderFilter[] = [
   imports: [FilterTabs, SearchInput, TranslatePipe, HlmCard],
   templateUrl: './orders-filter-bar.html',
 })
-export class OrdersFilterBarComponent {
+export class OrdersFilterBar {
   /**
    * This section used to carry the class `orders-hero-anim`, which belongs to `orders-hero`.
    * It was only ever animated as a side effect of that component's document-wide

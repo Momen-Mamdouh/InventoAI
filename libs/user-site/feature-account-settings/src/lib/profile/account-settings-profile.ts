@@ -21,7 +21,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   templateUrl: './account-settings-profile.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountSettingsProfileComponent {
+export class AccountSettingsProfile {
   // NOTE: The backend has no `GET /users/me` / `PATCH /users/me` endpoint (verified against
   // BACKEND/src/users). Until one exists this tab is read-only: it mirrors `currentUser` (hydrated
   // from localStorage by AuthService, so it can briefly be null during SSR/first render — hence the

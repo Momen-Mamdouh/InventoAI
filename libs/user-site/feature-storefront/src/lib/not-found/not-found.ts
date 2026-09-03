@@ -16,7 +16,7 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   imports: [RouterLink, HlmButton, TranslatePipe, HlmH2, HlmMuted],
   templateUrl: './not-found.html',
 })
-export class NotFoundComponent {
+export class NotFound {
   /**
    * Scoped view queries instead of `document.querySelectorAll`.
    *

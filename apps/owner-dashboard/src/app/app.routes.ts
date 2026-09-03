@@ -8,7 +8,7 @@ export const appRoutes: Routes = [
   {
     path: 'no-store',
     canActivate: [authGuard, noStoreGuard],
-    loadComponent: () => import('./pages/no-store/no-store').then((c) => c.NoStoreComponent),
+    loadComponent: () => import('./pages/no-store/no-store').then((c) => c.NoStore),
   },
   {
     path: '',

@@ -51,7 +51,7 @@ interface SelectableAttribute extends GeneratedAttribute {
   templateUrl: './catalog-ai-review.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CatalogAiReviewComponent {
+export class CatalogAiReview {
   private catalogAiService = inject(CatalogAiService);
   private router = inject(Router);
 

@@ -52,7 +52,7 @@ import { ChatTranscript } from '../../types/chat-admin.types';
   templateUrl: './transcript.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TranscriptComponent implements OnInit {
+export class Transcript implements OnInit {
   private readonly chatService = inject(ChatAdminService);
   private readonly route = inject(ActivatedRoute);
 

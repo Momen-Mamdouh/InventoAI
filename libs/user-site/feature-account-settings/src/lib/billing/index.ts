@@ -1,1 +1,1 @@
-export { AccountSettingsBillingComponent } from './account-settings-billing';
+export { AccountSettingsBilling } from './account-settings-billing';

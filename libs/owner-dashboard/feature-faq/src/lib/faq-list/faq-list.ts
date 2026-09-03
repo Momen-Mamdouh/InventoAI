@@ -9,7 +9,7 @@ import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { FaqStore, type FaqEntry } from '@invento/owner-dashboard-data-access-faq';
-import { FaqFormComponent } from '../faq-form/faq-form';
+import { FaqForm } from '../faq-form/faq-form';
 
 @Component({
   selector: 'app-faq-list',
@@ -23,14 +23,14 @@ import { FaqFormComponent } from '../faq-form/faq-form';
     HlmSheetImports,
     HlmAlertDialogImports,
     HlmSkeleton,
-    FaqFormComponent,
+    FaqForm,
     HlmMuted,
     HlmSmall,
   ],
   providers: [provideIcons({ lucideGripVertical, lucidePencil, lucideTrash2 })],
   templateUrl: './faq-list.html',
 })
-export class FaqListComponent {
+export class FaqList {
   protected readonly store = inject(FaqStore);
 
   protected async onDrop(event: CdkDragDrop<FaqEntry[]>): Promise<void> {

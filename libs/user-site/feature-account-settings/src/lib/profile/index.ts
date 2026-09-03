@@ -1,1 +1,1 @@
-export { AccountSettingsProfileComponent } from './account-settings-profile';
+export { AccountSettingsProfile } from './account-settings-profile';

@@ -1,1 +1,1 @@
-export { OrderConfirmedComponent } from './order-confirmed';
+export { OrderConfirmed } from './order-confirmed';

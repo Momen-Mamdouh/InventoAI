@@ -90,7 +90,7 @@ import { animateElementsOnRender } from '@invento/user-site-util-animation';
   templateUrl: './faq.html',
   styleUrl: './faq.css',
 })
-export class FaqComponent {
+export class Faq {
   /** Resolved from the URL/host, never a build-time constant. */
   private readonly resolvedStoreSlug = inject(StoreSlugService).slug;
 

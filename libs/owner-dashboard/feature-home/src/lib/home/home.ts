@@ -115,7 +115,7 @@ interface Product {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent implements OnInit {
+export class Home implements OnInit {
   private readonly storeService = inject(StoreService);
   private readonly categoriesService = inject(CategoriesService);
   private readonly productService = inject(ProductService);

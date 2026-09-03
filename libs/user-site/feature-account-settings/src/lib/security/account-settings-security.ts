@@ -44,7 +44,7 @@ function passwordsMatchValidator(): ValidatorFn {
   templateUrl: './account-settings-security.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountSettingsSecurityComponent {
+export class AccountSettingsSecurity {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly locale = inject(LocaleService);

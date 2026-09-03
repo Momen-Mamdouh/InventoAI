@@ -100,7 +100,7 @@ interface PresetReason {
   templateUrl: './order-card.html',
   styleUrl: './order-card.css',
 })
-export class OrderCardComponent {
+export class OrderCard {
   readonly order = input.required<OrderSummaryItem>();
 
   protected readonly ordersService = inject(OrdersDataService);
@@ -131,7 +131,7 @@ export class OrderCardComponent {
 
   protected readonly presetReasons = computed<PresetReason[]>(() => {
     this.locale.locale(); // re-compute labels when the language changes
-    return OrderCardComponent.PRESET_REASON_KEYS.map((key) => ({
+    return OrderCard.PRESET_REASON_KEYS.map((key) => ({
       key,
       label: this.locale.translate(`orders.card.cancel_reasons.${key}`),
     }));
@@ -323,7 +323,7 @@ export class OrderCardComponent {
       toast.success(this.locale.translate('orders.card.toast.reorder_added'));
       this.router.navigate(['/', this.ordersService.activeStoreSlug(), 'checkout']);
     } catch (err: unknown) {
-      console.error('[OrderCardComponent] Reorder failed:', err);
+      console.error('[OrderCard] Reorder failed:', err);
       toast.error(this.locale.translate('orders.card.toast.reorder_failed'));
     } finally {
       this.isReordering.set(false);

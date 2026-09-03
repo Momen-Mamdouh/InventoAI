@@ -46,7 +46,7 @@ import { HlmTooltipImports } from '@spartan/helm/tooltip';
     }),
   ],
 })
-export class NoStoreComponent {
+export class NoStore {
   private readonly localeService = inject(LocaleService);
   private readonly themeService = inject(ThemeService);
   private readonly authService = inject(AuthService);

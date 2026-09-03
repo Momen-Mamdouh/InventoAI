@@ -39,7 +39,7 @@ import { Pagination } from '@invento/shared-ui-pagination';
   templateUrl: './unanswered.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UnansweredComponent implements OnInit {
+export class Unanswered implements OnInit {
   private readonly chatService = inject(ChatAdminService);
 
   data = signal<UnansweredResponse | null>(null);

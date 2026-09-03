@@ -1,1 +1,1 @@
-export { StoreNotFoundComponent } from './store-not-found';
+export { StoreNotFound } from './store-not-found';

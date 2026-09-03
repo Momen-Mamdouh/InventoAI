@@ -19,9 +19,9 @@ interface NavItem {
   templateUrl: './account-settings-sidebar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AccountSettingsSidebarComponent {
+export class AccountSettingsSidebar {
   // Tab labels are data, not template text, so they are translated here rather than by the pipe
-  // (same pattern as OrdersFilterBarComponent).
+  // (same pattern as OrdersFilterBar).
   private readonly locale = inject(LocaleService);
 
   // "My Stores" removed for the e-commerce customer-facing profile.

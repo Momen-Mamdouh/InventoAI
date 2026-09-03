@@ -1,1 +1,1 @@
-export { AccountSettingsSecurityComponent } from './account-settings-security';
+export { AccountSettingsSecurity } from './account-settings-security';

@@ -54,7 +54,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './insights.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InsightsComponent implements OnInit {
+export class Insights implements OnInit {
   private readonly chatService = inject(ChatAdminService);
 
   stats = signal<ChatStats | null>(null);
