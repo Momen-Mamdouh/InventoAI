@@ -36,7 +36,7 @@ Is it a pure function, pipe, directive, or token? ► type:util         (exports
 The trap: **a component that injects a data service is not `type:ui`.** `type:ui` may only depend on
 `type:ui` and `type:util`, so the moment it injects `AuthService` or `StoreService`, lint rejects it.
 Either pass the data in as an input (better) or tag the library `type:feature` (what
-`owner-dashboard-ui-shell` and `user-site-ui-storefront` do).
+`owner-dashboard-feature-shell` and `user-site-feature-storefront` do).
 
 ---
 
@@ -73,6 +73,9 @@ export class ProductExport {
 - [ ] `ChangeDetectionStrategy.OnPush` — enforced workspace-wide by lint, no exceptions
 - [ ] Standalone (no `NgModule`)
 - [ ] Selector prefixed `app-` for workspace components (`hlm-` only inside `libs/ui/**`)
+- [ ] Class name drops the `Component` suffix (`ProductExport`, not `ProductExportComponent`) —
+      matches the Angular 22 schematic default. Non-component classes keep their role suffix:
+      `AuthService`, `OrderStore`, `CategoriesState`, `ScrollAnimateDirective`.
 - [ ] Imports use aliases, never `../../` into another library
 - [ ] Exported from the library's `src/index.ts` **only if** something outside the library needs it
 
@@ -140,8 +143,12 @@ libs/user-site/data-access-wishlist/
 
 **Step 2 — `project.json`**
 
-The `name` follows the existing convention for its scope: `scope:shared` libraries drop the scope
-prefix, every other scope keeps it. Copy the nearest sibling and edit rather than inventing.
+The `name` is derived from the path and is script-enforced
+(`scripts/check-project-names.mjs`, wired into `.husky/pre-commit` and CI): every library under
+`libs/shared`, `libs/owner-dashboard`, `libs/user-site`, or `libs/site-builder` is named
+`<scope>-<dir>` — the scope prefix is never dropped, including for `scope:shared`. Only
+`libs/ui/<primitive>`, `libs/core`, and `libs/stepper` stay bare. Copy the nearest sibling and edit
+rather than inventing.
 
 ```json
 {
@@ -185,7 +192,8 @@ export { WishlistService } from './lib/wishlist.service';
 export type { WishlistItem } from './lib/wishlist.model';
 ```
 
-**Step 5 — register the alias** in `tsconfig.base.json`, keeping the list alphabetical:
+**Step 5 — register the alias** in `tsconfig.base.json`. The `paths` block is in insertion order,
+not alphabetical, so append rather than trying to slot it in:
 
 ```json
 "@invento/user-site-data-access-wishlist": ["./libs/user-site/data-access-wishlist/src/index.ts"],
@@ -196,7 +204,7 @@ export type { WishlistItem } from './lib/wishlist.model';
 
 **Checklist**
 
-- [ ] `project.json` has a `lint` target — all 112 projects do, keep it that way
+- [ ] `project.json` has a `lint` target — all 119 projects do, keep it that way
 - [ ] Exactly one `scope:` and one `type:` tag
 - [ ] Alias registered in `tsconfig.base.json` and matches the tags
       (`@invento/<scope>-<type>-<name>`)
@@ -268,7 +276,7 @@ export { wishlistRoutes } from './lib/wishlist.routes';
 
 ## Recipe 5 — Use a Spartan UI primitive
 
-All 34 primitives plus the stepper are available to every app and library:
+All 40 primitives plus the stepper are available to every app and library:
 
 ```ts
 import { HlmButton } from '@spartan/helm/button';
@@ -319,7 +327,7 @@ Then bring it in line:
 ## Before you open a PR
 
 ```bash
-npm run lint              # all 112 projects
+npm run lint              # all 119 projects
 npm run build:all         # builds the 3 apps (only apps have a build target)
 npm run format:check      # prettier (skips libs/ — see traps.md)
 ```

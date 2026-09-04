@@ -3,6 +3,16 @@
 **Status:** Accepted · **Date:** 2026-08-24 · **Supersedes:** the flat `apps/` + umbrella-library
 layout
 
+> **Superseded in part.** Everything below reflects the workspace as it stood on 2026-08-24, and the
+> 112-project count was true then — it is left as-is because an ADR records what was decided, not a
+> running total. Since this decision landed: project naming was unified onto the scope-prefix scheme
+> described here and is now script-enforced (`scripts/check-project-names.mjs`); three `ui-*` shell
+> libraries were renamed to `feature-*` (`owner-dashboard-ui-shell` → `owner-dashboard-feature-shell`,
+> `site-builder-ui-shell` → `site-builder-feature-shell`, `user-site-ui-storefront` →
+> `user-site-feature-storefront`); component classes dropped the `Component` suffix; and the workspace
+> has since grown to 119 projects. For current numbers and names, see
+> [../architecture.md](../architecture.md) and [../workspace-map.md](../workspace-map.md).
+
 ---
 
 ## Context
@@ -87,7 +97,7 @@ invento, and nothing else.
   this.
 - **The Nx project name is not the import alias, and the rule differs by scope.** 66 of 109 libraries
   have a name you cannot derive from the path. This is the workspace's most common papercut; it is
-  documented in [traps.md](../traps.md#1-nx-project-name-is-not-the-import-alias) rather than fixed,
+  documented in [traps.md](../traps.md#1-nx-project-name-is-derived-from-its-path) rather than fixed,
   because renaming 66 projects would invalidate every existing import for a cosmetic gain.
 - **Two libraries are empty** (`shared/util-environment`, `shared/util-template`) — declared
   destinations whose intended contents were deleted rather than migrated.

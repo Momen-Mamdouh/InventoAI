@@ -7,37 +7,52 @@ leads with the **symptom you would actually see**, because that is how you will 
 
 ## Quick triage
 
-| Symptom                                                   | Cause                                                     | Jump to                                                  |
-| --------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------- |
-| `Cannot find project 'shared-ui-loader'`                  | Nx project name ≠ import alias                            | [#1](#1-nx-project-name-is-not-the-import-alias)         |
-| `Cannot find module '@invento/…'` but the file exists     | Alias not registered in `tsconfig.base.json`              | [#2](#2-lint-is-green-and-the-build-is-broken)           |
-| Lint passes, build fails                                  | ESLint does not typecheck module resolution               | [#2](#2-lint-is-green-and-the-build-is-broken)           |
-| Boundary error naming two tags                            | Vertical or horizontal constraint violated                | [#3](#3-boundary-errors-have-three-legitimate-fixes)     |
-| Lint result looks stale after editing config              | Nx cached the old run                                     | [#4](#4-nx-serves-a-cached-lint-result)                  |
-| Prettier "fixed" nothing in `libs/`                       | `libs/` is Prettier-ignored                               | [#5](#5-libs-is-prettier-ignored)                        |
-| `prefer-on-push-component-change-detection` error         | `OnPush` is mandatory                                     | [#6](#6-onpush-is-mandatory)                             |
-| Tailwind classes silently missing from the built app      | Tailwind entry import moved out of the app's `styles.css` | [#7](#7-tailwind-entry-imports-must-stay-in-the-app)     |
-| Theme token changed in one app but not another            | owner-dashboard does not use the shared theme file        | [#8](#8-owner-dashboards-theme-css-is-a-fork)            |
-| A library imports fine but exports nothing                | It is an empty placeholder                                | [#9](#9-two-libraries-are-deliberately-empty)            |
-| `tsc -b` complains about `libs/shared/ui-home-components` | Dangling reference to a deleted library                   | [#10](#10-the-root-tsconfigjson-reference-list-is-stale) |
+| Symptom                                                      | Cause                                                     | Jump to                                                    |
+| ------------------------------------------------------------ | --------------------------------------------------------- | ---------------------------------------------------------- |
+| Unsure what a library's Nx project name is                   | Now mechanically derived from its path — see the rule     | [#1](#1-nx-project-name-is-derived-from-its-path)          |
+| `Cannot find module '@invento/…'` but the file exists        | Alias not registered in `tsconfig.base.json`              | [#2](#2-lint-is-green-and-the-build-is-broken)             |
+| Lint passes, build fails                                     | ESLint does not typecheck module resolution               | [#2](#2-lint-is-green-and-the-build-is-broken)             |
+| Boundary error naming two tags                               | Vertical or horizontal constraint violated                | [#3](#3-boundary-errors-have-three-legitimate-fixes)       |
+| Lint result looks stale after editing config                 | Nx cached the old run                                     | [#4](#4-nx-serves-a-cached-lint-result)                    |
+| Prettier "fixed" nothing in `libs/`                          | `libs/` is Prettier-ignored                               | [#5](#5-libs-is-prettier-ignored)                          |
+| `prefer-on-push-component-change-detection` error            | `OnPush` is mandatory                                     | [#6](#6-onpush-is-mandatory)                               |
+| Tailwind classes silently missing from the built app         | Tailwind entry import moved out of the app's `styles.css` | [#7](#7-tailwind-entry-imports-must-stay-in-the-app)       |
+| Wondering if theme tokens still need editing in 3 places     | No — owner-dashboard now imports the shared file too      | [#8](#8-owner-dashboards-theme-css-used-to-be-a-fork)      |
+| A library imports fine but exports nothing                   | It is an empty placeholder                                | [#9](#9-two-libraries-are-deliberately-empty)              |
+| Renamed a file's case only; builds locally, CI can't find it | `core.ignorecase=true` hides it from `git status`         | [#11](#11-a-case-only-rename-does-nothing-on-this-machine) |
 
 ---
 
-## 1. Nx project name is not the import alias
+## 1. Nx project name is derived from its path
 
-**Symptom:** `npx nx lint shared-ui-loader` → `Cannot find project 'shared-ui-loader'`.
+**This used to be a trap; it is now the rule that replaced one.** Before the naming-scheme cleanup,
+`scope:shared` libraries dropped the scope prefix from their Nx project name while the other three
+scopes kept it, so a large fraction of libraries had a name you could not derive from the path. That
+inconsistency is gone: every project name is now mechanically derivable from its directory, and
+`scripts/check-project-names.mjs` (run via `npm run check:names`, and wired into `.husky/pre-commit`
+and CI) fails the check if it isn't.
 
-**Why:** `scope:shared` libraries drop the scope prefix from their Nx project name; the other three
-scopes keep it. **66 of 109 libraries** have a name you cannot derive from the path.
+| Directory                    | Nx project name         | Import alias                             |
+| ---------------------------- | ----------------------- | ---------------------------------------- |
+| `apps/<app>`                 | `<app>`                 | self-import, e.g. `@invento/user-site/*` |
+| `libs/shared/<dir>`          | `shared-<dir>`          | `@invento/shared-<dir>`                  |
+| `libs/owner-dashboard/<dir>` | `owner-dashboard-<dir>` | `@invento/owner-dashboard-<dir>`         |
+| `libs/user-site/<dir>`       | `user-site-<dir>`       | `@invento/user-site-<dir>`               |
+| `libs/site-builder/<dir>`    | `site-builder-<dir>`    | `@invento/site-builder-<dir>`            |
+| `libs/ui/<primitive>`        | `<primitive>` (bare)    | `@spartan/helm/<primitive>`              |
+| `libs/core`                  | `core` (bare)           | `@invento/core`                          |
+| `libs/stepper`               | `stepper` (bare)        | `@spartan/helm/stepper`                  |
 
-| Directory                         | Nx project name              | Import alias                          |
-| --------------------------------- | ---------------------------- | ------------------------------------- |
-| `libs/shared/ui-loader`           | `ui-loader`                  | `@invento/shared-ui-loader`           |
-| `libs/user-site/data-access-cart` | `user-site-data-access-cart` | `@invento/user-site-data-access-cart` |
-| `libs/ui/button`                  | `button`                     | `@spartan/helm/button`                |
-| `libs/stepper`                    | `spartan-stepper`            | `@spartan/helm/stepper`               |
+`libs/ui/*` and `libs/stepper` stay bare rather than taking a scope prefix — prefixing the 40 Spartan
+primitives `ui-` would collide with the 20 `libs/shared/ui-*` presentational libraries, and they're
+consumed through the separate `@spartan/helm/*` alias family anyway.
 
-**Fix:** look it up in [workspace-map.md](./workspace-map.md), or `npx nx show projects`.
+**Consequence:** the `@invento/*` alias tail now equals the project name exactly, with zero
+mismatches across all 78 `@invento/*` aliases in `tsconfig.base.json`. `npx nx lint shared-ui-loader`
+works; the old `npx nx lint ui-loader` no longer resolves.
+
+**Fix, if you still hit `Cannot find project '<name>'`:** derive it from the table above, or look it
+up in [workspace-map.md](./workspace-map.md), or `npx nx show projects`.
 
 ---
 
@@ -49,7 +64,8 @@ scopes keep it. **66 of 109 libraries** have a name you cannot derive from the p
 **Why:** ESLint does not typecheck module resolution. A library whose alias is missing from
 `tsconfig.base.json` lints perfectly and fails only when TypeScript tries to resolve it.
 
-**Fix:** register the alias, keeping the list alphabetical:
+**Fix:** register the alias (the `paths` block is in insertion order, not alphabetical — append
+rather than trying to slot it in):
 
 ```json
 "@invento/<scope>-<type>-<name>": ["./libs/<scope>/<type>-<name>/src/index.ts"],
@@ -71,8 +87,8 @@ the `scope:` isolation rule. See
 
 1. Move the code to `scope:shared` — if two scopes genuinely need it.
 2. Retag the library — a "presentational" component that reads live session state is not `type:ui`.
-   `owner-dashboard-ui-shell` and `user-site-ui-storefront` are tagged `type:feature` for exactly this
-   reason.
+   `owner-dashboard-feature-shell` and `user-site-feature-storefront` are tagged `type:feature` for
+   exactly this reason.
 3. Invert the dependency — pass data in as an input.
 
 **Not a fix:** adding to the rule's `allow` list. It has been empty since the restructure and every
@@ -153,23 +169,31 @@ Shared **tokens** may live in a library and be imported after those lines. The e
 
 ---
 
-## 8. owner-dashboard's theme CSS is a fork
+## 8. owner-dashboard's theme CSS used to be a fork
 
-**Symptom:** you change a design token in `libs/core/src/styles/spartan-theme.css`; site-builder and
-user-site pick it up, owner-dashboard does not.
+**Fixed, kept here because the old symptom is worth knowing about:** a design token added to
+`libs/core/src/styles/spartan-theme.css` used to reach site-builder and user-site but not
+owner-dashboard, because owner-dashboard's `styles.css` was a fully inlined 358-line copy that never
+imported the shared file. That is no longer true.
 
-**Why:**
+| App             | `src/styles.css`                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| site-builder    | 9 lines — Tailwind entry + `@import '…/libs/core/src/styles/spartan-theme.css'` at line 9  |
+| user-site       | 19 lines — the same import at line 9, plus a `scrollbar-gutter` rule                       |
+| owner-dashboard | 94 lines — the same import at line 12, plus a CDK-overlay import and its own keyframe tail |
 
-| App             | `src/styles.css`                                                                 |
-| --------------- | -------------------------------------------------------------------------------- |
-| site-builder    | 9 lines — Tailwind entry + `@import '…/libs/core/src/styles/spartan-theme.css'`  |
-| user-site       | 19 lines — the same import, plus a scrollbar-gutter rule                         |
-| owner-dashboard | **358 lines — a fully inlined copy. It does not import the shared file at all.** |
+owner-dashboard's one app-specific _import_ is:
 
-**Fix:** when you touch theme tokens, check all three files, not just the shared one.
+```css
+@import '@angular/cdk/overlay-prebuilt.css';
+```
 
-A stale comment in `apps/user-site/src/styles.css` claims "invento also imports that file". It does
-not. See [deep-dives/theming.md](./deep-dives/theming.md).
+The shared theme file does not ship this stylesheet — worth knowing if CDK-overlay-positioned UI
+(menus, dialogs) looks unstyled in site-builder or user-site; they never imported it either, because
+they never needed the CDK overlay module.
+
+**Consequence for you:** touching `libs/core/src/styles/spartan-theme.css` now reaches all three apps
+in one edit. See [deep-dives/theming.md](./deep-dives/theming.md).
 
 ---
 
@@ -187,17 +211,15 @@ and if you have a genuine home for environment or template helpers, these are th
 
 ---
 
-## 10. The root `tsconfig.json` reference list is stale
+## 10. The root `tsconfig.json` reference list is intentionally partial
 
-**Symptom:** a TypeScript solution build (`tsc -b`) complains about
-`libs/shared/ui-home-components/tsconfig.lib.json`.
+**Not a live trap — nothing in this repo runs `tsc -b`.** The root `tsconfig.json` lists **34**
+project references for a workspace of **119** projects. That was never meant to be a complete list:
+Angular's builder resolves each project through its own `tsconfig.app.json`, so `npm run build:all`
+and `npm run lint` never read the root file's reference graph at all.
 
-**Why:** the root `tsconfig.json` lists **35** project references for a workspace of **112**
-projects, and one of them (`tsconfig.json:81`) points at `libs/shared/ui-home-components`, a library
-that no longer exists.
-
-This is latent, not breaking: Angular's builder uses each project's own tsconfig, so
-`npm run build:all` and `npm run lint` both pass. But the list is neither complete nor maintained.
+The one thing this list used to get wrong — a reference to `libs/shared/ui-home-components`, a
+library that had been deleted — has been fixed; the list is now 34 references and **0 dangling**.
 
 **Consequence for you:** when adding a library, **do not** add a root `tsconfig.json` reference.
 Nothing reads that list as an authority, and adding to a partial list makes it look maintained when
@@ -205,14 +227,45 @@ it is not.
 
 ---
 
+## 11. A case-only rename does nothing on this machine
+
+**Symptom:** you rename `Preview.ts` to `preview.ts` (case only), `git status` shows a clean working
+tree, the change builds locally — and case-sensitive CI then fails to find the file, or an import
+resolves to the wrong casing.
+
+**Why:** this repo's `.git/config` has `core.ignorecase=true` (the Windows/NTFS default), and NTFS
+itself is case-insensitive. A rename that only changes case looks like a no-op to the filesystem, so
+Git's index keeps the **old** casing even though the file on disk — and in your editor — now reads
+correctly. `git status` is not lying about the working tree; it is comparing against an index that
+already silently "matches," so it is the wrong tool to trust here.
+
+Real example from this workspace: `libs/core/src/lib/interface/Preview.ts` and
+`libs/core/src/lib/utils/Preview-css-parser.ts` were renamed to `preview.ts` and
+`preview-css-parser.ts`.
+
+**Fix:** force the rename through Git explicitly:
+
+```bash
+git mv --force Preview.ts preview.ts
+```
+
+**Verification:** use `git ls-files`, **not** `git status` — `git status` is exactly the command this
+trap hides from:
+
+```bash
+git ls-files | grep -i preview
+```
+
+If that still prints the old casing, the index has not moved and CI will still fail.
+
+---
+
 ## Known-open items (not bugs you introduced)
 
-| Item                                                                                                | Where                                                                             |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `@font-face BlackOpsOne` declared twice, pointing at a `.ttf` that does not exist                   | [deep-dives/theming.md](./deep-dives/theming.md#known-issue-the-blackopsone-font) |
-| owner-dashboard's inlined theme is missing the 8 `--success`/`--warning` tokens the shared file has | [#8](#8-owner-dashboards-theme-css-is-a-fork)                                     |
-| Root `tsconfig.json` references a deleted library, and covers 35 of 112 projects                    | [#10](#10-the-root-tsconfigjson-reference-list-is-stale)                          |
-| user-site's initial bundle is ~1.20 MB against a 1 MB warning budget                                | `apps/user-site/project.json` budgets                                             |
-| Customer auth endpoints carry trailing slashes the owner endpoints lack                             | `libs/shared/data-access-auth/src/lib/auth.service.ts`                            |
+| Item                                                                                                                                                          | Where                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `@font-face BlackOpsOne` ships in one app's `assets/` only — user-site renders it via `ui-page-badge` and falls back to sans-serif                            | [deep-dives/theming.md](./deep-dives/theming.md#known-issue-the-blackopsone-font) |
+| Two apps exceed the 1 MB bundle _warning_ budget — user-site 1.23 MB, owner-dashboard 1.04 MB. Both are well under the 2 MB _error_ budget, so CI stays green | `apps/user-site/project.json` budgets                                             |
+| Customer auth endpoints carry trailing slashes the owner endpoints lack                                                                                       | `libs/shared/data-access-auth/src/lib/auth.service.ts`                            |
 
 None of these block work. They are listed so you do not spend an afternoon rediscovering one.

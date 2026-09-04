@@ -48,23 +48,35 @@ set: OKLCH colors, radii, the `dark` variant definition, scrollbar tokens, keyfr
 
 Hardcoded colors do not respond to dark mode and do not respond to a store's generated palette.
 
-### The three apps do not share this file equally
+### All three apps import this file directly
 
-| App                 | `src/styles.css`                                                                       |
-| ------------------- | -------------------------------------------------------------------------------------- |
-| **site-builder**    | 9 lines — Tailwind entry + `@import '../../../libs/core/src/styles/spartan-theme.css'` |
-| **user-site**       | 19 lines — the same import, plus a `scrollbar-gutter` rule                             |
-| **owner-dashboard** | **358 lines — a fully inlined copy. It does not import the shared file at all.**       |
+| App                 | `src/styles.css`                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **site-builder**    | 9 lines — Tailwind entry + `@import '../../../libs/core/src/styles/spartan-theme.css'` at line 9              |
+| **user-site**       | 19 lines — the same import at line 9, plus a `scrollbar-gutter` rule                                          |
+| **owner-dashboard** | 94 lines — the same import at line 12, plus a CDK-overlay import and an app-specific keyframe/transition tail |
 
-So a token you add to the shared file reaches site-builder and user-site, and **does not reach
-owner-dashboard**. When you touch theme tokens, edit all three.
+A token you add to the shared file now reaches **all three apps** — there is no per-app copy to keep
+in sync. owner-dashboard's `styles.css` used to be a fully inlined 358-line fork that predated this
+file and never imported it; it has since been rewritten down to 94 lines that import the shared file
+the same way the other two apps do.
 
-Measured drift today: owner-dashboard's copy is missing exactly **8 tokens** the shared file has —
-`--success`, `--success-foreground`, `--warning`, `--warning-foreground` and their `--color-*`
-counterparts. Nothing in `libs/owner-dashboard/**` currently uses them, so this is latent rather than a live
-bug — but `bg-success` in an owner-dashboard template would render as nothing.
+owner-dashboard's one app-specific _import_ is:
 
-> A comment in `apps/user-site/src/styles.css` claims "invento also imports that file". It does not.
+```css
+@import '@angular/cdk/overlay-prebuilt.css';
+```
+
+The shared theme file does not ship this stylesheet, so if CDK-overlay-positioned UI (menus, dialogs,
+popovers) looks unstyled in site-builder or user-site, this import is why — those two apps never
+needed it and never had it.
+
+> A comment in `apps/user-site/src/styles.css` says "invento also imports that file". "invento" is
+> the app's pre-rename name — `owner-dashboard` was renamed from `invento` (see the
+> `refactor(workspace): rename invento app and library scope to owner-dashboard` commit), and the
+> comment predates that rename. It was accurate to call it stale while owner-dashboard's styles.css
+> was still the 358-line inlined fork; now that owner-dashboard imports the shared file too, the
+> comment's claim is simply true.
 
 ### Per-store runtime theming
 
@@ -88,7 +100,7 @@ new preference, and do not add a `localStorage`-only setting.
 
 ## Spartan UI: six visual styles
 
-All 34 primitives support six styles — **nova, vega, lyra, maia, mira, luma** — resolved per instance
+All 40 primitives support six styles — **nova, vega, lyra, maia, mira, luma** — resolved per instance
 or globally.
 
 ```html
@@ -136,19 +148,35 @@ undoes it.
 
 ## Known issue: the `BlackOpsOne` font
 
-`@font-face BlackOpsOne` is declared **twice** and the file it points at does not exist:
+`@font-face BlackOpsOne` is declared **once**, at `libs/core/src/styles/spartan-theme.css:17-23`:
 
-| Location                                    | Declaration                                                                   |
-| ------------------------------------------- | ----------------------------------------------------------------------------- |
-| `libs/core/src/styles/spartan-theme.css:18` | `src: url('/assets/fonts/…ttf') format('truetype')` — valid syntax            |
-| `apps/owner-dashboard/src/styles.css:15`    | `src: url('/assets/fonts/…ttf') format('ttf')` — **invalid `format()` value** |
+```css
+@font-face {
+  font-family: 'BlackOpsOne';
+  src: url('/assets/fonts/BlackOpsOne-Regular.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+```
 
-There is no `assets/fonts/` directory in any app's `public/`, so the font never loads. Three places
-reference the family and silently fall back:
+The `.ttf` it points at exists in exactly one place: `apps/site-builder/src/assets/fonts/`. Neither
+`apps/user-site/src/assets/` nor `apps/owner-dashboard/src/assets/` has a `fonts/` directory at all.
 
-- `libs/shared/ui-page-header/src/lib/page-header.css`
-- `libs/shared/ui-page-badge/src/lib/page-badge.css`
-- `libs/site-builder/feature-builder/src/lib/pages/preview/preview.css`
+Three places reference the `BlackOpsOne` family:
 
-Fixing it means either shipping the `.ttf` or removing the declarations and the three references.
-Left as-is deliberately rather than changed mid-restructure.
+- `libs/shared/ui-page-header/src/lib/page-header.css` — consumed only from within `site-builder`
+  (the ai-interview, brainstorm, preview, validation and pipeline pages), so the font resolves and
+  renders there.
+- `libs/site-builder/feature-builder/src/lib/pages/preview/preview.css` — same, site-builder only.
+- `libs/shared/ui-page-badge/src/lib/page-badge.css` — consumed by
+  `libs/user-site/feature-product/src/lib/components/product-card/product-card.ts`. **user-site has
+  no copy of the `.ttf`**, so `/assets/fonts/BlackOpsOne-Regular.ttf` 404s there and the badge falls
+  back to `sans-serif` silently — no visible error, just the wrong typeface.
+
+owner-dashboard consumes neither `ui-page-header` nor `ui-page-badge`, so it is unaffected either way.
+
+**Fix options** (neither has been done): ship a copy of the `.ttf` under `apps/user-site/src/assets/`
+(and `apps/owner-dashboard/src/assets/` for parity), or move the font to a single shared asset path
+wired into all three apps' `project.json` `assets` arrays so there is one copy instead of a per-app
+one to keep in sync.

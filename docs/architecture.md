@@ -11,7 +11,7 @@ How this workspace is shaped, why, and the rules that keep it that way.
 
 ## The mental model in one paragraph
 
-This is an **Nx monorepo of 112 projects**: 3 Angular applications and 109 libraries. The
+This is an **Nx monorepo of 119 projects**: 3 Angular applications and 116 libraries. The
 applications are deliberately almost empty — they bootstrap, they wire configuration, and they map
 URLs onto libraries. **All real code lives in `libs/`.** Every project declares two tags, one saying
 _who it belongs to_ (`scope:`) and one saying _what kind of thing it is_ (`type:`). ESLint enforces
@@ -48,13 +48,13 @@ app may hold: bootstrap files, its route table, its `AUTH_CONFIG` wiring, its `s
 ## The two axes
 
 Every project carries **exactly one `scope:` tag and exactly one `type:` tag**. No exceptions — all
-112 are verified to have both.
+119 are verified to have both.
 
 ### `scope:` — who owns it
 
 | Scope                   | Root                                                      | Meaning                                               | Projects |
 | ----------------------- | --------------------------------------------------------- | ----------------------------------------------------- | -------- |
-| `scope:shared`          | `libs/shared/*`, `libs/ui/*`, `libs/stepper`, `libs/core` | Usable by any app. May not depend on any app's scope. | 67       |
+| `scope:shared`          | `libs/shared/*`, `libs/ui/*`, `libs/stepper`, `libs/core` | Usable by any app. May not depend on any app's scope. | 74       |
 | `scope:owner-dashboard` | `libs/owner-dashboard/*` + `apps/owner-dashboard`         | Admin-dashboard domain                                | 25       |
 | `scope:user-site`       | `libs/user-site/*` + `apps/user-site`                     | Storefront domain                                     | 14       |
 | `scope:site-builder`    | `libs/site-builder/*` + `apps/site-builder`               | Builder domain                                        | 6        |
@@ -114,9 +114,10 @@ The error names both tags. Three legitimate fixes, in order of preference:
 
 1. **Move the code to `shared`** — if two scopes genuinely need it.
 2. **Change the `type:` tag** — if the tag is simply wrong. A "presentational" component that reads
-   live session state is not `type:ui`; it is `type:feature`. `owner-dashboard-ui-shell` and
-   `user-site-ui-storefront` are both tagged `type:feature` for exactly this reason, despite the
-   `ui-` prefix in their directory names.
+   live session state is not `type:ui`; it is `type:feature`. `owner-dashboard-feature-shell` and
+   `user-site-feature-storefront` (renamed from `ui-shell`/`ui-storefront`) are both tagged
+   `type:feature` for exactly this reason — the honest fix was renaming the directory to match the
+   tag, not adding an exemption.
 3. **Invert the dependency** — pass the data in as an input instead of reaching for it.
 
 Adding an entry to the `allow` list is **not** on that list. It has been empty since the restructure,
@@ -124,35 +125,61 @@ and every exemption that ever existed was fixed at the source instead of silence
 
 ---
 
-## Naming: path, project name, and import alias are three different things
+## Naming: one scheme derives name and alias from path
 
-This is the single most common time-waster in this workspace. **66 of 109 libraries** have an Nx
-project name that is not derivable from their directory path, because `scope:shared` libraries drop
-the scope prefix while the other three scopes keep it.
+This used to be the single most common time-waster in this workspace: 66 of 109 libraries had an Nx
+project name that wasn't derivable from their directory path, because `scope:shared` libraries
+dropped the scope prefix while the other three scopes kept it. That inconsistency is fixed — **every
+`libs/shared/*` library was renamed to carry the `shared-` prefix** — so there is now exactly one
+derivation rule, with three narrow, deliberate exceptions:
+
+```
+apps/<app>                    ->  <app>
+libs/shared/<dir>             ->  shared-<dir>
+libs/owner-dashboard/<dir>    ->  owner-dashboard-<dir>
+libs/user-site/<dir>          ->  user-site-<dir>
+libs/site-builder/<dir>       ->  site-builder-<dir>
+libs/ui/<primitive>           ->  <primitive>       (bare — see below)
+libs/core                     ->  core              (bare — see below)
+libs/stepper                  ->  stepper           (bare — see below)
+```
 
 | Directory                               | Nx project name<br>(`nx lint` / `nx build`) | Import alias<br>(`import … from`)           |
 | --------------------------------------- | ------------------------------------------- | ------------------------------------------- |
-| `libs/shared/ui-loader`                 | `ui-loader`                                 | `@invento/shared-ui-loader`                 |
-| `libs/shared/data-access-auth`          | `data-access-auth`                          | `@invento/shared-data-access-auth`          |
-| `libs/shared/util-i18n`                 | `util-i18n`                                 | `@invento/shared-util-i18n`                 |
+| `libs/shared/ui-loader`                 | `shared-ui-loader`                          | `@invento/shared-ui-loader`                 |
+| `libs/shared/data-access-auth`          | `shared-data-access-auth`                   | `@invento/shared-data-access-auth`          |
+| `libs/shared/util-i18n`                 | `shared-util-i18n`                          | `@invento/shared-util-i18n`                 |
 | `libs/owner-dashboard/feature-products` | `owner-dashboard-feature-products`          | `@invento/owner-dashboard-feature-products` |
 | `libs/user-site/data-access-cart`       | `user-site-data-access-cart`                | `@invento/user-site-data-access-cart`       |
 | `libs/site-builder/feature-home`        | `site-builder-feature-home`                 | `@invento/site-builder-feature-home`        |
 | `libs/ui/button`                        | `button`                                    | `@spartan/helm/button`                      |
-| `libs/stepper`                          | `spartan-stepper`                           | `@spartan/helm/stepper`                     |
+| `libs/stepper`                          | `stepper`                                   | `@spartan/helm/stepper`                     |
 | `libs/core`                             | `core`                                      | `@invento/core`                             |
 
 ```bash
-npx nx lint shared-ui-loader   # ✗ Cannot find project 'shared-ui-loader'
-npx nx lint ui-loader          # ✅
+npx nx lint ui-loader          # ✗ Cannot find project 'ui-loader'
+npx nx lint shared-ui-loader   # ✅
 ```
+
+**The three bare exceptions don't take a scope prefix, for two different reasons.** `libs/ui/*` is
+Spartan-generated code, addressed via `@spartan/helm/<name>` rather than the
+`@invento/<scope>-<type>-<name>` convention — prefixing it `ui-` would collide with the 20
+`libs/shared/ui-*` presentational libraries. `libs/core` and `libs/stepper` are each a single
+standalone project, not a domain library sitting under a scope directory, so there is no `<dir>` to
+prefix.
+
+This is no longer a convention you have to remember correctly: `scripts/check-project-names.mjs`
+derives the required name for every `project.json` from its path and fails the ones that don't
+match. It runs in `.husky/pre-commit` and as the first step of CI (`npm run check:names`, then
+`.github/workflows/verify.yml`) — a project name cannot drift from its path again without failing
+the commit or the build.
 
 **Don't guess — look it up.** [workspace-map.md](./workspace-map.md) lists all three columns for
 every project, or ask Nx directly:
 
 ```bash
-npx nx show projects                    # every project name
-npx nx show project ui-loader --json    # one project's root, tags, targets
+npx nx show projects                            # every project name
+npx nx show project shared-ui-loader --json    # one project's root, tags, targets
 ```
 
 ### The alias convention
@@ -171,7 +198,7 @@ app can import its own files via `@invento/<app>/*` (e.g. `@invento/user-site/*`
 `apps/user-site/src/*`) — that exemption is scoped to that app's own directory and cannot leak to
 another project.
 
-There are **115 aliases** registered in `tsconfig.base.json` (77 `@invento/*`, 38 `@spartan/*`).
+There are **120 aliases** registered in `tsconfig.base.json` (78 `@invento/*`, 42 `@spartan/*`).
 **A new library does not resolve until you add its alias there.** Deep relative paths into another
 library (`../../other-lib/src/lib/thing`) are always wrong and will fail lint.
 
@@ -216,9 +243,12 @@ export { extractErrorMessage } from './lib/error.utils';
 ```
 
 A feature exports **routes** so an app cannot bypass routing and mount a page component directly.
-Four libraries document a deliberate exception in their own `index.ts` — `owner-dashboard-ui-shell`,
-`user-site-ui-storefront`, `user-site-feature-product`, and `user-site-feature-chatbot`. Read the
-comment there before copying the pattern.
+Four libraries take a deliberate exception: `owner-dashboard-feature-shell`,
+`user-site-feature-storefront`, `user-site-feature-product` and `user-site-feature-chatbot`. Three of
+them explain themselves in a comment at the top of their own `index.ts` — read it before copying the
+pattern. `owner-dashboard-feature-shell` carries no such comment (it appears to have been lost when
+the library was renamed from `ui-shell`), even though `user-site-feature-storefront` cites it as the
+precedent it followed.
 
 ---
 
@@ -248,7 +278,7 @@ npm run start:user-site        # user-site only
 npm run start:owner-dashboard  # owner-dashboard only
 
 npm run build:all              # nx run-many -t build   — the 3 apps (see note below)
-npm run lint                   # nx run-many -t lint    — all 112 projects
+npm run lint                   # nx run-many -t lint    — all 119 projects
 npm run format                 # prettier --write .     (does NOT touch libs/ — see traps.md)
 
 npx nx build user-site                         # one project
@@ -257,7 +287,7 @@ npx nx graph                                   # interactive dependency graph in
 npx nx show projects --affected                # what your change actually touches
 ```
 
-**Why `lint` covers 112 projects and `build` covers 3:** every project has a `lint` target, but only
+**Why `lint` covers 119 projects and `build` covers 3:** every project has a `lint` target, but only
 the three applications have a `build` target. Libraries are consumed **from source** through
 `tsconfig.base.json` path aliases — they are never packaged. (`nx.json` documents why: per-library
 `ng-packagr` packaging is broken by design here, since the Spartan libraries share source across
@@ -277,9 +307,6 @@ Grepping `apps/` will mostly find nothing — the code is not there. In order of
 2. **`npx nx graph`** — click a project to see its dependents and dependencies.
 3. **`npx nx show projects --affected`** after touching a file — tells you what depends on it.
 4. `grep -rn "ClassName" libs/ --include=*.ts` — last resort, but scoped to `libs/`.
-
-Ignore `docs/dependency-graph.html` and `docs/static/` — that is a committed `nx graph` export from
-before the restructure and it is stale. Run `npx nx graph` instead; that is always current.
 
 ---
 

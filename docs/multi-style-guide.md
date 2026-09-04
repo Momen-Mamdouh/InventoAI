@@ -456,7 +456,7 @@ Import the component's `Imports` array and add an `hlmStyle`-bound section to `s
 
 **Route:** `/style-test`
 
-**File:** `src/app/pages/style-test/style-test.ts`
+**File:** `libs/site-builder/feature-home/src/lib/pages/style-test/style-test.ts`
 
 A visual showcase of all converted components. Features:
 

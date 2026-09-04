@@ -1,6 +1,6 @@
 # InventoAI — Frontend
 
-An Nx monorepo of **three Angular 22 applications** backed by 109 shared libraries. All three are
+An Nx monorepo of **three Angular 22 applications** backed by 116 libraries. All three are
 server-rendered.
 
 | App                 | What it does                                                      | Dev port |
@@ -31,7 +31,7 @@ You will need the backend running on `:3000` for anything that touches data.
 ## Before you push
 
 ```bash
-npm run lint              # all 112 projects
+npm run lint              # all 119 projects
 npm run build:all         # builds the 3 apps (only apps have a build target)
 npm run format:check
 ```
@@ -53,7 +53,7 @@ imports are legal. Putting a component in the wrong place fails lint, not review
 | ------------------------------------------------ | ------------------------------------------ |
 | [docs/architecture.md](./docs/architecture.md)   | The structure and the boundary rules       |
 | [docs/adding-code.md](./docs/adding-code.md)     | Where your code goes, with recipes         |
-| [docs/workspace-map.md](./docs/workspace-map.md) | Which library owns what — all 112 projects |
+| [docs/workspace-map.md](./docs/workspace-map.md) | Which library owns what — all 119 projects |
 | [docs/traps.md](./docs/traps.md)                 | The things that will surprise you          |
 
 ---
@@ -69,11 +69,11 @@ Spartan UI (Helm) · Express 5 SSR · i18n `en`/`ar` with RTL.
 apps/            3 thin application shells — bootstrap, routes, config
 libs/
   core/          legacy shared core (preview engine, theme tokens)
-  shared/        cross-app: auth, ~19 ui components, ~10 util libraries
+  shared/        cross-app: auth, 20 ui components, 10 util libraries
   owner-dashboard/ admin dashboard domain
   user-site/     storefront domain
   site-builder/  builder domain
-  ui/            34 Spartan UI primitives, one project each
+  ui/            40 Spartan UI primitives, one project each
 docs/            the handbook
 ```
 

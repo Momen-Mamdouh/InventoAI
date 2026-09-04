@@ -53,7 +53,7 @@ function requiredNameFor(relPath) {
     if (scope === 'ui') {
       // libs/ui/* is Spartan-generated code, consumed via @spartan/helm/<name>
       // aliases rather than the @invento/<scope>-<type>-<name> convention.
-      // Prefixing it "ui-" would collide with the 22 libs/shared/ui-*
+      // Prefixing it "ui-" would collide with the 20 libs/shared/ui-*
       // presentational libraries, so it stays bare.
       return dir;
     }

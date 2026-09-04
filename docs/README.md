@@ -10,7 +10,7 @@ If you are new, read in this order. Total time to productive: about an hour.
 
 | #   | Read                                 | Why                                                                            |
 | --- | ------------------------------------ | ------------------------------------------------------------------------------ |
-| 1   | [architecture.md](./architecture.md) | The whole model: 3 thin apps, 109 libraries, and the tag rules that bind them. |
+| 1   | [architecture.md](./architecture.md) | The whole model: 3 thin apps, 116 libraries, and the tag rules that bind them. |
 | 2   | [adding-code.md](./adding-code.md)   | Where your code goes, with copy-pasteable recipes.                             |
 | 3   | [traps.md](./traps.md)               | Skim it. Come back the first time something behaves unexpectedly.              |
 
@@ -37,20 +37,19 @@ the most common source of "worked locally, broke in production" here.
 
 | Document                                                                       | Contents                                                |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------- |
-| [workspace-map.md](./workspace-map.md)                                         | All 112 projects — path, Nx name, import alias, purpose |
+| [workspace-map.md](./workspace-map.md)                                         | All 119 projects — path, Nx name, import alias, purpose |
 | [style-system.md](./style-system.md)                                           | How the six Spartan visual styles resolve               |
 | [multi-style-guide.md](./multi-style-guide.md)                                 | Per-component style reference                           |
 | [adr/0001-nx-workspace-restructure.md](./adr/0001-nx-workspace-restructure.md) | Why the workspace looks like this, and what it cost     |
-
-> **Ignore `NX-MONOREPO-GUIDE.md`, `dependency-graph.html`, and `static/`.** They describe the
-> pre-restructure workspace and are kept only as history. The guide carries a banner saying so.
 
 ---
 
 ## The five things that will bite you first
 
-1. **The Nx project name is not the import alias.** `libs/shared/ui-loader` is project `ui-loader`
-   but imports as `@invento/shared-ui-loader`. Look it up in
+1. **The Nx project name is derived from the path — but it is not the import alias verbatim.**
+   `libs/shared/ui-loader` is project `shared-ui-loader` and imports as
+   `@invento/shared-ui-loader`; the alias is the name with an `@invento/` prefix. The bare
+   exceptions are `libs/ui/*`, `libs/core` and `libs/stepper`. Look it up in
    [workspace-map.md](./workspace-map.md).
 2. **A new library does not resolve until its alias is in `tsconfig.base.json`.**
 3. **Run lint _and_ build.** ESLint does not typecheck module resolution, so lint can be green while
@@ -66,7 +65,7 @@ the most common source of "worked locally, broke in production" here.
 npm ci                    # install
 npm run start:all         # all three apps: 4200 / 4300 / 4400
 
-npm run lint              # all 112 projects
+npm run lint              # all 119 projects
 npm run build:all         # builds the 3 apps (only apps have a build target)
 npm run format:check      # prettier (skips libs/)
 
