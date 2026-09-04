@@ -47,21 +47,49 @@ or commit-message error, that is the hooks working as intended — see [section 
 
 ## 3. Environment files
 
-Almost all environment files are committed. **Exactly one is not**, because it holds a dev API key:
+**`.env` is the single source of truth, and there is no required setup step** — the generator has
+defaults for every key, so a fresh clone builds correctly without a `.env` at all. Create one only
+when you need to change a value:
 
 ```bash
-cp apps/site-builder/src/environments/environment.example.ts \
-   apps/site-builder/src/environments/environment.ts
+cp env.example .env
+npm run generate:env
 ```
 
-Then open it and fill in your own values. The template documents each field. The other two apps
-(`user-site`, `owner-dashboard`) need nothing — their environment files are in the repo.
+`env.example` is the committed, documented template.
 
-Production builds never read `environment.ts`; `project.json` swaps in `environment.prod.ts` through
-`fileReplacements`.
+### How it works
 
-> Nothing in these files is secret beyond the API key — the API URL and Google OAuth client ID ship
-> in the browser bundle by design.
+`scripts/generate-env.mjs` reads `.env` and writes each app's two environment files, which the build
+compiles in. **Those six files are generated and gitignored — never edit them by hand.** They are
+recreated by `postinstall`, by every `start:*` and `build` script, and by an Nx `dependsOn` on each
+app's `build`, `typecheck` and `serve`, so `npx nx build user-site` works on a clean tree too.
+
+| File                         | Used by                | `production` |
+| ---------------------------- | ---------------------- | ------------ |
+| `environment.ts`             | production builds      | `true`       |
+| `environment.development.ts` | `serve` and dev builds | `false`      |
+
+The swap happens through `fileReplacements` under the **`development`** configuration in each app's
+`project.json`. In `.env`, production keys are bare (`USER_SITE_API_URL`) and development keys take a
+`_DEV` suffix (`USER_SITE_API_URL_DEV`).
+
+Precedence, highest first: **real environment variables → `.env` → `env.example`.** The generator
+reads `env.example` as its lowest layer rather than hardcoding values, so the committed defaults are
+the effective ones and cannot drift; a key missing from it is a hard error. That is what
+makes deployment configuration a setting rather than a code change — set the production keys in your
+host's project settings (Vercel, etc.) and they outrank `.env` with no edit to any file.
+
+Useful commands:
+
+| Command                | Does                                                          |
+| ---------------------- | ------------------------------------------------------------- |
+| `npm run generate:env` | rewrite the environment files from `.env`                     |
+| `npm run check:env`    | report whether they are stale, without writing (exit 1 if so) |
+
+> **Nothing in `.env` is secret.** Every value is compiled into the browser bundle and is readable by
+> anyone who loads the site. `.env` buys configurability, not confidentiality — never put an API key,
+> token or password in it. Real secrets belong to the backend only.
 
 ---
 

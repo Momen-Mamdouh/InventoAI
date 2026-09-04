@@ -6,6 +6,14 @@
   "sourceRoot": "apps/owner-dashboard/src",
   "tags": ["type:app", "scope:owner-dashboard"],
   "targets": {
+    "generate-env": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node scripts/generate-env.mjs",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
@@ -54,7 +62,8 @@
             }
           ]
         }
-      }
+      },
+      "dependsOn": ["generate-env"]
     },
     "serve": {
       "continuous": true,
@@ -71,7 +80,8 @@
         "development": {
           "buildTarget": "owner-dashboard:build:development"
         }
-      }
+      },
+      "dependsOn": ["generate-env"]
     },
     "serve-static": {
       "continuous": true,
@@ -97,7 +107,8 @@
       "options": {
         "command": "ngc -p apps/owner-dashboard/tsconfig.app.json --noEmit --rootDir .",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "dependsOn": ["generate-env"]
     }
   }
 }

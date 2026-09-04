@@ -90,6 +90,19 @@ seam that connects this app back to site-builder.
 `SITE_BUILDER_URL` is injected from `environment.siteBuilderUrl` so the dashboard can link an owner
 back into the wizard.
 
+### Environment
+
+Both environment files are **generated from the root `.env` by `scripts/generate-env.mjs` and are
+gitignored** — edit `.env`, never the generated files. See
+[SETUP.md](../../SETUP.md#3-environment-files). The keys are `OWNER_DASHBOARD_API_URL` /
+`OWNER_DASHBOARD_SITE_BUILDER_URL` and their `_DEV` counterparts.
+
+`OWNER_DASHBOARD_API_URL_DEV` is **deliberately empty, and empty is not the same as unset.** An
+empty `apiUrl` keeps every dev request relative to `localhost:4400` so it reaches the API through
+`proxy.conf.js`. Pointing it straight at the API's own host makes every call cross-origin, and login
+dies on a CORS preflight because the API's `CORS_ORIGINS` does not list port 4400. The generator
+resolves keys by presence rather than truthiness precisely so this value survives.
+
 ### Dev proxy
 
 `apps/owner-dashboard/proxy.conf.js` is the most substantial of the three: **16 route prefixes**

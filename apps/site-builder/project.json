@@ -6,6 +6,14 @@
   "prefix": "app",
   "tags": ["type:app", "scope:site-builder"],
   "targets": {
+    "generate-env": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node scripts/generate-env.mjs",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "build": {
       "executor": "@angular/build:application",
       "options": {
@@ -27,12 +35,6 @@
       },
       "configurations": {
         "production": {
-          "fileReplacements": [
-            {
-              "replace": "apps/site-builder/src/environments/environment.ts",
-              "with": "apps/site-builder/src/environments/environment.prod.ts"
-            }
-          ],
           "budgets": [
             {
               "type": "initial",
@@ -50,11 +52,18 @@
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/site-builder/src/environments/environment.ts",
+              "with": "apps/site-builder/src/environments/environment.development.ts"
+            }
+          ]
         }
       },
       "defaultConfiguration": "production",
-      "outputs": ["{options.outputPath}"]
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["generate-env"]
     },
     "serve": {
       "executor": "@angular/build:dev-server",
@@ -70,7 +79,8 @@
       "options": {
         "port": 4200,
         "proxyConfig": "apps/site-builder/proxy.conf.json"
-      }
+      },
+      "dependsOn": ["generate-env"]
     },
     "serve-static": {
       "continuous": true,
@@ -99,7 +109,8 @@
       "options": {
         "command": "ngc -p apps/site-builder/tsconfig.app.json --noEmit --rootDir .",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "dependsOn": ["generate-env"]
     }
   }
 }

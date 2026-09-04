@@ -89,9 +89,20 @@ which is why `shared-data-access-auth` never imports `BuilderState`.
 
 ### Environment
 
-`apps/site-builder/src/environments/environment.ts` supplies `production`, `apiUrl` and
-`googleClientId`. It holds no secret — both values ship in the browser bundle — but it is
-gitignored, so a fresh clone must create it. See [SETUP.md](../../SETUP.md).
+`apps/site-builder/src/environments/environment.ts` supplies `production`, `apiUrl`,
+`googleClientId` and `inventoDashboardUrl`. It holds no secret — every value ships in the browser
+bundle.
+
+`environment.ts` carries the **production** values; the `development` configuration swaps in
+`environment.development.ts` via `fileReplacements`. Both are **generated from the root `.env` by
+`scripts/generate-env.mjs` and are gitignored** — edit `.env` (keys `SITE_BUILDER_API_URL`,
+`SITE_BUILDER_DASHBOARD_URL`, optional `SITE_BUILDER_LOGIN_URL`, plus their `_DEV` counterparts),
+never the generated files. See [SETUP.md](../../SETUP.md#3-environment-files).
+
+`production` is load-bearing here, not decorative: `ApiConfig.resolveDashboardUrl()` and
+`resolveLoginUrl()` (`libs/site-builder/data-access-preview/src/lib/api-config.ts:55,69`) branch on
+it to pick between the deployed owner-dashboard and `localhost:4400`. An `environment.ts` that
+claims `production: true` while being served in dev sends every dashboard link to production.
 
 ### Dev proxy
 

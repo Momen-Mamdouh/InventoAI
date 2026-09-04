@@ -6,6 +6,14 @@
   "sourceRoot": "apps/user-site/src",
   "tags": ["type:app", "scope:user-site"],
   "targets": {
+    "generate-env": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node scripts/generate-env.mjs",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
@@ -46,9 +54,16 @@
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/user-site/src/environments/environment.ts",
+              "with": "apps/user-site/src/environments/environment.development.ts"
+            }
+          ]
         }
-      }
+      },
+      "dependsOn": ["generate-env"]
     },
     "serve": {
       "continuous": true,
@@ -64,7 +79,8 @@
         "development": {
           "buildTarget": "user-site:build:development"
         }
-      }
+      },
+      "dependsOn": ["generate-env"]
     },
     "serve-static": {
       "continuous": true,
@@ -87,7 +103,8 @@
       "options": {
         "command": "ngc -p apps/user-site/tsconfig.app.json --noEmit --rootDir .",
         "cwd": "{workspaceRoot}"
-      }
+      },
+      "dependsOn": ["generate-env"]
     }
   }
 }

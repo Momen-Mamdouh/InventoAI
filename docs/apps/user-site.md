@@ -106,6 +106,14 @@ that agree only until the first language switch.
 `environment.ts` supplies `production`, `apiUrl` and `googleClientId`. **user-site has no dev proxy
 config** — unlike the other two apps, it calls `apiUrl` directly.
 
+Both environment files are **generated from the root `.env` by `scripts/generate-env.mjs` and are
+gitignored** — edit `.env` (keys `USER_SITE_API_URL` and `USER_SITE_API_URL_DEV`), never the
+generated files. See [SETUP.md](../../SETUP.md#3-environment-files).
+
+Because user-site talks to `apiUrl` directly with no proxy, that value is the only thing standing
+between a dev session and the production API — worth double-checking before pointing it anywhere
+shared.
+
 ---
 
 ## SSR

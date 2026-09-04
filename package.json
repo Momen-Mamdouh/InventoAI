@@ -2,13 +2,15 @@
   "name": "invento-ai",
   "version": "0.0.0",
   "scripts": {
+    "generate:env": "node scripts/generate-env.mjs",
+    "check:env": "node scripts/generate-env.mjs --check",
     "ng": "nx",
-    "start": "nx serve site-builder -p 4200",
-    "start:user-site": "nx serve user-site -p 4300",
-    "start:owner-dashboard": "nx serve owner-dashboard -p 4400",
-    "start:all": "nx run-many -t serve --projects=site-builder,user-site,owner-dashboard",
-    "build": "nx build site-builder",
-    "build:all": "nx run-many -t build",
+    "start": "npm run generate:env && nx serve site-builder -p 4200",
+    "start:user-site": "npm run generate:env && nx serve user-site -p 4300",
+    "start:owner-dashboard": "npm run generate:env && nx serve owner-dashboard -p 4400",
+    "start:all": "npm run generate:env && nx run-many -t serve --projects=site-builder,user-site,owner-dashboard",
+    "build": "npm run generate:env && nx build site-builder",
+    "build:all": "npm run generate:env && nx run-many -t build",
     "test": "nx test site-builder",
     "test:all": "nx run-many -t test",
     "lint": "nx run-many -t lint",
@@ -17,7 +19,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:names": "node scripts/check-project-names.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "node scripts/generate-env.mjs"
   },
   "lint-staged": {
     "*.ts": [
