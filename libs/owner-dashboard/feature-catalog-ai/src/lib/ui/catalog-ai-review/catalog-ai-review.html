@@ -1,0 +1,236 @@
+<div class="max-w-5xl mx-auto p-6 space-y-8">
+  <div class="flex items-center justify-between">
+    <h1 hlmH1 class="text-gray-900 dark:text-white">
+      AI Catalog Generator
+    </h1>
+  </div>
+
+  <!-- Idle State -->
+  @if (status() === 'idle') {
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8"
+    >
+      <h2 hlmH2 class="mb-4 text-gray-800 dark:text-gray-100">
+        Describe your catalog needs
+      </h2>
+      <p hlmMuted class="text-gray-500 dark:text-gray-400 mb-6">
+        Our AI will generate a complete catalog structure including categories and attributes based
+        on your store's profile and any specific instructions you provide below.
+      </p>
+
+      <div class="space-y-4">
+        <div>
+          <label hlmLabel for="instructions" class="block text-sm font-medium mb-1"
+            >Optional Instructions (Max 500 chars)</label
+          >
+          <textarea hlmTextarea
+            id="instructions"
+            [(ngModel)]="instructions"
+            rows="4"
+            placeholder="e.g. focus on modest eveningwear, we do not sell shoes"
+            class="w-full text-base px-4 py-3"
+          ></textarea>
+        </div>
+
+        <button
+          hlmBtn
+          (click)="generateCatalog()"
+          class="w-full !py-6 text-base font-semibold flex items-center justify-center gap-2"
+        >
+          <ng-icon name="lucideWand2" size="20"></ng-icon>
+          Generate Catalog Structure
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Loading States -->
+  @if (status() === 'generating' || status() === 'applying') {
+    <div
+      class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
+    >
+      <hlm-spinner class="text-[48px] text-blue-600 dark:text-blue-400 mb-4" />
+      <h3 hlmH3 class="text-gray-900 dark:text-white">
+        {{
+          status() === 'generating'
+            ? 'AI is generating your catalog...'
+            : 'Applying catalog to your store...'
+        }}
+      </h3>
+      <p hlmMuted class="text-gray-500 dark:text-gray-400 mt-2">Please wait a moment.</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (status() === 'error') {
+    <div class="bg-destructive/10 border border-destructive/20 rounded-xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="p-2 bg-destructive/20 rounded-full text-destructive">
+          <ng-icon name="lucideAlertCircle" size="24"></ng-icon>
+        </div>
+        <div class="flex-1">
+          <h3 hlmH3 class="text-destructive">Something went wrong</h3>
+          <p hlmMuted class="text-destructive mt-1">{{ errorMessage() }}</p>
+          <button hlmBtn variant="outline" (click)="reset()" class="mt-4">Try Again</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Review State -->
+  @if (status() === 'review') {
+    <div class="space-y-6">
+      <div
+        class="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between"
+      >
+        <div>
+          <h3 hlmH3 class="text-primary">Review your AI-generated catalog</h3>
+          <p hlmMuted class="text-primary/80 mt-1">
+            Make any adjustments before applying it to your store.
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <button hlmBtn variant="outline" (click)="reset()">Discard</button>
+          <button hlmBtn (click)="applyCatalog()">Approve & Apply</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Categories List -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+        >
+          <div
+            class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
+          >
+            <h2 hlmH2 class="text-gray-900 dark:text-white">Categories</h2>
+            <p hlmMuted class="text-gray-500 dark:text-gray-400">
+              {{ categories().length }} proposed categories
+            </p>
+          </div>
+          <ul class="divide-y divide-border max-h-[600px] overflow-y-auto">
+            @for (cat of categories(); track $index) {
+              <li class="p-6 hover:bg-muted/50 transition-colors">
+                <div class="flex items-center gap-4">
+                  <hlm-checkbox [(ngModel)]="cat.selected" />
+                  <div class="flex-1">
+                    <input
+                      hlmInput
+                      [(ngModel)]="cat.name"
+                      class="w-full text-base px-4 !py-6"
+                      placeholder="Category Name"
+                    />
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Attributes List -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+        >
+          <div
+            class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50"
+          >
+            <h2 hlmH2 class="text-gray-900 dark:text-white">Attributes</h2>
+            <p hlmMuted class="text-gray-500 dark:text-gray-400">
+              {{ attributes().length }} proposed attributes
+            </p>
+          </div>
+          <ul class="divide-y divide-border max-h-[600px] overflow-y-auto">
+            @for (attr of attributes(); track $index; let i = $index) {
+              <li class="p-6 hover:bg-muted/50 transition-colors">
+                <div class="flex items-start gap-4">
+                  <hlm-checkbox [(ngModel)]="attr.selected" class="mt-4" />
+                  <div class="flex-1 space-y-4">
+                    <div class="flex gap-4">
+                      <div class="flex-1">
+                        <input
+                          hlmInput
+                          [(ngModel)]="attr.name"
+                          class="w-full text-base px-4 !py-6"
+                          placeholder="Attribute Name"
+                        />
+                      </div>
+                      <div class="w-1/3">
+                        <hlm-select
+                          [(value)]="attr.displayStyle"
+                          [itemToString]="displayStyleItemToString"
+                          class="w-full"
+                        >
+                          <hlm-select-trigger class="w-full text-base h-[50px] bg-background">
+                            <hlm-select-value />
+                          </hlm-select-trigger>
+                          <hlm-select-content *hlmSelectPortal>
+                            <hlm-select-item value="list">List</hlm-select-item>
+                            <hlm-select-item value="chip">Chip</hlm-select-item>
+                            <hlm-select-item value="dropdown">Dropdown</hlm-select-item>
+                            <hlm-select-item value="swatch">Swatch</hlm-select-item>
+                          </hlm-select-content>
+                        </hlm-select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div class="flex items-center gap-2 mb-2">
+                        <hlm-checkbox
+                          [(ngModel)]="attr.isVariantAxis"
+                          [inputId]="'variant-' + i"
+                        />
+                        <label hlmLabel [for]="'variant-' + i" class="text-sm"
+                          >Is Variant Axis (Changes Price/Stock)</label
+                        >
+                      </div>
+                    </div>
+
+                    <div>
+                      <span class="block text-xs font-medium uppercase tracking-wider mb-2"
+                        >Values</span
+                      >
+                      <div class="flex flex-wrap gap-2">
+                        @for (val of attr.values; track $index) {
+                          <div
+                            class="inline-flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full border border-border"
+                          >
+                            @if (attr.displayStyle === 'swatch') {
+                              <div
+                                class="w-4 h-4 rounded-full border border-border"
+                                [style.backgroundColor]="val.swatchHex || '#ccc'"
+                              ></div>
+                            }
+                            <input
+                              [(ngModel)]="val.value"
+                              class="bg-transparent border-none p-0 focus:ring-0 text-sm w-20"
+                            />
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Success State -->
+  @if (status() === 'success') {
+    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-8 text-center">
+      <div
+        class="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4 text-emerald-600"
+      >
+        <ng-icon name="lucideCheck" size="32"></ng-icon>
+      </div>
+      <h2 hlmH2 class="mb-2">Catalog Applied Successfully!</h2>
+      <p hlmMuted class="mb-6">
+        Your new AI-generated categories and attributes have been saved.
+      </p>
+      <button hlmBtn (click)="goToDashboard()">Go to Dashboard</button>
+    </div>
+  }
+</div>

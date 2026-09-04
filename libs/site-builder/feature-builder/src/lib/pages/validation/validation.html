@@ -1,0 +1,273 @@
+<div class="max-w-6xl mx-auto p-6 space-y-8">
+  <div class="flex flex-col gap-12 preview">
+    <div class="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-3 preview-header">
+      <app-page-header
+        badgeText="validation_badge"
+        title="validation_title"
+        accentTitle="validation_accent"
+        description="validation_desc"
+      />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+      @if (currentStep() === 'INPUT') {
+        <div hlmCard class="shadow-sm">
+          <div hlmCardHeader>
+            <h3
+              hlmCardTitle
+              class="text-xs font-mono text-muted-foreground uppercase tracking-wider"
+            >
+              <app-double-slash /> {{ 'validation_blueprint' | translate }}
+            </h3>
+            <p hlmCardDescription>
+              {{ 'validation_blueprint_desc' | translate }}
+            </p>
+          </div>
+
+          <div hlmCardContent class="space-y-5">
+            <div class="space-y-2">
+              <label
+                hlmLabel
+                for="bizName"
+                class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
+              >
+                <app-double-slash /> {{ 'validation_biz_name' | translate }}
+              </label>
+              <div class="relative">
+                <span
+                  class="absolute start-4 top-1/2 -translate-y-1/2 font-mono text-muted-foreground text-sm"
+                  >//</span
+                >
+                <input
+                  hlmInput
+                  id="bizName"
+                  type="text"
+                  [ngModel]="businessName()"
+                  (ngModelChange)="onBusinessNameChange($event)"
+                  maxLength="24"
+                  placeholder="{{ 'validation_placeholder_name' | translate }}"
+                  class="w-full ps-10 pe-16 font-medium font-mono"
+                />
+                <span
+                  class="absolute end-4 top-1/2 -translate-y-1/2 text-xs font-mono text-muted-foreground"
+                >
+                  {{ businessName().length }}/24
+                </span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label
+                hlmLabel
+                for="bizType"
+                class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
+              >
+                <app-double-slash /> {{ 'validation_biz_type' | translate }}
+              </label>
+              <div class="relative">
+                <input
+                  hlmInput
+                  id="bizType"
+                  type="text"
+                  [ngModel]="businessType()"
+                  (ngModelChange)="onBusinessTypeChange($event)"
+                  maxLength="40"
+                  placeholder="{{ 'validation_placeholder_type' | translate }}"
+                  class="w-full pe-16"
+                />
+                <span
+                  class="absolute end-4 top-1/2 -translate-y-1/2 text-[10px] font-mono text-muted-foreground"
+                >
+                  {{ businessType().length }}/40
+                </span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label
+                hlmLabel
+                for="bizAudience"
+                class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
+              >
+                <app-double-slash /> {{ 'validation_target_audience' | translate }}
+              </label>
+              <input
+                hlmInput
+                id="bizAudience"
+                type="text"
+                [ngModel]="targetAudience()"
+                (ngModelChange)="onTargetAudienceChange($event)"
+                placeholder="{{ 'validation_placeholder_audience' | translate }}"
+                class="w-full"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label
+                hlmLabel
+                for="bizDomain"
+                class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
+              >
+                <app-double-slash /> {{ 'validation_domain_name' | translate }}
+              </label>
+              <div class="relative">
+                <input
+                  hlmInput
+                  id="bizDomain"
+                  type="text"
+                  [ngModel]="domain()"
+                  (ngModelChange)="onDomainChange($event)"
+                  placeholder="{{ 'validation_placeholder_domain' | translate }}"
+                  class="w-full font-mono"
+                />
+              </div>
+              @if (domainSuggestions().length > 0) {
+                <div hlmAlert variant="destructive" class="bg-destructive/10 mt-3">
+                  <ng-icon name="lucideAlertTriangle" />
+                  <p hlmAlertTitle>{{ 'validation_domain_taken' | translate }}</p>
+                  <div hlmAlertDescription class="flex flex-wrap gap-2 mt-2">
+                    @for (suggestion of domainSuggestions(); track suggestion) {
+                      <button
+                        hlmBtn
+                        variant="outline"
+                        size="sm"
+                        class="text-xs font-mono"
+                        (click)="onDomainChange(suggestion)"
+                      >
+                        {{ suggestion }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-border bg-card p-6 space-y-4 shadow-sm">
+          <span
+            class="flex items-center gap-1 text-xs font-mono text-muted-foreground uppercase tracking-wider"
+          >
+            <app-double-slash /> {{ 'validation_live_checks' | translate }}
+          </span>
+
+          <div class="space-y-2">
+            @for (check of liveChecks(); track check.id) {
+              <div
+                class="flex items-center gap-3 p-3.5 rounded-lg border border-border/50 bg-background/50 transition-colors"
+              >
+                <div
+                  class="h-2 w-2 rounded-full transition-all duration-300"
+                  [class.bg-muted]="!businessName()"
+                  [class.bg-destructive]="businessName() && !check.passed"
+                  [class.bg-primary]="businessName() && check.passed"
+                ></div>
+                <div
+                  class="flex-1 text-sm font-medium"
+                  [class.text-muted-foreground]="!businessName()"
+                >
+                  {{ check.label | translate }}
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <div
+          hlmCard
+          class="p-16 flex flex-col items-center justify-center text-center space-y-5 shadow-sm border-dashed"
+        >
+          <div class="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+            <hlm-spinner class="text-3xl text-primary" />
+          </div>
+          <div class="space-y-2">
+            <h3 hlmH3>
+              {{ 'validation_analyzing' | translate }}
+            </h3>
+            <p hlmMuted class="max-w-sm mx-auto">
+              {{ 'validation_processing' | translate }} "<span class="font-bold text-foreground">{{
+                businessName()
+              }}</span
+              >" {{ 'validation_across' | translate }}
+            </p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="space-y-6">
+      <div
+        hlmCard
+        class="flex flex-col items-center justify-center text-center min-h-50 relative shadow-sm overflow-hidden"
+      >
+        <div
+          class="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none"
+        ></div>
+        <div class="space-y-5 z-10">
+          <div
+            class="h-20 w-20 mx-auto rounded-full border-2 border-border flex items-center justify-center bg-background shadow-inner relative"
+          >
+            @if (currentStep() === 'AI_ANALYSIS') {
+              <hlm-spinner class="text-3xl text-primary" />
+            } @else {
+              <ng-icon name="lucideSearch" class="text-3xl text-muted-foreground/50" />
+            }
+          </div>
+
+          <div class="space-y-1.5">
+            <p hlmMuted class="font-mono uppercase">
+              {{ 'validation_engine_status' | translate }}
+            </p>
+            <h3 hlmH3 class="text-foreground">
+              @if (currentStep() === 'AI_ANALYSIS') {
+                {{ 'validation_analyzing_matrix' | translate }}
+              } @else {
+                {{ 'validation_awaiting' | translate }}
+              }
+            </h3>
+          </div>
+        </div>
+      </div>
+
+      <div hlmCard class="shadow-sm">
+        <div hlmCardHeader class="p-5 pb-3">
+          <h3 hlmCardTitle class="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+            <app-double-slash /> {{ 'validation_build_context' | translate }}
+          </h3>
+        </div>
+        <div hlmCardContent class="p-5 pt-0 font-mono text-xs space-y-3">
+          <div class="flex justify-between border-b border-border/50 pb-2">
+            <span class="text-muted-foreground">{{ 'validation_target' | translate }}</span>
+            <span class="font-bold text-foreground">{{ businessName() || '---' }}</span>
+          </div>
+          <div class="flex justify-between border-b border-border/50 pb-2">
+            <span class="text-muted-foreground">{{ 'validation_sector' | translate }}</span>
+            <span class="font-bold text-foreground">{{ businessType() || '---' }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-muted-foreground">{{ 'validation_audience' | translate }}</span>
+            <span class="font-bold text-foreground">{{ targetAudience() || '---' }}</span>
+          </div>
+        </div>
+      </div>
+
+      @if (currentStep() === 'INPUT') {
+        <button
+          hlmBtn
+          class="w-full py-6 font-mono uppercase tracking-wider text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+          [disabled]="!canSubmit()"
+          (click)="finish()"
+        >
+          @if (isSubmitting()) {
+            <hlm-spinner class="text-base" />
+            <span>{{ 'loading_analyzing' | translate }}</span>
+          } @else {
+            <span>{{ 'btn_preview_site' | translate }}</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+</div>

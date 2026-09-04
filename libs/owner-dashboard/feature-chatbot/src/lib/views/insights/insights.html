@@ -1,0 +1,289 @@
+<div class="space-y-6 pt-6">
+  <div class="flex items-center justify-between">
+    <h2 hlmH2>Chatbot Insights</h2>
+    <hlm-select
+      [value]="daysFilter()"
+      (valueChange)="onDaysChange($event)"
+      [itemToString]="daysItemToString"
+      class="w-40"
+    >
+      <hlm-select-trigger class="bg-background shadow-2xs h-9 text-xs sm:text-sm">
+        <hlm-select-value />
+      </hlm-select-trigger>
+      <hlm-select-content *hlmSelectPortal>
+        @for (opt of daysOptions; track opt.value) {
+          <hlm-select-item [value]="opt.value">{{ opt.label }}</hlm-select-item>
+        }
+      </hlm-select-content>
+    </hlm-select>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-12">
+      <hlm-spinner class="text-[32px] text-primary" />
+    </div>
+  } @else if (errorState()) {
+    <div class="flex flex-col items-center justify-center py-16 text-center">
+      <div
+        class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4"
+      >
+        <ng-icon name="lucideAlertCircle" size="24" />
+      </div>
+      <h3 hlmH3>Failed to Load Insights</h3>
+      <p hlmMuted class="max-w-md mt-2">
+        We couldn't retrieve the chatbot statistics at this time. Please make sure the server is
+        running and try again.
+      </p>
+      <button hlmBtn variant="outline" class="mt-6 gap-2" (click)="loadStats()">Try Again</button>
+    </div>
+  } @else if (stats()) {
+    <!-- Top KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div hlmCard class="p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm font-medium text-muted-foreground">Total Sessions</span>
+          <div class="p-2 bg-primary/10 rounded-full text-primary">
+            <ng-icon name="lucideUsers" size="18" />
+          </div>
+        </div>
+        <div>
+          <h3 hlmH3>{{ stats()!.sessions | number }}</h3>
+          <p hlmMuted class="mt-1">
+            From {{ stats()!.from | date: 'mediumDate' }}
+          </p>
+        </div>
+      </div>
+
+      <div hlmCard class="p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm font-medium text-muted-foreground">Total Messages</span>
+          <div class="p-2 bg-blue-500/10 rounded-full text-blue-600 dark:text-blue-400">
+            <ng-icon name="lucideMessageSquare" size="18" />
+          </div>
+        </div>
+        <div>
+          <h3 hlmH3>{{ stats()!.messages | number }}</h3>
+          <p hlmMuted class="mt-1">Exchanged in chat</p>
+        </div>
+      </div>
+
+      <div hlmCard class="p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm font-medium text-muted-foreground">Questions Asked</span>
+          <div class="p-2 bg-indigo-500/10 rounded-full text-indigo-600 dark:text-indigo-400">
+            <ng-icon name="lucideHelpCircle" size="18" />
+          </div>
+        </div>
+        <div>
+          <h3 hlmH3>{{ stats()!.questions | number }}</h3>
+          <p hlmMuted class="mt-1">By customers</p>
+        </div>
+      </div>
+
+      <div
+        hlmCard
+        class="p-5 flex flex-col justify-between border-orange-200 dark:border-orange-900 bg-orange-50/30 dark:bg-orange-950/20"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm font-medium text-orange-800 dark:text-orange-200"
+            >Unanswered Themes</span
+          >
+          <div class="p-2 bg-orange-500/20 rounded-full text-orange-600 dark:text-orange-400">
+            <ng-icon name="lucideAlertCircle" size="18" />
+          </div>
+        </div>
+        <div>
+          <h3 hlmH3 class="text-orange-700 dark:text-orange-300">
+            {{ stats()!.unansweredThemes | number }}
+          </h3>
+          <a
+            routerLink="/chatbot/unanswered"
+            class="inline-flex mt-1 text-xs text-orange-600 hover:text-orange-700 dark:text-orange-400 hover:underline"
+          >
+            Review unanswered &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Resolutions Breakdown -->
+      <div hlmCard class="lg:col-span-2 p-0 overflow-hidden flex flex-col">
+        <div class="px-5 py-4 border-b border-border">
+          <h3 hlmH3>Question Resolutions</h3>
+          <p hlmMuted class="mt-0.5">
+            How the chatbot handled the {{ stats()!.questions }} questions
+          </p>
+        </div>
+        <div class="p-5 flex-1 flex flex-col justify-center">
+          <div class="space-y-5">
+            <!-- Answered -->
+            <div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <div class="flex items-center gap-2">
+                  <ng-icon name="lucideCheckCircle2" size="16" class="text-emerald-500" />
+                  <span class="font-medium">Answered from Knowledge Base</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold">{{ stats()!.byResolution.answered }}</span>
+                  <span class="text-muted-foreground text-xs w-8 text-right"
+                    >{{
+                      getResolutionPercentage(stats()!.byResolution.answered) | number: '1.0-0'
+                    }}%</span
+                  >
+                </div>
+              </div>
+              <hlm-progress
+                class="w-full bg-secondary rounded-full h-2"
+                [value]="getResolutionPercentage(stats()!.byResolution.answered)"
+              >
+                <hlm-progress-indicator class="bg-emerald-500" />
+              </hlm-progress>
+            </div>
+
+            <!-- Unanswered -->
+            <div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <div class="flex items-center gap-2">
+                  <ng-icon name="lucideXCircle" size="16" class="text-red-500" />
+                  <span class="font-medium">Unanswered (I don't know)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold">{{ stats()!.byResolution.unanswered }}</span>
+                  <span class="text-muted-foreground text-xs w-8 text-right"
+                    >{{
+                      getResolutionPercentage(stats()!.byResolution.unanswered) | number: '1.0-0'
+                    }}%</span
+                  >
+                </div>
+              </div>
+              <hlm-progress
+                class="w-full bg-secondary rounded-full h-2"
+                [value]="getResolutionPercentage(stats()!.byResolution.unanswered)"
+              >
+                <hlm-progress-indicator class="bg-red-500" />
+              </hlm-progress>
+            </div>
+
+            <!-- Off Topic -->
+            <div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <div class="flex items-center gap-2">
+                  <ng-icon name="lucideMinusCircle" size="16" class="text-amber-500" />
+                  <span class="font-medium">Off Topic / Guardrails Triggered</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold">{{ stats()!.byResolution.off_topic }}</span>
+                  <span class="text-muted-foreground text-xs w-8 text-right"
+                    >{{
+                      getResolutionPercentage(stats()!.byResolution.off_topic) | number: '1.0-0'
+                    }}%</span
+                  >
+                </div>
+              </div>
+              <hlm-progress
+                class="w-full bg-secondary rounded-full h-2"
+                [value]="getResolutionPercentage(stats()!.byResolution.off_topic)"
+              >
+                <hlm-progress-indicator class="bg-amber-500" />
+              </hlm-progress>
+            </div>
+
+            <!-- Needs Login -->
+            <div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <div class="flex items-center gap-2">
+                  <ng-icon name="lucideAlertCircle" size="16" class="text-blue-500" />
+                  <span class="font-medium">Needs Login (E.g., "Where is my order?")</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold">{{ stats()!.byResolution.needs_login }}</span>
+                  <span class="text-muted-foreground text-xs w-8 text-right"
+                    >{{
+                      getResolutionPercentage(stats()!.byResolution.needs_login) | number: '1.0-0'
+                    }}%</span
+                  >
+                </div>
+              </div>
+              <hlm-progress
+                class="w-full bg-secondary rounded-full h-2"
+                [value]="getResolutionPercentage(stats()!.byResolution.needs_login)"
+              >
+                <hlm-progress-indicator class="bg-blue-500" />
+              </hlm-progress>
+            </div>
+
+            <!-- Error -->
+            @if (stats()!.byResolution.error > 0) {
+              <div>
+                <div class="flex items-center justify-between text-sm mb-1">
+                  <div class="flex items-center gap-2">
+                    <ng-icon name="lucideAlertCircle" size="16" class="text-gray-500" />
+                    <span class="font-medium">System Errors</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold">{{ stats()!.byResolution.error }}</span>
+                    <span class="text-muted-foreground text-xs w-8 text-right"
+                      >{{
+                        getResolutionPercentage(stats()!.byResolution.error) | number: '1.0-0'
+                      }}%</span
+                    >
+                  </div>
+                </div>
+                <hlm-progress
+                  class="w-full bg-secondary rounded-full h-2"
+                  [value]="getResolutionPercentage(stats()!.byResolution.error)"
+                >
+                  <hlm-progress-indicator class="bg-gray-500" />
+                </hlm-progress>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Mentioned Products -->
+      <div hlmCard class="p-0 overflow-hidden flex flex-col">
+        <div class="px-5 py-4 border-b border-border bg-muted/30">
+          <h3 hlmH3>Top Mentioned Products</h3>
+          <p hlmMuted class="mt-0.5">Products most frequently asked about</p>
+        </div>
+        <div class="divide-y divide-border overflow-y-auto" style="max-height: 350px">
+          @if (stats()!.topProducts.length === 0) {
+            <div class="p-6 text-center text-muted-foreground text-sm">
+              No products mentioned in this timeframe.
+            </div>
+          } @else {
+            @for (product of stats()!.topProducts; track product.productId) {
+              <div
+                class="px-5 py-3 hover:bg-muted/50 transition-colors flex items-center justify-between gap-3"
+              >
+                <div class="flex items-center gap-3 overflow-hidden">
+                  <div
+                    class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary flex-shrink-0"
+                  >
+                    <ng-icon name="lucidePackage" size="14" />
+                  </div>
+                  <div class="min-w-0">
+                    <p hlmSmall class="truncate" [title]="product.title">
+                      {{ product.title }}
+                    </p>
+                    <a
+                      [routerLink]="['/products', product.productId]"
+                      class="text-[10px] text-muted-foreground hover:underline text-primary truncate block"
+                      >View product</a
+                    >
+                  </div>
+                </div>
+                <div class="flex-shrink-0 bg-secondary px-2 py-1 rounded text-xs font-semibold">
+                  {{ product.occurrences }} mentions
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

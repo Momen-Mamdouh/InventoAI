@@ -1,4 +1,4 @@
-name: Daily SpartanUI Docs Sync
+name: Monthly SpartanUI Docs Sync
 
 on:
   schedule:
@@ -28,4 +28,4 @@ jobs:
           git add docs/spartan-inventory.md
 
           # Only commit if there are changes
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(docs): daily sync of SpartanUI inventory" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(docs): monthly sync of SpartanUI inventory" && git push)

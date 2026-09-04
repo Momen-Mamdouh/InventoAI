@@ -14,12 +14,7 @@ import { lucideX } from '@ng-icons/lucide';
 import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { HlmButton } from '@spartan/helm/button';
 import { classes } from '@spartan/helm/utils';
-import {
-  type HlmStyle,
-  injectResolvedHlmStyle,
-  dialogContentClasses,
-  dialogCloseButtonClasses,
-} from '@spartan/styles';
+import { type HlmStyle, injectResolvedHlmStyle, dialogContentClasses } from '@spartan/styles';
 import { HlmDialogClose } from './hlm-dialog-close';
 
 type HlmDialogContentContext = {

@@ -1,0 +1,163 @@
+<form [formGroup]="form">
+  <section>
+    <div class="flex flex-col gap-12 preview">
+      <div
+        class="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-3 preview-header"
+      >
+        <app-page-header
+          badgeText="ai_interview_badge"
+          title="ai_interview_title"
+          accentTitle="ai_interview_accent"
+          description="ai_interview_desc"
+        />
+      </div>
+    </div>
+
+    <div class="mt-8">
+      <spartan-stepper
+        orientation="vertical"
+        [linear]="true"
+        indicatorMode="number"
+        [selectedIndex]="currentStepIndex()"
+        (selectionChange)="onSelectionChange($event)"
+        #stepper
+      >
+        @for (question of visibleQuestions(); track question.id) {
+          <spartan-step
+            [label]="question.label | translate"
+            [stepControl]="form.get(question.id)!"
+            [completed]="isQuestionCompleted(question.id)"
+          >
+            <ng-template spartanStepContent>
+              @if (question.type === 'single') {
+                <div
+                  [class]="
+                    (question.options?.length ?? 0) > 4
+                      ? 'grid grid-cols-1 md:grid-cols-2 gap-2.5'
+                      : 'flex flex-col gap-2.5'
+                  "
+                >
+                  @for (option of question.options; track $index) {
+                    <label hlmLabel class="block h-full cursor-pointer">
+                      <input
+                        hlmInput
+                        type="radio"
+                        [name]="question.id"
+                        [formControlName]="question.id"
+                        [value]="option"
+                        class="sr-only peer w-fit"
+                      />
+                      <div
+                        class="flex items-center hover:bg-primary peer-checked:bg-primary px-2.5 md:px-5 py-2 md:py-4 border-2 border-primary/25 rounded-xl h-full peer-checked:text-white transition-all duration-200"
+                        [class.border-destructive]="isQuestionInvalid(question.id)"
+                        [class.ring-2]="isQuestionInvalid(question.id)"
+                        [class.ring-destructive]="isQuestionInvalid(question.id)"
+                      >
+                        <p hlmSmall>{{ option | translate }}</p>
+                      </div>
+                    </label>
+                  }
+                </div>
+              }
+
+              @if (question.type === 'text') {
+                <label hlmLabel class="flex flex-col flex-1 w-full">
+                  <textarea
+                    class="flex-1 dark:border-primary/25 resize-none border-2 transition-all duration-200"
+                    [class.border-destructive]="isQuestionInvalid(question.id)"
+                    [class.ring-2]="isQuestionInvalid(question.id)"
+                    [class.ring-destructive]="isQuestionInvalid(question.id)"
+                    hlmTextarea
+                    placeholder="{{ 'placeholder_answer' | translate }}"
+                    [name]="question.id"
+                    [formControlName]="question.id"
+                    (keydown.enter)="onInputEnter($event)"
+                  ></textarea>
+                </label>
+              }
+
+              @if (question.type === 'multi') {
+                <div
+                  [class]="
+                    (question.options?.length ?? 0) > 4
+                      ? 'grid grid-cols-1 md:grid-cols-2 gap-2.5'
+                      : 'flex flex-col gap-2.5'
+                  "
+                >
+                  @for (option of question.options; track $index) {
+                    <label hlmLabel class="block h-full cursor-pointer">
+                      <input
+                        hlmInput
+                        type="checkbox"
+                        class="sr-only peer w-fit"
+                        [checked]="selectedChannels()[question.id]?.includes(option) || false"
+                        (change)="toggleMultiSelect(question.id, option)"
+                      />
+                      <div
+                        class="flex items-center hover:bg-primary peer-checked:bg-primary px-5 py-4 border-2 border-primary/25 rounded-xl h-full peer-checked:text-white transition-all duration-200"
+                        [class.border-destructive]="isQuestionInvalid(question.id)"
+                        [class.ring-2]="isQuestionInvalid(question.id)"
+                        [class.ring-destructive]="isQuestionInvalid(question.id)"
+                      >
+                        <p hlmSmall>{{ option | translate }}</p>
+                      </div>
+                    </label>
+                  }
+                </div>
+              }
+            </ng-template>
+          </spartan-step>
+        }
+      </spartan-stepper>
+    </div>
+
+    <div class="sticky bottom-0 bg-card pt-4 pb-2 border-t border-border mt-8 -mx-6 px-6 z-10">
+      <hlm-separator class="mb-4 bg" />
+
+      <div class="flex md:flex-row flex-col md:justify-between md:items-center gap-2.5">
+        <button
+          hlmBtn
+          type="button"
+          variant="outline"
+          size="lg"
+          (click)="onPrevStep()"
+          class="flex justify-center items-center gap-1 dark:text-white cursor-pointer"
+        >
+          <ng-icon [name]="chevronBack()"></ng-icon>
+          <span>{{ 'btn_back' | translate }}</span>
+        </button>
+
+        @if (stepper.selectedIndex < visibleQuestions().length - 1) {
+          <button
+            hlmBtn
+            type="button"
+            variant="default"
+            size="lg"
+            (click)="onNextStep()"
+            class="flex justify-center items-center gap-1 md:ms-auto dark:text-white cursor-pointer disabled:cursor-not-allowed"
+          >
+            <span>{{ 'btn_next' | translate }}</span>
+            <ng-icon [name]="chevronNext()"></ng-icon>
+          </button>
+        } @else {
+          <button
+            hlmBtn
+            type="button"
+            variant="default"
+            size="lg"
+            [disabled]="isSubmitting()"
+            (click)="onNext()"
+            class="flex justify-center items-center gap-2 disabled:opacity-50 font-bold dark:text-white uppercase cursor-pointer disabled:cursor-not-allowed"
+          >
+            @if (isSubmitting()) {
+              <hlm-spinner class="text-lg" />
+              <span>{{ 'loading_analyzing' | translate }}</span>
+            } @else {
+              <span>{{ 'validation_initialize' | translate }}</span>
+            }
+          </button>
+        }
+      </div>
+    </div>
+  </section>
+</form>

@@ -1,0 +1,25 @@
+{
+  "name": "owner-dashboard-feature-home",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/owner-dashboard/feature-home/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "scope:owner-dashboard",
+    "type:feature"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/owner-dashboard/feature-home/**/*.ts",
+          "libs/owner-dashboard/feature-home/**/*.html"
+        ]
+      }
+    }
+  }
+}

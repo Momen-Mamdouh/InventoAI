@@ -9,9 +9,7 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "@/*": ["./apps/site-builder/src/*"],
-      "@/spartan/stepper": ["./libs/stepper/lib"],
-      "@/spartan/styles": ["./libs/ui/utils/src/lib/spartan-styles"],
+      "@spartan/helm/stepper": ["./libs/stepper/src/index.ts"],
       "@spartan/helm/navigation-menu": ["./libs/ui/navigation-menu/src/index.ts"],
       "@spartan/helm/utils": ["./libs/ui/utils/src/index.ts"],
       "@spartan/helm/button": ["./libs/ui/button/src/index.ts"],
@@ -25,15 +23,12 @@
       "@spartan/helm/input": ["./libs/ui/input/src/index.ts"],
       "@spartan/helm/dialog": ["./libs/ui/dialog/src/index.ts"],
       "@spartan/helm/dropdown-menu": ["./libs/ui/dropdown-menu/src/index.ts"],
-      "@spartan/helm/progress": ["./libs/ui/progress/src/index.ts"],
-      "@spartan/helm/radio-group": ["./libs/ui/radio-group/src/index.ts"],
       "@spartan/styles": ["./libs/ui/utils/src/lib/spartan-styles/index.ts"],
       "@spartan/helm/typography": ["./libs/ui/typography/src/index.ts"],
       "@invento/core": ["./libs/core/src/index.ts"],
-      "@invento/shared": ["./libs/shared/src/index.ts"],
       "@invento/site-builder/*": ["./apps/site-builder/src/*"],
-      "@invento/user-site/*": ["./apps/userSite/src/*"],
-      "@invento/invento/*": ["./apps/invento/src/*"],
+      "@invento/user-site/*": ["./apps/user-site/src/*"],
+      "@invento/owner-dashboard/*": ["./apps/owner-dashboard/src/*"],
       "@spartan/helm/breadcrumb": ["./libs/ui/breadcrumb/src/index.ts"],
       "@spartan/helm/scroll-area": ["./libs/ui/scroll-area/src/index.ts"],
       "@spartan/helm/popover": ["./libs/ui/popover/src/index.ts"],
@@ -53,7 +48,139 @@
       "@spartan/helm/carousel": ["./libs/ui/carousel/src/index.ts"],
       "@spartan/helm/checkbox": ["./libs/ui/checkbox/src/index.ts"],
       "@spartan/helm/slider": ["./libs/ui/slider/src/index.ts"],
-      "@spartan/helm/accordion": ["./libs/ui/accordion/src/index.ts"]
+      "@spartan/helm/accordion": ["./libs/ui/accordion/src/index.ts"],
+      "@spartan/helm/toggle": ["./libs/ui/toggle/src/index.ts"],
+      "@spartan/helm/progress": ["./libs/ui/progress/src/index.ts"],
+      "@spartan/helm/tabs": ["./libs/ui/tabs/src/index.ts"],
+      "@spartan/helm/toggle-group": ["./libs/ui/toggle-group/src/index.ts"],
+      "@spartan/helm/input-otp": ["./libs/ui/input-otp/src/index.ts"],
+      "@spartan/helm/button-group": ["./libs/ui/button-group/src/index.ts"],
+      "@invento/shared-util-error": ["./libs/shared/util-error/src/index.ts"],
+      "@invento/shared-data-access-auth": ["./libs/shared/data-access-auth/src/index.ts"],
+      "@invento/shared-feature-auth": ["./libs/shared/feature-auth/src/index.ts"],
+      "@invento/shared-util-directives": ["./libs/shared/util-directives/src/index.ts"],
+      "@invento/shared-util-pipes": ["./libs/shared/util-pipes/src/index.ts"],
+      "@invento/shared-util-template": ["./libs/shared/util-template/src/index.ts"],
+      "@invento/shared-util-mock": ["./libs/shared/util-mock/src/index.ts"],
+      "@invento/shared-util-environment": ["./libs/shared/util-environment/src/index.ts"],
+      "@invento/shared-util-ssr": ["./libs/shared/util-ssr/src/index.ts"],
+      "@invento/shared-util-i18n": ["./libs/shared/util-i18n/src/index.ts"],
+      "@invento/shared-util-theme": ["./libs/shared/util-theme/src/index.ts"],
+      "@invento/shared-util-preview-types": ["./libs/shared/util-preview-types/src/index.ts"],
+      "@invento/shared-ui-ai-loader": ["./libs/shared/ui-ai-loader/src/index.ts"],
+      "@invento/shared-ui-status-banner": ["./libs/shared/ui-status-banner/src/index.ts"],
+      "@invento/shared-ui-steps-bar": ["./libs/shared/ui-steps-bar/src/index.ts"],
+      "@invento/shared-ui-page-header": ["./libs/shared/ui-page-header/src/index.ts"],
+      "@invento/shared-ui-loader": ["./libs/shared/ui-loader/src/index.ts"],
+      "@invento/shared-ui-container-width": ["./libs/shared/ui-container-width/src/index.ts"],
+      "@invento/shared-ui-empty-state": ["./libs/shared/ui-empty-state/src/index.ts"],
+      "@invento/shared-ui-brand-logo": ["./libs/shared/ui-brand-logo/src/index.ts"],
+      "@invento/shared-ui-color-swatch": ["./libs/shared/ui-color-swatch/src/index.ts"],
+      "@invento/shared-ui-double-slash": ["./libs/shared/ui-double-slash/src/index.ts"],
+      "@invento/shared-ui-error-state": ["./libs/shared/ui-error-state/src/index.ts"],
+      "@invento/shared-ui-filter-tabs": ["./libs/shared/ui-filter-tabs/src/index.ts"],
+      "@invento/shared-ui-generic-select": ["./libs/shared/ui-generic-select/src/index.ts"],
+      "@invento/shared-ui-lang-switcher": ["./libs/shared/ui-lang-switcher/src/index.ts"],
+      "@invento/shared-ui-page-badge": ["./libs/shared/ui-page-badge/src/index.ts"],
+      "@invento/shared-ui-pagination": ["./libs/shared/ui-pagination/src/index.ts"],
+      "@invento/shared-ui-search-input": ["./libs/shared/ui-search-input/src/index.ts"],
+      "@invento/shared-ui-skeleton-block": ["./libs/shared/ui-skeleton-block/src/index.ts"],
+      "@invento/shared-ui-theme-switcher": ["./libs/shared/ui-theme-switcher/src/index.ts"],
+      "@invento/shared-ui-drift-wall": ["./libs/shared/ui-drift-wall/src/index.ts"],
+      "@invento/user-site-data-access-store": ["./libs/user-site/data-access-store/src/index.ts"],
+      "@invento/user-site-data-access-cart": ["./libs/user-site/data-access-cart/src/index.ts"],
+      "@invento/user-site-data-access-product": [
+        "./libs/user-site/data-access-product/src/index.ts"
+      ],
+      "@invento/user-site-data-access-order": ["./libs/user-site/data-access-order/src/index.ts"],
+      "@invento/user-site-util-animation": ["./libs/user-site/util-animation/src/index.ts"],
+      "@invento/user-site-feature-product": ["./libs/user-site/feature-product/src/index.ts"],
+      "@invento/user-site-feature-orders": ["./libs/user-site/feature-orders/src/index.ts"],
+      "@invento/user-site-feature-checkout": ["./libs/user-site/feature-checkout/src/index.ts"],
+      "@invento/user-site-feature-faq": ["./libs/user-site/feature-faq/src/index.ts"],
+      "@invento/user-site-feature-chatbot": ["./libs/user-site/feature-chatbot/src/index.ts"],
+      "@invento/user-site-feature-account-settings": [
+        "./libs/user-site/feature-account-settings/src/index.ts"
+      ],
+      "@invento/user-site-feature-home": ["./libs/user-site/feature-home/src/index.ts"],
+      "@invento/user-site-feature-storefront": ["./libs/user-site/feature-storefront/src/index.ts"],
+      "@invento/site-builder-data-access-preview": [
+        "./libs/site-builder/data-access-preview/src/index.ts"
+      ],
+      "@invento/site-builder-data-access-builder": [
+        "./libs/site-builder/data-access-builder/src/index.ts"
+      ],
+      "@invento/site-builder-feature-builder": ["./libs/site-builder/feature-builder/src/index.ts"],
+      "@invento/site-builder-feature-shell": ["./libs/site-builder/feature-shell/src/index.ts"],
+      "@invento/site-builder-feature-home": ["./libs/site-builder/feature-home/src/index.ts"],
+      "@invento/owner-dashboard-feature-products": [
+        "./libs/owner-dashboard/feature-products/src/index.ts"
+      ],
+      "@invento/owner-dashboard-data-access-attribute": [
+        "./libs/owner-dashboard/data-access-attribute/src/index.ts"
+      ],
+      "@invento/owner-dashboard-data-access-category": [
+        "./libs/owner-dashboard/data-access-category/src/index.ts"
+      ],
+      "@invento/owner-dashboard-data-access-faq": [
+        "./libs/owner-dashboard/data-access-faq/src/index.ts"
+      ],
+      "@invento/owner-dashboard-data-access-order": [
+        "./libs/owner-dashboard/data-access-order/src/index.ts"
+      ],
+      "@invento/owner-dashboard-data-access-product": [
+        "./libs/owner-dashboard/data-access-product/src/index.ts"
+      ],
+      "@invento/owner-dashboard-data-access-purchase-request": [
+        "./libs/owner-dashboard/data-access-purchase-request/src/index.ts"
+      ],
+      "@invento/owner-dashboard-data-access-store": [
+        "./libs/owner-dashboard/data-access-store/src/index.ts"
+      ],
+      "@invento/owner-dashboard-data-access-supplier": [
+        "./libs/owner-dashboard/data-access-supplier/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-account-settings": [
+        "./libs/owner-dashboard/feature-account-settings/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-ai-advisor": [
+        "./libs/owner-dashboard/feature-ai-advisor/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-attributes": [
+        "./libs/owner-dashboard/feature-attributes/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-catalog-ai": [
+        "./libs/owner-dashboard/feature-catalog-ai/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-categories": [
+        "./libs/owner-dashboard/feature-categories/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-chatbot": [
+        "./libs/owner-dashboard/feature-chatbot/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-faq": ["./libs/owner-dashboard/feature-faq/src/index.ts"],
+      "@invento/owner-dashboard-feature-home": ["./libs/owner-dashboard/feature-home/src/index.ts"],
+      "@invento/owner-dashboard-feature-orders": [
+        "./libs/owner-dashboard/feature-orders/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-purchase-requests": [
+        "./libs/owner-dashboard/feature-purchase-requests/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-suppliers": [
+        "./libs/owner-dashboard/feature-suppliers/src/index.ts"
+      ],
+      "@invento/owner-dashboard-ui-confirm-dialog": [
+        "./libs/owner-dashboard/ui-confirm-dialog/src/index.ts"
+      ],
+      "@invento/owner-dashboard-feature-shell": [
+        "./libs/owner-dashboard/feature-shell/src/index.ts"
+      ],
+      "@invento/owner-dashboard-util-breadcrumb": [
+        "./libs/owner-dashboard/util-breadcrumb/src/index.ts"
+      ],
+      "@invento/owner-dashboard-util-site-builder-url": [
+        "./libs/owner-dashboard/util-site-builder-url/src/index.ts"
+      ]
     }
   }
 }

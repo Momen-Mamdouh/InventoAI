@@ -1,0 +1,110 @@
+<div class="space-y-6 pt-6">
+  <!-- Success Banner -->
+  @if (saveSuccess()) {
+    <app-status-banner message="Settings updated successfully!" [fadingOut]="isFadingOut()" />
+  }
+
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-12">
+      <hlm-spinner class="text-[32px] text-primary" />
+    </div>
+  } @else {
+    <div hlmCard>
+      <div hlmCardHeader class="flex items-center justify-between border-b">
+        <div>
+          <h2 hlmCardTitle>Chatbot Configuration</h2>
+          <p hlmCardDescription>
+            Manage your AI advisor's identity and availability.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <label hlmLabel for="chatbotEnabledToggle" class="text-sm font-medium">Enable Chatbot</label>
+          <hlm-switch
+            inputId="chatbotEnabledToggle"
+            [checked]="isEnabled()"
+            (checkedChange)="isEnabled.set($event)"
+          />
+        </div>
+      </div>
+
+      <div hlmCardContent class="space-y-5">
+        <div class="space-y-1.5">
+          <label hlmLabel for="greetingInput" class="font-medium text-foreground text-xs sm:text-sm"
+            >Custom Greeting Message</label
+          >
+          <input
+            id="greetingInput"
+            hlmInput
+            type="text"
+            class="w-full"
+            placeholder="Leave empty for default AI greeting..."
+            [value]="greeting()"
+            (input)="greeting.set($any($event.target).value)"
+          />
+          <p hlmMuted class="mt-1">
+            Current effective greeting:
+            <span class="italic">"{{ settings()?.effectiveGreeting }}"</span>
+          </p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label hlmLabel for="toneSelect" class="font-medium text-foreground text-xs sm:text-sm"
+            >Conversation Tone</label
+          >
+          <hlm-select
+            id="toneSelect"
+            [value]="tone()"
+            (valueChange)="tone.set($any($event))"
+            [itemToString]="toneItemToString"
+            class="max-w-sm w-full"
+          >
+            <hlm-select-trigger class="w-full h-10 bg-background">
+              <hlm-select-value />
+            </hlm-select-trigger>
+            <hlm-select-content *hlmSelectPortal>
+              @for (t of tones; track t.value) {
+                <hlm-select-item [value]="t.value">{{ t.label }}</hlm-select-item>
+              }
+            </hlm-select-content>
+          </hlm-select>
+        </div>
+
+        <div class="space-y-1.5">
+          <label hlmLabel for="emailInput" class="font-medium text-foreground text-xs sm:text-sm"
+            >Contact Email / Handover Email</label
+          >
+          <input
+            id="emailInput"
+            hlmInput
+            type="email"
+            class="w-full max-w-md"
+            placeholder="support@yourstore.com"
+            [value]="contactEmail()"
+            (input)="contactEmail.set($any($event.target).value)"
+          />
+          <p hlmMuted class="mt-1">
+            Provided to users when the chatbot cannot answer a question.
+          </p>
+        </div>
+
+        <div class="pt-4 border-border border-t flex justify-end">
+          <button
+            type="button"
+            hlmBtn
+            class="gap-2 shadow-sm px-6"
+            [disabled]="isSaving()"
+            (click)="saveSettings()"
+          >
+            @if (isSaving()) {
+              <hlm-spinner class="text-white" />
+              <span>Saving...</span>
+            } @else {
+              <ng-icon name="lucideSave" size="16" />
+              <span>Save Settings</span>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,25 @@
+{
+  "name": "toggle-group",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui/toggle-group/src",
+  "prefix": "hlm",
+  "tags": [
+    "type:ui",
+    "scope:shared"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/toggle-group/**/*.ts",
+          "libs/ui/toggle-group/**/*.html"
+        ]
+      }
+    }
+  }
+}

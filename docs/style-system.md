@@ -57,7 +57,7 @@ libs/ui/utils/src/lib/spartan-styles/
 ├── index.ts                     ← barrel export of everything
 ```
 
-### Invento app (consumers)
+### `libs/ui/*` (consumers)
 
 ```
 libs/ui/
@@ -178,15 +178,18 @@ export class HlmCardTitle {
 
 ## Testing a style
 
-The `/style-test` route shows all 6 styles side by side. To add a new component to the test:
+The `/style-test` route shows all 6 styles side by side. The page lives at
+`libs/site-builder/feature-home/src/lib/pages/style-test/style-test.ts` and declares its own local
+style list. To add a new component to the test:
 
 ```typescript
 // Import the variant/class map
-import { xxxVariantsByStyle } from '@spartan/styles';
-import { STYLES } from '@/app/shared/constants/styles';
+import { xxxVariantsByStyle, type HlmStyle } from '@spartan/styles';
+
+const STYLE_LIST: HlmStyle[] = ['nova', 'vega', 'lyra', 'maia', 'mira', 'luma'];
 
 // Create groups using the map
-readonly groups = STYLES.map((style) => ({
+readonly groups = STYLE_LIST.map((style) => ({
   style,
   buttons: xxxVariantsByStyle[style]({ variant: 'default' }),
 }));

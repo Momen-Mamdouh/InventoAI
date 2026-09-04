@@ -1,0 +1,45 @@
+<div class="space-y-6 w-full p-4 md:p-6 lg:p-8">
+  <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
+    <div class="space-y-1">
+      <h1 hlmH1 class="text-foreground">FAQ</h1>
+      <p hlmMuted>
+        Drag to reorder. {{ store.entries().length }}/100 entries.
+      </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center self-start sm:self-auto gap-2 sm:gap-3 flex-wrap">
+      <hlm-sheet side="right">
+        <button
+          hlmSheetTrigger
+          hlmBtn
+          type="button"
+          [disabled]="store.isFull()"
+          class="flex items-center gap-2"
+        >
+          <ng-icon name="lucidePlus" size="16" />
+          <span>Add FAQ</span>
+        </button>
+        <hlm-sheet-content *hlmSheetPortal="let ctx" class="p-5 sm:max-w-lg">
+          <app-faq-form (saved)="ctx.close()" (canceled)="ctx.close()" />
+        </hlm-sheet-content>
+      </hlm-sheet>
+    </div>
+  </div>
+
+  @if (store.isFull()) {
+    <div hlmAlert class="bg-warning/10 text-warning text-sm">
+      <p hlmAlertDescription class="text-warning">
+        This store has 100 entries, the maximum. Delete one to add another.
+      </p>
+    </div>
+  }
+
+  @if (store.error()) {
+    <div hlmAlert variant="destructive" class="bg-destructive/10 text-sm">
+      <p hlmAlertDescription>{{ store.error() }}</p>
+    </div>
+  }
+
+  <app-faq-list />
+</div>

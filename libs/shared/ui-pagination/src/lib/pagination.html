@@ -1,0 +1,72 @@
+@if (totalPages() > 1) {
+  <div class="flex flex-col items-center gap-3">
+    @if (summary(); as s) {
+      <p hlmMuted class="tabular-nums">
+        {{ 'pagination.showing' | translate: { from: s.from, to: s.to, total: s.total } }}
+      </p>
+    }
+
+    <nav
+      hlmPagination
+      [attr.aria-label]="'pagination.aria' | translate"
+      class="bg-card border-border inline-flex w-auto rounded-2xl border p-1.5 shadow-sm"
+    >
+      <ul hlmPaginationContent class="gap-1">
+        <!-- Previous -->
+        <li hlmPaginationItem>
+          <hlm-pagination-previous
+            class="cursor-pointer"
+            [class.pointer-events-none]="isFirst() || disabled()"
+            [class.opacity-40]="isFirst() || disabled()"
+            [attr.aria-disabled]="isFirst() || disabled() ? 'true' : null"
+            [text]="'pagination.previous' | translate"
+            [aria-label]="'pagination.go_to_previous' | translate"
+            (click)="goTo(currentPage() - 1)"
+          />
+        </li>
+
+        <!-- Page numbers -->
+        @for (page of pages(); track $index) {
+          <li hlmPaginationItem>
+            @if (page === '...') {
+              <hlm-pagination-ellipsis />
+            } @else {
+              <a
+                hlmPaginationLink
+                tabindex="0"
+                [isActive]="page === currentPage()"
+                [attr.aria-label]="'pagination.go_to_page' | translate: { page: page }"
+                [class.pointer-events-none]="disabled()"
+                [class.opacity-40]="disabled()"
+                class="min-w-9 cursor-pointer font-semibold tabular-nums"
+                [class]="
+                  page === currentPage()
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground border-primary shadow-sm'
+                    : 'hover:bg-accent hover:text-accent-foreground'
+                "
+                (click)="goTo(page)"
+                (keydown.enter)="goTo(page)"
+                (keydown.space)="goTo(page)"
+              >
+                {{ page }}
+              </a>
+            }
+          </li>
+        }
+
+        <!-- Next -->
+        <li hlmPaginationItem>
+          <hlm-pagination-next
+            class="cursor-pointer"
+            [class.pointer-events-none]="isLast() || disabled()"
+            [class.opacity-40]="isLast() || disabled()"
+            [attr.aria-disabled]="isLast() || disabled() ? 'true' : null"
+            [text]="'pagination.next' | translate"
+            [aria-label]="'pagination.go_to_next' | translate"
+            (click)="goTo(currentPage() + 1)"
+          />
+        </li>
+      </ul>
+    </nav>
+  </div>
+}

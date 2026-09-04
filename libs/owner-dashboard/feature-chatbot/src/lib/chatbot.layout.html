@@ -1,0 +1,64 @@
+<div class="relative space-y-6 w-full min-h-full">
+  <!-- Page Header & Navigation Tabs -->
+  <div
+    style="view-transition-name: chatbot-tabs"
+    class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
+  >
+    <div class="min-w-0">
+      <h1 hlmH1>Chatbot Management</h1>
+      <p hlmMuted class="mt-0.5">
+        Monitor your AI advisor's performance, manage knowledge, and configure settings.
+      </p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center gap-1 sm:gap-2 border-border border-b overflow-x-auto">
+      <a
+        routerLink="/chatbot/insights"
+        routerLinkActive="border-primary text-primary"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideBarChart3" size="16" />
+        <span>Insights</span>
+      </a>
+      <a
+        routerLink="/chatbot/knowledge"
+        routerLinkActive="border-primary text-primary"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideDatabase" size="16" />
+        <span>Knowledge Base</span>
+      </a>
+      <a
+        routerLink="/chatbot/history"
+        routerLinkActive="border-primary text-primary"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideMessageSquare" size="16" />
+        <span>Chat History</span>
+      </a>
+      <a
+        routerLink="/chatbot/unanswered"
+        routerLinkActive="border-primary text-primary"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideAlertCircle" size="16" />
+        <span>Unanswered</span>
+      </a>
+      <a
+        routerLink="/chatbot/settings"
+        routerLinkActive="border-primary text-primary"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideSettings" size="16" />
+        <span>Settings</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pb-12">
+    <router-outlet></router-outlet>
+  </div>
+</div>

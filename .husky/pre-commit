@@ -1,11 +1,10 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+
 
 # 1. Branch Name Validation
 branch_name=$(git symbolic-ref --short HEAD 2>/dev/null)
 
 # Regex to match `<type>/<feature-name>--<app-name>`
-# Examples: feat/products-page-ui--user-site, refactor/auth-guard--invento
+# Examples: feat/products-page-ui--user-site, refactor/auth-guard--owner-dashboard
 regex="^(feat|fix|chore|docs|refactor)\/[a-zA-Z0-9-]+--[a-zA-Z0-9-]+$"
 
 # If not on a branch (e.g. detached HEAD), skip
@@ -13,10 +12,16 @@ if [ -n "$branch_name" ] && [ "$branch_name" != "main" ] && [ "$branch_name" != 
   if [[ ! $branch_name =~ $regex ]]; then
     echo "❌ Error: Branch name '$branch_name' does not follow the project convention."
     echo "👉 Required format: <type>/<feature-name>--<app-name>"
-    echo "👉 Examples: refactor/products-page-ui--user-site, feat/login-page--invento"
+    echo "👉 Examples: refactor/products-page-ui--user-site, feat/login-page--owner-dashboard"
     exit 1
   fi
 fi
 
-# 2. Run lint-staged
+# 2. Project Name Validation
+node scripts/check-project-names.mjs
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+# 3. Run lint-staged
 npx lint-staged

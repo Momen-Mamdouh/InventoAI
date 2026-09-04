@@ -1,0 +1,37 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        # Angular 22 requires ^22.22.3 || ^24.15.0 || >=26.0.0 -- see
+        # @angular/core, @angular/cli and @angular/build engines fields.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check project names follow the naming scheme
+        run: npm run check:names
+
+      - name: Lint
+        run: npm run lint
+
+      # ESLint cannot see Angular template type errors or NG8113 unused imports;
+      # only the compiler can. This is the gate that catches them.
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build all projects
+        run: npm run build:all

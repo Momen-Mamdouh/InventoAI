@@ -9,22 +9,17 @@
   ],
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/angular:ng-packagr-lite",
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
       "outputs": [
-        "{workspaceRoot}/dist/{projectRoot}"
+        "{options.outputFile}"
       ],
       "options": {
-        "project": "libs/ui/carousel/ng-package.json",
-        "tsConfig": "libs/ui/carousel/tsconfig.lib.json"
-      },
-      "configurations": {
-        "production": {
-          "tsConfig": "libs/ui/carousel/tsconfig.lib.prod.json"
-        },
-        "development": {}
-      },
-      "defaultConfiguration": "production"
+        "lintFilePatterns": [
+          "libs/ui/carousel/**/*.ts",
+          "libs/ui/carousel/**/*.html"
+        ]
+      }
     }
   }
 }

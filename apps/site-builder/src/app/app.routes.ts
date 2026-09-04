@@ -1,40 +1,21 @@
 import { Routes } from '@angular/router';
 
-// Layouts
-import { MainLayout } from './layouts/main-layout/main-layout';
-import { BuilderLayout } from './layouts/builder-layout/builder-layout';
-import { AuthLayout } from './layouts/auth-layout/auth-layout';
-
-// Pages
-import { Home } from './features/home/pages/home/home';
-import { Brainstorm } from './features/builder/pages/brainstorm/brainstorm';
-import { AiInterview } from './features/builder/pages/ai-interview/ai-interview';
-import { Preview } from './features/builder/pages/preview/preview';
-import { Validation } from './features/builder/pages/validation/validation';
-import { StyleTest } from './features/home/pages/style-test/style-test';
-
-// Auth Pages
-import { Login } from './pages/auth/login/login';
-import { Register } from './pages/auth/register/register';
-import { ForgotPassword } from './pages/auth/forgot-password/forgot-password';
-import { ResetPassword } from './pages/auth/reset-password/reset-password';
-import { VerifyEmail } from './pages/auth/verify-email/verify-email';
+// Layouts (kept eager — they are the shells)
+import { MainLayout, BuilderLayout, AuthLayout } from '@invento/site-builder-feature-shell';
 
 // Guards
-import { stepGuard } from './core/guards/step-guard';
-import { authGuard } from './core/guards/auth.guard';
-import { guestGuard } from './core/guards/guest.guard';
+import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
 
 export const routes: Routes = [
   {
     path: '',
     component: MainLayout,
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-
       // 1. Home Phase: Renders inside MainLayout (Navbar only)
-      { path: 'home', component: Home },
-      { path: 'style-test', component: StyleTest },
+      {
+        path: '',
+        loadChildren: () => import('@invento/site-builder-feature-home').then((m) => m.homeRoutes),
+      },
 
       // 2. Builder Phase: Renders inside BuilderLayout (Steps Bar + page content)
       {
@@ -42,28 +23,11 @@ export const routes: Routes = [
         component: BuilderLayout,
         canActivate: [authGuard],
         children: [
-          { path: '', redirectTo: 'brainstorm', pathMatch: 'full' },
           {
-            path: 'brainstorm',
-            component: Brainstorm,
-            canActivate: [stepGuard('brainstorm')],
+            path: '',
+            loadChildren: () =>
+              import('@invento/site-builder-feature-builder').then((m) => m.builderRoutes),
           },
-          {
-            path: 'ai-interview',
-            component: AiInterview,
-            canActivate: [stepGuard('ai-interview')],
-          },
-          {
-            path: 'validation',
-            component: Validation,
-            canActivate: [stepGuard('validation')],
-          },
-          {
-            path: 'preview',
-            component: Preview,
-            canActivate: [stepGuard('preview')],
-          },
-          { path: '**', redirectTo: 'brainstorm' },
         ],
       },
     ],
@@ -73,11 +37,28 @@ export const routes: Routes = [
     component: AuthLayout,
     canActivate: [guestGuard],
     children: [
-      { path: 'login', component: Login },
-      { path: 'register', component: Register },
-      { path: 'forgot-password', component: ForgotPassword },
-      { path: 'reset-password', component: ResetPassword },
-      { path: 'verify-email', component: VerifyEmail },
+      {
+        path: 'login',
+        loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.loginRoutes),
+      },
+      {
+        path: 'register',
+        loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.registerRoutes),
+      },
+      {
+        path: 'forgot-password',
+        loadChildren: () =>
+          import('@invento/shared-feature-auth').then((m) => m.forgotPasswordRoutes),
+      },
+      {
+        path: 'reset-password',
+        loadChildren: () =>
+          import('@invento/shared-feature-auth').then((m) => m.resetPasswordRoutes),
+      },
+      {
+        path: 'verify-email',
+        loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.verifyEmailRoutes),
+      },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },

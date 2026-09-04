@@ -1,0 +1,18 @@
+{
+  "name": "shared-util-template",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/util-template/src",
+  "prefix": "lib",
+  "tags": ["scope:shared", "type:util"],
+  "projectType": "library",
+  "// targets": "to see all targets run: nx show project shared-util-template --web",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/shared/util-template/**/*.ts", "libs/shared/util-template/**/*.html"]
+      }
+    }
+  }
+}

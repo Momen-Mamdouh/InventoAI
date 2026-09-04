@@ -1,0 +1,215 @@
+<header
+  class="bg-background/70 supports-[backdrop-filter]:bg-background/60 border-border/40 sticky top-0 z-90 flex items-center justify-between border-b px-4 py-3 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300 sm:px-8 md:px-16 lg:px-24"
+  [class.shadow-md]="isScrolled()"
+  [class.border-border]="isScrolled()"
+>
+  <!-- Left: mobile menu + brand -->
+  <div class="flex w-1/2 items-center gap-2 md:w-2/6">
+    <hlm-sheet side="left" class="md:hidden">
+      <button
+        hlmBtn
+        hlmSheetTrigger
+        variant="ghost"
+        size="icon"
+        class="rounded-full"
+        [attr.aria-label]="'nav.open_menu' | translate"
+      >
+        <ng-icon name="lucideMenu" size="22" />
+      </button>
+
+      <hlm-sheet-content *hlmSheetPortal="let ctx">
+        <hlm-sheet-header>
+          <h3 hlmSheetTitle class="text-lg">{{ 'nav.menu' | translate }}</h3>
+        </hlm-sheet-header>
+
+        <nav class="flex flex-col gap-1 px-4">
+          @for (link of links(); track link.path) {
+            <button
+              hlmBtn
+              hlmSheetClose
+              [routerLink]="link.path"
+              variant="ghost"
+              class="w-fit justify-start py-2"
+              routerLinkActive="bg-primary/10 text-primary font-semibold"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              {{ link.labelKey | translate }}
+            </button>
+          }
+
+          <hlm-separator class="my-2" />
+
+          @if (authService.isLoggedIn()) {
+            <button
+              hlmBtn
+              hlmSheetClose
+              [routerLink]="['/', activeStoreSlug(), 'account-settings']"
+              variant="ghost"
+              class="w-fit justify-start gap-2 py-2"
+              routerLinkActive="bg-secondary"
+            >
+              <ng-icon name="lucideSettings" size="18" />
+              {{ 'nav.account_settings' | translate }}
+            </button>
+            <button
+              hlmBtn
+              hlmSheetClose
+              type="button"
+              variant="ghost"
+              class="text-destructive w-fit justify-start gap-2 py-2"
+              (click)="logout()"
+            >
+              <ng-icon name="lucideLogOut" size="18" />
+              {{ 'nav.sign_out' | translate }}
+            </button>
+          } @else {
+            <button
+              hlmBtn
+              hlmSheetClose
+              [routerLink]="['/', activeStoreSlug(), 'auth', 'login']"
+              variant="ghost"
+              class="w-fit justify-start gap-2 py-2"
+            >
+              <ng-icon name="lucideLogIn" size="18" />
+              {{ 'nav.sign_in' | translate }}
+            </button>
+          }
+
+          <div class="mt-4 flex items-center justify-between gap-3 px-2">
+            <app-lang-switcher />
+            <app-theme-switcher />
+          </div>
+        </nav>
+      </hlm-sheet-content>
+    </hlm-sheet>
+
+    <a
+      [routerLink]="['/', activeStoreSlug()]"
+      class="flex w-fit items-center gap-2 font-semibold"
+      [attr.aria-label]="storeService.displayName()"
+    >
+      @if (storeService.logoUrl(); as logo) {
+        <img [src]="logo" alt="" class="h-8 w-8 rounded-lg object-contain" aria-hidden="true" />
+      } @else if (storeService.monogram(); as initials) {
+        <span
+          class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg text-xs font-extrabold"
+          aria-hidden="true"
+          >{{ initials }}</span
+        >
+      } @else {
+        <span class="bg-muted h-8 w-8 animate-pulse rounded-lg" aria-hidden="true"></span>
+      }
+      <span dir="auto" class="truncate text-base font-bold">{{ storeService.displayName() }}</span>
+    </a>
+  </div>
+
+  <!-- Center: primary navigation -->
+  <nav hlmNavigationMenu class="hidden md:flex md:w-2/6">
+    <ul hlmNavigationMenuList>
+      @for (link of links(); track link.path) {
+        <li hlmNavigationMenuItem>
+          <a
+            hlmNavigationMenuLink
+            [routerLink]="link.path"
+            routerLinkActive
+            #rla="routerLinkActive"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [active]="rla.isActive"
+            class="hover:bg-accent/60 hover:text-foreground relative transition-colors"
+            [class.text-primary]="rla.isActive"
+            [class.font-semibold]="rla.isActive"
+            [class.after:absolute]="rla.isActive"
+            [class.after:inset-x-2]="rla.isActive"
+            [class.after:-bottom-0.5]="rla.isActive"
+            [class.after:h-0.5]="rla.isActive"
+            [class.after:bg-primary]="rla.isActive"
+            [class.after:rounded-full]="rla.isActive"
+          >
+            {{ link.labelKey | translate }}
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <!-- Right: switchers + account + cart -->
+  <div class="flex w-1/2 items-center justify-end gap-1 md:w-2/6 md:gap-2">
+    <div class="hidden items-center gap-2 md:flex">
+      <app-lang-switcher />
+      <app-theme-switcher />
+    </div>
+
+    @if (authService.isLoggedIn()) {
+      <hlm-popover>
+        <button
+          hlmBtn
+          hlmPopoverTrigger
+          variant="ghost"
+          size="icon"
+          class="rounded-full"
+          [attr.aria-label]="'nav.account_menu' | translate"
+        >
+          <ng-icon name="lucideUser" size="20" />
+        </button>
+
+        <div hlmPopoverContent *brnPopoverContent="let ctx" class="w-56 p-2">
+          <a
+            hlmBtn
+            variant="ghost"
+            class="w-full justify-start gap-2"
+            [routerLink]="['/', activeStoreSlug(), 'account-settings']"
+            (click)="ctx.close()"
+          >
+            <ng-icon name="lucideSettings" size="18" />
+            {{ 'nav.account_settings' | translate }}
+          </a>
+          <button
+            hlmBtn
+            variant="ghost"
+            type="button"
+            class="text-destructive w-full justify-start gap-2"
+            (click)="logout(); ctx.close()"
+          >
+            <ng-icon name="lucideLogOut" size="18" />
+            {{ 'nav.sign_out' | translate }}
+          </button>
+        </div>
+      </hlm-popover>
+    } @else {
+      <!--
+        Signed out, the account entry point is a labelled button, not a bare avatar icon:
+        a user icon implies a session that does not exist, and hid the only way to sign in
+        behind a click.
+      -->
+      <a
+        hlmBtn
+        variant="outline"
+        size="sm"
+        [routerLink]="['/', activeStoreSlug(), 'auth', 'login']"
+        class="gap-2"
+      >
+        <ng-icon name="lucideLogIn" size="18" />
+        <span class="hidden sm:inline">{{ 'nav.sign_in' | translate }}</span>
+      </a>
+    }
+
+    <a
+      [routerLink]="['/', activeStoreSlug(), 'checkout']"
+      id="cart-icon"
+      class="bg-primary text-primary-foreground hover:bg-primary/90 relative ms-1 flex h-11 w-11 items-center justify-center rounded-full p-2.5 shadow-lg transition-transform hover:scale-105"
+      [attr.aria-label]="('nav.cart' | translate) + ': ' + cartCount()"
+    >
+      <ng-icon name="lucideShoppingCart" size="22" />
+      @if (cartCount() > 0) {
+        <span
+          hlmBadge
+          variant="destructive"
+          id="cart-count"
+          class="animate-in zoom-in-75 bg-primary text-white border-background absolute -top-1.5 -end-1.5 h-6 min-w-[24px] justify-center rounded-full border-2 px-1.5 text-[13px] leading-none font-extrabold tabular-nums duration-150"
+        >
+          {{ cartBadge() }}
+        </span>
+      }
+    </a>
+  </div>
+</header>

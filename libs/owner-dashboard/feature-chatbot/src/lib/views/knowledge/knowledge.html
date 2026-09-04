@@ -1,0 +1,153 @@
+<div class="space-y-6 pt-6">
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-12">
+      <hlm-spinner class="text-[32px] text-primary" />
+    </div>
+  } @else if (errorState()) {
+    <div class="flex flex-col items-center justify-center py-16 text-center">
+      <div
+        class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4"
+      >
+        <ng-icon name="lucideAlertCircle" size="24" />
+      </div>
+      <h3 hlmH3>Failed to Load Status</h3>
+      <p hlmMuted class="max-w-md mt-2">
+        We couldn't retrieve the knowledge base status. Ensure the backend server is running and
+        your database connections are healthy.
+      </p>
+      <button hlmBtn variant="outline" class="mt-6 gap-2" (click)="loadStatus()">Try Again</button>
+    </div>
+  } @else if (status()) {
+    @if (!status()!.vectorSearchAvailable) {
+      <div hlmAlert variant="destructive" class="bg-destructive/10 rounded-xl">
+        <ng-icon name="lucideAlertTriangle" size="20" />
+        <h4 hlmAlertTitle hlmH4>Vector Search is Unavailable</h4>
+        <p hlmAlertDescription>
+          Semantic search is currently disabled because the database extension (pgvector) is
+          missing. The chatbot will degrade to exact-match keyword search, which significantly
+          reduces its ability to answer complex or conversational questions.
+        </p>
+      </div>
+    }
+
+    <!-- Header Actions -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h2 hlmH2>Indexing Status</h2>
+        <p hlmMuted class="mt-1">
+          Last indexed:
+          {{ status()?.lastIndexedAt ? (status()!.lastIndexedAt | date: 'medium') : 'Never' }}
+          &middot; Model: {{ status()?.embeddingModel }}
+        </p>
+      </div>
+
+      <button hlmBtn (click)="rebuildKnowledgeBase()" [disabled]="isRebuilding()" class="gap-2">
+        <ng-icon name="lucideRefreshCw" size="16" [class.animate-spin]="isRebuilding()" />
+        <span>{{ isRebuilding() ? 'Rebuilding...' : 'Rebuild Knowledge Base' }}</span>
+      </button>
+    </div>
+
+    @if (rebuildSuccess()) {
+      <div hlmAlert class="bg-success/10 text-success text-sm">
+        <ng-icon name="lucideCheckCircle2" size="16" />
+        <p hlmAlertDescription class="text-success">
+          Knowledge base rebuild has been successfully queued. It may take a few minutes to
+          complete.
+        </p>
+      </div>
+    }
+
+    @if (rebuildError()) {
+      <div hlmAlert variant="destructive" class="bg-destructive/10 text-sm">
+        <ng-icon name="lucideAlertTriangle" size="16" />
+        <p hlmAlertDescription>{{ rebuildError() }}</p>
+      </div>
+    }
+
+    <!-- Overall Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div hlmCard class="p-4 rounded-xl shadow-xs border-border flex flex-col justify-between">
+        <span class="text-xs font-medium text-muted-foreground">Total Documents</span>
+        <span class="text-2xl font-bold mt-2">{{ status()!.total }}</span>
+      </div>
+      <div hlmCard class="p-4 rounded-xl shadow-xs border-border flex flex-col justify-between">
+        <span class="text-xs font-medium text-muted-foreground">Successfully Indexed</span>
+        <span class="text-2xl font-bold mt-2 text-emerald-600 dark:text-emerald-500">{{
+          status()!.indexed
+        }}</span>
+      </div>
+      <div hlmCard class="p-4 rounded-xl shadow-xs border-border flex flex-col justify-between">
+        <span class="text-xs font-medium text-muted-foreground flex items-center gap-1">
+          Stale / Syncing
+          <div class="group relative cursor-help">
+            <ng-icon
+              name="lucideMessageCircleQuestionMark"
+              size="14"
+              class="text-muted-foreground"
+            />
+            <div
+              class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-48 p-2 bg-popover text-popover-foreground text-[10px] rounded shadow-md z-10 text-center border border-border"
+            >
+              Normal state when documents are updated and waiting for the background sweeper to
+              re-embed them.
+            </div>
+          </div>
+        </span>
+        <span class="text-2xl font-bold mt-2 text-blue-600 dark:text-blue-500">{{
+          status()!.stale
+        }}</span>
+      </div>
+      <div hlmCard class="p-4 rounded-xl shadow-xs border-border flex flex-col justify-between">
+        <span class="text-xs font-medium text-muted-foreground">Failed to Index</span>
+        <span class="text-2xl font-bold mt-2" [class.text-red-600]="status()!.failed > 0">{{
+          status()!.failed
+        }}</span>
+      </div>
+    </div>
+
+    <!-- Breakdown by Source -->
+    <div hlmCard class="border-border rounded-xl shadow-xs overflow-hidden">
+      <div class="px-4 py-3 bg-muted/50 border-b border-border">
+        <h3 hlmH3>Breakdown by Source</h3>
+      </div>
+
+      <div class="divide-y divide-border">
+        @for (source of status()?.sources; track source.sourceType) {
+          <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3 w-48">
+              <div
+                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"
+              >
+                <ng-icon [name]="getSourceIcon(source.sourceType)" size="20" />
+              </div>
+              <span class="font-medium text-sm">{{ formatSourceName(source.sourceType) }}</span>
+            </div>
+
+            <div class="flex-1 grid grid-cols-4 gap-2 text-center text-sm">
+              <div>
+                <div class="text-xs text-muted-foreground mb-1">Total</div>
+                <div class="font-medium">{{ source.total }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-muted-foreground mb-1">Indexed</div>
+                <div class="font-medium text-emerald-600 dark:text-emerald-500">
+                  {{ source.indexed }}
+                </div>
+              </div>
+              <div>
+                <div class="text-xs text-muted-foreground mb-1">Stale</div>
+                <div class="font-medium text-blue-600 dark:text-blue-500">{{ source.stale }}</div>
+              </div>
+              <div>
+                <div class="text-xs text-muted-foreground mb-1">Failed</div>
+                <div class="font-medium" [class.text-red-600]="source.failed > 0">
+                  {{ source.failed }}
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

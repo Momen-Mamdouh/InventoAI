@@ -1,0 +1,37 @@
+<main class="mx-auto px-4 md:px-8 py-8 w-full max-w-6xl grow relative min-h-[500px]">
+  <app-breadcrumb-trail />
+
+  @if (isLoading()) {
+    <div class="absolute inset-0 z-10 flex items-center justify-center">
+      <hlm-spinner class="text-[32px] text-primary" />
+    </div>
+  } @else if (notFound()) {
+    <app-empty-state
+      icon="lucideAlertCircle"
+      [title]="'product.product_details.not_found_title' | translate"
+      [description]="'product.product_details.not_found_desc' | translate"
+    />
+  } @else {
+    @let p = store.product();
+    @if (p) {
+      <div class="gap-8 grid grid-cols-1 lg:grid-cols-12 mb-12">
+        <div class="lg:col-span-7">
+          <app-product-gallery />
+        </div>
+
+        <div class="flex flex-col lg:col-span-5">
+          <app-product-summary class="mb-6" />
+          @if (p.variants && p.variants.length > 0) {
+            <app-variant-selector />
+          }
+          <app-purchase-actions />
+          @if (p.description || (p.specs && p.specs.length > 0)) {
+            <app-product-details-accordion />
+          }
+        </div>
+      </div>
+
+      <app-recommended-products />
+    }
+  }
+</main>

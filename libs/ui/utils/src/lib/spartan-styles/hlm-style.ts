@@ -1,2 +1,2 @@
 export type { HlmStyle } from '../spartan-styles';
-export type { ThemeApiResponse } from '@invento/core';
+export type { ThemeApiResponse } from '@invento/shared-util-theme';

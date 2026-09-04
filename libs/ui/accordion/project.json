@@ -9,22 +9,17 @@
   ],
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/angular:ng-packagr-lite",
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
       "outputs": [
-        "{workspaceRoot}/dist/{projectRoot}"
+        "{options.outputFile}"
       ],
       "options": {
-        "project": "libs/ui/accordion/ng-package.json",
-        "tsConfig": "libs/ui/accordion/tsconfig.lib.json"
-      },
-      "configurations": {
-        "production": {
-          "tsConfig": "libs/ui/accordion/tsconfig.lib.prod.json"
-        },
-        "development": {}
-      },
-      "defaultConfiguration": "production"
+        "lintFilePatterns": [
+          "libs/ui/accordion/**/*.ts",
+          "libs/ui/accordion/**/*.html"
+        ]
+      }
     }
   }
 }

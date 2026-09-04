@@ -1,0 +1,221 @@
+<section
+  class="relative flex flex-col items-center justify-center min-h-[85vh] mx-auto px-4 sm:px-8 md:px-16 lg:px-24 py-20 max-w-7xl overflow-hidden"
+>
+  <!-- Background Glow / Grid -->
+  <div class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
+    <div
+      class="absolute w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] opacity-70"
+    ></div>
+    <div
+      class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
+    ></div>
+  </div>
+
+  <div class="relative z-10 flex flex-col items-center text-center gap-8 w-full max-w-4xl mx-auto">
+    <!-- Massive Typography -->
+    <h1 hlmH1 class="flex flex-col gap-2">
+      <span appScrollAnimate="fade-up" [animDelay]="100" class="block mb-4 md:mb-6">
+        <span
+          class="inline-block pb-[0.2em] -mb-[0.2em] font-extrabold text-foreground text-5xl md:text-7xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70"
+        >
+          {{ 'hero_title' | translate }}
+        </span>
+      </span>
+      <span
+        appScrollAnimate="fade-up"
+        [animDelay]="200"
+        class="block min-h-[1.2em] font-medium text-3xl md:text-5xl lg:text-6xl text-primary"
+      >
+        <app-blur-text [texts]="welcomeWords" />
+      </span>
+    </h1>
+
+    <p
+      hlmP
+      appScrollAnimate="fade-up"
+      [animDelay]="300"
+      class="max-w-2xl text-muted-foreground"
+    >
+      {{ 'hero_desc' | translate }}
+    </p>
+
+    <!-- Action Buttons -->
+    <div
+      appScrollAnimate="fade-up"
+      [animDelay]="400"
+      class="flex flex-col sm:flex-row items-center gap-4 mt-6"
+    >
+      <div
+        class="btn-wrapper w-full sm:w-auto hover:scale-105 transition-transform !rounded-full shadow-lg shadow-primary/20"
+      >
+        <div class="btn-light"></div>
+        <div class="gradient-layer" style="animation-delay: 0s; animation-duration: 25s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.15s; animation-duration: 15.9s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.53s; animation-duration: 26.4s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.45s; animation-duration: 17.8s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 19.2s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 29.2s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 20.2s"></div>
+        <a hlmBtn routerLink="/build" class="gradient-btn">
+          {{ 'hero_btn' | translate }}
+        </a>
+        <div class="text-overlay">
+          {{ 'hero_btn' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Abstract Glassmorphic Visualization -->
+  <div
+    appScrollAnimate="fade-up"
+    [animDelay]="600"
+    class="relative z-10 w-full max-w-5xl mt-20 perspective-1000"
+  >
+    <div
+      hlmCard
+      class="relative border border-border/50 bg-background/40 backdrop-blur-xl shadow-2xl transform hover:-translate-y-2 transition-transform duration-700"
+    >
+      <!-- Browser Header -->
+      <div class="flex items-center gap-2 px-4 py-3 border-b border-border/50 bg-muted/20">
+        <div class="flex gap-1.5">
+          <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+        </div>
+        <div
+          class="mx-auto px-6 py-1 rounded-md bg-muted/30 text-xs font-mono text-muted-foreground"
+        >
+          site-builder.invento.ai
+        </div>
+      </div>
+
+      <!-- Abstract Content Grid (Bento Style Preview) -->
+      <div
+        class="grid grid-cols-12 gap-4 p-6 md:p-8 bg-gradient-to-b from-transparent to-muted/10 h-[300px] md:h-[400px]"
+      >
+        <!-- Sidebar Mock -->
+        <div
+          hlmCard
+          class="col-span-3 border border-border/40 bg-card/30 flex flex-col gap-3 p-4"
+        >
+          <div class="w-full flex items-center gap-2 mb-2">
+            <div class="w-6 h-6 rounded-md bg-primary/20 flex items-center justify-center">
+              <ng-icon name="lucideBox" size="14" class="text-primary"></ng-icon>
+            </div>
+            <span class="font-bold text-sm text-foreground">Invento</span>
+          </div>
+          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md bg-muted/50 mt-2">
+            <span class="text-xs font-medium text-foreground">Overview</span>
+          </div>
+          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted/30">
+            <span class="text-xs font-medium text-muted-foreground">Inventory</span>
+          </div>
+          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted/30">
+            <span class="text-xs font-medium text-muted-foreground">Suppliers</span>
+          </div>
+          <div class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted/30">
+            <span class="text-xs font-medium text-muted-foreground">AI Settings</span>
+          </div>
+        </div>
+
+        <!-- Main Content Mock -->
+        <div class="col-span-9 flex flex-col gap-4">
+          <!-- Top Row -->
+          <div class="grid grid-cols-3 gap-4 h-24">
+            <div
+              hlmCard
+              class="col-span-1 border border-border/40 bg-card/30 flex items-center p-4"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0"
+              >
+                <ng-icon name="lucideTrendingUp" size="18" class="text-blue-500"></ng-icon>
+              </div>
+              <div class="ml-3 flex flex-col w-full">
+                <span
+                  class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                  >Monthly Sales</span
+                >
+                <span class="text-sm font-bold text-foreground">$14,250</span>
+              </div>
+            </div>
+            <div
+              hlmCard
+              class="col-span-1 border border-border/40 bg-card/30 flex items-center p-4"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0"
+              >
+                <ng-icon name="lucideUsers" size="18" class="text-green-500"></ng-icon>
+              </div>
+              <div class="ml-3 flex flex-col w-full">
+                <span
+                  class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                  >Active Suppliers</span
+                >
+                <span class="text-sm font-bold text-foreground">4 Connected</span>
+              </div>
+            </div>
+            <div
+              hlmCard
+              class="col-span-1 border border-border/40 bg-card/30 flex items-center p-4"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0"
+              >
+                <ng-icon name="lucideAlertCircle" size="18" class="text-red-500"></ng-icon>
+              </div>
+              <div class="ml-3 flex flex-col w-full">
+                <span
+                  class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                  >Low Stock</span
+                >
+                <span class="text-sm font-bold text-red-500">2 Items</span>
+              </div>
+            </div>
+          </div>
+          <!-- Hero Mock inside Preview -->
+          <div
+            hlmCard
+            class="flex-1 border border-border/40 bg-card/30 p-6 flex flex-col justify-center relative"
+          >
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+            <div class="z-10 flex items-start gap-4 w-full">
+              <div
+                class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-1"
+              >
+                <ng-icon name="lucideSparkles" size="14" class="text-primary"></ng-icon>
+              </div>
+              <div class="flex flex-col gap-2 w-full">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-foreground">AI Advisor</span>
+                  <span
+                    class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-primary/10 text-primary uppercase"
+                    >Recommendation</span
+                  >
+                </div>
+                <p class="text-xs text-muted-foreground">
+                  Demand for <strong class="text-foreground">Wireless Headphones</strong> is
+                  surging. You will stock out in 4 days.
+                </p>
+                <div class="mt-2 flex items-center gap-2">
+                  <button
+                    class="px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-[10px] font-bold shadow-sm"
+                  >
+                    Draft Supplier Email
+                  </button>
+                  <button
+                    class="px-3 py-1.5 rounded-md bg-muted text-muted-foreground text-[10px] font-bold"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

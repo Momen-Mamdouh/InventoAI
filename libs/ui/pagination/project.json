@@ -9,22 +9,17 @@
   ],
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/angular:ng-packagr-lite",
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
       "outputs": [
-        "{workspaceRoot}/dist/{projectRoot}"
+        "{options.outputFile}"
       ],
       "options": {
-        "project": "libs/ui/pagination/ng-package.json",
-        "tsConfig": "libs/ui/pagination/tsconfig.lib.json"
-      },
-      "configurations": {
-        "production": {
-          "tsConfig": "libs/ui/pagination/tsconfig.lib.prod.json"
-        },
-        "development": {}
-      },
-      "defaultConfiguration": "production"
+        "lintFilePatterns": [
+          "libs/ui/pagination/**/*.ts",
+          "libs/ui/pagination/**/*.html"
+        ]
+      }
     }
   }
 }
