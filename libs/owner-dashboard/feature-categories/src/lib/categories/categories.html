@@ -1,0 +1,298 @@
+<div class="space-y-6 w-full p-4 md:p-6 lg:p-8">
+  <!-- Header & Breadcrumbs -->
+  <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
+    <div class="space-y-1">
+      <h1 hlmH1 class="text-foreground">Categories</h1>
+      <p hlmMuted>
+        Organize how products are grouped and displayed in the storefront.
+      </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center self-start sm:self-auto gap-2 sm:gap-3 flex-wrap">
+      <button
+        hlmBtn
+        variant="outline"
+        size="icon"
+        (click)="onRefresh()"
+        [disabled]="loading()"
+        aria-label="Refresh"
+        class="bg-card hover:bg-accent shadow-sm"
+      >
+        <ng-icon name="lucideRefreshCw" size="16" [class.animate-spin]="loading()" />
+      </button>
+      <button hlmBtn class="flex items-center gap-2" (click)="onAdd()">
+        <ng-icon name="lucidePlus" size="16" />
+        <span>Add Category</span>
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div hlmAlert variant="destructive" class="mb-4">
+      <ng-icon name="lucideTriangleAlert" />
+      <h4 hlmAlertTitle>Something went wrong</h4>
+      <p hlmAlertDescription class="flex sm:flex-row flex-col sm:items-center gap-2">
+        <span>{{ error() }}</span>
+        <button hlmBtn variant="outline" size="sm" (click)="onRefresh()" class="gap-1.5 w-fit">
+          <ng-icon name="lucideRefreshCw" size="0.85rem" />
+          Retry
+        </button>
+      </p>
+    </div>
+  }
+
+  <!-- Filter & Search Toolbar -->
+  <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="relative w-full sm:w-72 md:w-96">
+      <ng-icon
+        name="lucideSearch"
+        size="16"
+        class="top-1/2 absolute text-muted-foreground -translate-y-1/2 pointer-events-none start-3"
+      />
+      <input
+        hlmInput
+        class="bg-card shadow-sm ps-9 border-border rounded-full focus:ring-2 focus:ring-primary/20 w-full h-9"
+        placeholder="Search categories…"
+        [value]="searchTerm()"
+        (input)="onSearchInput($any($event.target).value)"
+      />
+    </div>
+
+    <div class="flex items-center gap-3">
+      <hlm-select
+        [value]="publishedFilter()"
+        (valueChange)="onPublishedFilterChange($event)"
+        [itemToString]="publishedItemToString"
+        class="w-[150px]"
+      >
+        <hlm-select-trigger class="bg-card shadow-sm border-border h-9">
+          <hlm-select-value placeholder="Status" />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item value="all">All statuses</hlm-select-item>
+          <hlm-select-item value="published">Published</hlm-select-item>
+          <hlm-select-item value="unpublished">Unpublished</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
+
+      <hlm-select
+        [value]="featuredFilter()"
+        (valueChange)="onFeaturedFilterChange($event)"
+        [itemToString]="featuredItemToString"
+        class="w-[150px]"
+      >
+        <hlm-select-trigger class="bg-card shadow-sm border-border h-9">
+          <hlm-select-value placeholder="Featured" />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item value="all">All categories</hlm-select-item>
+          <hlm-select-item value="featured">Featured</hlm-select-item>
+          <hlm-select-item value="unfeatured">Not featured</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
+    </div>
+  </div>
+
+  <div hlmCard class="bg-card shadow-sm border-border rounded-xl overflow-hidden">
+    <div hlmTableContainer class="overflow-x-auto">
+      <table hlmTable class="w-full text-start border-collapse min-w-[800px]">
+        <thead hlmTHead>
+          <tr
+            hlmTr
+            class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
+          >
+            <th hlmTh class="w-10"></th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Category</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Status</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-28">Position</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-40">Actions</th>
+          </tr>
+        </thead>
+        <tbody
+          hlmTBody
+          cdkDropList
+          (cdkDropListDropped)="onDrop($event)"
+          class="divide-y divide-border/60 text-sm"
+        >
+          @if (loading() && categories().length === 0) {
+            @for (item of [1, 2, 3, 4, 5]; track item) {
+              <tr hlmTr>
+                <td hlmTd class="px-2 md:px-3 align-middle w-10 text-center">
+                  <hlm-skeleton class="h-4 w-4 mx-auto" />
+                </td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 min-w-[200px]">
+                  <div class="flex items-center gap-3">
+                    <hlm-skeleton class="w-10 h-10 sm:w-12 sm:h-12 rounded-md shrink-0" />
+                    <div class="space-y-1.5 flex-1">
+                      <hlm-skeleton class="h-4 w-24" />
+                      <hlm-skeleton class="h-3 w-32" />
+                    </div>
+                  </div>
+                </td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
+                  <hlm-skeleton class="h-5 w-20 rounded-full" />
+                </td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                  <hlm-skeleton class="h-4 w-8 ml-auto" />
+                </td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
+                  <hlm-skeleton class="h-8 w-24 ml-auto" />
+                </td>
+              </tr>
+            }
+          } @else if (categories().length === 0) {
+            <tr hlmTr>
+              <td hlmTd colspan="5" class="p-16 text-center">
+                <app-empty-state
+                  icon="lucideFolderOpen"
+                  title="No categories found"
+                  description="Try adjusting your search or filters, or add a new category."
+                >
+                  <button hlmBtn (click)="onAdd()" class="gap-1.5 mt-2" variant="outline">
+                    <ng-icon name="lucidePlus" size="16" />
+                    Add Category
+                  </button>
+                </app-empty-state>
+              </td>
+            </tr>
+          } @else {
+            @for (c of categories(); track c.id) {
+              <tr hlmTr class="group hover:bg-muted/40 transition-colors cursor-move" cdkDrag>
+                <div
+                  *cdkDragPreview
+                  class="flex items-center gap-3 bg-card shadow-lg p-3 border rounded-md"
+                >
+                  <ng-icon name="lucideGripVertical" size="18" class="text-muted-foreground" />
+                  <span class="font-medium text-sm">{{ c.name }}</span>
+                </div>
+
+                <td hlmTd class="px-2 md:px-3 text-muted-foreground/40 align-middle w-10">
+                  <div
+                    cdkDragHandle
+                    class="cursor-grab active:cursor-grabbing hover:text-foreground inline-flex items-center justify-center p-1 rounded transition-colors"
+                  >
+                    <ng-icon name="lucideGripVertical" size="18"></ng-icon>
+                  </div>
+                </td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="flex flex-shrink-0 justify-center items-center bg-muted border border-border/50 rounded-md w-10 sm:w-12 h-10 sm:h-12 overflow-hidden text-muted-foreground"
+                    >
+                      @if (c.imageUrl) {
+                        <img [src]="c.imageUrl" [alt]="c.name" class="w-full h-full object-cover" />
+                      } @else {
+                        <ng-icon name="lucideFolderOpen" size="18" />
+                      }
+                    </div>
+                    <div>
+                      <p
+                        hlmSmall
+                        class="text-primary hover:underline cursor-pointer"
+                        role="button"
+                        tabindex="0"
+                        (click)="onEdit(c)"
+                        (keydown.enter)="onEdit(c)"
+                        (keydown.space)="onEdit(c)"
+                      >
+                        {{ c.name }}
+                      </p>
+                      <div hlmMuted>{{ c.slug }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
+                  <div class="flex items-center gap-1.5">
+                    @if (c.isPublished) {
+                      <span hlmBadge class="bg-success/10 text-success">Published</span>
+                    } @else {
+                      <span hlmBadge class="border-border bg-muted text-muted-foreground"
+                        >Unpublished</span
+                      >
+                    }
+                    @if (c.isFeatured) {
+                      <span hlmBadge class="border-primary/20 bg-primary/10 text-primary"
+                        >Featured</span
+                      >
+                    }
+                  </div>
+                </td>
+                <td
+                  hlmTd
+                  class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap text-end"
+                >
+                  {{ c.position }}
+                </td>
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap text-end">
+                  <div class="flex justify-end items-center gap-2">
+                    <button
+                      hlmBtn
+                      variant="ghost"
+                      size="icon"
+                      (click)="onEdit(c)"
+                      aria-label="Edit category"
+                      class="h-8 w-8 text-muted-foreground hover:text-foreground"
+                    >
+                      <ng-icon name="lucidePencil" size="16" />
+                    </button>
+                    <button
+                      hlmBtn
+                      variant="ghost"
+                      size="icon"
+                      (click)="openDelete(c)"
+                      aria-label="Delete category"
+                      class="h-8 w-8 text-muted-foreground hover:text-destructive"
+                    >
+                      <ng-icon name="lucideTrash2" size="16" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex sm:flex-row flex-col justify-between items-center gap-3 p-4 border-t">
+      <div class="flex items-center gap-2">
+        <span hlmMuted>Rows per page</span>
+        <hlm-select [value]="store.limit()" (valueChange)="onLimitChange($event)" class="w-[80px]">
+          <hlm-select-trigger>
+            <hlm-select-value />
+          </hlm-select-trigger>
+          <hlm-select-content *hlmSelectPortal>
+            <hlm-select-item [value]="5">5</hlm-select-item>
+            <hlm-select-item [value]="10">10</hlm-select-item>
+            <hlm-select-item [value]="20">20</hlm-select-item>
+            <hlm-select-item [value]="50">50</hlm-select-item>
+          </hlm-select-content>
+        </hlm-select>
+        <span hlmMuted>{{ store.total() }} total</span>
+      </div>
+
+      <app-pagination
+        [currentPage]="store.page()"
+        [totalPages]="store.totalPages()"
+        (pageChange)="store.setPage($event)"
+      />
+    </div>
+  </div>
+
+  @if (isFormOpen()) {
+    <app-category-form-dialog
+      [category]="editing()"
+      (closed)="onCloseForm()"
+    ></app-category-form-dialog>
+  }
+
+  @if (isDeleteOpen() && toDelete()) {
+    <app-delete-confirm-dialog
+      [name]="toDelete()?.name || ''"
+      (confirmed)="confirmDelete()"
+      (canceled)="cancelDelete()"
+    ></app-delete-confirm-dialog>
+  }
+</div>

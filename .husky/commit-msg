@@ -1,13 +1,1 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Simple regex for conventional commits
-commit_regex="^(feat|fix|docs|style|refactor|perf|test|chore|build|ci|revert)(\(.+\))?: .{1,100}"
-commit_msg=$(cat "$1")
-
-if [[ ! $commit_msg =~ $commit_regex ]]; then
-  echo "❌ Error: Commit message does not follow Conventional Commits format."
-  echo "👉 Required format: <type>(<scope>): <subject>"
-  echo "👉 Example: feat(site-builder): add brainstorm guard"
-  exit 1
-fi
+npx --no -- commitlint --edit "$1"

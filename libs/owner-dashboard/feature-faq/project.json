@@ -1,0 +1,25 @@
+{
+  "name": "owner-dashboard-feature-faq",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/owner-dashboard/feature-faq/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "scope:owner-dashboard",
+    "type:feature"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/owner-dashboard/feature-faq/**/*.ts",
+          "libs/owner-dashboard/feature-faq/**/*.html"
+        ]
+      }
+    }
+  }
+}

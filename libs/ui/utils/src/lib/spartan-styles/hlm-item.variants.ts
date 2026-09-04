@@ -1,4 +1,4 @@
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 import type { HlmStyle } from './hlm-style';
 
 type CvaFn = (props?: { variant?: string; size?: string }) => string;

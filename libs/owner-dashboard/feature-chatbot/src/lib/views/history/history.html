@@ -1,0 +1,200 @@
+<div class="space-y-6 pt-6">
+  <!-- Filters Bar -->
+  <div
+    hlmCard
+    class="p-4 flex flex-col sm:flex-row gap-4 justify-between items-center bg-card text-card-foreground shadow-xs border-border rounded-xl"
+  >
+    <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+      <!-- Search -->
+      <form class="relative w-full sm:w-64" (ngSubmit)="onSearchSubmit()">
+        <ng-icon
+          name="lucideSearch"
+          size="16"
+          class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+        />
+        <input
+          hlmInput
+          type="text"
+          placeholder="Search name, email, or content..."
+          class="w-full pl-9 h-9 text-sm"
+          name="search"
+          [(ngModel)]="searchInput"
+        />
+        <button type="submit" class="hidden" aria-label="Search"></button>
+      </form>
+
+      <!-- Unanswered Filter -->
+      <hlm-select
+        [value]="unansweredFilterValue()"
+        (valueChange)="onUnansweredChange($event)"
+        [itemToString]="unansweredItemToString"
+        class="w-36"
+      >
+        <hlm-select-trigger class="bg-background shadow-2xs h-9 text-sm">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item value="all">All Questions</hlm-select-item>
+          <hlm-select-item value="true">Has Unanswered</hlm-select-item>
+          <hlm-select-item value="false">Fully Answered</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
+
+      <!-- Account Filter -->
+      <hlm-select
+        [value]="signedInFilterValue()"
+        (valueChange)="onSignedInChange($event)"
+        [itemToString]="signedInItemToString"
+        class="w-36"
+      >
+        <hlm-select-trigger class="bg-background shadow-2xs h-9 text-sm">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item value="all">All Users</hlm-select-item>
+          <hlm-select-item value="true">Signed In</hlm-select-item>
+          <hlm-select-item value="false">Guests</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
+    </div>
+
+    <!-- Refresh -->
+    <button
+      hlmBtn
+      variant="outline"
+      size="sm"
+      class="h-9 gap-2 shrink-0 w-full sm:w-auto"
+      (click)="loadSessions()"
+    >
+      Refresh
+    </button>
+  </div>
+
+  <!-- Data Table -->
+  <div hlmCard class="border-border rounded-xl shadow-xs overflow-hidden">
+    @if (isLoading()) {
+      <div class="flex justify-center items-center py-12">
+        <hlm-spinner class="text-[32px] text-primary" />
+      </div>
+    } @else if (errorState()) {
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <div
+          class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4"
+        >
+          <ng-icon name="lucideAlertCircle" size="24" />
+        </div>
+        <h3 hlmH3>Failed to Load Sessions</h3>
+        <p hlmMuted class="max-w-md mt-2">
+          We couldn't retrieve the chat history. Please make sure the server is running.
+        </p>
+      </div>
+    } @else {
+      <div hlmTableContainer class="overflow-x-auto">
+        <table hlmTable class="w-full text-sm text-left">
+          <thead hlmTHead class="text-xs text-muted-foreground bg-muted/50 uppercase border-b border-border">
+            <tr hlmTr>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium">Customer</th>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium">Messages</th>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium hidden md:table-cell">Preview</th>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium hidden sm:table-cell">Date</th>
+              <th hlmTh scope="col" class="px-6 py-3 font-medium text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody hlmTBody class="divide-y divide-border">
+            @if (data()?.items?.length === 0) {
+              <tr hlmTr>
+                <td hlmTd colspan="5" class="px-6 py-12 text-center text-muted-foreground">
+                  <p hlmSmall>No chat sessions found matching your filters.</p>
+                </td>
+              </tr>
+            } @else {
+              @for (session of data()?.items; track session.id) {
+                <tr hlmTr class="hover:bg-muted/50 transition-colors">
+                  <td hlmTd class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0"
+                      >
+                        <ng-icon name="lucideUser" size="14" class="text-muted-foreground" />
+                      </div>
+                      <div>
+                        <div class="font-medium flex items-center gap-2">
+                          {{ session.customerName || 'Guest User' }}
+                          @if (!session.isSignedIn) {
+                            <span
+                              hlmBadge
+                              variant="secondary"
+                              class="text-[10px] font-normal tracking-wide uppercase"
+                              >Guest</span
+                            >
+                          }
+                        </div>
+                        <div class="text-xs text-muted-foreground">
+                          {{ session.customerEmail || 'No email provided' }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td hlmTd class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center gap-3">
+                      <div class="flex items-center gap-1 text-muted-foreground">
+                        <ng-icon name="lucideMessageSquare" size="14" />
+                        <span>{{ session.messageCount }}</span>
+                      </div>
+                      @if (session.unansweredCount > 0) {
+                        <div hlmBadge class="gap-1 bg-warning/10 text-warning">
+                          <ng-icon name="lucideAlertCircle" size="12" />
+                          <span>{{ session.unansweredCount }}</span>
+                        </div>
+                      }
+                    </div>
+                  </td>
+                  <td
+                    hlmTd
+                    class="px-6 py-4 hidden md:table-cell max-w-xs truncate text-muted-foreground"
+                    [title]="session.preview"
+                  >
+                    {{ session.preview || 'No preview available' }}
+                  </td>
+                  <td
+                    hlmTd
+                    class="px-6 py-4 hidden sm:table-cell whitespace-nowrap text-muted-foreground"
+                  >
+                    {{ session.createdAt | date: 'mediumDate' }}
+                  </td>
+                  <td hlmTd class="px-6 py-4 text-right">
+                    <a
+                      [routerLink]="['/chatbot/history', session.id]"
+                      hlmBtn
+                      variant="ghost"
+                      size="sm"
+                      class="h-8 gap-2 text-primary hover:text-primary"
+                    >
+                      <ng-icon name="lucideEye" size="14" />
+                      View
+                    </a>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      @if (data(); as d) {
+        @if (d.totalPages > 1) {
+          <div class="p-4 border-t border-border">
+            <app-pagination
+              [currentPage]="d.page"
+              [totalPages]="d.totalPages"
+              [totalItems]="d.total"
+              [pageSize]="d.limit"
+              (pageChange)="changePage($event)"
+            />
+          </div>
+        }
+      }
+    }
+  </div>
+</div>

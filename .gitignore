@@ -30,7 +30,6 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
 .sass-cache/
 /connect.lock
 /coverage
@@ -43,36 +42,35 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-
-
+# Build tool caches
+.angular
 .nx/cache
 .nx/workspace-data
 .nx/migrate-runs
-.angular
-.nx/workspace-data/
-
-
-.agents
-skills-lock.json
-AGENTS.md
 
 # Local secrets / environment
+# `env.example` is the committed template; `.env` is yours and stays local.
 .env
-apps/site-builder/src/environments/environment.ts
+.env.local
+.env.*.local
 
+# Generated from .env by scripts/generate-env.mjs. Never hand-edit these, and
+# never commit them -- `npm run generate:env` (also run by postinstall and by
+# the start:*/build scripts) recreates them, with defaults that reproduce the
+# production values when no .env is present.
+apps/*/src/environments/environment.ts
+apps/*/src/environments/environment.development.ts
 
-# AI Agent files
+# AI agent + local working files (never shipped)
 .agents/
-.sepcify/
-.codegraph/
-sepcs/
-AGENTS.md
-plans/
-update-imports.js
-commit-msg.txt
-screenshots/
 .claude/
+.codegraph/
+AGENTS.md
 CLAUDE.md
+skills-lock.json
+plans/
+specs/
+.specify/
+screenshots/
 .removed-dead-config/
-fix-routing.js
 update-imports.js

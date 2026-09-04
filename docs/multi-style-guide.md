@@ -145,7 +145,7 @@ Each class/variant file imports `HlmStyle` type from `./hlm-style`. This file ju
 
 ```typescript
 export type { HlmStyle } from '../spartan-styles';
-export type { ThemeApiResponse } from '@/app/core/interface/Preview';
+export type { ThemeApiResponse } from '@invento/shared-util-theme';
 ```
 
 ### `spartan-styles/hlm-button.variants.ts`
@@ -456,7 +456,7 @@ Import the component's `Imports` array and add an `hlmStyle`-bound section to `s
 
 **Route:** `/style-test`
 
-**File:** `src/app/pages/style-test/style-test.ts`
+**File:** `libs/site-builder/feature-home/src/lib/pages/style-test/style-test.ts`
 
 A visual showcase of all converted components. Features:
 

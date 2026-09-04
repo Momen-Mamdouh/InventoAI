@@ -1,0 +1,25 @@
+{
+  "name": "owner-dashboard-util-breadcrumb",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/owner-dashboard/util-breadcrumb/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "scope:owner-dashboard",
+    "type:util"
+  ],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/owner-dashboard/util-breadcrumb/**/*.ts",
+          "libs/owner-dashboard/util-breadcrumb/**/*.html"
+        ]
+      }
+    }
+  }
+}

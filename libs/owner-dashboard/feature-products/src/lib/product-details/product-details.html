@@ -1,0 +1,988 @@
+<div class="max-w-6xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+  <!-- Header -->
+  <div class="flex items-center gap-4">
+    <button hlmBtn variant="ghost" size="icon" (click)="goBack()">
+      <ng-icon name="lucideArrowLeft" size="20"></ng-icon>
+    </button>
+    <div class="flex-1">
+      <h1 hlmH1 class="text-foreground" dir="auto">
+        {{ isLoading() ? 'Loading...' : product()?.title || 'Product Not Found' }}
+      </h1>
+      @if (product()) {
+        <p hlmMuted class="flex items-center gap-2 mt-1">
+          <span
+            class="inline-block w-2 h-2 rounded-full"
+            [ngClass]="{
+              'bg-emerald-500': product()!.status === 'active',
+              'bg-amber-500': product()!.status === 'draft',
+              'bg-stone-500': product()!.status === 'archived',
+            }"
+          ></span>
+          <span class="capitalize">{{ product()!.status }}</span>
+        </p>
+      }
+    </div>
+    <div class="flex items-center gap-2">
+      <button hlmBtn variant="outline" class="flex items-center gap-2" (click)="toggleEditDrawer()">
+        <ng-icon name="lucideEdit" size="16"></ng-icon>
+        <span class="hidden sm:inline">Edit Details</span>
+      </button>
+      <button
+        hlmBtn
+        variant="destructive"
+        class="flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white"
+        (click)="deleteProduct()"
+        [disabled]="isDeleting()"
+      >
+        @if (isDeleting()) {
+          <hlm-spinner />
+        } @else {
+          <ng-icon name="lucideTrash2" size="16"></ng-icon>
+        }
+        <span class="hidden sm:inline">Delete Product</span>
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center p-20 text-muted-foreground gap-4">
+      <hlm-spinner class="text-[32px] text-primary" />
+      <p hlmMuted>Loading details...</p>
+    </div>
+  } @else if (error()) {
+    <div hlmAlert variant="destructive" class="bg-destructive/10 rounded-xl p-8 text-center">
+      <p hlmAlertDescription hlmSmall>{{ error() }}</p>
+      <button hlmBtn variant="outline" class="mt-4" (click)="goBack()">Back to Products</button>
+    </div>
+  } @else if (product()) {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Main Content -->
+      <div class="md:col-span-2 space-y-6">
+        <div hlmCard class="bg-card shadow-sm border-border">
+          <div hlmCardHeader class="flex flex-row items-center justify-between">
+            <h3 hlmCardTitle>Variants ({{ product()!.variantCount }})</h3>
+            <div class="flex items-center gap-2">
+              <button
+                hlmBtn
+                variant="outline"
+                size="sm"
+                class="flex gap-2 items-center"
+                (click)="toggleGenerateDrawer()"
+              >
+                <ng-icon name="lucidePackage" size="14"></ng-icon>
+                <span>Generate</span>
+              </button>
+              <button
+                hlmBtn
+                size="sm"
+                class="flex gap-2 items-center"
+                (click)="toggleAddVariantDrawer()"
+              >
+                <ng-icon name="lucidePlus" size="14"></ng-icon>
+                <span>Add Variant</span>
+              </button>
+            </div>
+          </div>
+          <div hlmCardContent class="p-0">
+            <div hlmTableContainer class="overflow-x-auto">
+              <table hlmTable class="w-full text-sm text-left border-collapse">
+                <thead hlmTHead class="bg-muted/30 border-b border-border/60">
+                  <tr hlmTr>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">SKU</th>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">Attributes</th>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">Price</th>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">Stock</th>
+                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground text-right">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody hlmTBody class="divide-y divide-border/60">
+                  @for (variant of product()!.variants; track variant.id) {
+                    <tr hlmTr class="hover:bg-muted/20">
+                      <td hlmTd class="px-4 py-3 font-medium">
+                        @if (variant.sku) {
+                          {{ variant.sku }}
+                        } @else {
+                          <span class="text-muted-foreground italic text-xs">not set</span>
+                        }
+                      </td>
+                      <td hlmTd class="px-4 py-3 text-muted-foreground">
+                        @if (variant.attributeValues.length) {
+                          <div class="flex gap-1 flex-wrap">
+                            @for (attr of variant.attributeValues; track attr.id) {
+                              <span hlmBadge variant="secondary" class="text-xs"
+                                >{{ attr.attributeName }}: {{ attr.value }}</span
+                              >
+                            }
+                          </div>
+                        } @else {
+                          <span class="text-xs italic">Default</span>
+                        }
+                      </td>
+                      <td hlmTd class="px-4 py-3">
+                        ${{ variant.priceAmount / 100 | number: '1.2-2' }}
+                        @if (variant.compareAtAmount) {
+                          <span class="text-xs line-through text-muted-foreground ml-1"
+                            >${{ variant.compareAtAmount / 100 | number: '1.2-2' }}</span
+                          >
+                        }
+                      </td>
+                      <td hlmTd class="px-4 py-3">
+                        <span
+                          [ngClass]="{
+                            'text-rose-500 font-medium':
+                              variant.stockQuantity <= variant.lowStockThreshold,
+                          }"
+                        >
+                          {{ variant.stockQuantity }}
+                        </span>
+                      </td>
+                      <td hlmTd class="px-4 py-3 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                          <button
+                            hlmBtn
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 text-muted-foreground hover:text-primary"
+                            (click)="openEditVariantDrawer(variant)"
+                          >
+                            <ng-icon name="lucideEdit" size="14"></ng-icon>
+                          </button>
+                          <button
+                            hlmBtn
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 text-muted-foreground hover:text-rose-500"
+                            (click)="deleteVariant(variant.id)"
+                          >
+                            <ng-icon name="lucideTrash2" size="14"></ng-icon>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div hlmCard class="bg-card shadow-sm border-border">
+          <div hlmCardHeader class="flex flex-row items-center justify-between">
+            <h3 hlmCardTitle>Images</h3>
+            <label
+              class="cursor-pointer text-primary hover:text-primary/80 transition-colors"
+              [class.opacity-50]="isUploadingImages()"
+            >
+              <input
+                type="file"
+                multiple
+                accept="image/png, image/jpeg, image/webp"
+                class="hidden"
+                (change)="onImagesSelected($event)"
+                [disabled]="isUploadingImages()"
+              />
+              @if (isUploadingImages()) {
+                <hlm-spinner class="text-[20px]" />
+              } @else {
+                <ng-icon name="lucideUpload" size="20"></ng-icon>
+              }
+            </label>
+          </div>
+          <div hlmCardContent class="space-y-4">
+            @if (product()!.images.length === 0) {
+              <div
+                class="border-2 border-dashed border-border/60 rounded-xl p-8 flex flex-col items-center justify-center text-muted-foreground text-sm gap-2"
+              >
+                <ng-icon name="lucideImage" size="24"></ng-icon>
+                <p hlmMuted>No images uploaded yet.</p>
+              </div>
+            } @else {
+              <div cdkDropList (cdkDropListDropped)="dropImage($event)" class="space-y-3">
+                @for (img of product()!.images; track img.id) {
+                  <div
+                    cdkDrag
+                    class="flex items-start gap-3 p-3 bg-muted/20 border border-border/50 rounded-lg group hover:border-border transition-colors cursor-move"
+                  >
+                    <div
+                      cdkDragHandle
+                      class="mt-1 text-muted-foreground/50 group-hover:text-muted-foreground cursor-grab"
+                    >
+                      <ng-icon name="lucideGripVertical" size="16"></ng-icon>
+                    </div>
+                    <div
+                      class="w-16 h-16 rounded-md bg-muted shrink-0 overflow-hidden border border-border/50"
+                    >
+                      <img
+                        [src]="img.url"
+                        class="w-full h-full object-cover"
+                        [alt]="img.altText || 'Product image'"
+                      />
+                    </div>
+                    <div class="flex-1 min-w-0 flex flex-col gap-1.5">
+                      @if (editingImageAltId() === img.id) {
+                        <div class="flex gap-2">
+                          <input
+                            type="text"
+                            hlmInput
+                            class="h-8 text-xs w-full"
+                            (input)="editImageAltText.set($any($event.target).value)"
+                            [value]="editImageAltText()"
+                            placeholder="Alt text..."
+                          />
+                          <button
+                            hlmBtn
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 text-emerald-600 hover:bg-emerald-50"
+                            (click)="saveImageAlt(img.id)"
+                          >
+                            <ng-icon name="lucideCheck" size="14"></ng-icon>
+                          </button>
+                          <button
+                            hlmBtn
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 text-muted-foreground"
+                            (click)="editingImageAltId.set(null)"
+                          >
+                            <ng-icon name="lucideX" size="14"></ng-icon>
+                          </button>
+                        </div>
+                      } @else {
+                        <p
+                          class="text-xs text-muted-foreground truncate"
+                          [title]="img.altText || 'No alt text'"
+                        >
+                          {{ img.altText || 'No alt text' }}
+                        </p>
+                        <div class="flex items-center gap-2">
+                          <button
+                            class="text-xs font-medium text-primary hover:underline"
+                            (click)="startEditingAlt(img.id, img.altText)"
+                          >
+                            Edit Alt
+                          </button>
+                          <span class="text-border text-xs">•</span>
+                          <button
+                            class="text-xs font-medium text-rose-500 hover:underline"
+                            (click)="deleteImage(img.id)"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      }
+                      @if (img.position === 0) {
+                        <span
+                          class="text-[10px] font-semibold text-emerald-600 uppercase tracking-wide"
+                          >Primary</span
+                        >
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <div hlmCard class="bg-card shadow-sm border-border">
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>Description</h3>
+          </div>
+          <div
+            hlmCardContent
+            class="prose dark:prose-invert max-w-none text-muted-foreground text-sm"
+          >
+            <p hlmP>{{ product()!.description || 'No description provided.' }}</p>
+          </div>
+        </div>
+
+        <div hlmCard class="bg-card shadow-sm border-border">
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>Organization</h3>
+          </div>
+          <div hlmCardContent class="space-y-4">
+            <div>
+              <p hlmMuted class="uppercase mb-2">
+                Categories
+              </p>
+              @if (product()!.categories.length) {
+                <div class="flex flex-wrap gap-2">
+                  @for (cat of product()!.categories; track cat.id) {
+                    <span
+                      hlmBadge
+                      class="bg-primary/10 text-primary hover:bg-primary/20 border-0"
+                      >{{ cat.name }}</span
+                    >
+                  }
+                </div>
+              } @else {
+                <p hlmMuted>No categories assigned.</p>
+              }
+            </div>
+
+            <div class="pt-4 border-t border-border/60">
+              <p hlmMuted class="uppercase mb-2">
+                Global Attributes
+              </p>
+              @if (product()!.attributeValues.length) {
+                <div class="flex flex-wrap gap-2">
+                  @for (attr of product()!.attributeValues; track attr.id) {
+                    <span hlmBadge variant="outline" class="text-xs"
+                      >{{ attr.attributeName }}: {{ attr.value }}</span
+                    >
+                  }
+                </div>
+              } @else {
+                <p hlmMuted>No global attributes.</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div hlmCard class="bg-card shadow-sm border-border">
+          <div hlmCardHeader>
+            <h3 hlmCardTitle>Details</h3>
+          </div>
+          <div hlmCardContent class="space-y-3 text-sm">
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Created</span>
+              <span class="font-medium">{{ product()!.createdAt | date: 'mediumDate' }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Total Stock</span>
+              <span class="font-medium">{{ product()!.totalStock }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Weight</span>
+              <span class="font-medium">{{
+                product()!.weightGrams ? product()!.weightGrams + 'g' : '--'
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- EDIT PRODUCT DRAWER -->
+@if (isEditDrawerOpen()) {
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onEditDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[500px]"
+    >
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Edit Product</h2>
+      </hlm-sheet-header>
+
+      <!-- Form Content -->
+      <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-8">
+        <!-- SECTION: Basic Information -->
+        <div class="space-y-4">
+          <h3
+            hlmH3
+            class="text-foreground uppercase text-muted-foreground border-b border-border pb-2"
+          >
+            Basic Information
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label hlmLabel for="edit-title" class="text-sm font-semibold mb-2 block text-foreground"
+                >Product Title <span class="text-rose-500">*</span></label
+              >
+              <input
+                hlmInput
+                id="edit-title"
+                type="text"
+                [(ngModel)]="editProductForm.title"
+                class="w-full"
+                placeholder="e.g. Scented Candle"
+              />
+            </div>
+
+            <div>
+              <label hlmLabel for="edit-status" class="text-sm font-semibold mb-2 block text-foreground"
+                >Status</label
+              >
+              <hlm-select
+                id="edit-status"
+                [(value)]="editProductForm.status"
+                [itemToString]="statusItemToString"
+                class="w-full"
+              >
+                <hlm-select-trigger class="w-full h-9 bg-transparent">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content *hlmSelectPortal>
+                  <hlm-select-item value="draft">Draft</hlm-select-item>
+                  <hlm-select-item value="active">Active</hlm-select-item>
+                  <hlm-select-item value="archived">Archived</hlm-select-item>
+                </hlm-select-content>
+              </hlm-select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: Optional Details -->
+        <div class="space-y-4">
+          <h3
+            hlmH3
+            class="text-foreground uppercase text-muted-foreground border-b border-border pb-2"
+          >
+            Optional Details
+          </h3>
+
+          <!-- Descriptive Attributes (Product Level) -->
+          @if (productAttributes().length > 0) {
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border border-border rounded-lg bg-card"
+            >
+              <div class="sm:col-span-2">
+                <p hlmMuted class="uppercase mb-2">
+                  Descriptive Attributes
+                </p>
+              </div>
+              @for (attr of productAttributes(); track attr.id) {
+                <div>
+                  <label hlmLabel
+                    [for]="'attr-select-' + attr.id"
+                    class="text-xs font-semibold mb-1.5 block text-muted-foreground"
+                    >{{ attr.name }}</label
+                  >
+                  <hlm-select
+                    [(value)]="editProductForm.productAttributeValues[attr.id]"
+                    [itemToString]="makeProductAttributeItemToString(attr.id)"
+                    class="w-full"
+                  >
+                    <hlm-select-trigger
+                      [buttonId]="'attr-select-' + attr.id"
+                      class="w-full h-9 bg-transparent"
+                    >
+                      <hlm-select-value [placeholder]="'Select ' + attr.name" />
+                    </hlm-select-trigger>
+                    <hlm-select-content *hlmSelectPortal>
+                      @for (val of attr.values; track val.id) {
+                        <hlm-select-item [value]="val.id">{{ val.value }}</hlm-select-item>
+                      }
+                    </hlm-select-content>
+                  </hlm-select>
+                </div>
+              }
+            </div>
+          }
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <label hlmLabel for="edit-slug" class="text-sm font-semibold mb-2 block text-foreground"
+                >Slug</label
+              >
+              <input
+                hlmInput
+                id="edit-slug"
+                type="text"
+                [(ngModel)]="editProductForm.slug"
+                class="w-full"
+                placeholder="Auto-generated if left empty"
+              />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label hlmLabel for="edit-short-desc" class="text-sm font-semibold mb-2 block text-foreground"
+                >Short Description</label
+              >
+              <input
+                hlmInput
+                id="edit-short-desc"
+                type="text"
+                [(ngModel)]="editProductForm.shortDescription"
+                class="w-full"
+                placeholder="Max 300 characters..."
+              />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label hlmLabel for="edit-desc" class="text-sm font-semibold mb-2 block text-foreground"
+                >Full Description</label
+              >
+              <textarea hlmTextarea
+                id="edit-desc"
+                [(ngModel)]="editProductForm.description"
+                rows="4"
+                class="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                placeholder="Detailed description..."
+              ></textarea>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label hlmLabel for="edit-keywords" class="text-sm font-semibold mb-2 block text-foreground"
+                >Search Keywords</label
+              >
+              <input
+                hlmInput
+                id="edit-keywords"
+                type="text"
+                [(ngModel)]="editProductForm.searchKeywords"
+                class="w-full"
+                placeholder="e.g. abaya, elegant, black"
+              />
+            </div>
+
+            <div>
+              <label hlmLabel for="edit-weight" class="text-sm font-semibold mb-2 block text-foreground"
+                >Weight (grams)</label
+              >
+              <input
+                hlmInput
+                id="edit-weight"
+                type="number"
+                [(ngModel)]="editProductForm.weightGrams"
+                class="w-full"
+                placeholder="0"
+              />
+            </div>
+
+            <div>
+              <span class="text-sm font-semibold mb-2 block text-foreground">Categories</span>
+              <hlm-toggle-group
+                type="multiple"
+                [value]="editProductForm.categoryIds"
+                (valueChange)="onEditCategoriesChange($event)"
+                class="flex flex-wrap gap-2 p-3 border border-input rounded-md bg-transparent min-h-[80px]"
+              >
+                @for (cat of categories(); track cat.id) {
+                  <button
+                    hlmToggleGroupItem
+                    [value]="cat.id"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer bg-muted/50 text-foreground border-border data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:border-primary"
+                  >
+                    @if (isEditCategorySelected(cat.id)) {
+                      <ng-icon name="lucideCheck" size="12" />
+                    }
+                    <span>{{ cat.name }}</span>
+                  </button>
+                }
+              </hlm-toggle-group>
+              <p hlmMuted class="mt-1">
+                Click to select or deselect categories
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 mt-4 sm:col-span-2">
+              <hlm-checkbox inputId="edit-featured" [(ngModel)]="editProductForm.isFeatured" />
+              <label hlmLabel for="edit-featured" class="text-sm font-medium text-foreground"
+                >Feature this product on storefront</label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
+        <button hlmBtn variant="outline" (click)="toggleEditDrawer()">Cancel</button>
+        <button hlmBtn (click)="saveProductChanges()" [disabled]="isSaving()">
+          @if (isSaving()) {
+            <hlm-spinner class="text-[16px] me-2" />
+            Saving...
+          } @else {
+            Save Changes
+          }
+        </button>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
+}
+
+<!-- GENERATE VARIANTS DRAWER -->
+@if (isGenerateDrawerOpen()) {
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onGenerateDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[600px]"
+    >
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Generate Variants</h2>
+      </hlm-sheet-header>
+
+      <!-- Form Content -->
+      <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label hlmLabel
+              for="generate-base-price"
+              class="text-sm font-semibold mb-2 block text-foreground"
+              >Base Price (minor units)</label
+            >
+            <input
+              id="generate-base-price"
+              hlmInput
+              type="number"
+              [(ngModel)]="generateVariantsForm.priceAmount"
+              class="w-full"
+            />
+          </div>
+          <div>
+            <label hlmLabel
+              for="generate-base-stock"
+              class="text-sm font-semibold mb-2 block text-foreground"
+              >Base Stock</label
+            >
+            <input
+              id="generate-base-stock"
+              hlmInput
+              type="number"
+              [(ngModel)]="generateVariantsForm.stockQuantity"
+              class="w-full"
+            />
+          </div>
+        </div>
+
+        <div class="border-t border-border pt-4 space-y-4">
+          <h3 hlmH3>Variant Axes (Max 3)</h3>
+
+          @for (axis of generateVariantsForm.axes; track $index; let i = $index) {
+            <div class="p-4 bg-muted/20 border border-border/50 rounded-lg space-y-3 relative">
+              @if (generateVariantsForm.axes.length > 1) {
+                <button
+                  class="absolute top-2 right-2 text-muted-foreground hover:text-rose-500"
+                  (click)="removeAxis(i)"
+                >
+                  <ng-icon name="lucideTrash2" size="16"></ng-icon>
+                </button>
+              }
+
+              <div>
+                <label hlmLabel [for]="'axis-attribute-' + i" class="text-xs font-semibold mb-1 block"
+                  >Attribute</label
+                >
+                <hlm-select
+                  [(value)]="axis.attributeId"
+                  [itemToString]="axisAttributeItemToString"
+                  class="w-full"
+                >
+                  <hlm-select-trigger
+                    [buttonId]="'axis-attribute-' + i"
+                    class="w-full h-9 bg-background"
+                  >
+                    <hlm-select-value placeholder="Select an attribute..." />
+                  </hlm-select-trigger>
+                  <hlm-select-content *hlmSelectPortal>
+                    @for (attr of activeVariantAxes(); track attr.id) {
+                      <hlm-select-item [value]="attr.id">{{ attr.name }}</hlm-select-item>
+                    }
+                  </hlm-select-content>
+                </hlm-select>
+              </div>
+
+              @if (axis.attributeId) {
+                <div>
+                  <span class="text-xs font-semibold mb-1 block">Values</span>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    @for (attr of activeVariantAxes(); track attr.id) {
+                      @if (attr.id === axis.attributeId) {
+                        @for (val of attr.values; track val.id) {
+                          <button
+                            type="button"
+                            hlmBadge
+                            class="cursor-pointer transition-colors"
+                            [ngClass]="
+                              axis.valueIds.includes(val.id)
+                                ? 'bg-primary text-primary-foreground border-primary'
+                                : 'bg-background text-muted-foreground border-border hover:border-primary/50'
+                            "
+                            (click)="toggleGenerateValue(i, val.id)"
+                          >
+                            {{ val.value }}
+                          </button>
+                        }
+                        @if (attr.values.length === 0) {
+                          <span class="text-xs text-muted-foreground italic"
+                            >No values defined for this attribute.</span
+                          >
+                        }
+                      }
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          @if (generateVariantsForm.axes.length < 3) {
+            <button hlmBtn variant="outline" class="w-full border-dashed" (click)="addAxis()">
+              <ng-icon name="lucidePlus" size="16" class="me-2"></ng-icon>
+              Add Axis
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
+        <button hlmBtn variant="outline" (click)="toggleGenerateDrawer()">Cancel</button>
+        <button hlmBtn (click)="submitGenerateVariants()" [disabled]="isGenerating()">
+          @if (isGenerating()) {
+            <hlm-spinner class="text-[16px] me-2" />
+            Generating...
+          } @else {
+            Generate Variants
+          }
+        </button>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
+}
+
+<!-- ADD SINGLE VARIANT DRAWER -->
+@if (isAddVariantDrawerOpen()) {
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onAddVariantDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[500px]"
+    >
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Add Variant</h2>
+      </hlm-sheet-header>
+
+      <!-- Form Content -->
+      <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-4">
+        <div>
+          <label hlmLabel for="add-variant-sku" class="text-sm font-semibold mb-1 block"
+            >SKU (Optional)</label
+          >
+          <input
+            id="add-variant-sku"
+            hlmInput
+            type="text"
+            [(ngModel)]="addVariantForm.sku"
+            class="w-full"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label hlmLabel for="add-variant-price" class="text-sm font-semibold mb-1 block">Price</label>
+            <input
+              id="add-variant-price"
+              hlmInput
+              type="number"
+              [(ngModel)]="addVariantForm.priceAmount"
+              class="w-full"
+            />
+          </div>
+          <div>
+            <label hlmLabel for="add-variant-compare-at" class="text-sm font-semibold mb-1 block"
+              >Compare At (Opt)</label
+            >
+            <input
+              id="add-variant-compare-at"
+              hlmInput
+              type="number"
+              [(ngModel)]="addVariantForm.compareAtAmount"
+              class="w-full"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label hlmLabel for="add-variant-stock" class="text-sm font-semibold mb-1 block"
+              >Stock Quantity</label
+            >
+            <input
+              id="add-variant-stock"
+              hlmInput
+              type="number"
+              [(ngModel)]="addVariantForm.stockQuantity"
+              class="w-full"
+            />
+          </div>
+          <div>
+            <label hlmLabel for="add-variant-low-stock" class="text-sm font-semibold mb-1 block"
+              >Low Stock Threshold</label
+            >
+            <input
+              id="add-variant-low-stock"
+              hlmInput
+              type="number"
+              [(ngModel)]="addVariantForm.lowStockThreshold"
+              class="w-full"
+            />
+          </div>
+        </div>
+
+        <div class="border-t border-border pt-4">
+          <h3 hlmH3 class="mb-3">Attribute Combination</h3>
+          <p hlmMuted class="mb-4">
+            Select the specific attribute values that define this variant (Max 3, one per axis).
+          </p>
+
+          <div class="space-y-4">
+            @for (attr of activeVariantAxes(); track attr.id) {
+              @if (attr.values.length > 0) {
+                <div>
+                  <p hlmMuted class="mb-2 uppercase">
+                    {{ attr.name }}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    @for (val of attr.values; track val.id) {
+                      <button
+                        type="button"
+                        hlmBadge
+                        class="cursor-pointer transition-colors"
+                        [ngClass]="
+                          addVariantForm.attributeValueIds.includes(val.id)
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'bg-background text-muted-foreground border-border hover:border-primary/50'
+                        "
+                        (click)="toggleAddVariantValue(val.id)"
+                      >
+                        {{ val.value }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
+        <button hlmBtn variant="outline" (click)="toggleAddVariantDrawer()">Cancel</button>
+        <button hlmBtn (click)="submitAddVariant()" [disabled]="isAddingVariant()">
+          @if (isAddingVariant()) {
+            <hlm-spinner class="text-[16px] me-2" />
+            Adding...
+          } @else {
+            Add Variant
+          }
+        </button>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
+}
+
+<!-- EDIT VARIANT DRAWER -->
+@if (isEditVariantDrawerOpen()) {
+  <hlm-sheet side="right" [state]="'open'" (stateChanged)="onEditVariantDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[400px]"
+    >
+      <hlm-sheet-header class="p-6 border-b border-border">
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Edit Variant</h2>
+      </hlm-sheet-header>
+
+      <!-- Form Content -->
+      <div class="p-6 overflow-y-auto flex-1 flex flex-col gap-4">
+        <div>
+          <label hlmLabel for="edit-variant-sku" class="text-sm font-semibold mb-1 block">SKU</label>
+          <input
+            id="edit-variant-sku"
+            hlmInput
+            type="text"
+            [(ngModel)]="editVariantForm.sku"
+            class="w-full"
+            placeholder="Optional"
+          />
+        </div>
+
+        <div>
+          <label hlmLabel for="edit-variant-price" class="text-sm font-semibold mb-1 block">Price</label>
+          <input
+            id="edit-variant-price"
+            hlmInput
+            type="number"
+            [(ngModel)]="editVariantForm.priceAmount"
+            class="w-full"
+          />
+        </div>
+
+        <div>
+          <label hlmLabel for="edit-variant-compare-at" class="text-sm font-semibold mb-1 block"
+            >Compare At Amount</label
+          >
+          <input
+            id="edit-variant-compare-at"
+            hlmInput
+            type="number"
+            [(ngModel)]="editVariantForm.compareAtAmount"
+            class="w-full"
+            placeholder="Optional"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label hlmLabel for="edit-variant-stock" class="text-sm font-semibold mb-1 block">Stock</label>
+            <input
+              id="edit-variant-stock"
+              hlmInput
+              type="number"
+              [(ngModel)]="editVariantForm.stockQuantity"
+              class="w-full"
+            />
+          </div>
+          <div>
+            <label hlmLabel for="edit-variant-low-stock" class="text-sm font-semibold mb-1 block"
+              >Low Stock</label
+            >
+            <input
+              id="edit-variant-low-stock"
+              hlmInput
+              type="number"
+              [(ngModel)]="editVariantForm.lowStockThreshold"
+              class="w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
+        <button hlmBtn variant="outline" (click)="closeEditVariantDrawer()">Cancel</button>
+        <button hlmBtn (click)="submitEditVariant()" [disabled]="isSaving()">
+          @if (isSaving()) {
+            <hlm-spinner class="text-[16px] me-2" />
+            Saving...
+          } @else {
+            Save Changes
+          }
+        </button>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
+}
+
+@if (isDeleteProductOpen()) {
+  <app-delete-confirm-dialog
+    [name]="product()?.title || 'Product'"
+    (confirmed)="confirmDeleteProduct()"
+    (canceled)="cancelDeleteProduct()"
+  ></app-delete-confirm-dialog>
+}
+
+@if (isDeleteVariantOpen()) {
+  <app-delete-confirm-dialog
+    name="Variant"
+    (confirmed)="confirmDeleteVariant()"
+    (canceled)="cancelDeleteVariant()"
+  ></app-delete-confirm-dialog>
+}
+
+@if (isDeleteImageOpen()) {
+  <app-delete-confirm-dialog
+    name="Image"
+    (confirmed)="confirmDeleteImage()"
+    (canceled)="cancelDeleteImage()"
+  ></app-delete-confirm-dialog>
+}

@@ -1,0 +1,156 @@
+<div class="space-y-6 pt-6">
+  <!-- Header / Filters -->
+  <div
+    hlmCard
+    class="p-4 flex flex-col sm:flex-row gap-4 justify-between items-center bg-card text-card-foreground shadow-xs border-border rounded-xl"
+  >
+    <div class="flex items-center gap-2">
+      <div
+        class="p-2 bg-orange-100 dark:bg-orange-950/50 rounded-full text-orange-600 dark:text-orange-400"
+      >
+        <ng-icon name="lucideAlertCircle" size="20" />
+      </div>
+      <div>
+        <h2 hlmH2>Unanswered Themes</h2>
+        <p hlmMuted>
+          Topics the chatbot couldn't answer from its knowledge base.
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <label class="flex items-center gap-2 text-sm cursor-pointer" for="include-reviewed">
+        <hlm-checkbox
+          inputId="include-reviewed"
+          [checked]="includeReviewed()"
+          (checkedChange)="onIncludeReviewedChange($event)"
+        />
+        <span>Show Reviewed</span>
+      </label>
+
+      <hlm-select
+        [value]="days()"
+        (valueChange)="onDaysChange($event)"
+        [itemToString]="daysItemToString"
+        class="w-32"
+      >
+        <hlm-select-trigger class="bg-background shadow-2xs h-9 text-sm">
+          <hlm-select-value />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item [value]="7">Last 7 Days</hlm-select-item>
+          <hlm-select-item [value]="30">Last 30 Days</hlm-select-item>
+          <hlm-select-item [value]="90">Last 90 Days</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
+    </div>
+  </div>
+
+  <!-- Data List -->
+  <div hlmCard class="border-border rounded-xl shadow-xs overflow-hidden">
+    @if (isLoading()) {
+      <div class="flex justify-center items-center py-12">
+        <hlm-spinner class="text-[32px] text-primary" />
+      </div>
+    } @else if (errorState()) {
+      <div
+        class="flex flex-col items-center justify-center py-16 text-center border border-border rounded-xl bg-card"
+      >
+        <div
+          class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4"
+        >
+          <ng-icon name="lucideAlertCircle" size="24" />
+        </div>
+        <h3 hlmH3>Failed to Load Unanswered Questions</h3>
+        <p hlmMuted class="max-w-md mt-2">
+          We couldn't retrieve the list of unanswered questions. Please make sure the server is
+          running.
+        </p>
+      </div>
+    } @else {
+      <div class="divide-y divide-border">
+        @if (data()?.items?.length === 0) {
+          <div class="p-12 text-center text-muted-foreground">
+            <div
+              class="inline-flex justify-center items-center w-12 h-12 rounded-full bg-muted mb-4"
+            >
+              <ng-icon name="lucideCheck" size="24" class="text-emerald-500" />
+            </div>
+            <h3 hlmH3 class="text-foreground mb-1">All Caught Up!</h3>
+            <p hlmMuted>No unanswered themes found for the selected criteria.</p>
+          </div>
+        } @else {
+          @for (theme of data()?.items; track theme.key) {
+            <div
+              class="p-5 hover:bg-muted/30 transition-colors flex flex-col sm:flex-row gap-4 justify-between"
+              [class.opacity-60]="theme.isReviewed"
+            >
+              <div class="space-y-2 flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <h3 hlmH3 class="truncate">{{ theme.label }}</h3>
+                  @if (theme.isReviewed) {
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400"
+                    >
+                      <ng-icon name="lucideCheck" size="10" /> Reviewed
+                    </span>
+                  }
+                </div>
+
+                <div class="bg-muted px-4 py-3 rounded-lg border border-border">
+                  <p hlmMuted class="italic">"{{ theme.exampleQuestion }}"</p>
+                </div>
+
+                <div class="flex items-center gap-4 text-xs text-muted-foreground pt-1">
+                  <span class="flex items-center gap-1 font-medium text-foreground">
+                    <ng-icon name="lucideMessageSquare" size="14" class="text-muted-foreground" />
+                    {{ theme.occurrences }} occurrences
+                  </span>
+                  <span>Last asked: {{ theme.lastAskedAt | date: 'mediumDate' }}</span>
+                </div>
+              </div>
+
+              <div class="flex sm:flex-col justify-end gap-2 shrink-0">
+                @if (!theme.isReviewed) {
+                  <button
+                    hlmBtn
+                    size="sm"
+                    class="gap-2 shrink-0"
+                    [disabled]="reviewingIds().has(theme.key)"
+                    (click)="markAsReviewed(theme)"
+                  >
+                    @if (reviewingIds().has(theme.key)) {
+                      <hlm-spinner class="text-primary-foreground" />
+                    } @else {
+                      <ng-icon name="lucideCheck" size="16" />
+                      Mark as Dealt With
+                    }
+                  </button>
+                }
+
+                <!-- View instances link -->
+                <!-- We could link to history pre-filtered by search term (the theme label) -->
+                <!-- Or just provide the button without function for now if backend doesn't support filtering by theme ID -->
+              </div>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (data(); as d) {
+        @if (d.totalPages > 1) {
+          <div class="p-4 border-t border-border">
+            <app-pagination
+              [currentPage]="d.page"
+              [totalPages]="d.totalPages"
+              [totalItems]="d.total"
+              [pageSize]="d.limit"
+              (pageChange)="changePage($event)"
+            />
+          </div>
+        }
+      }
+    }
+  </div>
+</div>

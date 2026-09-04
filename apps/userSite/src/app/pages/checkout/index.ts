@@ -1,1 +1,0 @@
-export { CheckoutComponent } from './checkout';

@@ -1,0 +1,81 @@
+<div class="mb-6 space-y-5">
+  @for (axis of store.variantAxes(); track axis.key) {
+    <div>
+      <div class="mb-2 flex items-center justify-between">
+        <h3 hlmH3 dir="auto" class="text-sm font-semibold text-foreground">
+          {{ axis.name }}:
+          <span dir="auto" class="font-normal text-muted-foreground">
+            {{
+              store.selectedOptions()[axis.key] ||
+                ('product.variant.select_option' | translate: { name: axis.name })
+            }}
+          </span>
+        </h3>
+      </div>
+
+      <!-- Color swatch style -->
+      @if (axis.key.toLowerCase().includes('color')) {
+        <div class="flex gap-3 flex-wrap">
+          @for (opt of axis.options; track opt.slug) {
+            <button
+              hlmBtn
+              variant="ghost"
+              type="button"
+              [attr.aria-label]="'Select ' + opt.value"
+              [attr.aria-pressed]="store.selectedOptions()[axis.key] === opt.slug"
+              (click)="store.selectOption(axis.key, opt.slug)"
+              class="h-10 w-10 rounded-full border border-border shadow-sm transition-shadow relative"
+              [style.background-color]="opt.swatchHex || '#ccc'"
+              [class.ring-2]="store.selectedOptions()[axis.key] === opt.slug"
+              [class.ring-primary]="store.selectedOptions()[axis.key] === opt.slug"
+              [class.ring-offset-2]="store.selectedOptions()[axis.key] === opt.slug"
+              [class.opacity-30]="!store.availableOptionSlugs().has(axis.key + ':' + opt.slug)"
+            >
+              @if (!store.availableOptionSlugs().has(axis.key + ':' + opt.slug)) {
+                <!-- Strike through for unavailable color -->
+                <ng-icon
+                  name="lucideSlash"
+                  size="40"
+                  class="absolute inset-0 m-auto text-foreground/50 rotate-45"
+                />
+              }
+            </button>
+          }
+        </div>
+      } @else {
+        <!-- Chip style for size, style, etc. -->
+        <div class="flex flex-wrap gap-3">
+          @for (opt of axis.options; track opt.slug) {
+            <button
+              hlmBtn
+              variant="ghost"
+              type="button"
+              dir="auto"
+              [attr.aria-label]="'Select ' + axis.name + ' ' + opt.value"
+              [attr.aria-pressed]="store.selectedOptions()[axis.key] === opt.slug"
+              (click)="store.selectOption(axis.key, opt.slug)"
+              class="h-auto rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+              [class.border-primary]="store.selectedOptions()[axis.key] === opt.slug"
+              [class.bg-primary/5]="store.selectedOptions()[axis.key] === opt.slug"
+              [class.text-primary]="store.selectedOptions()[axis.key] === opt.slug"
+              [class.border-border]="store.selectedOptions()[axis.key] !== opt.slug"
+              [class.text-muted-foreground]="
+                store.selectedOptions()[axis.key] !== opt.slug &&
+                store.availableOptionSlugs().has(axis.key + ':' + opt.slug)
+              "
+              [class.hover:border-primary/50]="
+                store.selectedOptions()[axis.key] !== opt.slug &&
+                store.availableOptionSlugs().has(axis.key + ':' + opt.slug)
+              "
+              [class.opacity-40]="!store.availableOptionSlugs().has(axis.key + ':' + opt.slug)"
+              [class.line-through]="!store.availableOptionSlugs().has(axis.key + ':' + opt.slug)"
+              [class.bg-muted]="!store.availableOptionSlugs().has(axis.key + ':' + opt.slug)"
+            >
+              {{ opt.value }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

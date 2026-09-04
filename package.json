@@ -2,19 +2,25 @@
   "name": "invento-ai",
   "version": "0.0.0",
   "scripts": {
+    "generate:env": "node scripts/generate-env.mjs",
+    "check:env": "node scripts/generate-env.mjs --check",
     "ng": "nx",
-    "start": "nx serve site-builder -p 4200",
-    "start:user": "nx serve userSite -p 4300",
-    "start:invento": "nx serve invento -p 4400",
-    "build": "nx build site-builder",
-    "build:all": "nx run-many -t build",
+    "start": "npm run generate:env && nx serve site-builder -p 4200",
+    "start:user-site": "npm run generate:env && nx serve user-site -p 4300",
+    "start:owner-dashboard": "npm run generate:env && nx serve owner-dashboard -p 4400",
+    "start:all": "npm run generate:env && nx run-many -t serve --projects=site-builder,user-site,owner-dashboard",
+    "build": "npm run generate:env && nx build site-builder",
+    "build:all": "npm run generate:env && nx run-many -t build",
     "test": "nx test site-builder",
     "test:all": "nx run-many -t test",
     "lint": "nx run-many -t lint",
     "lint:fix": "nx run-many -t lint --fix",
+    "typecheck": "nx run-many -t typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "check:names": "node scripts/check-project-names.mjs",
+    "prepare": "husky",
+    "postinstall": "node scripts/generate-env.mjs"
   },
   "lint-staged": {
     "*.ts": [
@@ -29,9 +35,14 @@
       "prettier --write"
     ]
   },
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0",
+    "npm": ">=11"
+  },
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
+    "endOfLine": "auto",
     "overrides": [
       {
         "files": "*.html",
@@ -80,8 +91,11 @@
     "@angular/build": "^22.0.3",
     "@angular/cli": "^22.0.3",
     "@angular/compiler-cli": "^22.0.2",
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
     "@eslint/js": "^10.0.1",
     "@nx/angular": "23.1.0",
+    "@nx/eslint-plugin": "23.1.0",
     "@nx/js": "23.1.0",
     "@nx/workspace": "23.1.0",
     "@schematics/angular": "^22.0.3",

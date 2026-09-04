@@ -1,0 +1,21 @@
+{
+  "name": "shared-feature-auth",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/feature-auth/src",
+  "prefix": "lib",
+  "tags": ["scope:shared", "type:feature"],
+  "projectType": "library",
+  "// targets": "to see all targets run: nx show project shared-feature-auth --web",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/feature-auth/**/*.ts",
+          "libs/shared/feature-auth/**/*.html"
+        ]
+      }
+    }
+  }
+}

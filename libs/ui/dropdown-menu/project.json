@@ -1,0 +1,25 @@
+{
+  "name": "dropdown-menu",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui/dropdown-menu/src",
+  "prefix": "hlm",
+  "tags": [
+    "type:ui",
+    "scope:shared"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/dropdown-menu/**/*.ts",
+          "libs/ui/dropdown-menu/**/*.html"
+        ]
+      }
+    }
+  }
+}

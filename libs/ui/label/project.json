@@ -1,0 +1,25 @@
+{
+  "name": "label",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui/label/src",
+  "prefix": "hlm",
+  "tags": [
+    "type:ui",
+    "scope:shared"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/label/**/*.ts",
+          "libs/ui/label/**/*.html"
+        ]
+      }
+    }
+  }
+}

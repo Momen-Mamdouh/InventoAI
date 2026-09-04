@@ -1,0 +1,192 @@
+import { TranslatePipe } from '@invento/shared-util-i18n';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnInit,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+
+import { toast } from '@spartan/helm/sonner';
+import {
+  AUTH_CONFIG,
+  AuthService,
+  GoogleAuthService,
+  resolveAuthBasePath,
+} from '@invento/shared-data-access-auth';
+
+import { HlmInput } from '@spartan/helm/input';
+import { HlmButton } from '@spartan/helm/button';
+import { HlmSpinner } from '@spartan/helm/spinner';
+import { HlmH1 } from '@spartan/helm/typography';
+
+import { extractErrorMessage } from '@invento/shared-util-error';
+
+/** One `Register` for all three apps (SC-005). Ported from invento/site-builder's shared template. */
+@Component({
+  selector: 'app-register',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmButton, HlmSpinner, HlmH1],
+  templateUrl: './register.html',
+  styleUrl: './register.css',
+})
+export class Register implements OnInit, AfterViewInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly googleAuthService = inject(GoogleAuthService);
+  private readonly router = inject(Router);
+  protected readonly config = inject(AUTH_CONFIG);
+
+  /** Resolved once per page load — see `AuthConfig.authBasePath`'s doc comment. */
+  protected readonly authBasePath = resolveAuthBasePath(this.config);
+
+  googleBtnContainer = viewChild<ElementRef<HTMLDivElement>>('googleBtnContainer');
+
+  isLoading = signal(false);
+  isGoogleLoading = signal(false);
+
+  registerForm = this.fb.group(
+    {
+      firstName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(/^[a-zA-Z\u00C0-\u00FF\u0600-\u06FF\s'-]+$/),
+        ],
+      ],
+      lastName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(/^[a-zA-Z\u00C0-\u00FF\u0600-\u06FF\s'-]+$/),
+        ],
+      ],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/,
+          ),
+        ],
+      ],
+      confirmPassword: ['', [Validators.required]],
+    },
+    { validators: this.passwordMatchValidator },
+  );
+
+  ngOnInit() {
+    const passwordControl = this.registerForm.get('password');
+    const confirmControl = this.registerForm.get('confirmPassword');
+
+    if (passwordControl && confirmControl) {
+      if (passwordControl.invalid) {
+        confirmControl.disable();
+      }
+
+      passwordControl.statusChanges.subscribe(() => {
+        if (passwordControl.valid) {
+          confirmControl.enable();
+        } else {
+          confirmControl.disable();
+        }
+      });
+    }
+  }
+
+  async ngAfterViewInit() {
+    await this.initGoogleAuth();
+  }
+
+  private async initGoogleAuth() {
+    const initialized = await this.googleAuthService.initialize((idToken) => {
+      this.handleGoogleSignIn(idToken);
+    });
+
+    if (initialized) {
+      const container = this.googleBtnContainer();
+      if (container?.nativeElement) {
+        this.googleAuthService.renderButton(container.nativeElement, {
+          width: Math.min(Math.max(container.nativeElement.offsetWidth || 350, 200), 400),
+        });
+      }
+    }
+  }
+
+  passwordMatchValidator(g: AbstractControl) {
+    return g.get('password')?.value === g.get('confirmPassword')?.value ? null : { mismatch: true };
+  }
+
+  onSubmit() {
+    if (this.registerForm.invalid) {
+      toast.error('Please fill all required fields correctly.');
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.registerForm.getRawValue();
+    const slug = this.config.resolveStoreSlug?.();
+    const registerPayload = slug ? { ...formValue, storeSlug: slug } : formValue;
+
+    this.isLoading.set(true);
+    this.authService.register(registerPayload).subscribe({
+      next: (res) => {
+        this.isLoading.set(false);
+        toast.success(res.message || 'Registration successful. Please verify your email.');
+        this.router.navigate([`${this.authBasePath}/verify-email`], {
+          queryParams: { email: registerPayload.email },
+        });
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        const errorMsg = extractErrorMessage(err, 'Registration failed.');
+        toast.error(errorMsg);
+      },
+    });
+  }
+
+  loginWithGoogle() {
+    if (!this.googleAuthService.hasClientId()) {
+      toast.error(
+        'Google Client ID is not configured. Please add your Google Client ID to environment.ts or .env',
+      );
+      return;
+    }
+
+    this.googleAuthService.prompt();
+  }
+
+  handleGoogleSignIn(idToken: string) {
+    this.isGoogleLoading.set(true);
+    const slug = this.config.resolveStoreSlug?.();
+    const request =
+      this.config.authRole === 'customer' && slug
+        ? this.authService.googleLogin(idToken, slug)
+        : this.authService.googleLoginOwner(idToken);
+    request.subscribe({
+      next: () => {
+        this.isGoogleLoading.set(false);
+        toast.success('Signed in with Google successfully');
+        const target = this.config.resolvePostAuthRoute
+          ? this.config.resolvePostAuthRoute(this.authService, this.config.postLoginRoute)
+          : this.config.postLoginRoute;
+        this.router.navigate([target]);
+      },
+      error: (err) => {
+        this.isGoogleLoading.set(false);
+        const errorMsg = extractErrorMessage(err, 'Google sign-in failed. Please try again.');
+        toast.error(errorMsg);
+      },
+    });
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "input-otp",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui/input-otp/src",
+  "prefix": "hlm",
+  "tags": [
+    "type:ui",
+    "scope:shared"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/input-otp/**/*.ts",
+          "libs/ui/input-otp/**/*.html"
+        ]
+      }
+    }
+  }
+}

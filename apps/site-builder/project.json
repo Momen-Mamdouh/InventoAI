@@ -1,0 +1,116 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "site-builder",
+  "projectType": "application",
+  "sourceRoot": "apps/site-builder/src",
+  "prefix": "app",
+  "tags": ["type:app", "scope:site-builder"],
+  "targets": {
+    "generate-env": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node scripts/generate-env.mjs",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "build": {
+      "executor": "@angular/build:application",
+      "options": {
+        "browser": "apps/site-builder/src/main.ts",
+        "tsConfig": "apps/site-builder/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/site-builder/public"
+          }
+        ],
+        "styles": ["apps/site-builder/src/styles.css"],
+        "server": "apps/site-builder/src/main.server.ts",
+        "outputMode": "server",
+        "ssr": {
+          "entry": "apps/site-builder/src/server.ts"
+        },
+        "outputPath": "dist/apps/site-builder"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "1MB",
+              "maximumError": "2MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kB",
+              "maximumError": "8kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/site-builder/src/environments/environment.ts",
+              "with": "apps/site-builder/src/environments/environment.development.ts"
+            }
+          ]
+        }
+      },
+      "defaultConfiguration": "production",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["generate-env"]
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "site-builder:build:production"
+        },
+        "development": {
+          "buildTarget": "site-builder:build:development"
+        }
+      },
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4200,
+        "proxyConfig": "apps/site-builder/proxy.conf.js"
+      },
+      "dependsOn": ["generate-env"]
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "site-builder:build",
+        "staticFilePath": "dist/apps/site-builder/browser",
+        "spa": true
+      }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "tsConfig": "apps/site-builder/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "lintFilePatterns": ["apps/site-builder/src/**/*.ts", "apps/site-builder/src/**/*.html"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ngc -p apps/site-builder/tsconfig.app.json --noEmit --rootDir .",
+        "cwd": "{workspaceRoot}"
+      },
+      "dependsOn": ["generate-env"]
+    }
+  }
+}

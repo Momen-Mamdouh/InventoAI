@@ -1,1 +1,0 @@
-export { OrdersComponent } from './orders';

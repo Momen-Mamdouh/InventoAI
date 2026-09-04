@@ -1,0 +1,21 @@
+{
+  "name": "shared-ui-drift-wall",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ui-drift-wall/src",
+  "prefix": "lib",
+  "tags": ["scope:shared", "type:ui"],
+  "projectType": "library",
+  "// targets": "to see all targets run: nx show project shared-ui-drift-wall --web",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui-drift-wall/**/*.ts",
+          "libs/shared/ui-drift-wall/**/*.html"
+        ]
+      }
+    }
+  }
+}

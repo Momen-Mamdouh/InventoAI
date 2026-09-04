@@ -1,0 +1,101 @@
+@if (store.loading()) {
+  <div class="flex flex-col gap-2">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div hlmSkeleton class="rounded-lg w-full h-20"></div>
+    }
+  </div>
+} @else if (store.entries().length === 0) {
+  <div
+    class="flex flex-col justify-center items-center gap-1 py-16 border border-dashed rounded-lg text-center"
+  >
+    <p hlmSmall class="text-foreground">No FAQ entries yet</p>
+    <p hlmMuted>Add your first question and answer to get started.</p>
+  </div>
+} @else {
+  <div cdkDropList class="flex flex-col gap-2" (cdkDropListDropped)="onDrop($event)">
+    @for (entry of store.entries(); track entry.id) {
+      <div
+        cdkDrag
+        class="flex items-start gap-3 bg-card shadow-sm p-4 border rounded-lg"
+        [class.opacity-60]="!entry.isPublished"
+      >
+        <button
+          cdkDragHandle
+          hlmBtn
+          variant="ghost"
+          size="icon"
+          type="button"
+          class="mt-1 text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing"
+          aria-label="Drag to reorder"
+        >
+          <ng-icon hlm name="lucideGripVertical" class="size-4" />
+        </button>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <p hlmSmall class="text-foreground truncate">{{ entry.question }}</p>
+            @if (!entry.isPublished) {
+              <span class="bg-muted px-1.5 py-0.5 rounded text-muted-foreground text-xs shrink-0"
+                >Draft</span
+              >
+            }
+          </div>
+          <!-- answer is plain text from the API, never sanitised server-side:
+               interpolation (not innerHTML) keeps this safe, pre-line keeps the line breaks -->
+          <p hlmMuted class="mt-1 whitespace-pre-line">{{ entry.answer }}</p>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <hlm-switch
+            [checked]="entry.isPublished"
+            (checkedChange)="onTogglePublished(entry)"
+            aria-label="Published"
+          />
+
+          <hlm-sheet side="right">
+            <button
+              hlmSheetTrigger
+              hlmBtn
+              variant="ghost"
+              size="icon"
+              type="button"
+              aria-label="Edit"
+            >
+              <ng-icon hlm name="lucidePencil" class="size-4" />
+            </button>
+            <hlm-sheet-content *hlmSheetPortal="let ctx" class="p-5 sm:max-w-lg">
+              <app-faq-form [entry]="entry" (saved)="ctx.close()" (canceled)="ctx.close()" />
+            </hlm-sheet-content>
+          </hlm-sheet>
+
+          <hlm-alert-dialog>
+            <button
+              hlmAlertDialogTrigger
+              hlmBtn
+              variant="ghost"
+              size="icon"
+              type="button"
+              aria-label="Delete"
+            >
+              <ng-icon hlm name="lucideTrash2" class="size-4 text-destructive" />
+            </button>
+            <hlm-alert-dialog-content *hlmAlertDialogPortal="let ctx">
+              <hlm-alert-dialog-header>
+                <h3 hlmAlertDialogTitle>Delete this FAQ entry?</h3>
+                <p hlmAlertDialogDescription>
+                  This can't be undone - the entry is removed permanently, not archived.
+                </p>
+              </hlm-alert-dialog-header>
+              <hlm-alert-dialog-footer>
+                <button hlmAlertDialogCancel (click)="ctx.close()">Cancel</button>
+                <button hlmAlertDialogAction (click)="onConfirmDelete(entry.id); ctx.close()">
+                  Delete
+                </button>
+              </hlm-alert-dialog-footer>
+            </hlm-alert-dialog-content>
+          </hlm-alert-dialog>
+        </div>
+      </div>
+    }
+  </div>
+}

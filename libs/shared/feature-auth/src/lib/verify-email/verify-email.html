@@ -1,0 +1,85 @@
+<div class="flex flex-col h-full text-left">
+  <div class="mb-8">
+    <h1 hlmH1 class="text-slate-900 dark:text-white mb-2">
+      {{ 'auth_verify_title' | translate }}
+    </h1>
+    <p hlmMuted class="text-slate-500 dark:text-zinc-400">
+      {{ 'auth_we_sent_code' | translate }} <strong>{{ userEmail }}</strong
+      >.
+    </p>
+  </div>
+
+  <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="space-y-5 flex-1">
+    <div class="space-y-1.5">
+      <label hlmLabel for="otp1" class="text-sm font-semibold text-slate-700 dark:text-white">{{
+        'auth_verify_code_label' | translate
+      }}</label>
+      <brn-input-otp
+        hlmInputOtp
+        formControlName="otp"
+        maxLength="6"
+        inputId="otp1"
+        class="flex justify-between gap-2 my-4"
+      >
+        <hlm-input-otp-slot
+          [index]="0"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+        />
+        <hlm-input-otp-slot
+          [index]="1"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+        />
+        <hlm-input-otp-slot
+          [index]="2"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+        />
+        <hlm-input-otp-slot
+          [index]="3"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+        />
+        <hlm-input-otp-slot
+          [index]="4"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+        />
+        <hlm-input-otp-slot
+          [index]="5"
+          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+        />
+      </brn-input-otp>
+      @if (verifyForm.get('otp')?.touched && verifyForm.get('otp')?.invalid) {
+        <div class="text-xs text-red-500 mt-1">{{ 'auth_verify_code_req' | translate }}</div>
+      }
+    </div>
+
+    <button
+      hlmBtn
+      class="w-full mt-8 !py-6 text-base font-semibold"
+      type="submit"
+      [disabled]="isLoading()"
+    >
+      @if (!isLoading()) {
+        <span>{{ 'auth_verify_btn' | translate }}</span>
+      } @else {
+        <span>{{ 'auth_verify_verifying' | translate }}</span>
+      }
+    </button>
+  </form>
+
+  <p hlmMuted class="text-center text-slate-500 mt-8">
+    {{ 'auth_didnt_receive' | translate }}
+    <button
+      hlmBtn
+      variant="link"
+      type="button"
+      (click)="resendCode()"
+      [disabled]="isResending()"
+      class="h-auto p-0 font-bold text-blue-500 hover:underline disabled:opacity-50 disabled:no-underline"
+    >
+      @if (!isResending()) {
+        <span>{{ 'auth_verify_resend' | translate }}</span>
+      } @else {
+        <span>{{ 'auth_forgot_sending' | translate }}</span>
+      }
+    </button>
+  </p>
+</div>

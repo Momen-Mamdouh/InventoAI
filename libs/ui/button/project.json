@@ -1,0 +1,25 @@
+{
+  "name": "button",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui/button/src",
+  "prefix": "hlm",
+  "tags": [
+    "type:ui",
+    "scope:shared"
+  ],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/button/**/*.ts",
+          "libs/ui/button/**/*.html"
+        ]
+      }
+    }
+  }
+}

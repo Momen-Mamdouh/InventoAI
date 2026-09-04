@@ -1,0 +1,305 @@
+<div class="relative space-y-6 w-full min-h-full">
+  <!-- Page Header & Navigation Tabs -->
+  <div
+    style="view-transition-name: account-tabs"
+    class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
+  >
+    <div class="min-w-0">
+      <h1 hlmH1>Account Settings</h1>
+      <p hlmMuted class="mt-0.5">
+        Manage your profile details, photo, and preferences used across Invento.
+      </p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center gap-1 sm:gap-2 border-border border-b overflow-x-auto">
+      <a
+        routerLink="/profile"
+        class="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b-2 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border-primary text-primary"
+      >
+        <ng-icon name="lucideUser" size="16" />
+        <span>Profile</span>
+      </a>
+      <a
+        routerLink="/security"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideShield" size="16" />
+        <span>Security</span>
+      </a>
+      <a
+        routerLink="/notifications"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideBell" size="16" />
+        <span>Notifications</span>
+      </a>
+      <a
+        routerLink="/billing"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideCreditCard" size="16" />
+        <span>Billing & Plan</span>
+      </a>
+      <a
+        routerLink="/my-stores"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+      >
+        <ng-icon name="lucideStore" size="16" />
+        <span>My Stores</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <div class="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 pb-12">
+    <!-- Success Banner -->
+    @if (saveSuccess()) {
+      <app-status-banner message="Profile settings updated successfully!" [fadingOut]="isFadingOut()" />
+    }
+
+    <!-- Card 1: Profile Photo -->
+    <div hlmCard>
+      <!-- Card Header -->
+      <div hlmCardHeader class="border-b">
+        <h2 hlmCardTitle>Profile Photo</h2>
+        <p hlmCardDescription>
+          Upload a profile photo visible to your team and customers.
+        </p>
+      </div>
+
+      <!-- Card Body -->
+      <div hlmCardContent class="flex sm:flex-row flex-col items-start sm:items-center gap-4 sm:gap-6">
+        <!-- Avatar Preview Zone with Drag & Drop -->
+        <button
+          type="button"
+          class="avatar-dropzone group relative flex flex-shrink-0 justify-center items-center rounded-2xl w-20 sm:w-24 h-20 sm:h-24 overflow-hidden cursor-pointer"
+          (click)="fileInput.click()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+          [ngClass]="isDragging() ? 'ring-2 ring-primary ring-offset-2' : ''"
+        >
+          @if (avatarUrl()) {
+            <img
+              [src]="avatarUrl()"
+              alt="Profile avatar"
+              class="w-full h-full object-cover rounded-2xl group-hover:opacity-80 transition-opacity"
+            />
+          } @else {
+            <div
+              class="flex justify-center items-center bg-primary shadow-md rounded-2xl w-full h-full font-bold text-2xl text-primary-foreground sm:text-3xl tracking-wide group-hover:scale-105 transition-transform"
+            >
+              {{ initials() }}
+            </div>
+          }
+
+          <!-- Hover Overlay -->
+          <div
+            class="absolute inset-0 flex flex-col justify-center items-center gap-1 bg-black/40 opacity-0 group-hover:opacity-100 rounded-2xl text-white transition-opacity duration-200"
+          >
+            <ng-icon name="lucideUpload" size="18" />
+            <span class="font-medium text-[10px]">Change</span>
+          </div>
+        </button>
+
+        <!-- Upload Controls -->
+        <div class="space-y-2 flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <input
+              #fileInput
+              id="profile-photo-input"
+              type="file"
+              accept="image/png, image/jpeg, image/webp"
+              class="hidden"
+              (change)="onFileSelected($event)"
+            />
+            <button
+              type="button"
+              hlmBtn
+              variant="outline"
+              class="gap-2 border-border shadow-2xs h-9 font-medium text-xs sm:text-sm cursor-pointer"
+              (click)="fileInput.click()"
+            >
+              <ng-icon name="lucideUpload" size="15" class="text-primary" />
+              Upload Photo
+            </button>
+
+            @if (avatarUrl()) {
+              <button
+                type="button"
+                hlmBtn
+                variant="ghost"
+                class="hover:bg-red-50 dark:hover:bg-red-950/40 h-9 font-medium text-xs text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+                (click)="removePhoto()"
+              >
+                <ng-icon name="lucideTrash2" size="15" class="me-1" />
+                Remove
+              </button>
+            }
+          </div>
+
+          <p hlmMuted>
+            JPG, PNG or WebP. Max 4 MB. Min 200×200 px.<br />
+            Or drag and drop onto the avatar.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Personal Information -->
+    <div hlmCard>
+      <!-- Card Header -->
+      <div hlmCardHeader class="border-b">
+        <h2 hlmCardTitle>Personal Information</h2>
+        <p hlmCardDescription>
+          Your name and contact details used across Invento.
+        </p>
+      </div>
+
+      <!-- Card Body Form -->
+      <div hlmCardContent class="space-y-5">
+        <div class="gap-4 sm:gap-6 grid grid-cols-1 sm:grid-cols-2">
+          <!-- Full Name -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="fullNameInput" class="font-medium text-foreground text-xs sm:text-sm"
+              >Full Name</label
+            >
+            <input
+              id="fullNameInput"
+              hlmInput
+              type="text"
+              class="w-full"
+              placeholder="e.g. Clara Morin"
+              [value]="fullName()"
+              (input)="onFullNameChange($any($event.target).value)"
+            />
+          </div>
+
+          <!-- Email Address -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="emailInput" class="font-medium text-foreground text-xs sm:text-sm"
+              >Email Address</label
+            >
+            <input
+              id="emailInput"
+              hlmInput
+              type="email"
+              class="w-full"
+              placeholder="clara@luminarygoods.com"
+              [value]="email()"
+              (input)="onEmailChange($any($event.target).value)"
+            />
+          </div>
+
+          <!-- Phone Number -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="phoneInput" class="font-medium text-foreground text-xs sm:text-sm"
+              >Phone Number</label
+            >
+            <input
+              id="phoneInput"
+              hlmInput
+              type="tel"
+              class="w-full"
+              placeholder="+1 503 441 9900"
+              [value]="phone()"
+              (input)="onPhoneChange($any($event.target).value)"
+            />
+            <p hlmMuted class="mt-1">
+              Used for account security and support only.
+            </p>
+          </div>
+
+          <!-- Business / Company Name -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="companyInput" class="font-medium text-foreground text-xs sm:text-sm"
+              >Business / Company Name</label
+            >
+            <input
+              id="companyInput"
+              hlmInput
+              type="text"
+              class="w-full"
+              placeholder="e.g. Luminary Goods LLC"
+              [value]="company()"
+              (input)="onCompanyChange($any($event.target).value)"
+            />
+          </div>
+
+          <!-- Time Zone Dropdown -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="timeZoneSelect" class="font-medium text-foreground text-xs sm:text-sm"
+              >Time Zone</label
+            >
+            <hlm-select
+              id="timeZoneSelect"
+              [value]="timeZone()"
+              (valueChange)="onTimeZoneChange($any($event))"
+              [itemToString]="timeZoneItemToString"
+              class="w-full"
+            >
+              <hlm-select-trigger class="w-full h-10 bg-background">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content *hlmSelectPortal>
+                @for (tz of timeZones; track tz) {
+                  <hlm-select-item [value]="tz">{{ tz }}</hlm-select-item>
+                }
+              </hlm-select-content>
+            </hlm-select>
+          </div>
+
+          <!-- Language Dropdown -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="languageSelect" class="font-medium text-foreground text-xs sm:text-sm"
+              >Language</label
+            >
+            <hlm-select
+              id="languageSelect"
+              [value]="language()"
+              (valueChange)="onLanguageChange($any($event))"
+              [itemToString]="languageItemToString"
+              class="w-full"
+            >
+              <hlm-select-trigger class="w-full h-10 bg-background">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content *hlmSelectPortal>
+                @for (lang of languages; track lang) {
+                  <hlm-select-item [value]="lang">{{ lang }}</hlm-select-item>
+                }
+              </hlm-select-content>
+            </hlm-select>
+          </div>
+        </div>
+
+        <div hlmSeparator class="mb-2"></div>
+
+        <!-- Form Actions Bar -->
+        <div class="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            hlmBtn
+            class="gap-2 disabled:opacity-50 shadow-sm px-5 py-2.5 transition-all cursor-pointer"
+            [disabled]="isSaved()"
+            (click)="saveChanges()"
+          >
+            <ng-icon name="lucideCheck" size="16" />
+            <span>Save Changes</span>
+          </button>
+
+          <button
+            type="button"
+            hlmBtn
+            variant="ghost"
+            class="px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
+            (click)="resetForm()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

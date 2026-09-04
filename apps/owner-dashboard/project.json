@@ -1,0 +1,114 @@
+{
+  "name": "owner-dashboard",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/owner-dashboard/src",
+  "tags": ["type:app", "scope:owner-dashboard"],
+  "targets": {
+    "generate-env": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node scripts/generate-env.mjs",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/owner-dashboard",
+        "browser": "apps/owner-dashboard/src/main.ts",
+        "tsConfig": "apps/owner-dashboard/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/owner-dashboard/public"
+          }
+        ],
+        "styles": ["apps/owner-dashboard/src/styles.css"],
+        "server": "apps/owner-dashboard/src/main.server.ts",
+        "ssr": {
+          "entry": "apps/owner-dashboard/src/server.ts"
+        },
+        "outputMode": "server"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/owner-dashboard/src/environments/environment.ts",
+              "with": "apps/owner-dashboard/src/environments/environment.development.ts"
+            }
+          ]
+        }
+      },
+      "dependsOn": ["generate-env"]
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4400,
+        "proxyConfig": "apps/owner-dashboard/proxy.conf.js"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "owner-dashboard:build:production"
+        },
+        "development": {
+          "buildTarget": "owner-dashboard:build:development"
+        }
+      },
+      "dependsOn": ["generate-env"]
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "owner-dashboard:build",
+        "staticFilePath": "dist/apps/owner-dashboard/browser",
+        "spa": true
+      }
+    },
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/owner-dashboard/src/**/*.ts",
+          "apps/owner-dashboard/src/**/*.html"
+        ]
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ngc -p apps/owner-dashboard/tsconfig.app.json --noEmit --rootDir .",
+        "cwd": "{workspaceRoot}"
+      },
+      "dependsOn": ["generate-env"]
+    }
+  }
+}

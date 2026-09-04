@@ -1,0 +1,26 @@
+{
+  "name": "site-builder-data-access-builder",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/site-builder/data-access-builder/src",
+  "prefix": "lib",
+  "tags": [
+    "scope:site-builder",
+    "type:data-access"
+  ],
+  "projectType": "library",
+  "// targets": "to see all targets run: nx show project site-builder-data-access-builder --web",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/site-builder/data-access-builder/**/*.ts",
+          "libs/site-builder/data-access-builder/**/*.html"
+        ]
+      }
+    }
+  }
+}

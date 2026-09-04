@@ -1,9 +1,0 @@
-{
-  "name": "spartan-stepper-shared",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "library",
-  "sourceRoot": "libs/stepper-shared",
-  "tags": ["scope:shared", "type:ui"],
-  "implicitDependencies": ["spartan-stepper"],
-  "targets": {}
-}

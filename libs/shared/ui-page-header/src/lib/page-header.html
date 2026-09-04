@@ -1,0 +1,24 @@
+<div class="flex flex-col page-header" appScrollAnimate="fade-left" [animDelay]="0">
+  <div class="flex justify-between items-center gap-2.5 my-2.5">
+    <app-page-badge
+      [badgeText]="badgeText()"
+      [animationSpeed]="animationSpeed()"
+      [glowColor]="glowColor()"
+    />
+  </div>
+
+  <h1
+    hlmH1
+    class="mb-2 font-work"
+    style="color: var(--foreground)"
+  >
+    {{ title() | translate }}
+    <span style="color: var(--primary)">{{ accentTitle() | translate }}</span>
+  </h1>
+
+  @if (description()) {
+    <p hlmP style="color: var(--foreground)">
+      {{ description() | translate }}
+    </p>
+  }
+</div>
