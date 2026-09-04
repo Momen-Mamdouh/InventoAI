@@ -4,6 +4,9 @@ Everything here describes **how this workspace is structured and how to add code
 
 If you are new, read in this order. Total time to productive: about an hour.
 
+To get the apps _running_ first, see [SETUP.md](../SETUP.md) — prerequisites, the one environment
+file you must create, the dev proxies, and troubleshooting.
+
 ---
 
 ## Day one
@@ -13,6 +16,7 @@ If you are new, read in this order. Total time to productive: about an hour.
 | 1   | [architecture.md](./architecture.md) | The whole model: 3 thin apps, 116 libraries, and the tag rules that bind them. |
 | 2   | [adding-code.md](./adding-code.md)   | Where your code goes, with copy-pasteable recipes.                             |
 | 3   | [traps.md](./traps.md)               | Skim it. Come back the first time something behaves unexpectedly.              |
+| 4   | [apps/](./apps/)                     | The app you are working in: routes, owned libraries, config seams, traps.      |
 
 After those three you should be able to answer, without help:
 
@@ -30,13 +34,16 @@ If you cannot, the docs have failed — please say so, and fix them.
 | [deep-dives/i18n-and-rtl.md](./deep-dives/i18n-and-rtl.md) | Adding user-visible text, or working on Arabic layout           |
 | [deep-dives/theming.md](./deep-dives/theming.md)           | Colors, tokens, dark mode, Spartan component styles             |
 
-`ssr.md` is on the day-one list in spirit. Server-side rendering is on for all three apps, and it is
-the most common source of "worked locally, broke in production" here.
+`ssr.md` is on the day-one list in spirit. All three apps build with `outputMode: server`, but they
+render differently — user-site server-renders on request, site-builder prerenders, and
+owner-dashboard is client-only. SSR is still the most common source of "worked locally, broke in
+production" here, and it bites hardest in user-site.
 
 ## Reference
 
 | Document                                                                       | Contents                                                |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| [apps/](./apps/)                                                               | One guide per app — routes, libraries, config, traps    |
 | [workspace-map.md](./workspace-map.md)                                         | All 119 projects — path, Nx name, import alias, purpose |
 | [style-system.md](./style-system.md)                                           | How the six Spartan visual styles resolve               |
 | [multi-style-guide.md](./multi-style-guide.md)                                 | Per-component style reference                           |

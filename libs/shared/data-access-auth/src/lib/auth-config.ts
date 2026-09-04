@@ -23,8 +23,9 @@ export interface AuthConfig {
    * Prefix used to derive every storage key this app's auth stack touches: the access-token
    * cookie (`${tokenStorageKey}_access_token`), the refresh-token cookie
    * (`${tokenStorageKey}_refresh_token`), and the `currentUser` localStorage cache
-   * (`${tokenStorageKey}_current_user`). invento and site-builder both use `'invento'`; userSite
-   * uses `'usersite'`.
+   * (`${tokenStorageKey}_current_user`). owner-dashboard and site-builder both use
+   * `'invento'` -- the value predates the invento -> owner-dashboard rename and is left alone
+   * because changing it would invalidate every existing session. user-site uses `'usersite'`.
    */
   readonly tokenStorageKey: string;
 

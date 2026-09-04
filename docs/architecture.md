@@ -43,6 +43,38 @@ If you are about to add a component to `apps/`, stop. It almost certainly belong
 app may hold: bootstrap files, its route table, its `AUTH_CONFIG` wiring, its `styles.css`, its
 `assets/`, and the occasional page so trivial it has no logic worth a project. Nothing else.
 
+### The three apps are not interchangeable
+
+They share libraries, but they are shaped by different constraints, and the differences are
+deliberate rather than drift:
+
+|                   | site-builder       | user-site                        | owner-dashboard      |
+| ----------------- | ------------------ | -------------------------------- | -------------------- |
+| **Render mode**   | `Prerender`        | `Server`                         | `Client`             |
+| **Audience**      | Prospective owners | Shoppers (public)                | Signed-in owners     |
+| **Tenancy**       | Single             | **Multi-tenant** (`/:storeSlug`) | Single (per session) |
+| **Auth role**     | `owner`            | `customer`                       | `owner`              |
+| **Token key**     | `invento`          | `usersite`                       | `invento`            |
+| **Own libraries** | 5                  | 13                               | 24                   |
+| **Dev proxy**     | 4 prefixes         | none                             | 16 prefixes          |
+
+Three consequences worth internalising:
+
+- **All three build with `outputMode: server`, but only user-site actually server-renders.**
+  owner-dashboard is `RenderMode.Client` — everything behind it is authenticated and none of it is
+  SEO-relevant — so its build legitimately reports `Prerendered 0 static routes`. SSR hazards
+  (hydration mismatch, `REQUEST`-token locale resolution) apply in practice to user-site.
+- **site-builder and owner-dashboard share the `invento` token key on purpose**, so one owner
+  session spans both. user-site uses `usersite` so a shopper session never collides with an
+  owner one on the same host.
+- **Only user-site is multi-tenant**, which is why its `AUTH_CONFIG` is built from closures over a
+  runtime slug rather than declared as literals. Auth paths there are slug-scoped
+  (`/{slug}/auth/login`); a hard-coded `/auth/...` link in that app is a bug.
+
+Per-app detail — route trees, owned libraries, configuration seams and app-specific traps — lives
+in [apps/](./apps/): [site-builder](./apps/site-builder.md), [user-site](./apps/user-site.md),
+[owner-dashboard](./apps/owner-dashboard.md).
+
 ---
 
 ## The two axes
