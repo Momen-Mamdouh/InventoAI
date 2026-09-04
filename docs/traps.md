@@ -267,5 +267,6 @@ If that still prints the old casing, the index has not moved and CI will still f
 | `@font-face BlackOpsOne` ships in one app's `assets/` only — user-site renders it via `ui-page-badge` and falls back to sans-serif                            | [deep-dives/theming.md](./deep-dives/theming.md#known-issue-the-blackopsone-font) |
 | Two apps exceed the 1 MB bundle _warning_ budget — user-site 1.23 MB, owner-dashboard 1.04 MB. Both are well under the 2 MB _error_ budget, so CI stays green | `apps/user-site/project.json` budgets                                             |
 | Customer auth endpoints carry trailing slashes the owner endpoints lack                                                                                       | `libs/shared/data-access-auth/src/lib/auth.service.ts`                            |
+| Store slugs colliding with a dev proxy prefix (`/site`, `/users`) misroute API calls to the backend in local development                                      | `apps/user-site/proxy.conf.js`                                                    |
 
 None of these block work. They are listed so you do not spend an afternoon rediscovering one.

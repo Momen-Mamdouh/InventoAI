@@ -2,8 +2,10 @@ import {
   ApplicationConfig,
   effect,
   inject,
+  PLATFORM_ID,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
+import { resolveApiBaseUrl } from '@invento/shared-util-environment';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { Router, provideRouter, withViewTransitions, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
@@ -48,6 +50,7 @@ export const appConfig: ApplicationConfig = {
       useFactory: (): AuthConfig => {
         const storeSlugService = inject(StoreSlugService);
         const router = inject(Router);
+        const platformId = inject(PLATFORM_ID);
 
         /**
          * `StoreSlugService.slug()` is driven by a `NavigationEnd`-triggered signal, so it only
@@ -77,7 +80,7 @@ export const appConfig: ApplicationConfig = {
         const authBasePath = () => `/${currentSlug()}/auth`;
 
         return {
-          apiBaseUrl: environment.apiUrl,
+          apiBaseUrl: resolveApiBaseUrl(environment, platformId),
           postLoginRoute: '/',
           tokenStorageKey: 'usersite',
           googleClientId: environment.googleClientId,

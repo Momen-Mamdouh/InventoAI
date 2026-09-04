@@ -78,7 +78,7 @@
       "defaultConfiguration": "development",
       "options": {
         "port": 4200,
-        "proxyConfig": "apps/site-builder/proxy.conf.json"
+        "proxyConfig": "apps/site-builder/proxy.conf.js"
       },
       "dependsOn": ["generate-env"]
     },

@@ -3,7 +3,7 @@
 // from the root .env, so deploy configuration is data instead of hand-edited
 // source. Wired into package.json (generate:env, postinstall, the start:*/build
 // scripts) and into each app's project.json as a dependsOn of build/typecheck/
-// serve — see plans/is-there-anything-left-groovy-widget.md for context.
+// serve — see env.example for context.
 //
 // This file holds NO configuration values. `env.example` is the committed
 // source of defaults and this script reads it as its lowest-precedence layer,
@@ -20,75 +20,32 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { lookup } = require('./read-env.cjs');
 
 const ROOT = process.cwd();
-const ENV_FILE = join(ROOT, '.env');
-const DEFAULTS_FILE = join(ROOT, 'env.example');
 const CHECK_ONLY = process.argv.includes('--check');
-
-/**
- * Minimal KEY=VALUE reader. Hand-rolled rather than process.loadEnvFile() so the
- * three precedence layers stay separate objects — loadEnvFile merges into
- * process.env, which would make "came from .env" and "came from the host"
- * indistinguishable.
- */
-function readEnvFile(path) {
-  const out = Object.create(null);
-  if (!existsSync(path)) return out;
-
-  for (const raw of readFileSync(path, 'utf8').split(/\r?\n/)) {
-    const line = raw.trim();
-    if (!line || line.startsWith('#')) continue;
-
-    const eq = line.indexOf('=');
-    if (eq === -1) continue;
-
-    const key = line.slice(0, eq).trim();
-    let value = line.slice(eq + 1).trim();
-    if (
-      value.length >= 2 &&
-      ((value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'")))
-    ) {
-      value = value.slice(1, -1);
-    }
-    out[key] = value;
-  }
-  return out;
-}
-
-// Values injected by the host (Vercel project settings, CI) outrank the local
-// file, so a deploy never silently picks up whatever a developer left in .env.
-const SHELL_ENV = process.env;
-const DOT_ENV = readEnvFile(ENV_FILE);
-const DEFAULTS = readEnvFile(DEFAULTS_FILE);
-
-/**
- * Resolve one key through: real environment -> .env -> env.example.
- *
- * Presence is tested with `in`, never truthiness: an empty string is a real and
- * meaningful value here (owner-dashboard's dev apiUrl is deliberately '', which
- * is not the same as omitting the key).
- */
-function lookup(key) {
-  if (key in SHELL_ENV) return SHELL_ENV[key];
-  if (key in DOT_ENV) return DOT_ENV[key];
-  if (key in DEFAULTS) return DEFAULTS[key];
-  throw new Error(
-    `${key} is not set anywhere and has no default in env.example.\n` +
-      `Add it to env.example (that file is the committed source of defaults).`,
-  );
-}
 
 /** Identical across every app and every mode, so it is a constant, not config. */
 const GOOGLE_CLIENT_ID = '774402300388-8enjhnd4qm40jremiu216eb6cn5jeqe6.apps.googleusercontent.com';
+
+const API_DEV_COMMENT = [
+  "Empty on purpose: every request stays relative to the dev server's own",
+  'origin and reaches the API through the proxy.',
+  "Pointing straight at the API's own host made every call cross-origin,",
+  'and login died on a CORS preflight because the API\'s CORS_ORIGINS',
+  "does not list dev ports.",
+];
 
 /**
  * The three apps and the fields each one's `environment` object carries, in the
  * order they are emitted. This is a *mapping*, not a source of values: a field is
  * either
  *   - `constant`: invariant across every app and mode, so not configuration; or
- *   - `env`: read from `<env>` for production and `<env>_DEV` for development.
+ *   - `env`: read from `<env>` for production and `<env>_DEV` for development; or
+ *   - `prodEnv` / `devEnv` / `devConstant`: explicit per-mode sources.
  * Every `env` value comes from the precedence chain in `lookup()`, bottoming out
  * at `env.example`. `omitWhenEmpty` drops the line entirely when the resolved
  * value is empty, which keeps optional keys out of the generated object.
@@ -97,7 +54,8 @@ const APPS = [
   {
     name: 'site-builder',
     fields: [
-      { key: 'apiUrl', env: 'SITE_BUILDER_API_URL' },
+      { key: 'apiUrl', prodEnv: 'SITE_BUILDER_API_URL', devConstant: '', devComment: API_DEV_COMMENT },
+      { key: 'ssrApiUrl', prodEnv: 'SITE_BUILDER_API_URL', devEnv: 'DEV_API_TARGET' },
       { key: 'googleClientId', constant: GOOGLE_CLIENT_ID },
       { key: 'inventoDashboardUrl', env: 'SITE_BUILDER_DASHBOARD_URL' },
       { key: 'inventoLoginUrl', env: 'SITE_BUILDER_LOGIN_URL', omitWhenEmpty: true },
@@ -106,24 +64,16 @@ const APPS = [
   {
     name: 'user-site',
     fields: [
-      { key: 'apiUrl', env: 'USER_SITE_API_URL' },
+      { key: 'apiUrl', prodEnv: 'USER_SITE_API_URL', devConstant: '', devComment: API_DEV_COMMENT },
+      { key: 'ssrApiUrl', prodEnv: 'USER_SITE_API_URL', devEnv: 'DEV_API_TARGET' },
       { key: 'googleClientId', constant: GOOGLE_CLIENT_ID },
     ],
   },
   {
     name: 'owner-dashboard',
     fields: [
-      {
-        key: 'apiUrl',
-        env: 'OWNER_DASHBOARD_API_URL',
-        devComment: [
-          "Empty on purpose: every request stays relative to the dev server's own",
-          'origin (localhost:4400) and reaches the API through the proxy in',
-          "apps/owner-dashboard/proxy.conf.js. Pointing straight at the API's own host made",
-          'every call cross-origin, and login died on a CORS preflight because the',
-          "API's CORS_ORIGINS does not list port 4400.",
-        ],
-      },
+      { key: 'apiUrl', prodEnv: 'OWNER_DASHBOARD_API_URL', devConstant: '', devComment: API_DEV_COMMENT },
+      { key: 'ssrApiUrl', prodEnv: 'OWNER_DASHBOARD_API_URL', devEnv: 'DEV_API_TARGET' },
       { key: 'googleClientId', constant: GOOGLE_CLIENT_ID },
       { key: 'siteBuilderUrl', env: 'OWNER_DASHBOARD_SITE_BUILDER_URL' },
     ],
@@ -150,7 +100,13 @@ function render(app, mode) {
     let value;
     if ('constant' in field) {
       value = field.constant;
-    } else {
+    } else if (isProd && 'prodEnv' in field) {
+      value = lookup(field.prodEnv);
+    } else if (!isProd && 'devEnv' in field) {
+      value = lookup(field.devEnv);
+    } else if (!isProd && 'devConstant' in field) {
+      value = field.devConstant;
+    } else if ('env' in field) {
       const envKey = isProd ? field.env : `${field.env}_DEV`;
       value = lookup(envKey);
     }

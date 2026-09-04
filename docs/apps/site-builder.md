@@ -106,9 +106,16 @@ claims `production: true` while being served in dev sends every dashboard link t
 
 ### Dev proxy
 
-`apps/site-builder/proxy.conf.json` forwards `/site-builder`, `/users` and `/stores` to
-`http://localhost:3000`. Note that **`/generate-theme` is proxied to a deployed Vercel host**, not
-to your local backend — theme generation works without running that service locally.
+`apps/site-builder/proxy.conf.js` forwards `/site-builder`, `/users` and `/stores` to
+the backend defined by `DEV_API_TARGET`.
+
+> [!WARNING]
+> **The `/build` vs `/site-builder` trap**
+> The frontend route for the wizard is `/build/...`. The backend API prefix is `/site-builder/...`.
+> If you manually type `http://localhost:4200/site-builder/...` into your browser, the proxy catches
+> it and forwards your browser to the backend API, returning JSON or a 401 instead of serving the Angular app.
+> The proxy config uses `bypassHtml` to mitigate this for hard refreshes, but it's important to remember
+> the distinction: `/build` for frontend UI, `/site-builder` for API.
 
 ---
 

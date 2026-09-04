@@ -1,5 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { SITE_BUILDER_ENVIRONMENT } from './site-builder-environment';
+import { resolveApiBaseUrl } from '@invento/shared-util-environment';
 
 declare const process: { env?: Record<string, string | undefined> };
 
@@ -21,6 +22,7 @@ declare const process: { env?: Record<string, string | undefined> };
 @Injectable({ providedIn: 'root' })
 export class ApiConfig {
   private readonly environment = inject(SITE_BUILDER_ENVIRONMENT);
+  private readonly platformId = inject(PLATFORM_ID);
 
   /** Base URL with any trailing slashes stripped. Empty string means "use relative paths". */
   readonly baseUrl = this.resolveBaseUrl();
@@ -38,11 +40,7 @@ export class ApiConfig {
   }
 
   private resolveBaseUrl(): string {
-    // In local dev every request goes through the dev-server proxy
-    // (see proxy.conf.json), so requests must stay relative to this origin.
-    // This deliberately makes environment.apiUrl a no-op on localhost.
-    if (this.isLocalhost()) return '';
-    return this.resolve('API_URL', 'INVENTO_API_URL', this.environment.apiUrl).replace(/\/+$/, '');
+    return resolveApiBaseUrl(this.environment, this.platformId).replace(/\/+$/, '');
   }
 
   private resolveDashboardUrl(): string {
@@ -69,10 +67,6 @@ export class ApiConfig {
     return this.environment.production
       ? 'https://invento-ai.vercel.app/auth/login'
       : 'http://localhost:4400/auth/login';
-  }
-
-  private isLocalhost(): boolean {
-    return typeof window !== 'undefined' && window.location?.hostname === 'localhost';
   }
 
   /** Walks the config chain for a value, preferring the compiled-in environment. */

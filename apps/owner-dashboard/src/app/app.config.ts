@@ -1,5 +1,11 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  PLATFORM_ID,
+  inject,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
+import { resolveApiBaseUrl } from '@invento/shared-util-environment';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { appRoutes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -18,17 +24,7 @@ import ar from '../assets/i18n/ar.json';
  * created a store yet to `/no-store` instead of their normal post-login destination. See
  * `specs/001-nx-workspace-restructure/auth-superset.md`.
  */
-const authConfig: AuthConfig = {
-  apiBaseUrl: environment.apiUrl,
-  postLoginRoute: '/home',
-  tokenStorageKey: 'invento',
-  googleClientId: environment.googleClientId,
-  verifyEmailRedirect: '/auth/login',
-  authBasePath: '/auth',
-  authRole: 'owner',
-  resolvePostAuthRoute: (authService, fallback) =>
-    authService.getStoreSlug() ? fallback : '/no-store',
-};
+// The auth config is constructed via factory below to inject PLATFORM_ID.
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,7 +39,23 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideSpartanHlm(),
-    { provide: AUTH_CONFIG, useValue: authConfig },
+    {
+      provide: AUTH_CONFIG,
+      useFactory: (): AuthConfig => {
+        const platformId = inject(PLATFORM_ID);
+        return {
+          apiBaseUrl: resolveApiBaseUrl(environment, platformId),
+          postLoginRoute: '/home',
+          tokenStorageKey: 'invento',
+          googleClientId: environment.googleClientId,
+          verifyEmailRedirect: '/auth/login',
+          authBasePath: '/auth',
+          authRole: 'owner',
+          resolvePostAuthRoute: (authService, fallback) =>
+            authService.getStoreSlug() ? fallback : '/no-store',
+        };
+      },
+    },
     { provide: SITE_BUILDER_URL, useValue: environment.siteBuilderUrl },
     {
       provide: TRANSLATION_LOADER,

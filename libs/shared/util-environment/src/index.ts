@@ -1,5 +1,14 @@
-// No environment helpers exist yet in the workspace; site-builder's shared/environment
-// is deleted outright in Phase 10 (T179) rather than migrated (src/environments/ is the
-// single mechanism, FR-022). This library exists as the declared destination in the
-// data-model, currently empty.
-export {};
+import { isPlatformBrowser } from '@angular/common';
+
+export interface AppEnvironment {
+  readonly production: boolean;
+  /** Browser-facing base. Empty in dev so requests stay same-origin and pass through the dev proxy. */
+  readonly apiUrl: string;
+  /** Absolute base for SSR, which has no origin to be relative to. */
+  readonly ssrApiUrl: string;
+}
+
+/** Base URL for the current platform: relative in the browser, absolute during SSR. */
+export function resolveApiBaseUrl(env: AppEnvironment, platformId: object): string {
+  return isPlatformBrowser(platformId) ? env.apiUrl : env.ssrApiUrl;
+}

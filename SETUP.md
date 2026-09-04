@@ -71,8 +71,8 @@ app's `build`, `typecheck` and `serve`, so `npx nx build user-site` works on a c
 | `environment.development.ts` | `serve` and dev builds | `false`      |
 
 The swap happens through `fileReplacements` under the **`development`** configuration in each app's
-`project.json`. In `.env`, production keys are bare (`USER_SITE_API_URL`) and development keys take a
-`_DEV` suffix (`USER_SITE_API_URL_DEV`).
+`project.json`. In `.env`, production keys are bare (`USER_SITE_API_URL`) and frontend development URLs take a
+`_DEV` suffix (`SITE_BUILDER_DASHBOARD_URL_DEV`). A single `DEV_API_TARGET` key repoints the API target for all three apps in dev.
 
 Precedence, highest first: **real environment variables → `.env` → `env.example`.** The generator
 reads `env.example` as its lowest layer rather than hardcoding values, so the committed defaults are
@@ -98,13 +98,13 @@ Useful commands:
 The frontend expects a backend on **`http://localhost:3000`**. Without it the apps start and render,
 but anything touching data fails.
 
-Two of the three apps proxy to it in development:
+All three apps proxy to it in development:
 
-| App                 | Proxy config      | Notes                                                                                                               |
-| ------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **owner-dashboard** | `proxy.conf.js`   | 16 route prefixes. Skips proxying for `Accept: text/html` so hard refreshes load the app, not the API.              |
-| **site-builder**    | `proxy.conf.json` | `/site-builder`, `/users`, `/stores` local. **`/generate-theme` goes to a deployed Vercel host**, not your machine. |
-| **user-site**       | none              | Calls `environment.apiUrl` directly.                                                                                |
+| App                 | Proxy config    | Notes                                                                                                  |
+| ------------------- | --------------- | ------------------------------------------------------------------------------------------------------ |
+| **owner-dashboard** | `proxy.conf.js` | 16 route prefixes. Skips proxying for `Accept: text/html` so hard refreshes load the app, not the API. |
+| **site-builder**    | `proxy.conf.js` | `/site-builder`, `/users`, `/stores`. Skips proxying for HTML.                                         |
+| **user-site**       | `proxy.conf.js` | `/site`, `/users`. Skips proxying for HTML.                                                            |
 
 ---
 

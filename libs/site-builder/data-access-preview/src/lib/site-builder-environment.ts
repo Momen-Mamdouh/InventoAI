@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { AppEnvironment } from '@invento/shared-util-environment';
 
 /**
  * The subset of `apps/site-builder/src/environments/environment.ts` that this library's services
@@ -6,9 +7,7 @@ import { InjectionToken } from '@angular/core';
  * own source tree), so the app provides this token in `app.config.ts` instead — same pattern as
  * `AUTH_CONFIG` (T108/T140 precedent).
  */
-export interface SiteBuilderEnvironment {
-  readonly production: boolean;
-  readonly apiUrl: string;
+export interface SiteBuilderEnvironment extends AppEnvironment {
   readonly inventoDashboardUrl?: string;
   readonly inventoLoginUrl?: string;
 }

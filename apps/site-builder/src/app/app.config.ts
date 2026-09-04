@@ -1,5 +1,6 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, PLATFORM_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
+import { resolveApiBaseUrl } from '@invento/shared-util-environment';
 import { provideSpartanHlm } from '@spartan/helm/utils';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
@@ -33,9 +34,9 @@ import ar from '../assets/i18n/ar.json';
  * `data-access-auth` library ever importing `BuilderState` — the hook is supplied here, not in
  * the shared service.
  */
-function buildAuthConfig(builderState: BuilderState): AuthConfig {
+function buildAuthConfig(builderState: BuilderState, platformId: object): AuthConfig {
   return {
-    apiBaseUrl: environment.apiUrl,
+    apiBaseUrl: resolveApiBaseUrl(environment, platformId),
     postLoginRoute: '/build/brainstorm',
     tokenStorageKey: 'invento',
     googleClientId: environment.googleClientId,
@@ -59,7 +60,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay(), withNoIncrementalHydration()),
     HlmStyleService,
     provideSpartanHlm(),
-    { provide: AUTH_CONFIG, useFactory: buildAuthConfig, deps: [BuilderState] },
+    { provide: AUTH_CONFIG, useFactory: buildAuthConfig, deps: [BuilderState, PLATFORM_ID] },
     { provide: SITE_BUILDER_ENVIRONMENT, useValue: environment satisfies SiteBuilderEnvironment },
     {
       provide: TRANSLATION_LOADER,
