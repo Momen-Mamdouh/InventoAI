@@ -13,7 +13,8 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-2 space-y-6">
       @if (currentStep() === 'INPUT') {
-        <div hlmCard class="shadow-sm">
+        <!-- Blueprint Parameters Card -->
+        <div hlmCard class="shadow-xs border-border/80">
           <div hlmCardHeader>
             <h3
               hlmCardTitle
@@ -26,7 +27,8 @@
             </p>
           </div>
 
-          <div hlmCardContent class="space-y-5">
+          <div hlmCardContent class="space-y-6">
+            <!-- Business Name Input -->
             <div class="space-y-2">
               <label
                 hlmLabel
@@ -52,13 +54,14 @@
                   [class.animate-shake]="highlightErrorElement() === 'name'"
                 />
                 <span
-                  class="absolute end-4 top-1/2 -translate-y-1/2 text-xs font-mono text-muted-foreground"
+                  class="absolute end-4 top-1/2 -translate-y-1/2 text-xs font-mono text-muted-foreground pointer-events-none"
                 >
                   {{ businessName().length }}/24
                 </span>
               </div>
             </div>
 
+            <!-- Business Sector Input -->
             <div class="space-y-2">
               <label
                 hlmLabel
@@ -76,16 +79,17 @@
                   (ngModelChange)="onBusinessTypeChange($event)"
                   maxLength="40"
                   placeholder="{{ 'validation_placeholder_type' | translate }}"
-                  class="w-full pe-16"
+                  class="w-full pe-16 font-mono text-sm"
                 />
                 <span
-                  class="absolute end-4 top-1/2 -translate-y-1/2 text-[10px] font-mono text-muted-foreground"
+                  class="absolute end-4 top-1/2 -translate-y-1/2 text-[10px] font-mono text-muted-foreground pointer-events-none"
                 >
                   {{ businessType().length }}/40
                 </span>
               </div>
             </div>
 
+            <!-- Target Audience Input -->
             <div class="space-y-2">
               <label
                 hlmLabel
@@ -101,47 +105,196 @@
                 [ngModel]="targetAudience()"
                 (ngModelChange)="onTargetAudienceChange($event)"
                 placeholder="{{ 'validation_placeholder_audience' | translate }}"
-                class="w-full"
+                class="w-full font-mono text-sm"
               />
             </div>
 
-            <div class="space-y-2">
-              <label
-                hlmLabel
-                for="bizDomain"
-                class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
+            <!-- Domain / Subdomain Input with Realtime Availability -->
+            <div class="space-y-3 pt-2">
+              <div class="flex items-center justify-between">
+                <label
+                  hlmLabel
+                  for="bizDomain"
+                  class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
+                >
+                  {{ 'validation_domain_name' | translate }}
+                </label>
+                <button
+                  type="button"
+                  (click)="syncDomainWithName()"
+                  class="text-[11px] font-mono text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="{{ 'validation_sync_name' | translate }}"
+                >
+                  <ng-icon name="lucideRefreshCw" size="12" />
+                  <span>{{ 'validation_sync_name' | translate }}</span>
+                </button>
+              </div>
+
+              <!-- Input Group: Prefix Hostname + Monospace Slug + Availability Suffix -->
+              <div
+                class="relative flex items-stretch rounded-lg border border-input bg-background shadow-2xs transition-all focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary"
+                [class.ring-2]="highlightErrorElement() === 'domain'"
+                [class.ring-destructive]="highlightErrorElement() === 'domain'"
+                [class.border-destructive]="highlightErrorElement() === 'domain'"
+                [class.animate-shake]="highlightErrorElement() === 'domain'"
               >
-                {{ 'validation_domain_name' | translate }}
-              </label>
-              <div class="relative">
+                <!-- Host Prefix Badge (dev: http://localhost:4300/ | prod: https://invento-store.vercel.app/) -->
+                <div
+                  class="inline-flex items-center px-3.5 bg-muted/60 text-muted-foreground text-xs font-mono select-none border-e border-border rounded-s-md whitespace-nowrap"
+                  dir="ltr"
+                >
+                  @if (isProduction()) {
+                    <span class="text-foreground/70 font-medium">https://</span>invento-store.vercel.app/
+                  } @else {
+                    <span class="text-foreground/70 font-medium">http://</span>localhost:4300/
+                  }
+                </div>
+
+                <!-- Slug Input -->
                 <input
-                  hlmInput
                   id="bizDomain"
                   type="text"
+                  dir="ltr"
                   [ngModel]="domain()"
                   (ngModelChange)="onDomainChange($event)"
                   placeholder="{{ 'validation_placeholder_domain' | translate }}"
-                  class="w-full font-mono transition-all"
-                  [class.ring-2]="highlightErrorElement() === 'domain'"
-                  [class.ring-destructive]="highlightErrorElement() === 'domain'"
-                  [class.border-destructive]="highlightErrorElement() === 'domain'"
-                  [class.animate-shake]="highlightErrorElement() === 'domain'"
+                  class="flex-1 bg-transparent px-3.5 py-2.5 text-sm font-mono tracking-wide placeholder:text-muted-foreground/50 focus:outline-hidden"
                 />
+
+                <!-- Availability Suffix Pill -->
+                <div class="inline-flex items-center px-3 shrink-0">
+                  @switch (domainAvailability()) {
+                    @case ('checking') {
+                      <span
+                        class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono bg-muted text-muted-foreground animate-pulse"
+                      >
+                        <hlm-spinner class="h-3 w-3" />
+                        <span class="hidden sm:inline">{{ 'validation_domain_status_checking' | translate }}</span>
+                      </span>
+                    }
+                    @case ('available') {
+                      <span
+                        class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20"
+                      >
+                        <ng-icon name="lucideCheckCircle2" size="13" class="text-emerald-500" />
+                        <span class="hidden sm:inline">{{ 'validation_domain_status_available' | translate }}</span>
+                      </span>
+                    }
+                    @case ('unavailable') {
+                      <span
+                        class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono bg-destructive/10 text-destructive font-semibold border border-destructive/20"
+                      >
+                        <ng-icon name="lucideCircleAlert" size="13" class="text-destructive" />
+                        <span class="hidden sm:inline">{{ 'validation_domain_status_taken' | translate }}</span>
+                      </span>
+                    }
+                    @case ('invalid') {
+                      <span
+                        class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold border border-amber-500/20"
+                      >
+                        <ng-icon name="lucideAlertTriangle" size="13" class="text-amber-500" />
+                        <span class="hidden sm:inline">{{ 'validation_domain_status_invalid' | translate }}</span>
+                      </span>
+                    }
+                  }
+                </div>
               </div>
-              @if (domainSuggestions().length > 0) {
-                <div hlmAlert variant="destructive" class="bg-destructive/10 mt-3">
-                  <ng-icon name="lucideAlertTriangle" />
-                  <p hlmAlertTitle>{{ 'validation_domain_taken' | translate }}</p>
-                  <div hlmAlertDescription class="flex flex-wrap gap-2 mt-2">
+
+              <!-- Simulated Browser Address Bar Preview Pill -->
+              <div
+                class="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-lg bg-muted/40 border border-border/70 text-xs font-mono"
+              >
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  <ng-icon name="lucideLock" size="13" class="text-emerald-500 shrink-0" />
+                  <span
+                    class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold uppercase shrink-0"
+                  >
+                    {{ 'validation_ssl_verified' | translate }}
+                  </span>
+                  <span class="truncate text-foreground/90 font-medium" dir="ltr">
+                    {{ fullStoreUrl() }}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  (click)="copyStoreUrl()"
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-background hover:bg-muted border border-border/80 shadow-2xs transition-colors shrink-0 cursor-pointer"
+                >
+                  @if (urlCopied()) {
+                    <ng-icon name="lucideCheck" size="12" class="text-emerald-500" />
+                    <span class="text-emerald-600 dark:text-emerald-400 font-bold">{{ 'validation_url_copied' | translate }}</span>
+                  } @else {
+                    <ng-icon name="lucideCopy" size="12" />
+                    <span>{{ 'validation_copy_url' | translate }}</span>
+                  }
+                </button>
+              </div>
+
+              <!-- Domain Collision / Suggestions Section -->
+              @if (domainSuggestions().length > 0 || domainAvailability() === 'unavailable') {
+                <div class="rounded-lg border border-destructive/25 bg-destructive/5 p-4 space-y-3">
+                  <div class="flex items-center gap-2 text-destructive text-xs font-medium">
+                    <ng-icon name="lucideCircleAlert" size="15" class="shrink-0 text-destructive" />
+                    <span>{{ 'validation_domain_taken' | translate }}</span>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
                     @for (suggestion of domainSuggestions(); track suggestion) {
                       <button
+                        type="button"
                         hlmBtn
                         variant="outline"
                         size="sm"
-                        class="text-xs font-mono"
-                        (click)="onDomainChange(suggestion)"
+                        class="text-xs font-mono inline-flex items-center gap-1.5 hover:border-primary hover:text-primary transition-all cursor-pointer"
+                        (click)="applySuggestion(suggestion)"
                       >
-                        {{ suggestion }}
+                        <ng-icon name="lucideSparkles" size="12" class="text-amber-500" />
+                        <span>{{ suggestion }}</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Proactive AI Suggestions Trigger / List -->
+              @if (domainAvailability() === 'available' && proactiveSuggestions().length === 0) {
+                <div class="flex justify-end pt-1">
+                  <button
+                    type="button"
+                    (click)="exploreSuggestions()"
+                    class="text-[11px] font-mono text-muted-foreground hover:text-primary inline-flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    <ng-icon name="lucideSparkles" size="12" class="text-amber-500" />
+                    <span>{{ 'validation_explore_suggestions' | translate }}</span>
+                  </button>
+                </div>
+              }
+
+              @if (proactiveSuggestions().length > 0) {
+                <div class="rounded-lg border border-border/70 bg-card p-4 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-mono text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                      <ng-icon name="lucideSparkles" size="13" class="text-amber-500" />
+                      {{ 'validation_explore_suggestions' | translate }}
+                    </span>
+                    <button
+                      type="button"
+                      (click)="proactiveSuggestions.set([])"
+                      class="text-[10px] text-muted-foreground hover:text-foreground cursor-pointer font-mono"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    @for (suggestion of proactiveSuggestions(); track suggestion) {
+                      <button
+                        type="button"
+                        hlmBtn
+                        variant="outline"
+                        size="sm"
+                        class="text-xs font-mono inline-flex items-center gap-1.5 hover:border-primary hover:text-primary transition-all cursor-pointer"
+                        (click)="applySuggestion(suggestion)"
+                      >
+                        <span>{{ suggestion }}</span>
                       </button>
                     }
                   </div>
@@ -151,113 +304,335 @@
           </div>
         </div>
 
-        <div class="rounded-xl border border-border bg-card p-6 space-y-4 shadow-sm">
-          <span
-            class="flex items-center gap-1 text-xs font-mono text-muted-foreground uppercase tracking-wider"
-          >
-            {{ 'validation_live_checks' | translate }}
-          </span>
+        <!-- Unified 2-Column Live Verification Matrix -->
+        <div class="rounded-xl border border-border bg-card p-6 space-y-5 shadow-xs">
+          <div class="flex items-center justify-between">
+            <span
+              class="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider"
+            >
+              <ng-icon name="lucideShieldCheck" size="15" class="text-primary" />
+              {{ 'validation_progress_title' | translate }}
+            </span>
+            <span
+              class="text-xs font-mono font-semibold px-2.5 py-1 rounded-full border transition-all"
+              [class.bg-emerald-500/10]="allChecksPassed()"
+              [class.text-emerald-600]="allChecksPassed()"
+              [class.dark:text-emerald-400]="allChecksPassed()"
+              [class.border-emerald-500/30]="allChecksPassed()"
+              [class.bg-muted]="!allChecksPassed()"
+              [class.text-muted-foreground]="!allChecksPassed()"
+              [class.border-border]="!allChecksPassed()"
+            >
+              {{ checksPassedCount() }} / 6 {{ 'validation_checks_passed' | translate }}
+            </span>
+          </div>
 
-          <div class="space-y-2">
-            @for (check of liveChecks(); track check.id) {
-              <div
-                class="flex items-center gap-3 p-3.5 rounded-lg border border-border/50 bg-background/50 transition-colors"
-              >
-                <div
-                  class="h-2 w-2 rounded-full transition-all duration-300"
-                  [class.bg-muted]="!businessName()"
-                  [class.bg-destructive]="businessName() && !check.passed"
-                  [class.bg-primary]="businessName() && check.passed"
-                ></div>
-                <div
-                  class="flex-1 text-sm font-medium"
-                  [class.text-muted-foreground]="!businessName()"
-                >
-                  {{ check.label | translate }}
-                </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Left Column: Store Name Format -->
+            <div class="space-y-2">
+              <div class="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
+                <span>{{ 'validation_store_rules' | translate }}</span>
               </div>
-            }
+              @for (check of nameChecks(); track check.id) {
+                <div
+                  class="flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-background/50 transition-colors"
+                >
+                  <div
+                    class="h-2.5 w-2.5 rounded-full transition-all duration-300 shrink-0"
+                    [class.bg-muted]="!businessName()"
+                    [class.bg-destructive]="businessName() && !check.passed"
+                    [class.bg-emerald-500]="businessName() && check.passed"
+                  ></div>
+                  <div
+                    class="flex-1 text-xs font-medium"
+                    [class.text-muted-foreground]="!businessName() || !check.passed"
+                    [class.text-foreground]="businessName() && check.passed"
+                  >
+                    {{ check.label | translate }}
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Right Column: Domain Slug Format -->
+            <div class="space-y-2">
+              <div class="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
+                <span>{{ 'validation_domain_rules' | translate }}</span>
+              </div>
+              @for (check of domainChecks(); track check.id) {
+                <div
+                  class="flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-background/50 transition-colors"
+                >
+                  <div
+                    class="h-2.5 w-2.5 rounded-full transition-all duration-300 shrink-0"
+                    [class.bg-muted]="!domain()"
+                    [class.bg-destructive]="domain() && !check.passed"
+                    [class.bg-emerald-500]="domain() && check.passed"
+                  ></div>
+                  <div
+                    class="flex-1 text-xs font-medium"
+                    [class.text-muted-foreground]="!domain() || !check.passed"
+                    [class.text-foreground]="domain() && check.passed"
+                  >
+                    {{ check.label | translate }}
+                  </div>
+                </div>
+              }
+            </div>
           </div>
         </div>
       } @else {
+        <!-- Progressive Theme & Deployment Synthesis Screen (AI_ANALYSIS) -->
         <div
           hlmCard
-          class="p-16 flex flex-col items-center justify-center text-center space-y-5 shadow-sm border-dashed"
+          class="p-10 sm:p-14 flex flex-col items-center justify-center text-center space-y-6 shadow-xs border-dashed"
         >
-          <div class="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+          <div class="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-1">
             <hlm-spinner class="text-3xl text-primary" />
           </div>
           <div class="space-y-2">
-            <h3 hlmH3>
+            <h3 hlmH3 class="text-lg sm:text-xl font-bold">
               {{ 'validation_analyzing' | translate }}
             </h3>
-            <p hlmMuted class="max-w-sm mx-auto">
-              {{ 'validation_processing' | translate }} "<span class="font-bold text-foreground">{{
-                businessName()
-              }}</span
-              >" {{ 'validation_across' | translate }}
+            <p hlmMuted class="max-w-md mx-auto text-sm">
+              {{ 'validation_processing' | translate }}
+              "<span class="font-bold text-foreground">{{ businessName() }}</span>"
+              {{ 'validation_across' | translate }}
             </p>
+          </div>
+
+          <!-- 3-Phase Step Tracker -->
+          <div class="w-full max-w-md space-y-3 pt-4 text-start font-mono text-xs">
+            <!-- Phase 1: Domain Verification -->
+            <div
+              class="flex items-center gap-3 p-3 rounded-lg border transition-all"
+              [class.border-emerald-500/30]="analysisStep() > 1"
+              [class.bg-emerald-500/5]="analysisStep() > 1"
+              [class.border-primary/40]="analysisStep() === 1"
+              [class.bg-primary/5]="analysisStep() === 1"
+            >
+              @if (analysisStep() > 1) {
+                <ng-icon name="lucideCheckCircle2" size="16" class="text-emerald-500 shrink-0" />
+              } @else {
+                <hlm-spinner class="h-4 w-4 text-primary shrink-0" />
+              }
+              <span
+                class="flex-1 font-medium"
+                [class.text-emerald-600]="analysisStep() > 1"
+                [class.dark:text-emerald-400]="analysisStep() > 1"
+                [class.text-foreground]="analysisStep() === 1"
+              >
+                {{ 'validation_phase_domain' | translate }}
+              </span>
+            </div>
+
+            <!-- Phase 2: Brand Identity Synthesis -->
+            <div
+              class="flex items-center gap-3 p-3 rounded-lg border transition-all"
+              [class.border-emerald-500/30]="analysisStep() > 2"
+              [class.bg-emerald-500/5]="analysisStep() > 2"
+              [class.border-primary/40]="analysisStep() === 2"
+              [class.bg-primary/5]="analysisStep() === 2"
+              [class.border-border/40]="analysisStep() < 2"
+              [class.opacity-60]="analysisStep() < 2"
+            >
+              @if (analysisStep() > 2) {
+                <ng-icon name="lucideCheckCircle2" size="16" class="text-emerald-500 shrink-0" />
+              } @else if (analysisStep() === 2) {
+                <hlm-spinner class="h-4 w-4 text-primary shrink-0" />
+              } @else {
+                <div class="h-4 w-4 rounded-full border-2 border-muted-foreground/30 shrink-0"></div>
+              }
+              <span
+                class="flex-1 font-medium"
+                [class.text-emerald-600]="analysisStep() > 2"
+                [class.dark:text-emerald-400]="analysisStep() > 2"
+                [class.text-foreground]="analysisStep() === 2"
+                [class.text-muted-foreground]="analysisStep() < 2"
+              >
+                {{ 'validation_phase_identity' | translate }}
+              </span>
+            </div>
+
+            <!-- Phase 3: Generative Themes Compilation -->
+            <div
+              class="flex items-center gap-3 p-3 rounded-lg border transition-all"
+              [class.border-primary/40]="analysisStep() === 3"
+              [class.bg-primary/5]="analysisStep() === 3"
+              [class.border-border/40]="analysisStep() < 3"
+              [class.opacity-60]="analysisStep() < 3"
+            >
+              @if (analysisStep() === 3) {
+                <hlm-spinner class="h-4 w-4 text-primary shrink-0" />
+              } @else {
+                <div class="h-4 w-4 rounded-full border-2 border-muted-foreground/30 shrink-0"></div>
+              }
+              <span
+                class="flex-1 font-medium"
+                [class.text-foreground]="analysisStep() === 3"
+                [class.text-muted-foreground]="analysisStep() < 3"
+              >
+                {{ 'validation_phase_themes' | translate }}
+              </span>
+            </div>
           </div>
         </div>
       }
     </div>
 
+    <!-- Right Column: Store Passport & Brand Intelligence -->
     <div class="space-y-6">
+      <!-- Store Identity Passport Card -->
+      <div hlmCard class="shadow-xs overflow-hidden">
+        <div hlmCardHeader class="p-5 pb-3 flex flex-row items-center justify-between">
+          <h3 hlmCardTitle class="text-xs font-mono text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+            <ng-icon name="lucideStore" size="14" class="text-primary" />
+            {{ 'validation_store_passport' | translate }}
+          </h3>
+          <span
+            class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded border"
+            [class.bg-blue-500/10]="!isProduction()"
+            [class.text-blue-600]="!isProduction()"
+            [class.dark:text-blue-400]="!isProduction()"
+            [class.border-blue-500/20]="!isProduction()"
+            [class.bg-emerald-500/10]="isProduction()"
+            [class.text-emerald-600]="isProduction()"
+            [class.dark:text-emerald-400]="isProduction()"
+            [class.border-emerald-500/20]="isProduction()"
+          >
+            @if (isProduction()) {
+              Live Prod
+            } @else {
+              {{ 'validation_dev_mode_badge' | translate }}
+            }
+          </span>
+        </div>
+
+        <div hlmCardContent class="p-5 pt-2 space-y-5">
+          <!-- Store Logo Avatar -->
+          <div class="flex justify-center pt-1">
+            @if (hasLogo() && storeLogo()) {
+              <div class="w-20 h-20 rounded-2xl border-2 border-border shadow-2xs overflow-hidden bg-background p-2 flex items-center justify-center">
+                <img
+                  [src]="storeLogo()"
+                  alt="Store Logo"
+                  class="max-w-full max-h-full object-contain"
+                />
+              </div>
+            } @else {
+              <div class="w-20 h-20 rounded-2xl border-2 border-dashed border-border/80 flex items-center justify-center bg-muted/30">
+                <ng-icon name="lucideStore" size="32" class="text-muted-foreground/50" />
+              </div>
+            }
+          </div>
+
+          <!-- Store Metadata Specs -->
+          <div class="font-mono text-xs space-y-2.5 pt-2">
+            <div class="flex justify-between border-b border-border/50 pb-2">
+              <span class="text-muted-foreground">{{ 'validation_target' | translate }}</span>
+              <span class="font-bold text-foreground truncate max-w-40 text-end">{{ businessName() || '---' }}</span>
+            </div>
+            <div class="flex justify-between border-b border-border/50 pb-2">
+              <span class="text-muted-foreground">{{ 'validation_sector' | translate }}</span>
+              <span class="font-bold text-foreground truncate max-w-40 text-end">{{ businessType() || '---' }}</span>
+            </div>
+            <div class="flex justify-between border-b border-border/50 pb-2">
+              <span class="text-muted-foreground">{{ 'validation_audience' | translate }}</span>
+              <span class="font-bold text-foreground truncate max-w-40 text-end">{{ targetAudience() || '---' }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Slug:</span>
+              <span class="font-bold text-foreground truncate max-w-40 text-end" dir="ltr">{{ domain() || '---' }}</span>
+            </div>
+          </div>
+
+          <!-- Brand Intelligence Gauges -->
+          <div class="pt-3 border-t border-border/60 space-y-3">
+            <div class="text-[10px] font-mono text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <ng-icon name="lucideSparkles" size="12" class="text-amber-500" />
+              <span>AI Brand Intelligence</span>
+            </div>
+
+            <!-- Memorability Gauge -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px] font-mono">
+                <span class="text-muted-foreground">{{ 'validation_memorability' | translate }}</span>
+                <span class="font-bold text-foreground">{{ brandMetrics().memorability }}%</span>
+              </div>
+              <div class="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-primary rounded-full transition-all duration-500"
+                  [style.width.%]="brandMetrics().memorability"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Brandability Gauge -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px] font-mono">
+                <span class="text-muted-foreground">{{ 'validation_brandability' | translate }}</span>
+                <span class="font-bold text-foreground">{{ brandMetrics().brandability }}%</span>
+              </div>
+              <div class="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                  [style.width.%]="brandMetrics().brandability"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Pronunciation Gauge -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px] font-mono">
+                <span class="text-muted-foreground">{{ 'validation_pronunciation' | translate }}</span>
+                <span class="font-bold text-foreground">{{ brandMetrics().pronunciation }}%</span>
+              </div>
+              <div class="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                  [style.width.%]="brandMetrics().pronunciation"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engine Status Card -->
       <div
         hlmCard
-        class="flex flex-col items-center justify-center text-center min-h-50 relative shadow-sm overflow-hidden"
+        class="flex flex-col items-center justify-center text-center p-5 relative shadow-xs overflow-hidden"
       >
         <div
           class="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none"
         ></div>
-        <div class="space-y-5 z-10">
+        <div class="space-y-4 z-10 w-full">
           <div
-            class="h-20 w-20 mx-auto rounded-full border-2 border-border flex items-center justify-center bg-background shadow-inner relative"
+            class="h-14 w-14 mx-auto rounded-full border-2 border-border flex items-center justify-center bg-background shadow-inner relative"
           >
             @if (currentStep() === 'AI_ANALYSIS') {
-              <hlm-spinner class="text-3xl text-primary" />
+              <hlm-spinner class="text-2xl text-primary" />
             } @else {
-              <ng-icon name="lucideSearch" class="text-3xl text-muted-foreground/50" />
+              <ng-icon name="lucideSearch" size="22" class="text-muted-foreground/60" />
             }
           </div>
 
-          <div class="space-y-1.5">
-            <p hlmMuted class="font-mono uppercase">
+          <div class="space-y-1">
+            <p hlmMuted class="font-mono text-[10px] uppercase tracking-wider">
               {{ 'validation_engine_status' | translate }}
             </p>
-            <h3 hlmH3 class="text-foreground">
+            <h4 class="text-xs font-semibold text-foreground">
               @if (currentStep() === 'AI_ANALYSIS') {
                 {{ 'validation_analyzing_matrix' | translate }}
               } @else {
                 {{ 'validation_awaiting' | translate }}
               }
-            </h3>
+            </h4>
           </div>
         </div>
       </div>
 
-      <div hlmCard class="shadow-sm">
-        <div hlmCardHeader class="p-5 pb-3">
-          <h3 hlmCardTitle class="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-            {{ 'validation_build_context' | translate }}
-          </h3>
-        </div>
-        <div hlmCardContent class="p-5 pt-0 font-mono text-xs space-y-3">
-          <div class="flex justify-between border-b border-border/50 pb-2">
-            <span class="text-muted-foreground">{{ 'validation_target' | translate }}</span>
-            <span class="font-bold text-foreground">{{ businessName() || '---' }}</span>
-          </div>
-          <div class="flex justify-between border-b border-border/50 pb-2">
-            <span class="text-muted-foreground">{{ 'validation_sector' | translate }}</span>
-            <span class="font-bold text-foreground">{{ businessType() || '---' }}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-muted-foreground">{{ 'validation_audience' | translate }}</span>
-            <span class="font-bold text-foreground">{{ targetAudience() || '---' }}</span>
-          </div>
-        </div>
-      </div>
-
+      <!-- Primary Action CTA -->
       @if (currentStep() === 'INPUT') {
         <button
           id="validation-submit-btn"
@@ -274,6 +649,7 @@
             <span>{{ 'loading_analyzing' | translate }}</span>
           } @else {
             <span>{{ 'btn_preview_site' | translate }}</span>
+            <ng-icon name="lucideArrowRight" size="14" />
           }
         </button>
       }
