@@ -19,11 +19,13 @@ import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { ScrollAnimateDirective } from '@invento/shared-util-directives';
 import { AuthService } from '@invento/shared-data-access-auth';
 import { ApiConfig, SITE_BUILDER_ENVIRONMENT } from '@invento/site-builder-data-access-preview';
+import { CtaButton } from '@invento/shared-ui-cta-button';
 
 @Component({
   selector: 'app-existing-store',
   standalone: true,
   imports: [
+    CtaButton,
     NgIcon,
     HlmButton,
     HlmH1,

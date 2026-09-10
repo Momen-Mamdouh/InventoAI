@@ -1,0 +1,74 @@
+<div [class]="'btn-wrapper ' + wrapperClass()">
+  <div class="btn-light"></div>
+  <div class="gradient-layer" style="animation-delay: 0s; animation-duration: 25s"></div>
+  <div class="gradient-layer" style="animation-delay: 0.15s; animation-duration: 15.9s"></div>
+  <div class="gradient-layer" style="animation-delay: 0.53s; animation-duration: 26.4s"></div>
+  <div class="gradient-layer" style="animation-delay: 0.45s; animation-duration: 17.8s"></div>
+  <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 19.2s"></div>
+  <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 29.2s"></div>
+  <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 20.2s"></div>
+
+  @if (routerLink(); as link) {
+    <a
+      [routerLink]="link"
+      [class]="'gradient-btn ' + buttonClass()"
+      (click)="handleClick($event)"
+      [attr.aria-label]="ariaLabel() || text() || null"
+      [attr.aria-disabled]="disabled() ? true : null"
+      [attr.tabindex]="disabled() ? -1 : null"
+    >
+      <ng-container *ngTemplateOutlet="btnContent" />
+    </a>
+  } @else if (href(); as url) {
+    <a
+      [href]="url"
+      [target]="target()"
+      [rel]="target() === '_blank' ? 'noopener noreferrer' : null"
+      [class]="'gradient-btn ' + buttonClass()"
+      (click)="handleClick($event)"
+      [attr.aria-label]="ariaLabel() || text() || null"
+      [attr.aria-disabled]="disabled() ? true : null"
+      [attr.tabindex]="disabled() ? -1 : null"
+    >
+      <ng-container *ngTemplateOutlet="btnContent" />
+    </a>
+  } @else {
+    <button
+      [type]="type()"
+      [disabled]="disabled()"
+      [class]="'gradient-btn ' + buttonClass()"
+      (click)="handleClick($event)"
+      [attr.aria-label]="ariaLabel() || text() || null"
+    >
+      <ng-container *ngTemplateOutlet="btnContent" />
+    </button>
+  }
+
+  <div class="text-overlay">
+    @if (icon(); as iconName) {
+      @if (iconPosition() === 'start') {
+        <ng-icon [name]="iconName" [size]="iconSize()" />
+      }
+    }
+    @if (text(); as label) {
+      <span>{{ label }}</span>
+    }
+    <ng-content />
+    @if (icon(); as iconName) {
+      @if (iconPosition() === 'end') {
+        <ng-icon [name]="iconName" [size]="iconSize()" />
+      }
+    }
+  </div>
+</div>
+
+<ng-template #btnContent>
+  @if (icon(); as iconName) {
+    @if (iconPosition() === 'start') {
+      <ng-icon [name]="iconName" [size]="iconSize()" />
+    }
+  }
+  @if (text(); as label) {
+    <span>{{ label }}</span>
+  }
+</ng-template>

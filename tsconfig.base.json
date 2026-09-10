@@ -77,6 +77,7 @@
       "@invento/shared-ui-brand-logo": ["./libs/shared/ui-brand-logo/src/index.ts"],
       "@invento/shared-ui-color-swatch": ["./libs/shared/ui-color-swatch/src/index.ts"],
       "@invento/shared-ui-double-slash": ["./libs/shared/ui-double-slash/src/index.ts"],
+      "@invento/shared-ui-cta-button": ["./libs/shared/ui-cta-button/src/index.ts"],
       "@invento/shared-ui-error-state": ["./libs/shared/ui-error-state/src/index.ts"],
       "@invento/shared-ui-filter-tabs": ["./libs/shared/ui-filter-tabs/src/index.ts"],
       "@invento/shared-ui-generic-select": ["./libs/shared/ui-generic-select/src/index.ts"],

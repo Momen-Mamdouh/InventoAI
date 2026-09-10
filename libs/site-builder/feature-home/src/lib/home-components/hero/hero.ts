@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBolt,
@@ -13,12 +13,12 @@ import {
   lucideAlertCircle,
   lucideSparkles,
 } from '@ng-icons/lucide';
-import { HlmButton } from '@spartan/helm/button';
 import { HlmCard } from '@spartan/helm/card';
 import { BlurText } from '../../blur-text/blur-text';
 import { ScrollAnimateDirective } from '@invento/shared-util-directives';
 import { HlmH1, HlmP } from '@spartan/helm/typography';
 import { TranslatePipe } from '@invento/shared-util-i18n';
+import { CtaButton } from '@invento/shared-ui-cta-button';
 
 @Component({
   selector: 'app-hero',
@@ -26,9 +26,8 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
   styleUrl: './hero.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    RouterLink,
+    CtaButton,
     NgIcon,
-    HlmButton,
     HlmCard,
     ScrollAnimateDirective,
     BlurText,

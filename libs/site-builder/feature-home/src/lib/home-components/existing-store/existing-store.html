@@ -56,26 +56,12 @@
       class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2 w-full sm:w-auto"
     >
       <!-- Glowing Primary CTA to Owner Dashboard -->
-      <div
-        class="btn-wrapper w-full sm:w-auto hover:scale-105 transition-transform !rounded-full shadow-lg shadow-primary/20"
-      >
-        <div class="btn-light"></div>
-        <div class="gradient-layer" style="animation-delay: 0s; animation-duration: 25s"></div>
-        <div class="gradient-layer" style="animation-delay: 0.15s; animation-duration: 15.9s"></div>
-        <div class="gradient-layer" style="animation-delay: 0.53s; animation-duration: 26.4s"></div>
-        <div class="gradient-layer" style="animation-delay: 0.45s; animation-duration: 17.8s"></div>
-        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 19.2s"></div>
-        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 29.2s"></div>
-        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 20.2s"></div>
-        <a hlmBtn [href]="dashboardUrl()" class="gradient-btn inline-flex items-center gap-2">
-          <ng-icon name="lucideLayoutDashboard" size="18" />
-          <span>{{ 'existing_store_open_dashboard' | translate }}</span>
-        </a>
-        <div class="text-overlay inline-flex items-center gap-2">
-          <ng-icon name="lucideLayoutDashboard" size="18" />
-          <span>{{ 'existing_store_open_dashboard' | translate }}</span>
-        </div>
-      </div>
+      <app-cta-button
+        [href]="dashboardUrl()"
+        [text]="'existing_store_open_dashboard' | translate"
+        icon="lucideLayoutDashboard"
+        iconSize="18"
+      />
 
       <!-- Secondary CTA: Visit Storefront -->
       @if (storefrontUrl()) {
