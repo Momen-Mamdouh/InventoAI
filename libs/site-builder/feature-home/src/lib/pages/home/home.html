@@ -1,5 +1,9 @@
-<app-hero />
-<app-stats />
-<app-pipeline />
-<app-capabilities />
-<app-cta />
+@if (hasExistingStore()) {
+  <app-existing-store />
+} @else {
+  <app-hero />
+  <app-stats />
+  <app-pipeline />
+  <app-capabilities />
+  <app-cta />
+}

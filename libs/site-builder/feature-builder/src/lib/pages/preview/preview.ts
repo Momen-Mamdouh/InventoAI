@@ -43,7 +43,6 @@ import {
 } from '@invento/site-builder-data-access-builder';
 import { ContainerWidth } from '@invento/shared-ui-container-width';
 import { HlmH2, HlmH3, HlmH4, HlmMuted, HlmSmall } from '@spartan/helm/typography';
-import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
 import { toastApiError } from '../../utils/toast-api-error';
@@ -79,7 +78,6 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
     NgIcon,
     NgStyle,
     ContainerWidth,
-    DoubleSlash,
     TranslatePipe,
     HlmH2,
     HlmH3,

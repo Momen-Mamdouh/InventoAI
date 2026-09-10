@@ -43,6 +43,12 @@ function buildAuthConfig(builderState: BuilderState, platformId: object): AuthCo
     verifyEmailRedirect: '/auth/login',
     authBasePath: '/auth',
     authRole: 'owner',
+    resolvePostAuthRoute: (authService, fallback) => {
+      if (authService.getStoreSlug()) {
+        return '/home';
+      }
+      return fallback;
+    },
     onAuthEvent: (event) => {
       builderState.reset();
       if (event === 'login') builderState.loadQuestions();

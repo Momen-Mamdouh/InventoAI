@@ -1,0 +1,255 @@
+<section
+  class="relative flex flex-col items-center justify-center min-h-[80vh] mx-auto px-4 sm:px-8 md:px-12 py-12 max-w-6xl overflow-hidden"
+>
+  <!-- Background Glow & Grid Pattern -->
+  <div class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
+    <div
+      class="absolute w-[600px] h-[600px] bg-primary/10 rounded-full blur-[140px] opacity-70"
+    ></div>
+    <div
+      class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_10%,#000_70%,transparent_100%)]"
+    ></div>
+  </div>
+
+  <div class="relative z-10 flex flex-col items-center text-center gap-6 w-full max-w-4xl mx-auto">
+    <!-- Active Store Status Pill -->
+    <div
+      appScrollAnimate="fade-up"
+      [animDelay]="100"
+      class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs sm:text-sm font-medium tracking-wide shadow-xs"
+    >
+      <span class="relative flex h-2.5 w-2.5">
+        <span
+          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+        ></span>
+        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+      </span>
+      <span>{{ 'existing_store_badge' | translate }}</span>
+      @if (storeSlug()) {
+        <span class="text-muted-foreground/60">•</span>
+        <span class="font-mono text-xs text-foreground/80 lowercase">{{ storeSlug() }}</span>
+      }
+    </div>
+
+    <!-- Main Typography -->
+    <div appScrollAnimate="fade-up" [animDelay]="200" class="space-y-3 max-w-3xl">
+      @if (ownerName()) {
+        <p class="text-primary font-semibold text-base sm:text-lg tracking-wide uppercase">
+          {{ 'existing_store_welcome' | translate }} {{ ownerName() }}
+        </p>
+      }
+      <h1
+        hlmH1
+        class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-b from-foreground via-foreground to-foreground/70"
+      >
+        {{ 'existing_store_title' | translate }}
+      </h1>
+      <p hlmP class="max-w-2xl mx-auto text-muted-foreground text-sm sm:text-base leading-relaxed">
+        {{ 'existing_store_desc' | translate }}
+      </p>
+    </div>
+
+    <!-- Primary & Secondary Action Buttons -->
+    <div
+      appScrollAnimate="fade-up"
+      [animDelay]="300"
+      class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2 w-full sm:w-auto"
+    >
+      <!-- Glowing Primary CTA to Owner Dashboard -->
+      <div
+        class="btn-wrapper w-full sm:w-auto hover:scale-105 transition-transform !rounded-full shadow-lg shadow-primary/20"
+      >
+        <div class="btn-light"></div>
+        <div class="gradient-layer" style="animation-delay: 0s; animation-duration: 25s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.15s; animation-duration: 15.9s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.53s; animation-duration: 26.4s"></div>
+        <div class="gradient-layer" style="animation-delay: 0.45s; animation-duration: 17.8s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 19.2s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 29.2s"></div>
+        <div class="gradient-layer" style="animation-delay: 1.6s; animation-duration: 20.2s"></div>
+        <a hlmBtn [href]="dashboardUrl" class="gradient-btn inline-flex items-center gap-2">
+          <ng-icon name="lucideLayoutDashboard" size="18" />
+          <span>{{ 'existing_store_open_dashboard' | translate }}</span>
+        </a>
+        <div class="text-overlay inline-flex items-center gap-2">
+          <ng-icon name="lucideLayoutDashboard" size="18" />
+          <span>{{ 'existing_store_open_dashboard' | translate }}</span>
+        </div>
+      </div>
+
+      <!-- Secondary CTA: Visit Storefront -->
+      @if (storefrontUrl()) {
+        <a
+          hlmBtn
+          variant="outline"
+          [href]="storefrontUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border-border/80 hover:bg-accent transition-all duration-200"
+        >
+          <ng-icon name="lucideExternalLink" size="16" />
+          <span>{{ 'existing_store_visit_store' | translate }}</span>
+        </a>
+      }
+    </div>
+  </div>
+
+  <!-- Bento Grid: Quick Management Links -->
+  <div
+    appScrollAnimate="fade-up"
+    [animDelay]="400"
+    class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-5xl mt-14"
+  >
+    <!-- Card 1: Catalog -->
+    <a
+      [href]="catalogUrl()"
+      class="group relative flex flex-col justify-between p-6 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/40 hover:bg-card/90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl text-start"
+    >
+      <div class="space-y-3">
+        <div
+          class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-primary/10 text-primary border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
+        >
+          <ng-icon name="lucidePackage" size="20" />
+        </div>
+        <h3
+          class="text-lg font-semibold text-foreground group-hover:text-primary transition-colors"
+        >
+          {{ 'existing_store_quick_catalog_title' | translate }}
+        </h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">
+          {{ 'existing_store_quick_catalog_desc' | translate }}
+        </p>
+      </div>
+      <div
+        class="flex items-center gap-1.5 text-xs font-semibold text-primary mt-6 tracking-wide uppercase"
+      >
+        <span>{{ 'existing_store_quick_catalog_action' | translate }}</span>
+        @if (isRtl()) {
+          <ng-icon
+            name="lucideArrowLeft"
+            size="14"
+            class="transition-transform group-hover:-translate-x-1"
+          />
+        } @else {
+          <ng-icon
+            name="lucideArrowRight"
+            size="14"
+            class="transition-transform group-hover:translate-x-1"
+          />
+        }
+      </div>
+    </a>
+
+    <!-- Card 2: Orders -->
+    <a
+      [href]="ordersUrl()"
+      class="group relative flex flex-col justify-between p-6 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/40 hover:bg-card/90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl text-start"
+    >
+      <div class="space-y-3">
+        <div
+          class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-primary/10 text-primary border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
+        >
+          <ng-icon name="lucideShoppingCart" size="20" />
+        </div>
+        <h3
+          class="text-lg font-semibold text-foreground group-hover:text-primary transition-colors"
+        >
+          {{ 'existing_store_quick_orders_title' | translate }}
+        </h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">
+          {{ 'existing_store_quick_orders_desc' | translate }}
+        </p>
+      </div>
+      <div
+        class="flex items-center gap-1.5 text-xs font-semibold text-primary mt-6 tracking-wide uppercase"
+      >
+        <span>{{ 'existing_store_quick_orders_action' | translate }}</span>
+        @if (isRtl()) {
+          <ng-icon
+            name="lucideArrowLeft"
+            size="14"
+            class="transition-transform group-hover:-translate-x-1"
+          />
+        } @else {
+          <ng-icon
+            name="lucideArrowRight"
+            size="14"
+            class="transition-transform group-hover:translate-x-1"
+          />
+        }
+      </div>
+    </a>
+
+    <!-- Card 3: AI Advisor -->
+    <a
+      [href]="advisorUrl()"
+      class="group relative flex flex-col justify-between p-6 rounded-2xl border border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/40 hover:bg-card/90 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl text-start"
+    >
+      <div class="space-y-3">
+        <div
+          class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-primary/10 text-primary border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
+        >
+          <ng-icon name="lucideSparkles" size="20" />
+        </div>
+        <h3
+          class="text-lg font-semibold text-foreground group-hover:text-primary transition-colors"
+        >
+          {{ 'existing_store_quick_advisor_title' | translate }}
+        </h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">
+          {{ 'existing_store_quick_advisor_desc' | translate }}
+        </p>
+      </div>
+      <div
+        class="flex items-center gap-1.5 text-xs font-semibold text-primary mt-6 tracking-wide uppercase"
+      >
+        <span>{{ 'existing_store_quick_advisor_action' | translate }}</span>
+        @if (isRtl()) {
+          <ng-icon
+            name="lucideArrowLeft"
+            size="14"
+            class="transition-transform group-hover:-translate-x-1"
+          />
+        } @else {
+          <ng-icon
+            name="lucideArrowRight"
+            size="14"
+            class="transition-transform group-hover:translate-x-1"
+          />
+        }
+      </div>
+    </a>
+  </div>
+
+  <!-- Footnote / Switch Account Info -->
+  <div
+    appScrollAnimate="fade-up"
+    [animDelay]="500"
+    class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 w-full max-w-5xl mt-8 p-4 sm:p-5 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur-sm text-start"
+  >
+    <div class="flex items-center gap-3">
+      <div class="p-2 rounded-xl bg-primary/10 text-primary shrink-0">
+        <ng-icon name="lucideInfo" size="18" />
+      </div>
+      <div class="space-y-0.5">
+        <h4 class="text-sm font-semibold text-foreground">
+          {{ 'existing_store_notice_title' | translate }}
+        </h4>
+        <p class="text-xs text-muted-foreground leading-relaxed">
+          {{ 'existing_store_notice_desc' | translate }}
+        </p>
+      </div>
+    </div>
+
+    <button
+      hlmBtn
+      variant="ghost"
+      size="sm"
+      (click)="signOut()"
+      class="shrink-0 inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
+    >
+      <ng-icon name="lucideLogOut" size="14" />
+      <span>{{ 'existing_store_sign_out' | translate }}</span>
+    </button>
+  </div>
+</section>

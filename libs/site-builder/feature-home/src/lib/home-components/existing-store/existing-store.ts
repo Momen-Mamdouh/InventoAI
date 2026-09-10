@@ -1,0 +1,86 @@
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideLayoutDashboard,
+  lucideExternalLink,
+  lucidePackage,
+  lucideShoppingCart,
+  lucideSparkles,
+  lucideLogOut,
+  lucideArrowRight,
+  lucideArrowLeft,
+  lucideStore,
+  lucideInfo,
+} from '@ng-icons/lucide';
+import { HlmButton } from '@spartan/helm/button';
+import { HlmH1, HlmP } from '@spartan/helm/typography';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
+import { ScrollAnimateDirective } from '@invento/shared-util-directives';
+import { AuthService } from '@invento/shared-data-access-auth';
+import { ApiConfig, SITE_BUILDER_ENVIRONMENT } from '@invento/site-builder-data-access-preview';
+
+@Component({
+  selector: 'app-existing-store',
+  standalone: true,
+  imports: [
+    NgIcon,
+    HlmButton,
+    HlmH1,
+    HlmP,
+    TranslatePipe,
+    ScrollAnimateDirective,
+  ],
+  providers: [
+    provideIcons({
+      lucideLayoutDashboard,
+      lucideExternalLink,
+      lucidePackage,
+      lucideShoppingCart,
+      lucideSparkles,
+      lucideLogOut,
+      lucideArrowRight,
+      lucideArrowLeft,
+      lucideStore,
+      lucideInfo,
+    }),
+  ],
+  templateUrl: './existing-store.html',
+  styleUrl: './existing-store.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ExistingStore {
+  private readonly authService = inject(AuthService);
+  private readonly apiConfig = inject(ApiConfig);
+  private readonly environment = inject(SITE_BUILDER_ENVIRONMENT);
+  private readonly router = inject(Router);
+  private readonly localeService = inject(LocaleService);
+
+  readonly isRtl = this.localeService.isRtl;
+  readonly currentUser = this.authService.currentUser;
+  readonly ownerName = computed(() => this.currentUser()?.firstName || '');
+  readonly storeSlug = computed(
+    () => this.currentUser()?.storeSlug ?? this.authService.getStoreSlug() ?? '',
+  );
+
+  readonly dashboardUrl = this.apiConfig.dashboardUrl;
+  readonly dashboardBaseUrl = computed(() => this.dashboardUrl.replace(/\/home\/?$/, ''));
+  readonly catalogUrl = computed(() => `${this.dashboardBaseUrl()}/products`);
+  readonly ordersUrl = computed(() => `${this.dashboardBaseUrl()}/orders`);
+  readonly advisorUrl = computed(() => `${this.dashboardBaseUrl()}/ai-advisor`);
+
+  readonly storefrontUrl = computed(() => {
+    const slug = this.storeSlug();
+    if (!slug) {
+      return '';
+    }
+    return this.environment.production
+      ? `https://${slug}.invento.site`
+      : `http://localhost:4300/${slug}`;
+  });
+
+  signOut(): void {
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
+  }
+}
