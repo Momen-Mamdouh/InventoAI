@@ -23,6 +23,12 @@ import {
   lucideSun,
   lucideTablet,
   lucideTvMinimal,
+  lucidePalette,
+  lucidePackage,
+  lucideLayers,
+  lucideFileText,
+  lucideCheckCircle2,
+  lucideSparkles,
 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
@@ -68,6 +74,17 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
   radius: DEFAULT_RADIUS,
 };
 
+export interface BuildSummaryItem {
+  id: 'theme' | 'products' | 'variants' | 'pages' | 'status';
+  icon: string;
+  labelKey: string;
+  value: string;
+  subValue: string;
+  badge: string;
+  colors?: { background: string; primary: string };
+  isStatus?: boolean;
+}
+
 @Component({
   selector: 'app-preview',
   imports: [
@@ -97,6 +114,12 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
       lucideChevronRight,
       lucideSun,
       lucideMoon,
+      lucidePalette,
+      lucidePackage,
+      lucideLayers,
+      lucideFileText,
+      lucideCheckCircle2,
+      lucideSparkles,
     }),
   ],
   templateUrl: './preview.html',
@@ -232,21 +255,52 @@ export class Preview {
     this._localeService.isRtl() ? 'lucideChevronLeft' : 'lucideChevronRight',
   );
 
-  readonly buildSummary = computed(() => [
-    { label: 'preview_theme', value: this._localeService.translate(this.activeTheme().name) },
+  readonly buildSummary = computed<BuildSummaryItem[]>(() => [
     {
-      label: 'preview_products',
-      value: this._localeService.translate('build_items', { n: this.products().length }),
+      id: 'theme',
+      icon: 'lucidePalette',
+      labelKey: 'preview_theme',
+      value: this._localeService.translate(this.activeTheme().name),
+      subValue: this.themeMode().toUpperCase(),
+      badge: this.themeMode().toUpperCase(),
+      colors: {
+        background: this.activeTheme().colors.background,
+        primary: this.activeTheme().colors.primary,
+      },
     },
     {
-      label: 'preview_variants',
-      value: this._localeService.translate('build_skus', { n: this.products().length * 4 }),
+      id: 'products',
+      icon: 'lucidePackage',
+      labelKey: 'preview_products',
+      value: String(this.products().length),
+      subValue: this._localeService.translate('build_items', { n: this.products().length }),
+      badge: this._localeService.translate('preview_ai_badge'),
     },
     {
-      label: 'preview_pages',
-      value: this._localeService.translate('build_routes', { n: this.navTabs().length + 4 }),
+      id: 'variants',
+      icon: 'lucideLayers',
+      labelKey: 'preview_variants',
+      value: String(this.products().length * 4),
+      subValue: this._localeService.translate('build_skus', { n: this.products().length * 4 }),
+      badge: '4x',
     },
-    { label: 'preview_status', value: this.selectedViewport().toUpperCase() },
+    {
+      id: 'pages',
+      icon: 'lucideFileText',
+      labelKey: 'preview_pages',
+      value: String(this.navTabs().length + 4),
+      subValue: this._localeService.translate('build_routes', { n: this.navTabs().length + 4 }),
+      badge: 'SEO',
+    },
+    {
+      id: 'status',
+      icon: 'lucideCheckCircle2',
+      labelKey: 'preview_status',
+      value: this._localeService.translate('preview_status_ready'),
+      subValue: `${this.simulatedPxWidth()}px`,
+      badge: this.selectedViewport().toUpperCase(),
+      isStatus: true,
+    },
   ]);
 
   private readonly _userHasManuallySelectedTheme = signal(false);
