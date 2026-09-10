@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+  PLATFORM_ID,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { HlmButton } from '@spartan/helm/button';
@@ -24,9 +31,13 @@ export class Navbar {
   private readonly apiConfig = inject(ApiConfig);
   private readonly router = inject(Router);
 
-  readonly isAuthenticated = signal(this.authService.isAuthenticated());
+  readonly isAuthenticated = computed(
+    () => !!this.authService.currentUser() || this.authService.isAuthenticated(),
+  );
   readonly isDark = signal(false);
-  readonly dashboardUrl = this.apiConfig.dashboardUrl;
+  readonly dashboardUrl = computed(() =>
+    this.authService.getSsoUrl(this.apiConfig.dashboardUrl, '/home'),
+  );
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -44,7 +55,5 @@ export class Navbar {
 
   signOut(): void {
     this.authService.logout();
-    this.isAuthenticated.set(false);
-    this.router.navigate(['/auth/login']);
   }
 }

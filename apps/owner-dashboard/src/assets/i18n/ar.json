@@ -139,6 +139,7 @@
   "orders.view": "عرض",
   "orders.close": "إغلاق",
   "nav_purchase_requests": "طلبات الشراء",
+  "auth_sso_authenticating": "جاري التحقق من الجلسة...",
   "auth_login_title": "مرحباً بعودتك",
   "auth_login_google": "المتابعة باستخدام جوجل",
   "auth_login_or": "أو المتابعة باستخدام",

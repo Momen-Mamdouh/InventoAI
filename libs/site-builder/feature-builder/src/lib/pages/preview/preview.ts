@@ -364,8 +364,10 @@ export class Preview {
 
         toast.success(this._localeService.translate('toast_deploy_success'), { id: toastId });
 
-        const redirectUrl = `${this.apiConfig.inventoLoginUrl}?forceLogout=true`;
-        this.authService.logout();
+        const redirectUrl = this.authService.getSsoUrl(
+          this.apiConfig.dashboardUrl,
+          '/home',
+        );
 
         setTimeout(() => {
           window.location.href = redirectUrl;

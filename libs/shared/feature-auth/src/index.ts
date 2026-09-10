@@ -4,4 +4,5 @@ export {
   forgotPasswordRoutes,
   resetPasswordRoutes,
   verifyEmailRoutes,
+  ssoRoutes,
 } from './lib/auth.routes';

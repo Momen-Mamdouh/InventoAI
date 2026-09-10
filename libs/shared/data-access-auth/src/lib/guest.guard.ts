@@ -20,8 +20,7 @@ export const guestGuard: CanActivateFn = (route) => {
   const config = inject(AUTH_CONFIG);
 
   if (route.queryParamMap.has('forceLogout')) {
-    tokenService.clearTokens();
-    authService.setCurrentUser(null);
+    authService.clearLocalSession();
     return true;
   }
 

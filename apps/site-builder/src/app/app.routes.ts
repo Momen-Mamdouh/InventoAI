@@ -34,6 +34,10 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'auth/sso',
+    loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.ssoRoutes),
+  },
+  {
     path: 'auth',
     component: AuthLayout,
     canActivate: [guestGuard],
