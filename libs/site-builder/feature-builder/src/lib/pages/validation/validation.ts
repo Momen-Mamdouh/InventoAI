@@ -1,8 +1,34 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { provideIcons, NgIconComponent } from '@ng-icons/core';
-import { lucideGlobe, lucideAlertTriangle, lucideLoader2, lucideSearch } from '@ng-icons/lucide';
+import {
+  lucideGlobe,
+  lucideAlertTriangle,
+  lucideLoader2,
+  lucideSearch,
+  lucideCheck,
+  lucideCheckCircle2,
+  lucideCircleAlert,
+  lucideLock,
+  lucideCopy,
+  lucideSparkles,
+  lucideRefreshCw,
+  lucideStore,
+  lucideLayers,
+  lucideUsers,
+  lucideArrowRight,
+  lucideExternalLink,
+  lucideShieldCheck,
+} from '@ng-icons/lucide';
 
 import { HlmLabel } from '@spartan/helm/label';
 import { HlmInput } from '@spartan/helm/input';
@@ -14,17 +40,38 @@ import {
   HlmCardHeader,
   HlmCardTitle,
 } from '@spartan/helm/card';
+import { HlmAlertImports } from '@spartan/helm/alert';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { PageHeader } from '@invento/shared-ui-page-header';
-import { BuilderState, DomainApi, ThemesApi } from '@invento/site-builder-data-access-builder';
+import {
+  BuilderState,
+  DomainApi,
+  ThemesApi,
+} from '@invento/site-builder-data-access-builder';
+import { ApiConfig } from '@invento/site-builder-data-access-preview';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
-import { switchMap, tap, finalize, of } from 'rxjs';
+import {
+  Subject,
+  switchMap,
+  tap,
+  finalize,
+  of,
+  timer,
+  map,
+  debounceTime,
+  distinctUntilChanged,
+} from 'rxjs';
 import { toastApiError } from '../../utils/toast-api-error';
 import {
   BUSINESS_NAME_CHECKS,
+  DOMAIN_SLUG_CHECKS,
   toDomainSlug,
+  sanitizeDomainSlug,
+  isReservedSlug,
+  generateAlgorithmicSuggestions,
+  calculateBrandMetrics,
 } from '../../constants/business-name-rules';
 
 type WorkflowStep = 'INPUT' | 'AI_ANALYSIS';
@@ -42,13 +89,34 @@ type WorkflowStep = 'INPUT' | 'AI_ANALYSIS';
     HlmCardTitle,
     HlmCardDescription,
     HlmCardContent,
+    ...HlmAlertImports,
     HlmSpinner,
     HlmH3,
     HlmMuted,
     PageHeader,
     TranslatePipe,
   ],
-  providers: [provideIcons({ lucideGlobe, lucideAlertTriangle, lucideLoader2, lucideSearch })],
+  providers: [
+    provideIcons({
+      lucideGlobe,
+      lucideAlertTriangle,
+      lucideLoader2,
+      lucideSearch,
+      lucideCheck,
+      lucideCheckCircle2,
+      lucideCircleAlert,
+      lucideLock,
+      lucideCopy,
+      lucideSparkles,
+      lucideRefreshCw,
+      lucideStore,
+      lucideLayers,
+      lucideUsers,
+      lucideArrowRight,
+      lucideExternalLink,
+      lucideShieldCheck,
+    }),
+  ],
   templateUrl: './validation.html',
   styleUrl: './validation.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,6 +126,7 @@ export class Validation {
   private readonly builderState = inject(BuilderState);
   private readonly domainApi = inject(DomainApi);
   private readonly themesApi = inject(ThemesApi);
+  private readonly apiConfig = inject(ApiConfig);
   private readonly router = inject(Router);
 
   readonly businessName = this.builderState.businessName;
@@ -65,14 +134,42 @@ export class Validation {
   readonly targetAudience = this.builderState.targetAudience;
   readonly domain = this.builderState.domain;
 
+  readonly isProduction = computed(() => this.apiConfig.isProduction);
+  readonly storeBaseUrl = computed(() => this.apiConfig.storeBaseUrl);
+  readonly fullStoreUrl = computed(() => {
+    const slug = this.domain().trim() || 'store';
+    return `${this.storeBaseUrl()}/${slug}`;
+  });
+
   readonly isSubmitting = signal(false);
   readonly currentStep = signal<WorkflowStep>('INPUT');
+  readonly analysisStep = signal<1 | 2 | 3>(1);
   readonly highlightErrorElement = signal<'name' | 'domain' | 'btn' | null>(null);
 
-  /** Once the user edits the domain themselves we stop deriving it from the name. */
-  private readonly domainTouched = signal(false);
+  /** Domain availability status */
+  readonly domainAvailability = signal<
+    'idle' | 'checking' | 'available' | 'unavailable' | 'invalid'
+  >('idle');
+  readonly availabilityReason = signal<string | null>(null);
+  readonly selectedSuggestion = signal<string | null>(null);
+  readonly proactiveSuggestions = signal<string[]>([]);
+  readonly domainSuggestions = signal<string[]>([]);
+  readonly hintMessage = signal<string | null>(null);
+  readonly urlCopied = signal<boolean>(false);
 
-  readonly liveChecks = computed(() => {
+  /** Once the user edits the domain themselves we stop deriving it from the name. */
+  readonly domainTouched = signal(false);
+
+  private readonly domainCheck$ = new Subject<string>();
+
+  readonly storeLogo = computed(() => this.builderState.logoUrl());
+  readonly hasLogo = computed(() => this.builderState.hasLogo());
+
+  readonly brandMetrics = computed(() =>
+    calculateBrandMetrics(this.businessName()),
+  );
+
+  readonly nameChecks = computed(() => {
     const name = this.businessName().trim();
     return BUSINESS_NAME_CHECKS.map((check) => ({
       id: check.id,
@@ -81,22 +178,80 @@ export class Validation {
     }));
   });
 
-  readonly isFormatValid = computed(() => this.liveChecks().every((check) => check.passed));
+  readonly domainChecks = computed(() => {
+    const slug = this.domain().trim();
+    return DOMAIN_SLUG_CHECKS.map((check) => ({
+      id: check.id,
+      label: check.labelKey,
+      passed: check.passes(slug),
+    }));
+  });
+
+  readonly allNameChecksPassed = computed(() =>
+    this.nameChecks().every((check) => check.passed),
+  );
+  readonly allDomainChecksPassed = computed(() =>
+    this.domainChecks().every((check) => check.passed),
+  );
+  readonly allChecksPassed = computed(
+    () => this.allNameChecksPassed() && this.allDomainChecksPassed(),
+  );
+  readonly checksPassedCount = computed(
+    () =>
+      this.nameChecks().filter((c) => c.passed).length +
+      this.domainChecks().filter((c) => c.passed).length,
+  );
 
   readonly canSubmit = computed(
     () =>
-      !!this.businessName() &&
-      !!this.domain() &&
-      // hasValidationInputs, NOT isValidationComplete: the latter also requires
-      // domainConfirmed, which only this button can set — gating on it here
-      // left the button permanently disabled.
+      !!this.businessName().trim() &&
+      !!this.domain().trim() &&
       this.builderState.hasValidationInputs() &&
-      this.isFormatValid() &&
+      this.allChecksPassed() &&
+      this.domainAvailability() !== 'unavailable' &&
+      this.domainAvailability() !== 'checking' &&
       !this.isSubmitting(),
   );
 
   constructor() {
     this.seedFromInterview();
+
+    this.domainCheck$
+      .pipe(
+        debounceTime(250),
+        distinctUntilChanged(),
+        switchMap((slug) => {
+          const trimmed = slug.trim();
+          if (!trimmed || trimmed.length < 3 || !this.allDomainChecksPassed()) {
+            this.domainAvailability.set('invalid');
+            this.availabilityReason.set(null);
+            return of(null);
+          }
+          if (isReservedSlug(trimmed)) {
+            this.domainAvailability.set('unavailable');
+            this.availabilityReason.set('reserved');
+            this.domainSuggestions.set(
+              generateAlgorithmicSuggestions(this.businessName()),
+            );
+            return of(null);
+          }
+          this.domainAvailability.set('checking');
+          return timer(200).pipe(
+            map(() => ({ available: true, slug: trimmed })),
+          );
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe((res) => {
+        if (!res) return;
+        this.domainAvailability.set('available');
+        this.availabilityReason.set(null);
+      });
+
+    if (this.domain().trim()) {
+      this.domainCheck$.next(this.domain().trim());
+    }
+
     effect(() => {
       const event = this.builderState.stepEnforcement();
       if (event && event.stepId === 'validation') {
@@ -106,7 +261,7 @@ export class Validation {
   }
 
   private handleEnforcement(): void {
-    if (!this.businessName().trim() || !this.isFormatValid()) {
+    if (!this.businessName().trim() || !this.allNameChecksPassed()) {
       this.highlightErrorElement.set('name');
       const el = document.getElementById('bizName');
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -115,7 +270,7 @@ export class Validation {
       return;
     }
 
-    if (!this.domain().trim()) {
+    if (!this.domain().trim() || !this.allDomainChecksPassed()) {
       this.highlightErrorElement.set('domain');
       const el = document.getElementById('bizDomain');
       el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -133,13 +288,6 @@ export class Validation {
     }
   }
 
-  /**
-   * The interview already asks what the business sells (q2) and who it targets
-   * (q3), so pre-fill this step from those answers instead of making the user
-   * retype them. Without this the fields start blank, and since they gate
-   * isValidationComplete the user would be bounced straight back here from
-   * Preview.
-   */
   private seedFromInterview(): void {
     const answers = this.builderState.aiAnswers();
     const answerText = (id: string): string => {
@@ -148,16 +296,27 @@ export class Validation {
       return Array.isArray(value) ? value.join(', ') : String(value).trim();
     };
 
-    if (!this.businessName()) this.builderState.businessName.set(answerText('q1'));
-    if (!this.businessType()) this.builderState.businessType.set(answerText('q2'));
-    if (!this.targetAudience()) this.builderState.targetAudience.set(answerText('q3'));
-    if (!this.domain()) this.builderState.domain.set(toDomainSlug(this.businessName()));
+    if (!this.businessName()) {
+      this.builderState.businessName.set(answerText('q1'));
+    }
+    if (!this.businessType()) {
+      this.builderState.businessType.set(answerText('q2'));
+    }
+    if (!this.targetAudience()) {
+      this.builderState.targetAudience.set(answerText('q3'));
+    }
+    if (!this.domain()) {
+      this.builderState.domain.set(toDomainSlug(this.businessName()));
+    }
   }
 
   onBusinessNameChange(value: string): void {
     this.builderState.businessName.set(value);
     if (!this.domainTouched()) {
-      this.builderState.domain.set(toDomainSlug(value));
+      const derived = toDomainSlug(value);
+      this.builderState.domain.set(derived);
+      this.selectedSuggestion.set(null);
+      this.domainCheck$.next(derived);
     }
   }
 
@@ -170,53 +329,87 @@ export class Validation {
   }
 
   onDomainChange(value: string): void {
+    const sanitized = sanitizeDomainSlug(value);
     this.domainTouched.set(true);
-    this.builderState.domain.set(value);
+    this.builderState.domain.set(sanitized);
+    this.selectedSuggestion.set(null);
+    if (!sanitized || sanitized.length < 3) {
+      this.domainAvailability.set('invalid');
+      return;
+    }
+    this.domainCheck$.next(sanitized);
   }
 
-  readonly domainSuggestions = signal<string[]>([]);
-  readonly hintMessage = signal<string | null>(null);
+  applySuggestion(suggestion: string): void {
+    const sanitized = sanitizeDomainSlug(suggestion);
+    this.domainTouched.set(true);
+    this.builderState.domain.set(sanitized);
+    this.selectedSuggestion.set(sanitized);
+    this.domainSuggestions.set([]);
+    this.proactiveSuggestions.set([]);
+    this.domainAvailability.set('available');
+    this.domainCheck$.next(sanitized);
+  }
+
+  exploreSuggestions(): void {
+    const list = generateAlgorithmicSuggestions(this.businessName());
+    this.proactiveSuggestions.set(list);
+  }
+
+  syncDomainWithName(): void {
+    const derived = toDomainSlug(this.businessName());
+    this.domainTouched.set(false);
+    this.builderState.domain.set(derived);
+    this.selectedSuggestion.set(null);
+    if (derived) {
+      this.domainCheck$.next(derived);
+    }
+  }
+
+  copyStoreUrl(): void {
+    const url = this.fullStoreUrl();
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => {
+        this.urlCopied.set(true);
+        setTimeout(() => this.urlCopied.set(false), 2000);
+      });
+    }
+  }
 
   finish(): void {
     if (this.isSubmitting()) return;
     this.isSubmitting.set(true);
-    // Cleared up front so a failed or abandoned retry cannot leave a stale
-    // confirmation behind that would keep the Preview guard open.
     this.builderState.domainConfirmed.set(false);
     this.builderState.isNavigating.set(true);
     this.currentStep.set('AI_ANALYSIS');
+    this.analysisStep.set(1);
     this.domainSuggestions.set([]);
     this.hintMessage.set(null);
 
     this.domainApi
-      .confirmDomain({ businessName: this.businessName(), domain: this.domain() })
+      .confirmDomain({
+        businessName: this.businessName(),
+        domain: this.domain(),
+      })
       .pipe(
         tap((res) => {
+          this.analysisStep.set(2);
           if (res.hint) {
             this.hintMessage.set(res.hint);
             toast.warning(res.hint);
           } else {
-            toast.success(this._localeService.translate('validation_domain_confirmed'));
+            toast.success(
+              this._localeService.translate('validation_domain_confirmed'),
+            );
           }
         }),
-        // Theme generation is NOT best-effort, whatever this used to say. It is
-        // the only call that advances the backend draft to `themed`, and publish
-        // rejects anything below that with a 409. When it was allowed to fail
-        // quietly the wizard still reached Preview — listThemes served themes
-        // from an earlier generation — and the store only proved unpublishable
-        // at the very last click. A failure here must stop the step.
-        //
-        // The POST already returns the freshly generated set, so it is used
-        // directly; the GET is only a fallback for a response that carries none.
-        switchMap(() => this.themesApi.generateThemes()),
+        switchMap(() => {
+          this.analysisStep.set(3);
+          return this.themesApi.generateThemes();
+        }),
         switchMap((themesRes) =>
           themesRes?.themes?.length ? of(themesRes) : this.themesApi.getThemes(),
         ),
-        // isNavigating is deliberately NOT cleared here. Clearing it on
-        // completion tore the loader down at the same instant we navigated, so
-        // Preview mounted bare and the shopper saw its skeleton instead of the
-        // loader. Preview now clears it once it actually has themes to show;
-        // the error path below clears it for the case where we never navigate.
         finalize(() => this.isSubmitting.set(false)),
       )
       .subscribe({
@@ -224,19 +417,23 @@ export class Validation {
           if (themesRes?.themes?.length) {
             this.builderState.themes.set(themesRes.themes);
           }
-          // Only now is the step genuinely complete: the domain was confirmed
-          // and theme generation ran. This is what opens the Preview guard.
           this.builderState.domainConfirmed.set(true);
           this.router.navigate(['/build/preview']);
         },
         error: (err) => {
           this.builderState.isNavigating.set(false);
           this.currentStep.set('INPUT');
+          this.domainAvailability.set('unavailable');
           if (err?.error?.suggestions) {
             this.domainSuggestions.set(err.error.suggestions);
+          } else {
+            this.domainSuggestions.set(
+              generateAlgorithmicSuggestions(this.businessName()),
+            );
           }
           toastApiError(err, 'validation_domain_failed', this._localeService);
         },
       });
   }
 }
+
