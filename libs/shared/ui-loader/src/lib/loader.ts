@@ -14,6 +14,8 @@ import { ChangeDetectionStrategy, Component, input, signal, effect } from '@angu
 })
 export class Loader {
   isLoading = input<boolean>(true);
+  label = input<string>('Invento AI');
+  showLabel = input<boolean>(true);
 
   // This manages the actual presence in the DOM
   protected showLoader = signal<boolean>(true);
