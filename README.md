@@ -22,11 +22,10 @@ npm ci
 npm run start:all
 ```
 
-That serves all three apps on `4200` / `4300` / `4400`. You will also want the backend running on
-`:3000` — anything touching data needs it.
+That serves all three apps on `4200` / `4300` / `4400`. All three apps proxy in development to the backend defined by `DEV_API_TARGET` (`http://localhost:3000` by default; set to `https://invento-api-ashy.vercel.app` in `.env` to develop against the deployed API without CORS preflight issues).
 
 **No environment setup is needed to get started** — `npm ci` generates each app's environment files
-with working defaults. To change a URL, copy `env.example` to `.env` and edit it; `.env` is the
+with working defaults. To change a URL or target, copy `env.example` to `.env` and edit it; `.env` is the
 single source of truth and the `start:*` / `build` scripts regenerate from it automatically. Nothing
 in it is secret: every value ships in the browser bundle. See
 [SETUP.md](SETUP.md#3-environment-files).

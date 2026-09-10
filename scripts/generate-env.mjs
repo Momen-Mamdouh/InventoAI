@@ -35,8 +35,8 @@ const API_DEV_COMMENT = [
   "Empty on purpose: every request stays relative to the dev server's own",
   'origin and reaches the API through the proxy.',
   "Pointing straight at the API's own host made every call cross-origin,",
-  'and login died on a CORS preflight because the API\'s CORS_ORIGINS',
-  "does not list dev ports.",
+  "and login died on a CORS preflight because the API's CORS_ORIGINS",
+  'does not list dev ports.',
 ];
 
 /**
@@ -54,7 +54,12 @@ const APPS = [
   {
     name: 'site-builder',
     fields: [
-      { key: 'apiUrl', prodEnv: 'SITE_BUILDER_API_URL', devConstant: '', devComment: API_DEV_COMMENT },
+      {
+        key: 'apiUrl',
+        prodEnv: 'SITE_BUILDER_API_URL',
+        devConstant: '',
+        devComment: API_DEV_COMMENT,
+      },
       { key: 'ssrApiUrl', prodEnv: 'SITE_BUILDER_API_URL', devEnv: 'DEV_API_TARGET' },
       { key: 'googleClientId', constant: GOOGLE_CLIENT_ID },
       { key: 'inventoDashboardUrl', env: 'SITE_BUILDER_DASHBOARD_URL' },
@@ -72,7 +77,12 @@ const APPS = [
   {
     name: 'owner-dashboard',
     fields: [
-      { key: 'apiUrl', prodEnv: 'OWNER_DASHBOARD_API_URL', devConstant: '', devComment: API_DEV_COMMENT },
+      {
+        key: 'apiUrl',
+        prodEnv: 'OWNER_DASHBOARD_API_URL',
+        devConstant: '',
+        devComment: API_DEV_COMMENT,
+      },
       { key: 'ssrApiUrl', prodEnv: 'OWNER_DASHBOARD_API_URL', devEnv: 'DEV_API_TARGET' },
       { key: 'googleClientId', constant: GOOGLE_CLIENT_ID },
       { key: 'siteBuilderUrl', env: 'OWNER_DASHBOARD_SITE_BUILDER_URL' },
