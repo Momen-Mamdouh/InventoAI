@@ -95,16 +95,29 @@ Useful commands:
 
 ## 4. The backend
 
-The frontend expects a backend on **`http://localhost:3000`**. Without it the apps start and render,
-but anything touching data fails.
+The frontend connects to the backend defined by **`DEV_API_TARGET`** (defaults to **`http://localhost:3000`** in `env.example`). Without a backend running or configured, the apps start and render, but anything touching data fails.
 
-All three apps proxy to it in development:
+To develop against the deployed backend instead of running it locally, set in `.env`:
+
+```env
+DEV_API_TARGET=https://invento-api-ashy.vercel.app
+```
+
+Then run `npm run generate:env` and start the apps. All browser requests remain same-origin (`apiUrl: ''`) and route through each app's dev proxy to `DEV_API_TARGET` (preventing CORS preflight failures), while server-side rendering routes use `ssrApiUrl` to connect directly to the target.
+
+All three apps proxy to `DEV_API_TARGET` in development:
 
 | App                 | Proxy config    | Notes                                                                                                  |
 | ------------------- | --------------- | ------------------------------------------------------------------------------------------------------ |
 | **owner-dashboard** | `proxy.conf.js` | 16 route prefixes. Skips proxying for `Accept: text/html` so hard refreshes load the app, not the API. |
 | **site-builder**    | `proxy.conf.js` | `/site-builder`, `/users`, `/stores`. Skips proxying for HTML.                                         |
 | **user-site**       | `proxy.conf.js` | `/site`, `/users`. Skips proxying for HTML.                                                            |
+
+> [!WARNING]
+> **The `/build` vs `/site-builder` trap**
+> The frontend route for the site-builder wizard is `/build/...`. The backend API prefix is `/site-builder/...`.
+> Typing `http://localhost:4200/site-builder/...` into your browser forwards to the backend API via the proxy rather
+> than serving the Angular SPA. Always navigate via `/build` for UI.
 
 ---
 

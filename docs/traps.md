@@ -18,8 +18,9 @@ leads with the **symptom you would actually see**, because that is how you will 
 | `prefer-on-push-component-change-detection` error            | `OnPush` is mandatory                                     | [#6](#6-onpush-is-mandatory)                               |
 | Tailwind classes silently missing from the built app         | Tailwind entry import moved out of the app's `styles.css` | [#7](#7-tailwind-entry-imports-must-stay-in-the-app)       |
 | Wondering if theme tokens still need editing in 3 places     | No — owner-dashboard now imports the shared file too      | [#8](#8-owner-dashboards-theme-css-used-to-be-a-fork)      |
-| A library imports fine but exports nothing                   | It is an empty placeholder                                | [#9](#9-two-libraries-are-deliberately-empty)              |
+| A library imports fine but exports nothing                   | util-template is an empty placeholder                     | [#9](#9-one-library-is-deliberately-empty-util-template)   |
 | Renamed a file's case only; builds locally, CI can't find it | `core.ignorecase=true` hides it from `git status`         | [#11](#11-a-case-only-rename-does-nothing-on-this-machine) |
+| `/site-builder` URL returns API JSON or 401 instead of app   | Frontend wizard is `/build`; `/site-builder` is dev proxy | [#12](#12-the-build-vs-site-builder-trap)                  |
 
 ---
 
@@ -197,17 +198,18 @@ in one edit. See [deep-dives/theming.md](./deep-dives/theming.md).
 
 ---
 
-## 9. Two libraries are deliberately empty
+## 9. One library is deliberately empty (util-template)
 
-`libs/shared/util-environment` and `libs/shared/util-template` both export nothing:
+`libs/shared/util-template` exports nothing:
 
 ```ts
 export {};
 ```
 
-They exist as declared destinations from the restructure whose intended contents were deleted rather
-than migrated. They have **zero consumers**. Don't be confused by importing one and getting nothing —
-and if you have a genuine home for environment or template helpers, these are the right places.
+It exists as a declared destination from the restructure whose intended contents were deleted rather
+than migrated. `libs/shared/util-environment` was previously empty too, but now houses the shared
+`AppEnvironment` interface and `resolveApiBaseUrl()` helper for unified dev proxy and platform-aware
+API base resolution across all three apps.
 
 ---
 
@@ -257,6 +259,16 @@ git ls-files | grep -i preview
 ```
 
 If that still prints the old casing, the index has not moved and CI will still fail.
+
+---
+
+## 12. The `/build` vs `/site-builder` trap
+
+**Symptom:** typing `http://localhost:4200/site-builder/...` into your browser returns API JSON or 401 instead of serving the Angular app.
+
+**Why:** The frontend route for the site-builder wizard is `/build/...` (e.g. `/build/brainstorm`). The backend API prefix is `/site-builder/...` (e.g. `/site-builder/draft`). `apps/site-builder/proxy.conf.js` forwards all requests under `/site-builder` to the API defined by `DEV_API_TARGET`. The proxy's `bypassHtml` mitigates hard refreshes on known browser deep links, but entering an API path directly in the browser will hit the backend API.
+
+**Rule:** use `/build/...` for frontend UI navigation in site-builder; `/site-builder/...` is exclusively the backend API route.
 
 ---
 
