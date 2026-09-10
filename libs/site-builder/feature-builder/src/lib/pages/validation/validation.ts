@@ -17,7 +17,6 @@ import {
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { PageHeader } from '@invento/shared-ui-page-header';
-import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { BuilderState, DomainApi, ThemesApi } from '@invento/site-builder-data-access-builder';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
@@ -47,7 +46,6 @@ type WorkflowStep = 'INPUT' | 'AI_ANALYSIS';
     HlmH3,
     HlmMuted,
     PageHeader,
-    DoubleSlash,
     TranslatePipe,
   ],
   providers: [provideIcons({ lucideGlobe, lucideAlertTriangle, lucideLoader2, lucideSearch })],

@@ -23,7 +23,7 @@
       <div class="space-y-5 xl:col-span-1">
         <div class="preview-body-theme">
           <p class="flex items-center gap-2 uppercase preview-tag">
-            <app-double-slash /> {{ 'preview_active_theme' | translate }}
+            {{ 'preview_active_theme' | translate }}
             @if (!isLoading() && themeSuggestions().length > 1) {
               <span class="ms-auto font-mono text-[10px] text-muted-foreground normal-case">
                 {{ themeSuggestions().length }}
@@ -84,7 +84,7 @@
 
         <div class="preview-body-mode space-y-2">
           <p class="uppercase preview-tag">
-            <app-double-slash /> {{ 'preview_mode' | translate }}
+            {{ 'preview_mode' | translate }}
           </p>
           <hlm-toggle-group
             type="single"
@@ -114,7 +114,7 @@
 
         <div class="preview-body-viewport">
           <p class="uppercase preview-tag">
-            <app-double-slash /> {{ 'preview_viewport' | translate }}
+            {{ 'preview_viewport' | translate }}
           </p>
           <hlm-toggle-group
             type="single"
@@ -286,7 +286,7 @@
 
                 <div class="bg-foreground/10 px-4 pb-4 preview-visual-sizes">
                   <p hlmSmall class="opacity-60 pt-2 text-foreground/90 uppercase">
-                    <app-double-slash /> {{ 'preview_select_size' | translate }}
+                    {{ 'preview_select_size' | translate }}
                   </p>
 
                   <div class="flex gap-2">
@@ -321,7 +321,7 @@
 
         <div class="mt-2 p-4 border border-foreground/10 rounded build-summary">
           <p class="uppercase preview-tag">
-            <app-double-slash /> {{ 'preview_build_summary' | translate }}
+            {{ 'preview_build_summary' | translate }}
           </p>
           <div
             class="gap-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"
@@ -403,7 +403,7 @@
               class="bg-primary px-6 py-3 w-fit font-bold text-background text-sm uppercase"
               style="border-radius: var(--radius, 0px)"
             >
-              <app-double-slash /> {{ 'preview_shop_now' | translate }} — ${{ product.price }}
+              {{ 'preview_shop_now' | translate }} — ${{ product.price }}
             </button>
           </div>
         }

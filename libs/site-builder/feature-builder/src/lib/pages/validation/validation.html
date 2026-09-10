@@ -19,7 +19,7 @@
               hlmCardTitle
               class="text-xs font-mono text-muted-foreground uppercase tracking-wider"
             >
-              <app-double-slash /> {{ 'validation_blueprint' | translate }}
+              {{ 'validation_blueprint' | translate }}
             </h3>
             <p hlmCardDescription>
               {{ 'validation_blueprint_desc' | translate }}
@@ -33,13 +33,9 @@
                 for="bizName"
                 class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
               >
-                <app-double-slash /> {{ 'validation_biz_name' | translate }}
+                {{ 'validation_biz_name' | translate }}
               </label>
               <div class="relative">
-                <span
-                  class="absolute start-4 top-1/2 -translate-y-1/2 font-mono text-muted-foreground text-sm"
-                  >//</span
-                >
                 <input
                   hlmInput
                   id="bizName"
@@ -48,7 +44,7 @@
                   (ngModelChange)="onBusinessNameChange($event)"
                   maxLength="24"
                   placeholder="{{ 'validation_placeholder_name' | translate }}"
-                  class="w-full ps-10 pe-16 font-medium font-mono"
+                  class="w-full pe-16 font-medium font-mono"
                 />
                 <span
                   class="absolute end-4 top-1/2 -translate-y-1/2 text-xs font-mono text-muted-foreground"
@@ -64,7 +60,7 @@
                 for="bizType"
                 class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
               >
-                <app-double-slash /> {{ 'validation_biz_type' | translate }}
+                {{ 'validation_biz_type' | translate }}
               </label>
               <div class="relative">
                 <input
@@ -91,7 +87,7 @@
                 for="bizAudience"
                 class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
               >
-                <app-double-slash /> {{ 'validation_target_audience' | translate }}
+                {{ 'validation_target_audience' | translate }}
               </label>
               <input
                 hlmInput
@@ -110,7 +106,7 @@
                 for="bizDomain"
                 class="text-xs font-mono text-muted-foreground uppercase tracking-wider block"
               >
-                <app-double-slash /> {{ 'validation_domain_name' | translate }}
+                {{ 'validation_domain_name' | translate }}
               </label>
               <div class="relative">
                 <input
@@ -150,7 +146,7 @@
           <span
             class="flex items-center gap-1 text-xs font-mono text-muted-foreground uppercase tracking-wider"
           >
-            <app-double-slash /> {{ 'validation_live_checks' | translate }}
+            {{ 'validation_live_checks' | translate }}
           </span>
 
           <div class="space-y-2">
@@ -234,7 +230,7 @@
       <div hlmCard class="shadow-sm">
         <div hlmCardHeader class="p-5 pb-3">
           <h3 hlmCardTitle class="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-            <app-double-slash /> {{ 'validation_build_context' | translate }}
+            {{ 'validation_build_context' | translate }}
           </h3>
         </div>
         <div hlmCardContent class="p-5 pt-0 font-mono text-xs space-y-3">

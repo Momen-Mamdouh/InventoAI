@@ -35,7 +35,6 @@ import {
   MIN_BRAINSTORM_LENGTH,
 } from '@invento/site-builder-data-access-builder';
 import { HlmH2 } from '@spartan/helm/typography';
-import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { toast } from '@spartan/helm/sonner';
 import { Router } from '@angular/router';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
@@ -65,7 +64,6 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     HlmSpinner,
     ReactiveFormsModule,
     PageHeader,
-    DoubleSlash,
     TranslatePipe,
     HlmH2,
   ],
