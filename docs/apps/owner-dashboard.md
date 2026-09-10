@@ -95,18 +95,14 @@ back into the wizard.
 Both environment files are **generated from the root `.env` by `scripts/generate-env.mjs` and are
 gitignored** — edit `.env`, never the generated files. See
 [SETUP.md](../../SETUP.md#3-environment-files). The keys are `OWNER_DASHBOARD_API_URL` /
-`OWNER_DASHBOARD_SITE_BUILDER_URL` and their `_DEV` counterparts.
-
-`OWNER_DASHBOARD_API_URL_DEV` is **deliberately empty, and empty is not the same as unset.** An
-empty `apiUrl` keeps every dev request relative to `localhost:4400` so it reaches the API through
-`proxy.conf.js`. Pointing it straight at the API's own host makes every call cross-origin, and login
-dies on a CORS preflight because the API's `CORS_ORIGINS` does not list port 4400. The generator
-resolves keys by presence rather than truthiness precisely so this value survives.
+`OWNER_DASHBOARD_SITE_BUILDER_URL` (and `OWNER_DASHBOARD_SITE_BUILDER_URL_DEV`). In development,
+`apiUrl` is always generated as empty (`''`), which keeps every dev browser request relative to
+`localhost:4400` so it reaches the API through `proxy.conf.js` (pointing to `DEV_API_TARGET`).
+Pointing it straight at the API host would make calls cross-origin, failing on CORS preflights.
 
 ### Dev proxy
 
-`apps/owner-dashboard/proxy.conf.js` is the most substantial of the three: **16 route prefixes**
-forwarded to `http://localhost:3000`.
+`apps/owner-dashboard/proxy.conf.js` forwards **16 route prefixes** to the backend defined by `DEV_API_TARGET`.
 
 It carries a `bypassHtml` helper that skips proxying for requests with `Accept: text/html`. Without
 it, a full page refresh (F5) forwards the document request to the backend without credentials
