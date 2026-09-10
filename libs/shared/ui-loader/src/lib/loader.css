@@ -4,7 +4,9 @@
   justify-content: center;
   position: fixed;
   inset: 0;
-  background-color: var(--background);
+  background:
+    radial-gradient(circle at 50% 48%, var(--ring) 0%, transparent 65%),
+    var(--background);
   z-index: 9999;
   opacity: 1;
   visibility: visible;
@@ -20,17 +22,45 @@
 }
 
 .loader-svg-container {
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.loader-mark {
+  transform-origin: center;
+  animation: markBreathe 4s ease-in-out infinite;
+}
+
+.loader-label {
+  animation: labelPulse 3s ease-in-out infinite;
+}
+
 .blue-dot {
   /* Animate the blue dot relative to its cx/cy in the SVG viewBox */
   transform-origin: center;
+  filter: drop-shadow(0 0 10px var(--primary));
   animation: tracePath 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes markBreathe {
+  0%, 100% {
+    opacity: 0.92;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes labelPulse {
+  0%, 100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* 
@@ -54,5 +84,13 @@
   }
   100% {
     transform: translate(0px, 0px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blue-dot,
+  .loader-mark,
+  .loader-label {
+    animation: none;
   }
 }
