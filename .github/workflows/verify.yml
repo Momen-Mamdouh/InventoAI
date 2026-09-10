@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  NX_NO_CLOUD: 'true'
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -20,7 +24,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit
 
       - name: Check project names follow the naming scheme
         run: npm run check:names
