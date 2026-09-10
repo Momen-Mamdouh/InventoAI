@@ -13,6 +13,11 @@ import { QuestionsApi } from './questions-api';
 
 export type AnswerValue = string | number | string[] | number[];
 
+export interface StepEnforcementEvent {
+  readonly stepId: BuilderStepId;
+  readonly timestamp: number;
+}
+
 const STORAGE_KEY = 'invento.builder-state';
 
 /**
@@ -45,6 +50,11 @@ export class BuilderState {
   private readonly questionsApi = inject(QuestionsApi);
 
   readonly isNavigating = signal(false);
+  readonly stepEnforcement = signal<StepEnforcementEvent | null>(null);
+
+  triggerStepEnforcement(stepId: BuilderStepId): void {
+    this.stepEnforcement.set({ stepId, timestamp: Date.now() });
+  }
 
   /**
    * Each step is finished only when its own submit button has successfully

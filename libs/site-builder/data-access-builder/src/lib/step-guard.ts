@@ -19,6 +19,10 @@ export const stepGuard =
     const firstIncomplete = BUILDER_STEPS.slice(0, stepIndex).find(
       (s) => !builderState.isStepComplete(s.id),
     );
+    if (firstIncomplete) {
+      builderState.triggerStepEnforcement(firstIncomplete.id);
+      return router.parseUrl(firstIncomplete.path);
+    }
 
-    return firstIncomplete ? router.parseUrl(firstIncomplete.path) : true;
+    return true;
   };

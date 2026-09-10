@@ -45,7 +45,11 @@
                   (ngModelChange)="onBusinessNameChange($event)"
                   maxLength="24"
                   placeholder="{{ 'validation_placeholder_name' | translate }}"
-                  class="w-full pe-16 font-medium font-mono"
+                  class="w-full pe-16 font-medium font-mono transition-all"
+                  [class.ring-2]="highlightErrorElement() === 'name'"
+                  [class.ring-destructive]="highlightErrorElement() === 'name'"
+                  [class.border-destructive]="highlightErrorElement() === 'name'"
+                  [class.animate-shake]="highlightErrorElement() === 'name'"
                 />
                 <span
                   class="absolute end-4 top-1/2 -translate-y-1/2 text-xs font-mono text-muted-foreground"
@@ -117,7 +121,11 @@
                   [ngModel]="domain()"
                   (ngModelChange)="onDomainChange($event)"
                   placeholder="{{ 'validation_placeholder_domain' | translate }}"
-                  class="w-full font-mono"
+                  class="w-full font-mono transition-all"
+                  [class.ring-2]="highlightErrorElement() === 'domain'"
+                  [class.ring-destructive]="highlightErrorElement() === 'domain'"
+                  [class.border-destructive]="highlightErrorElement() === 'domain'"
+                  [class.animate-shake]="highlightErrorElement() === 'domain'"
                 />
               </div>
               @if (domainSuggestions().length > 0) {
@@ -252,8 +260,12 @@
 
       @if (currentStep() === 'INPUT') {
         <button
+          id="validation-submit-btn"
           hlmBtn
-          class="w-full py-6 font-mono uppercase tracking-wider text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+          class="w-full py-6 font-mono uppercase tracking-wider text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed transition-all"
+          [class.ring-4]="highlightErrorElement() === 'btn'"
+          [class.ring-destructive]="highlightErrorElement() === 'btn'"
+          [class.animate-shake]="highlightErrorElement() === 'btn'"
           [disabled]="!canSubmit()"
           (click)="finish()"
         >

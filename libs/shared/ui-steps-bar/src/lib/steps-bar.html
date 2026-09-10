@@ -10,6 +10,7 @@
         <li class="flex md:flex-row flex-col flex-1 md:flex-none items-center md:gap-2 lg:gap-3">
           <a
             [routerLink]="step.path"
+            (click)="onStepClick(step, $event)"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
             #rla="routerLinkActive"
