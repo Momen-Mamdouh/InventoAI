@@ -270,6 +270,7 @@
   "auth_google_soon": "المصادقة عبر جوجل ستكون متاحة قريباً.",
   "auth_forgot_empty": "يرجى إدخال عنوان بريد إلكتروني صالح.",
   "auth_forgot_success": "تم إرسال رمز إعادة التعيين إلى بريدك الإلكتروني.",
+  "auth_sso_authenticating": "جاري التحقق من الجلسة...",
   "auth_login_title": "مرحباً بعودتك",
   "auth_login_google": "المتابعة باستخدام جوجل",
   "auth_login_or": "أو المتابعة باستخدام",

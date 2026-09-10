@@ -139,6 +139,7 @@
   "orders.view": "View",
   "orders.close": "Close",
   "nav_purchase_requests": "Purchase Requests",
+  "auth_sso_authenticating": "Authenticating session...",
   "auth_login_title": "Welcome Back",
   "auth_login_google": "Continue with Google",
   "auth_login_or": "Or continue with",

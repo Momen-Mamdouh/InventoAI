@@ -63,11 +63,19 @@ export class ExistingStore {
     () => this.currentUser()?.storeSlug ?? this.authService.getStoreSlug() ?? '',
   );
 
-  readonly dashboardUrl = this.apiConfig.dashboardUrl;
-  readonly dashboardBaseUrl = computed(() => this.dashboardUrl.replace(/\/home\/?$/, ''));
-  readonly catalogUrl = computed(() => `${this.dashboardBaseUrl()}/products`);
-  readonly ordersUrl = computed(() => `${this.dashboardBaseUrl()}/orders`);
-  readonly advisorUrl = computed(() => `${this.dashboardBaseUrl()}/ai-advisor`);
+  readonly dashboardUrl = computed(() =>
+    this.authService.getSsoUrl(this.apiConfig.dashboardUrl, '/home'),
+  );
+  readonly dashboardBaseUrl = computed(() => this.apiConfig.dashboardUrl.replace(/\/home\/?$/, ''));
+  readonly catalogUrl = computed(() =>
+    this.authService.getSsoUrl(this.dashboardBaseUrl(), '/products'),
+  );
+  readonly ordersUrl = computed(() =>
+    this.authService.getSsoUrl(this.dashboardBaseUrl(), '/orders'),
+  );
+  readonly advisorUrl = computed(() =>
+    this.authService.getSsoUrl(this.dashboardBaseUrl(), '/ai-advisor'),
+  );
 
   readonly storefrontUrl = computed(() => {
     const slug = this.storeSlug();
@@ -81,6 +89,5 @@ export class ExistingStore {
 
   signOut(): void {
     this.authService.logout();
-    this.router.navigate(['/auth/login']);
   }
 }
