@@ -9,11 +9,7 @@ function bypassHtml(req) {
   }
 }
 
-const prefixes = [
-  '/site-builder',
-  '/users',
-  '/stores',
-];
+const prefixes = ['/site-builder', '/users', '/stores'];
 
 const PROXY_CONFIG = {};
 for (const prefix of prefixes) {

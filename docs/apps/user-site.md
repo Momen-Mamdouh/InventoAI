@@ -103,16 +103,17 @@ that agree only until the first language switch.
 
 ### Environment and proxy
 
-`environment.ts` supplies `production`, `apiUrl` and `googleClientId`. **user-site has no dev proxy
-config** — unlike the other two apps, it calls `apiUrl` directly.
+`environment.ts` supplies `production`, `apiUrl`, `ssrApiUrl`, and `googleClientId`.
 
 Both environment files are **generated from the root `.env` by `scripts/generate-env.mjs` and are
-gitignored** — edit `.env` (keys `USER_SITE_API_URL` and `USER_SITE_API_URL_DEV`), never the
-generated files. See [SETUP.md](../../SETUP.md#3-environment-files).
+gitignored** — edit `.env` (key `USER_SITE_API_URL` for production, and `DEV_API_TARGET` for development), never the generated files. See [SETUP.md](../../SETUP.md#3-environment-files).
 
-Because user-site talks to `apiUrl` directly with no proxy, that value is the only thing standing
-between a dev session and the production API — worth double-checking before pointing it anywhere
-shared.
+In development, `apiUrl` is empty (`''`), keeping browser requests same-origin so they pass through `apps/user-site/proxy.conf.js` to `DEV_API_TARGET`. Server-side rendering requests (`StoreService.resolve()`) use `ssrApiUrl` to call `DEV_API_TARGET` directly.
+
+`apps/user-site/proxy.conf.js` forwards `/site` and `/users` to the backend defined by `DEV_API_TARGET`.
+
+> [!NOTE]
+> A store slug that matches a proxy prefix (e.g. a store named `site` or `users`) would have its API calls captured by the dev proxy in local development. `bypassHtml` preserves browser navigation to the storefront SPA, but runtime API calls would misroute. See [traps.md](../traps.md).
 
 ---
 
