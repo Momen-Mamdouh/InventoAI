@@ -4,6 +4,7 @@ import {
   DestroyRef,
   afterNextRender,
   computed,
+  effect,
   signal,
   inject,
   viewChild,
@@ -16,6 +17,10 @@ import {
   lucideChevronRight,
   lucideMessageSquare,
   lucideLoader2,
+  lucideCheck,
+  lucideSparkles,
+  lucideInfo,
+  lucideCircleAlert,
 } from '@ng-icons/lucide';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { HlmButton } from '@spartan/helm/button';
@@ -58,6 +63,10 @@ import { toastApiError } from '../../utils/toast-api-error';
       lucideChevronLeft,
       lucideChevronRight,
       lucideLoader2,
+      lucideCheck,
+      lucideSparkles,
+      lucideInfo,
+      lucideCircleAlert,
     }),
   ],
   templateUrl: './ai-interview.html',
@@ -72,7 +81,8 @@ export class AiInterview implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly isSubmitting = signal(false);
-  readonly invalidQuestionId = signal<string | null>(null);
+  readonly invalidQuestionIds = signal<string[]>([]);
+  readonly initialAiAnswers = signal<Record<string, unknown>>({});
 
   protected readonly chevronBack = computed(() =>
     this._localeService.isRtl() ? 'lucideChevronRight' : 'lucideChevronLeft',
@@ -110,13 +120,35 @@ export class AiInterview implements OnInit {
         if (stepper && stepper.selectedIndex !== index) {
           stepper.selectedIndex = index;
         }
-        this.scrollToStep(index);
+        this.scrollToStep(index, true);
       },
+    });
+
+    // React to top steps bar or step guard enforcement when user attempts to skip ahead
+    effect(() => {
+      const event = this.builderState.stepEnforcement();
+      if (event && event.stepId === 'ai-interview') {
+        const invalidIds = this.findAllInvalidQuestionIds();
+        if (invalidIds.length > 0) {
+          this.invalidQuestionIds.set(invalidIds);
+          this.form.markAllAsTouched();
+          const firstIndex = this.visibleQuestions().findIndex((q) => q.id === invalidIds[0]);
+          if (firstIndex !== -1) {
+            const stepper = this.stepper();
+            if (stepper) {
+              stepper.selectedIndex = firstIndex;
+            }
+            this.builderState.aiInterviewStepIndex.set(firstIndex);
+            this.scrollToStep(firstIndex);
+          }
+        }
+      }
     });
   }
 
   ngOnInit() {
     const prefill = this.builderState.aiAnswers();
+    this.initialAiAnswers.set({ ...prefill });
 
     this.visibleQuestions().forEach((q) => {
       const initialValue = decodeAnswer(q, prefill[q.id]);
@@ -133,6 +165,12 @@ export class AiInterview implements OnInit {
 
     this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
       this.builderState.aiAnswers.update((current) => ({ ...current, ...val }));
+      for (const [key, value] of Object.entries(val)) {
+        const q = this.visibleQuestions().find((item) => item.id === key);
+        if (q && isAnswered(q, value)) {
+          this.invalidQuestionIds.update((prev) => prev.filter((id) => id !== key));
+        }
+      }
     });
   }
 
@@ -161,13 +199,25 @@ export class AiInterview implements OnInit {
     target?.focus({ preventScroll: true });
   }
 
-  scrollToStep(index: number) {
-    const step = this.getStepElement(index);
-    if (!step) return;
+  scrollToStep(index: number, immediate = false): void {
+    const runScroll = () => {
+      const step = this.getStepElement(index);
+      if (!step) return;
 
-    const container = step.closest('.flex.flex-col.gap-2') || step;
-    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    setTimeout(() => this.focusStepInput(index), 50);
+      const container = step.closest('.flex.flex-col.gap-2') || step;
+      container.scrollIntoView({
+        behavior: immediate ? 'auto' : 'smooth',
+        block: 'start',
+        inline: 'nearest',
+      });
+      setTimeout(() => this.focusStepInput(index), 120);
+    };
+
+    if (immediate) {
+      runScroll();
+    } else {
+      setTimeout(runScroll, 60);
+    }
   }
 
   onSelectionChange(event: StepperSelectionEvent) {
@@ -199,13 +249,16 @@ export class AiInterview implements OnInit {
       const control = this.form.get(currentQuestion.id);
       if (control && (control.invalid || !isAnswered(currentQuestion, control.value))) {
         control.markAsTouched();
-        this.invalidQuestionId.set(currentQuestion.id);
+        this.invalidQuestionIds.update((prev) => Array.from(new Set([...prev, currentQuestion.id])));
         toast.error(this._localeService.translate('toast_required_questions'));
         return;
       }
     }
 
-    this.invalidQuestionId.set(null);
+    if (currentQuestion) {
+      this.invalidQuestionIds.update((prev) => prev.filter((id) => id !== currentQuestion.id));
+    }
+
     const nextIndex = stepper.selectedIndex + 1;
     stepper.selectedIndex = nextIndex;
     this.builderState.aiInterviewStepIndex.set(nextIndex);
@@ -221,13 +274,45 @@ export class AiInterview implements OnInit {
   }
 
   isQuestionInvalid(questionId: string): boolean {
-    if (this.invalidQuestionId() === questionId) return true;
+    return this.invalidQuestionIds().includes(questionId);
+  }
 
-    const control = this.form.get(questionId);
-    if (!control?.touched) return false;
+  isChannelSelected(questionId: string, option: string): boolean {
+    return this.selectedChannels()[questionId]?.includes(option) ?? false;
+  }
 
+  isQuestionAnswered(questionId: string): boolean {
     const question = this.visibleQuestions().find((item) => item.id === questionId);
-    return question ? !isAnswered(question, control.value) : false;
+    if (!question) return false;
+    const control = this.form.get(questionId);
+    return isAnswered(question, control?.value);
+  }
+
+  isAiSuggested(questionId: string, option: string): boolean {
+    const initial = this.initialAiAnswers()[questionId];
+    if (initial === undefined || initial === null) return false;
+    if (Array.isArray(initial)) {
+      return initial.includes(option);
+    }
+    return String(initial) === option;
+  }
+
+  onSingleSelect(questionId: string, option: string): void {
+    const control = this.form.get(questionId);
+    control?.setValue(option);
+    control?.markAsTouched();
+    this.invalidQuestionIds.update((prev) => prev.filter((id) => id !== questionId));
+  }
+
+  /** Find all visible required questions that are currently unanswered or invalid. */
+  findAllInvalidQuestionIds(): string[] {
+    return this.visibleQuestions()
+      .filter((q) => {
+        if (!q.required) return false;
+        const control = this.form.get(q.id);
+        return !isAnswered(q, control?.value) || (control?.invalid ?? false);
+      })
+      .map((q) => q.id);
   }
 
   /** Index of the first visible question still missing a required answer, or -1. */
@@ -250,11 +335,12 @@ export class AiInterview implements OnInit {
     });
 
     const control = this.form.get(questionId);
-    control?.setValue(this.selectedChannels()[questionId]);
+    const updatedValues = this.selectedChannels()[questionId];
+    control?.setValue(updatedValues);
     control?.markAsTouched();
 
-    if (this.invalidQuestionId() === questionId) {
-      this.invalidQuestionId.set(null);
+    if (updatedValues && updatedValues.length > 0) {
+      this.invalidQuestionIds.update((prev) => prev.filter((id) => id !== questionId));
     }
   }
 
@@ -266,20 +352,23 @@ export class AiInterview implements OnInit {
   }
 
   onNext() {
-    const invalidIndex = this.findFirstInvalidQuestionIndex();
-    if (invalidIndex !== -1) {
-      this.invalidQuestionId.set(this.visibleQuestions()[invalidIndex].id);
+    const invalidIds = this.findAllInvalidQuestionIds();
+    if (invalidIds.length > 0) {
+      this.invalidQuestionIds.set(invalidIds);
       this.form.markAllAsTouched();
 
+      const firstInvalidIndex = this.visibleQuestions().findIndex((q) => q.id === invalidIds[0]);
       const stepper = this.stepper();
-      if (stepper) stepper.selectedIndex = invalidIndex;
-      this.builderState.aiInterviewStepIndex.set(invalidIndex);
-      this.scrollToStep(invalidIndex);
+      if (stepper && firstInvalidIndex !== -1) {
+        stepper.selectedIndex = firstInvalidIndex;
+        this.builderState.aiInterviewStepIndex.set(firstInvalidIndex);
+        this.scrollToStep(firstInvalidIndex);
+      }
       toast.error(this._localeService.translate('toast_required_questions'));
       return;
     }
 
-    this.invalidQuestionId.set(null);
+    this.invalidQuestionIds.set([]);
 
     if (!this.canSubmit() || this.isSubmitting()) {
       this.form.markAllAsTouched();

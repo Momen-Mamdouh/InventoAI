@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   computed,
+  effect,
   HostListener,
   inject,
   OnInit,
@@ -100,6 +101,47 @@ export class Brainstorm implements OnInit {
   isDragging = signal<boolean>(false);
   isFocused = signal<boolean>(false);
   readonly isSubmitting = signal(false);
+  readonly highlightErrorElement = signal<'desc' | 'logo' | 'initiate' | null>(null);
+
+  constructor() {
+    effect(() => {
+      const event = this.builderState.stepEnforcement();
+      if (event && event.stepId === 'brainstorm') {
+        this.handleEnforcement();
+      }
+    });
+  }
+
+  private handleEnforcement(): void {
+    if (!this.hasValidLogo()) {
+      this.highlightErrorElement.set('logo');
+      const logoEl = document.getElementById('logo-dropzone');
+      logoEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        const input = logoEl?.querySelector<HTMLInputElement>('input[type="file"]');
+        input?.focus();
+      }, 150);
+      setTimeout(() => this.highlightErrorElement.set(null), 2500);
+      return;
+    }
+
+    if (!this.isValidConcept()) {
+      this.highlightErrorElement.set('desc');
+      const descEl = document.getElementById('brainstorm-textarea');
+      descEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => descEl?.focus(), 150);
+      setTimeout(() => this.highlightErrorElement.set(null), 2500);
+      return;
+    }
+
+    if (!this.builderState.brainstormAnalyzed()) {
+      this.highlightErrorElement.set('initiate');
+      const btn = document.getElementById('initiate-btn');
+      btn?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      btn?.focus();
+      setTimeout(() => this.highlightErrorElement.set(null), 2500);
+    }
+  }
 
   readonly descriptionControl = new FormControl(this.builderState.brainstorm() || '', {
     nonNullable: true,

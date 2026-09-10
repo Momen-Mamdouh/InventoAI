@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { hlmUl } from '@spartan/helm/typography';
@@ -27,4 +27,9 @@ export interface StepsBarStep {
 export class StepsBar {
   protected readonly hlmUl = hlmUl;
   readonly steps = input.required<readonly StepsBarStep[]>();
+  readonly stepClick = output<{ step: StepsBarStep; event: MouseEvent }>();
+
+  protected onStepClick(step: StepsBarStep, event: MouseEvent): void {
+    this.stepClick.emit({ step, event });
+  }
 }

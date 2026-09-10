@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { provideIcons, NgIconComponent } from '@ng-icons/core';
@@ -67,6 +67,7 @@ export class Validation {
 
   readonly isSubmitting = signal(false);
   readonly currentStep = signal<WorkflowStep>('INPUT');
+  readonly highlightErrorElement = signal<'name' | 'domain' | 'btn' | null>(null);
 
   /** Once the user edits the domain themselves we stop deriving it from the name. */
   private readonly domainTouched = signal(false);
@@ -96,6 +97,40 @@ export class Validation {
 
   constructor() {
     this.seedFromInterview();
+    effect(() => {
+      const event = this.builderState.stepEnforcement();
+      if (event && event.stepId === 'validation') {
+        this.handleEnforcement();
+      }
+    });
+  }
+
+  private handleEnforcement(): void {
+    if (!this.businessName().trim() || !this.isFormatValid()) {
+      this.highlightErrorElement.set('name');
+      const el = document.getElementById('bizName');
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => el?.focus(), 150);
+      setTimeout(() => this.highlightErrorElement.set(null), 2500);
+      return;
+    }
+
+    if (!this.domain().trim()) {
+      this.highlightErrorElement.set('domain');
+      const el = document.getElementById('bizDomain');
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => el?.focus(), 150);
+      setTimeout(() => this.highlightErrorElement.set(null), 2500);
+      return;
+    }
+
+    if (!this.builderState.domainConfirmed()) {
+      this.highlightErrorElement.set('btn');
+      const btn = document.getElementById('validation-submit-btn');
+      btn?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => btn?.focus(), 150);
+      setTimeout(() => this.highlightErrorElement.set(null), 2500);
+    }
   }
 
   /**

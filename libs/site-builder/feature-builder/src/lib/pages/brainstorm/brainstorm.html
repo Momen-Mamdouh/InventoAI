@@ -34,6 +34,10 @@
               ? 'w-full max-w-3xl flex flex-col bg-muted border border-border rounded-md overflow-hidden shadow-2xl shadow-black/60'
               : 'bg-muted border border-border dark:border-foreground/10 rounded-md flex flex-col overflow-hidden focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-3 transition-all'
           "
+          [class.border-destructive]="highlightErrorElement() === 'desc'"
+          [class.ring-2]="highlightErrorElement() === 'desc'"
+          [class.ring-destructive]="highlightErrorElement() === 'desc'"
+          [class.animate-shake]="highlightErrorElement() === 'desc'"
         >
           <!-- Header -->
           <div
@@ -70,6 +74,7 @@
 
           <!-- Textarea -->
           <textarea
+            id="brainstorm-textarea"
             hlmTextarea
             dir="auto"
             placeholder="{{ 'brainstorm_placeholder' | translate }}"
@@ -125,11 +130,16 @@
 
       <!-- Logo Upload Zone -->
       <div
+        id="logo-dropzone"
         class="mt-4 p-4 border-2 border-dashed border-border dark:border-foreground/10 rounded-lg flex flex-col items-center justify-center text-center cursor-pointer transition-colors relative"
         [class.bg-muted]="!isDragging()"
         [class.bg-primary]="isDragging()"
         [class.border-primary]="isDragging()"
         [class.text-primary-foreground]="isDragging()"
+        [class.border-destructive]="highlightErrorElement() === 'logo'"
+        [class.ring-2]="highlightErrorElement() === 'logo'"
+        [class.ring-destructive]="highlightErrorElement() === 'logo'"
+        [class.animate-shake]="highlightErrorElement() === 'logo'"
         tabindex="0"
         (keydown.enter)="fileInput.click()"
         (click)="fileInput.click()"
@@ -194,10 +204,14 @@
       </div>
 
       <button
+        id="initiate-btn"
         hlmBtn
         (click)="onNext()"
         [disabled]="!canSubmit()"
-        class="flex items-center gap-2 disabled:hover:bg-primary md:px-9 py-7 md:w-fit disabled:cursor-not-allowed disabled:pointer-events-auto"
+        class="flex items-center gap-2 disabled:hover:bg-primary md:px-9 py-7 md:w-fit disabled:cursor-not-allowed disabled:pointer-events-auto transition-all"
+        [class.ring-4]="highlightErrorElement() === 'initiate'"
+        [class.ring-destructive]="highlightErrorElement() === 'initiate'"
+        [class.animate-shake]="highlightErrorElement() === 'initiate'"
       >
         @if (isSubmitting()) {
           <hlm-spinner class="text-lg" />
