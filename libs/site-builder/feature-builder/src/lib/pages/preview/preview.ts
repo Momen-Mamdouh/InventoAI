@@ -40,8 +40,8 @@ import {
 import { ThemeSuggestion } from '@invento/shared-util-preview-types';
 import { ApiConfig } from '@invento/site-builder-data-access-preview';
 import { PageHeader } from '@invento/shared-ui-page-header';
+import { ActionButton } from '@invento/shared-ui-action-button';
 import { HlmDialogImports } from '@spartan/helm/dialog';
-import { HlmSpinner } from '@spartan/helm/spinner';
 import {
   BuilderState,
   PublishApi,
@@ -90,9 +90,9 @@ export interface BuildSummaryItem {
   selector: 'app-preview',
   imports: [
     PageHeader,
+    ActionButton,
     HlmButtonImports,
     HlmDialogImports,
-    HlmSpinner,
     NgIcon,
     NgStyle,
     ContainerWidth,

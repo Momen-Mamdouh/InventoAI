@@ -634,24 +634,20 @@
 
       <!-- Primary Action CTA -->
       @if (currentStep() === 'INPUT') {
-        <button
+        <app-action-button
           id="validation-submit-btn"
-          hlmBtn
-          class="w-full py-6 font-mono uppercase tracking-wider text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed transition-all"
-          [class.ring-4]="highlightErrorElement() === 'btn'"
-          [class.ring-destructive]="highlightErrorElement() === 'btn'"
-          [class.animate-shake]="highlightErrorElement() === 'btn'"
+          [text]="'btn_preview_site' | translate"
+          icon="lucideArrowRight"
+          iconSize="18"
           [disabled]="!canSubmit()"
-          (click)="finish()"
-        >
-          @if (isSubmitting()) {
-            <hlm-spinner class="text-base" />
-            <span>{{ 'loading_analyzing' | translate }}</span>
-          } @else {
-            <span>{{ 'btn_preview_site' | translate }}</span>
-            <ng-icon name="lucideArrowRight" size="14" />
-          }
-        </button>
+          [loading]="isSubmitting()"
+          [loadingText]="'loading_analyzing' | translate"
+          (clicked)="finish()"
+          [buttonClass]="
+            'w-full uppercase font-mono tracking-wider text-xs shadow-md ' +
+            (highlightErrorElement() === 'btn' ? 'ring-4 ring-destructive animate-shake' : '')
+          "
+        />
       }
     </div>
   </div>

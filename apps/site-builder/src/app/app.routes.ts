@@ -4,9 +4,8 @@ import { Routes } from '@angular/router';
 import { MainLayout, BuilderLayout, AuthLayout } from '@invento/site-builder-feature-shell';
 
 // Guards
-// add this to the direct below importing ->  authGuard,
-import { guestGuard } from '@invento/shared-data-access-auth';
-// import { hasNoStoreGuard } from './guards/has-no-store.guard';
+import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
+import { hasNoStoreGuard } from './guards/has-no-store.guard';
 
 export const routes: Routes = [
   {
@@ -23,7 +22,7 @@ export const routes: Routes = [
       {
         path: 'build',
         component: BuilderLayout,
-        // canActivate: [authGuard, hasNoStoreGuard],
+        canActivate: [authGuard, hasNoStoreGuard],
         children: [
           {
             path: '',

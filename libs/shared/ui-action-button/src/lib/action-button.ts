@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
+  HostListener,
   inject,
   input,
   output,
@@ -35,6 +37,7 @@ import { LocaleService } from '@invento/shared-util-i18n';
 })
 export class ActionButton {
   private readonly localeService = inject(LocaleService, { optional: true });
+  private readonly elementRef = inject(ElementRef);
 
   readonly text = input<string>('Continue');
   readonly icon = input<string>('lucideArrowRight');
@@ -70,5 +73,12 @@ export class ActionButton {
       return;
     }
     this.clicked.emit(event);
+  }
+
+  @HostListener('click', ['$event'])
+  onHostClick(event: MouseEvent): void {
+    if (event.target === this.elementRef.nativeElement) {
+      this.handleClick(event);
+    }
   }
 }

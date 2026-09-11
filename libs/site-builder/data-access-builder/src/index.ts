@@ -10,3 +10,6 @@ export * from './lib/questions-api';
 export * from './lib/themes-api';
 export * from './lib/preview-data-client';
 export * from './lib/min-duration';
+export * from './lib/builder-resume.guard';
+export * from './lib/store-api';
+export * from './lib/draft-api';

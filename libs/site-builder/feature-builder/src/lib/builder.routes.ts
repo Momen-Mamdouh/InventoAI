@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { stepGuard } from '@invento/site-builder-data-access-builder';
+import { stepGuard, builderResumeGuard } from '@invento/site-builder-data-access-builder';
 
 /**
  * The wizard's four steps. Mounted under `/build` (with `authGuard` applied at the call
@@ -8,7 +8,12 @@ import { stepGuard } from '@invento/site-builder-data-access-builder';
  * step cannot be reached before every step before it is complete.
  */
 export const builderRoutes: Routes = [
-  { path: '', redirectTo: 'brainstorm', pathMatch: 'full' },
+  {
+    path: '',
+    pathMatch: 'full',
+    canActivate: [builderResumeGuard],
+    children: [],
+  },
   {
     path: 'brainstorm',
     loadComponent: () => import('./pages/brainstorm/brainstorm').then((m) => m.Brainstorm),
@@ -30,5 +35,5 @@ export const builderRoutes: Routes = [
     loadComponent: () => import('./pages/preview/preview').then((m) => m.Preview),
     canActivate: [stepGuard('preview')],
   },
-  { path: '**', redirectTo: 'brainstorm' },
+  { path: '**', redirectTo: '' },
 ];

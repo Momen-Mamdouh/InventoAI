@@ -44,6 +44,7 @@ import { HlmAlertImports } from '@spartan/helm/alert';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { PageHeader } from '@invento/shared-ui-page-header';
+import { ActionButton } from '@invento/shared-ui-action-button';
 import {
   BuilderState,
   DomainApi,
@@ -95,6 +96,7 @@ type WorkflowStep = 'INPUT' | 'AI_ANALYSIS';
     HlmH3,
     HlmMuted,
     PageHeader,
+    ActionButton,
     TranslatePipe,
   ],
   providers: [
@@ -379,6 +381,20 @@ export class Validation {
 
   finish(): void {
     if (this.isSubmitting()) return;
+
+    const nameUnchanged = this.businessName().trim() === this.builderState.businessName().trim();
+    const domainUnchanged = this.domain().trim() === this.builderState.domain().trim();
+    if (
+      this.builderState.domainConfirmed() &&
+      this.builderState.themes().length > 0 &&
+      nameUnchanged &&
+      domainUnchanged
+    ) {
+      toast.info(this._localeService.translate('validation_resumed_notice'));
+      this.router.navigate(['/build/preview']);
+      return;
+    }
+
     this.isSubmitting.set(true);
     this.builderState.domainConfirmed.set(false);
     this.builderState.isNavigating.set(true);

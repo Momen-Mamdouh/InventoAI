@@ -425,6 +425,14 @@ export class AiInterview implements OnInit {
     }
 
     const raw = this.form.value as Record<string, string | string[]>;
+
+    const hasChanged = this.builderState.haveAiAnswersChanged(raw);
+    if (this.builderState.aiInterviewSubmitted() && !hasChanged) {
+      toast.info(this._localeService.translate('interview_resumed_notice'));
+      this.router.navigate(['/build/validation']);
+      return;
+    }
+
     this.builderState.aiAnswers.update((current) => ({ ...current, ...raw }));
 
     if (raw['q1']) {
