@@ -1,39 +1,38 @@
-// import { inject } from '@angular/core';
-//  , Router
-import { CanActivateFn } from '@angular/router';
-// import { BuilderState } from './builder-state';
-// BUILDER_STEPS,
-import {  BuilderStepId } from './builder-steps';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { Observable, map } from 'rxjs';
+import { BuilderState } from './builder-state';
+import { BUILDER_STEPS, BuilderStepId } from './builder-steps';
 
 /**
  * Guards a wizard step by requiring every step before it to be complete,
  * redirecting to the first one that isn't.
- *
- * Replaces the four hand-written guards that each re-encoded this ordering.
+ * Ensures backend hydration before evaluating completion so that refreshed
+ * or returning owners are not blocked from their legitimate progress.
  */
 export const stepGuard =
-  // (step: BuilderStepId): CanActivateFn =>
-  // () => {
-  //   const builderState = inject(BuilderState);
-  //   const router = inject(Router);
+  (step: BuilderStepId): CanActivateFn =>
+  (): Observable<boolean | UrlTree> => {
+    const builderState = inject(BuilderState);
+    const router = inject(Router);
 
-  //   const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step);
-  //   const firstIncomplete = BUILDER_STEPS.slice(0, stepIndex).find(
-  //     (s) => !builderState.isStepComplete(s.id),
-  //   );
-  //   if (firstIncomplete) {
-  //     builderState.triggerStepEnforcement(firstIncomplete.id);
-  //     return router.parseUrl(firstIncomplete.path);
-  //   }
+    return builderState.hydrateFromBackend().pipe(
+      map((outcome) => {
+        if (outcome.hasLiveStore) {
+          return router.parseUrl('/home');
+        }
 
-  //   return true;
+        const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step);
+        const firstIncomplete = BUILDER_STEPS.slice(0, stepIndex).find(
+          (s) => !builderState.isStepComplete(s.id),
+        );
 
-  // };
+        if (firstIncomplete) {
+          builderState.triggerStepEnforcement(firstIncomplete.id);
+          return router.parseUrl(firstIncomplete.path);
+        }
 
-  // This code below to allow direct access easily to make any dev check for build steps page without guards.
-  (_step: BuilderStepId): CanActivateFn =>
-  () => {
-    console.log(_step)
-    return true;
-
-  }
+        return true;
+      }),
+    );
+  };

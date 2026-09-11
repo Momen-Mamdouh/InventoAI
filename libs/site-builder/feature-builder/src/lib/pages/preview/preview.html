@@ -7,15 +7,17 @@
       description="preview_desc"
     />
 
-    <button
-      hlmBtn
-      class="main-btn uppercase rounded-(--btn-radius) w-full sm:w-auto justify-center shrink-0"
+    <app-action-button
       id="edit-profile"
-      (click)="deployDialogState.set('open')"
-    >
-      {{ 'preview_deploy' | translate }}
-      <ng-icon [name]="deployChevron()" />
-    </button>
+      [text]="'preview_deploy' | translate"
+      icon="lucideArrowRight"
+      iconSize="18"
+      [disabled]="isDeploying() || !selectedTheme() || themesUnavailable()"
+      [loading]="isDeploying()"
+      [loadingText]="'toast_deploying_site' | translate"
+      (clicked)="deployDialogState.set('open')"
+      buttonClass="uppercase w-full sm:w-auto"
+    />
   </div>
 
   <div class="preview-body">
@@ -569,19 +571,17 @@
         {{ 'preview_choose_another' | translate }}
       </button>
 
-      <button
-        hlmBtn
+      <app-action-button
+        id="confirm-deploy-btn"
+        [text]="'preview_deploy' | translate"
+        icon="lucideArrowRight"
+        iconSize="16"
         [disabled]="isDeploying()"
-        (click)="confirmDeployment()"
-        class="flex items-center gap-2 cursor-pointer"
-      >
-        @if (isDeploying()) {
-          <hlm-spinner class="text-sm" />
-          <span>{{ 'toast_deploying_site' | translate }}</span>
-        } @else {
-          <span>{{ 'preview_deploy' | translate }}</span>
-        }
-      </button>
+        [loading]="isDeploying()"
+        [loadingText]="'toast_deploying_site' | translate"
+        (clicked)="confirmDeployment()"
+        buttonClass="uppercase"
+      />
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>

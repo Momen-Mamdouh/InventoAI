@@ -297,6 +297,22 @@ export class Brainstorm implements OnInit {
     if (savedLogo) {
       this.logoPreview.set(savedLogo);
     }
+
+    if (!this.builderState.isHydrated()) {
+      this.builderState
+        .hydrateFromBackend()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          const draftText = this.builderState.brainstorm();
+          if (draftText && !this.descriptionControl.dirty) {
+            this.descriptionControl.setValue(draftText);
+          }
+          const draftLogo = this.builderState.logoUrl();
+          if (draftLogo && !this.logoPreview()) {
+            this.logoPreview.set(draftLogo);
+          }
+        });
+    }
   }
 
   @HostListener('document:keydown.escape')
@@ -418,6 +434,14 @@ export class Brainstorm implements OnInit {
     }
 
     const text = this.descriptionControl.value;
+
+    const hasChanged = this.builderState.hasBrainstormChanged(text, Boolean(this.logoFile()));
+    if (this.builderState.brainstormAnalyzed() && !hasChanged) {
+      toast.info(this.localeService.translate('brainstorm_resumed_notice'));
+      this.router.navigate(['/build/ai-interview']);
+      return;
+    }
+
     this.builderState.brainstorm.set(text);
 
     this.isSubmitting.set(true);
