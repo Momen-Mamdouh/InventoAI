@@ -5,6 +5,7 @@ import { MainLayout, BuilderLayout, AuthLayout } from '@invento/site-builder-fea
 
 // Guards
 import { authGuard, guestGuard } from '@invento/shared-data-access-auth';
+import { hasNoStoreGuard } from './guards/has-no-store.guard';
 
 export const routes: Routes = [
   {
@@ -21,7 +22,7 @@ export const routes: Routes = [
       {
         path: 'build',
         component: BuilderLayout,
-        canActivate: [authGuard],
+        canActivate: [authGuard, hasNoStoreGuard],
         children: [
           {
             path: '',
@@ -31,6 +32,10 @@ export const routes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: 'auth/sso',
+    loadChildren: () => import('@invento/shared-feature-auth').then((m) => m.ssoRoutes),
   },
   {
     path: 'auth',

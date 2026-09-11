@@ -1,34 +1,77 @@
 <nav
-  class="top-4 md:top-6 left-1/2 z-50 fixed bg-background/60 shadow-2xl backdrop-blur-xl border border-border/40 rounded-full w-[95%] max-w-6xl transition-all -translate-x-1/2 duration-300"
+  class="top-4 md:top-6 left-1/2 z-50 fixed bg-background/70 shadow-2xl backdrop-blur-xl border border-border/40 rounded-full w-[95%] max-w-6xl transition-all -translate-x-1/2 duration-300"
 >
   <div class="flex justify-between items-center px-4 sm:px-6 lg:px-8 w-full h-16">
+    <!-- Brand Logo -->
     <a
       routerLink="/"
       hlmBtn
       variant="ghost"
-      class="group flex items-center gap-2 p-2 h-auto"
+      class="group flex items-center gap-2 p-1.5 h-auto rounded-full hover:bg-transparent"
       aria-label="INVENTO Home Page"
     >
-      <img src="light-logo.png" class="dark:hidden block w-auto h-13" alt="INVENTO Logo" />
-      <img src="logo.png" class="hidden dark:block w-auto h-13" alt="INVENTO Logo" />
+      <img src="light-logo.png" class="dark:hidden block w-auto h-11 sm:h-12" alt="INVENTO Logo" />
+      <img src="logo.png" class="hidden dark:block w-auto h-11 sm:h-12" alt="INVENTO Logo" />
     </a>
 
-    <div class="flex items-center gap-4">
+    <!-- Right-side Controls -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- System Controls: Language & Theme -->
       <app-lang-switcher />
       <app-theme-switcher />
 
+      <!-- Vertical Glass Divider -->
+      <div class="h-4 w-px bg-border/60 mx-0.5 sm:mx-1" aria-hidden="true"></div>
+
+      <!-- User Actions -->
       @if (isAuthenticated()) {
-        <a [href]="dashboardUrl" hlmBtn variant="outline" class="gap-2">
-          <ng-icon name="lucideLayoutDashboard" class="text-sm"></ng-icon>
-          {{ 'nav_dashboard' | translate }}
+        <!-- Owner Identity Pill (Desktop) -->
+        @if (ownerName()) {
+          <div
+            class="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted/40 border border-border/40 text-xs font-medium text-foreground/80 select-none"
+          >
+            <ng-icon name="lucideUser" size="13" class="text-primary" />
+            <span class="truncate max-w-[120px]">{{ ownerName() }}</span>
+          </div>
+        }
+
+        <!-- Dashboard Link -->
+        <a
+          [href]="dashboardUrl()"
+          hlmBtn
+          variant="outline"
+          class="rounded-full gap-2 px-3.5 sm:px-4 h-9 text-xs sm:text-sm font-medium border-border/80 hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer"
+        >
+          <ng-icon name="lucideLayoutDashboard" size="15" />
+          <span>{{ 'nav_dashboard' | translate }}</span>
         </a>
-        <button hlmBtn variant="ghost" class="gap-2" (click)="signOut()">
-          <ng-icon name="lucideLogOut" class="text-sm"></ng-icon>
-          {{ 'nav_sign_out' | translate }}
-        </button>
+
+        <!-- Sign Out Button -->
+        <app-sign-out-button />
       } @else {
-        <a routerLink="/auth/login" hlmBtn variant="ghost">{{ 'nav_login' | translate }}</a>
-        <a routerLink="/auth/register" hlmBtn>{{ 'nav_sign_up' | translate }}</a>
+        <!-- Login Link -->
+        <a
+          routerLink="/auth/login"
+          hlmBtn
+          variant="ghost"
+          class="rounded-full px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium hover:bg-accent/80 transition-colors cursor-pointer"
+        >
+          {{ 'nav_login' | translate }}
+        </a>
+
+        <!-- Sign Up CTA -->
+        <a
+          routerLink="/auth/register"
+          hlmBtn
+          class="rounded-full px-3.5 sm:px-5 h-9 text-xs sm:text-sm font-medium bg-primary text-primary-foreground shadow-xs hover:shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all gap-1.5 flex items-center cursor-pointer"
+        >
+          <span>{{ 'nav_sign_up' | translate }}</span>
+          @if (isRtl()) {
+            <ng-icon name="lucideArrowLeft" size="14" />
+          } @else {
+            <ng-icon name="lucideArrowRight" size="14" />
+          }
+        </a>
       }
     </div>
   </div>

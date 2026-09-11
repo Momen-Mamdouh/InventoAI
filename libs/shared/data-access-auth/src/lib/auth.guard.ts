@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AUTH_CONFIG, resolveAuthBasePath } from './auth-config';
+import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
 
 /**
@@ -13,8 +14,14 @@ import { TokenService } from './token.service';
  */
 export const authGuard: CanActivateFn = (route, state) => {
   const tokenService = inject(TokenService);
+  const authService = inject(AuthService);
   const router = inject(Router);
   const config = inject(AUTH_CONFIG);
+
+  if (route.queryParamMap.has('forceLogout')) {
+    authService.clearLocalSession();
+    return router.createUrlTree([`${resolveAuthBasePath(config)}/login`]);
+  }
 
   if (tokenService.hasToken()) {
     return true;

@@ -37,12 +37,18 @@ import ar from '../assets/i18n/ar.json';
 function buildAuthConfig(builderState: BuilderState, platformId: object): AuthConfig {
   return {
     apiBaseUrl: resolveApiBaseUrl(environment, platformId),
-    postLoginRoute: '/build/brainstorm',
+    postLoginRoute: '/build',
     tokenStorageKey: 'invento',
     googleClientId: environment.googleClientId,
     verifyEmailRedirect: '/auth/login',
     authBasePath: '/auth',
     authRole: 'owner',
+    resolvePostAuthRoute: (authService, fallback) => {
+      if (authService.getStoreSlug()) {
+        return '/home';
+      }
+      return fallback;
+    },
     onAuthEvent: (event) => {
       builderState.reset();
       if (event === 'login') builderState.loadQuestions();

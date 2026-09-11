@@ -1,50 +1,60 @@
-import { ChangeDetectionStrategy, Component, inject, signal, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HlmButton } from '@spartan/helm/button';
 import { LangSwitcher } from '@invento/shared-ui-lang-switcher';
 import { ThemeSwitcher } from '@invento/shared-ui-theme-switcher';
+import { SignOutButton } from '@invento/shared-ui-sign-out-button';
 import { AuthService } from '@invento/shared-data-access-auth';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideSun, lucideMoon, lucideLayoutDashboard, lucideLogOut } from '@ng-icons/lucide';
+import {
+  lucideLayoutDashboard,
+  lucideUser,
+  lucideArrowRight,
+  lucideArrowLeft,
+} from '@ng-icons/lucide';
 import { ApiConfig } from '@invento/site-builder-data-access-preview';
-import { TranslatePipe } from '@invento/shared-util-i18n';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, HlmButton, LangSwitcher, ThemeSwitcher, NgIcon, TranslatePipe],
-  providers: [provideIcons({ lucideSun, lucideMoon, lucideLayoutDashboard, lucideLogOut })],
+  imports: [
+    RouterLink,
+    HlmButton,
+    LangSwitcher,
+    ThemeSwitcher,
+    SignOutButton,
+    NgIcon,
+    TranslatePipe,
+  ],
+  providers: [
+    provideIcons({
+      lucideLayoutDashboard,
+      lucideUser,
+      lucideArrowRight,
+      lucideArrowLeft,
+    }),
+  ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Navbar {
-  private readonly platformId = inject(PLATFORM_ID);
   private readonly authService = inject(AuthService);
   private readonly apiConfig = inject(ApiConfig);
-  private readonly router = inject(Router);
+  private readonly localeService = inject(LocaleService);
 
-  readonly isAuthenticated = signal(this.authService.isAuthenticated());
-  readonly isDark = signal(false);
-  readonly dashboardUrl = this.apiConfig.dashboardUrl;
-
-  constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.isDark.set(document.documentElement.classList.contains('dark'));
-    }
-  }
-
-  toggleTheme(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const html = document.documentElement;
-      html.classList.toggle('dark');
-      this.isDark.set(html.classList.contains('dark'));
-    }
-  }
-
-  signOut(): void {
-    this.authService.logout();
-    this.isAuthenticated.set(false);
-    this.router.navigate(['/auth/login']);
-  }
+  readonly isRtl = this.localeService.isRtl;
+  readonly currentUser = this.authService.currentUser;
+  readonly ownerName = computed(() => this.currentUser()?.firstName || '');
+  readonly isAuthenticated = computed(
+    () => !!this.authService.currentUser() || this.authService.isAuthenticated(),
+  );
+  readonly dashboardUrl = computed(() =>
+    this.authService.getSsoUrl(this.apiConfig.dashboardUrl, '/home'),
+  );
 }

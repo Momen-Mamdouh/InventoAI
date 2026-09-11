@@ -1,4 +1,5 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
@@ -11,6 +12,15 @@ import {
   RegisterResponse,
   User,
 } from './auth.interface';
+
+interface AuthSyncMessage {
+  type: 'LOGIN' | 'LOGOUT';
+  userId?: string;
+  email?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  timestamp: number;
+}
 
 /**
  * Backend endpoint families, keyed by `AUTH_CONFIG.authRole`. invento and site-builder ("owner"
@@ -113,6 +123,10 @@ export class AuthService {
   private readonly tokenService = inject(TokenService);
   private readonly router = inject(Router);
   private readonly config = inject(AUTH_CONFIG);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private syncChannel: BroadcastChannel | null = null;
 
   private readonly endpoints = ENDPOINTS[this.config.authRole];
   private readonly excludedRoles: readonly string[] =
@@ -127,8 +141,97 @@ export class AuthService {
    */
   readonly isLoggedIn = computed(() => this.currentUser() !== null && this.tokenService.hasToken());
 
+  constructor() {
+    this.initCrossTabSync();
+  }
+
   private get userStorageKey(): string {
     return `${this.config.tokenStorageKey}_current_user`;
+  }
+
+  private initCrossTabSync(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channelName = `${this.config.tokenStorageKey}_auth_sync`;
+      this.syncChannel = new BroadcastChannel(channelName);
+      this.syncChannel.onmessage = (event: MessageEvent<AuthSyncMessage>) => {
+        this.handleSyncMessage(event.data);
+      };
+
+      this.destroyRef.onDestroy(() => {
+        this.syncChannel?.close();
+        this.syncChannel = null;
+      });
+    }
+
+    // Storage event fallback for windows on same origin
+    const onStorage = (event: StorageEvent): void => {
+      if (event.key === this.userStorageKey) {
+        if (!event.newValue && this.currentUser()) {
+          this.clearLocalSession();
+          this.router.navigate([`${resolveAuthBasePath(this.config)}/login`]);
+        } else if (event.newValue) {
+          try {
+            const parsed = JSON.parse(event.newValue) as Record<string, unknown>;
+            const newUserId = (parsed['id'] || parsed['userId'] || parsed['_id'] || '') as string;
+            const current = this.currentUser();
+            if (current && current.id && newUserId && current.id !== newUserId) {
+              this.clearLocalSession();
+              this.router.navigate([`${resolveAuthBasePath(this.config)}/login`]);
+            }
+          } catch {
+            // ignore JSON parse error
+          }
+        }
+      }
+    };
+
+    window.addEventListener('storage', onStorage);
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('storage', onStorage);
+    });
+  }
+
+  private handleSyncMessage(msg: AuthSyncMessage | null): void {
+    if (!msg) {
+      return;
+    }
+
+    if (msg.type === 'LOGOUT') {
+      if (this.currentUser()) {
+        this.clearLocalSession();
+        this.router.navigate([`${resolveAuthBasePath(this.config)}/login`]);
+      }
+      return;
+    }
+
+    if (msg.type === 'LOGIN') {
+      const current = this.currentUser();
+      // If this tab has a DIFFERENT user currently logged in, force logout immediately!
+      if (current && current.id && msg.userId && current.id !== msg.userId) {
+        this.clearLocalSession();
+        this.router.navigate([`${resolveAuthBasePath(this.config)}/login`]);
+        return;
+      }
+
+      // If this tab was unauthenticated and received credentials:
+      if (!current && msg.accessToken) {
+        this.tokenService.setTokens(msg.accessToken, msg.refreshToken ?? '');
+        this.currentUser.set(this.loadStoredUser());
+      }
+    }
+  }
+
+  clearLocalSession(): void {
+    this.tokenService.clearTokens();
+    this.currentUser.set(null);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem(this.userStorageKey);
+    }
+    this.config.onAuthEvent?.('logout');
   }
 
   private loadStoredUser(): User | null {
@@ -161,11 +264,25 @@ export class AuthService {
       return null;
     }
 
+    const tokenUserId = (payload['id'] ||
+      payload['userId'] ||
+      payload['_id'] ||
+      payload['sub'] ||
+      '') as string;
+
     try {
       const stored = localStorage.getItem(this.userStorageKey);
       if (stored) {
         const parsed = JSON.parse(stored) as Record<string, unknown>;
-        if (parsed && !this.excludedRoles.includes((parsed['role'] as string) || '')) {
+        const storedUserId = (parsed['id'] ||
+          parsed['userId'] ||
+          parsed['_id'] ||
+          '') as string;
+
+        // If stored user belongs to a different account than the token, it is stale: purge it!
+        if (tokenUserId && storedUserId && tokenUserId !== storedUserId) {
+          localStorage.removeItem(this.userStorageKey);
+        } else if (!this.excludedRoles.includes((parsed['role'] as string) || '')) {
           return this.normalizeUser(parsed, payload);
         }
       }
@@ -173,15 +290,20 @@ export class AuthService {
       // ignore JSON parse error
     }
 
-    return this.normalizeUser(payload, payload);
+    const fallbackUser = this.normalizeUser(payload, payload);
+    if (fallbackUser && typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.userStorageKey, JSON.stringify(fallbackUser));
+    }
+    return fallbackUser;
   }
 
-  setCurrentUser(user: User | Record<string, unknown> | null, accessToken?: string): void {
+  setCurrentUser(
+    user: User | Record<string, unknown> | null,
+    accessToken?: string,
+    broadcast = true,
+  ): void {
     if (!user) {
-      this.currentUser.set(null);
-      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-        localStorage.removeItem(this.userStorageKey);
-      }
+      this.clearLocalSession();
       return;
     }
 
@@ -196,6 +318,17 @@ export class AuthService {
       } else {
         localStorage.removeItem(this.userStorageKey);
       }
+    }
+
+    if (broadcast && normalized && this.syncChannel) {
+      this.syncChannel.postMessage({
+        type: 'LOGIN',
+        userId: normalized.id,
+        email: normalized.email,
+        accessToken: token,
+        refreshToken: this.tokenService.getRefreshToken(),
+        timestamp: Date.now(),
+      });
     }
   }
 
@@ -418,10 +551,58 @@ export class AuthService {
     return null;
   }
 
-  logout(): void {
-    this.tokenService.clearTokens();
-    this.setCurrentUser(null);
-    this.config.onAuthEvent?.('logout');
+  establishSessionFromTokens(accessToken: string, refreshToken?: string): User | null {
+    this.tokenService.setTokens(accessToken, refreshToken ?? '');
+    const payload = decodeJwtPayload(accessToken);
+    const user = this.normalizeUser(payload, payload);
+    this.currentUser.set(user);
+    if (user && typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.userStorageKey, JSON.stringify(user));
+    }
+    if (user && this.syncChannel) {
+      this.syncChannel.postMessage({
+        type: 'LOGIN',
+        userId: user.id,
+        email: user.email,
+        accessToken,
+        refreshToken,
+        timestamp: Date.now(),
+      });
+    }
+    this.config.onAuthEvent?.('login');
+    return user;
+  }
+
+  getSsoUrl(targetUrl: string, returnUrl = '/home'): string {
+    const accessToken = this.tokenService.getAccessToken();
+    const refreshToken = this.tokenService.getRefreshToken();
+    if (!accessToken) {
+      return targetUrl;
+    }
+    try {
+      const url = new URL(targetUrl);
+      url.pathname = '/auth/sso';
+      url.searchParams.set('token', accessToken);
+      if (refreshToken) {
+        url.searchParams.set('refreshToken', refreshToken);
+      }
+      if (returnUrl) {
+        url.searchParams.set('returnUrl', returnUrl);
+      }
+      return url.toString();
+    } catch {
+      return targetUrl;
+    }
+  }
+
+  logout(broadcast = true): void {
+    if (broadcast && this.syncChannel) {
+      this.syncChannel.postMessage({
+        type: 'LOGOUT',
+        timestamp: Date.now(),
+      });
+    }
+    this.clearLocalSession();
     this.router.navigate([`${resolveAuthBasePath(this.config)}/login`]);
   }
 

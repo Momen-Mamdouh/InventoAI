@@ -33,3 +33,10 @@ export const verifyEmailRoutes: Routes = [
     loadComponent: () => import('./verify-email/verify-email').then((m) => m.VerifyEmail),
   },
 ];
+
+export const ssoRoutes: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('./sso/sso').then((m) => m.Sso),
+  },
+];

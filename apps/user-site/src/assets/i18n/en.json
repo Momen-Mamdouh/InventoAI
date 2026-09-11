@@ -75,6 +75,7 @@
     "description": "There is no active route at this destination in the ecosystem registry.",
     "action": "Reboot Interface"
   },
+  "auth_sso_authenticating": "Authenticating session...",
   "auth_login_title": "Welcome back",
   "auth_login_google": "Continue with Google",
   "auth_login_or": "or continue with",

@@ -1,12 +1,24 @@
 @keyframes glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 8px 2px var(--color-primary);
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px 1px color-mix(in srgb, var(--color-primary, var(--primary)) 40%, transparent),
+      0 0 16px 3px color-mix(in srgb, var(--color-primary, var(--primary)) 15%, transparent);
   }
   50% {
-    box-shadow: 0 0 18px 5px var(--color-primary);
+    box-shadow:
+      0 0 14px 2px color-mix(in srgb, var(--color-primary, var(--primary)) 55%, transparent),
+      0 0 24px 5px color-mix(in srgb, var(--color-primary, var(--primary)) 25%, transparent);
   }
 }
 
 .glow-pulse {
-  animation: glow-pulse 2s ease-in-out infinite;
+  animation: glow-pulse 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-pulse {
+    animation: none;
+    box-shadow: 0 0 10px 2px color-mix(in srgb, var(--color-primary, var(--primary)) 45%, transparent);
+  }
 }

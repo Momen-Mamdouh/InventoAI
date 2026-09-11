@@ -18,6 +18,7 @@
         orientation="vertical"
         [linear]="true"
         indicatorMode="number"
+        [animationDuration]="200"
         [selectedIndex]="currentStepIndex()"
         (selectionChange)="onSelectionChange($event)"
         #stepper
@@ -27,8 +28,16 @@
             [label]="question.label | translate"
             [stepControl]="form.get(question.id)!"
             [completed]="isQuestionCompleted(question.id)"
+            [hasError]="isQuestionInvalid(question.id)"
           >
             <ng-template spartanStepContent>
+              @if (question.required && !isQuestionAnswered(question.id)) {
+                <div class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 mb-2.5 font-medium">
+                  <ng-icon name="lucideInfo" size="13" />
+                  <span>{{ 'interview_select_prompt' | translate }}</span>
+                </div>
+              }
+
               @if (question.type === 'single') {
                 <div
                   [class]="
@@ -46,14 +55,40 @@
                         [formControlName]="question.id"
                         [value]="option"
                         class="sr-only peer w-fit"
+                        (click)="onSingleSelect(question.id, option)"
                       />
                       <div
-                        class="flex items-center hover:bg-primary peer-checked:bg-primary px-2.5 md:px-5 py-2 md:py-4 border-2 border-primary/25 rounded-xl h-full peer-checked:text-white transition-all duration-200"
-                        [class.border-destructive]="isQuestionInvalid(question.id)"
-                        [class.ring-2]="isQuestionInvalid(question.id)"
-                        [class.ring-destructive]="isQuestionInvalid(question.id)"
+                        class="group relative flex items-center justify-between px-3.5 md:px-5 py-3 md:py-4 border-2 rounded-xl h-full transition-all duration-200"
+                        [class]="
+                          isQuestionInvalid(question.id)
+                            ? 'border-destructive ring-2 ring-destructive bg-destructive/5 animate-shake'
+                            : form.get(question.id)?.value === option
+                              ? 'border-primary bg-primary/10 dark:bg-primary/20 text-foreground ring-1 ring-primary/30 shadow-sm'
+                              : 'border-border/60 hover:border-primary/50 hover:bg-muted/40 bg-card/60'
+                        "
                       >
-                        <p hlmSmall>{{ option | translate }}</p>
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all shrink-0"
+                            [class]="
+                              form.get(question.id)?.value === option
+                                ? 'border-primary bg-primary text-primary-foreground'
+                                : 'border-muted-foreground/50 group-hover:border-primary/60'
+                            "
+                          >
+                            @if (form.get(question.id)?.value === option) {
+                              <span class="w-2 h-2 rounded-full bg-white dark:bg-black"></span>
+                            }
+                          </span>
+                          <p hlmSmall class="font-medium text-foreground">{{ option | translate }}</p>
+                        </div>
+
+                        @if (isAiSuggested(question.id, option)) {
+                          <span class="inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/25">
+                            <ng-icon name="lucideSparkles" size="11" />
+                            <span>{{ 'ai_suggested' | translate }}</span>
+                          </span>
+                        }
                       </div>
                     </label>
                   }
@@ -63,10 +98,12 @@
               @if (question.type === 'text') {
                 <label hlmLabel class="flex flex-col flex-1 w-full">
                   <textarea
-                    class="flex-1 dark:border-primary/25 resize-none border-2 transition-all duration-200"
-                    [class.border-destructive]="isQuestionInvalid(question.id)"
-                    [class.ring-2]="isQuestionInvalid(question.id)"
-                    [class.ring-destructive]="isQuestionInvalid(question.id)"
+                    class="flex-1 dark:border-primary/25 resize-none border-2 transition-all duration-200 p-3 rounded-xl"
+                    [class]="
+                      isQuestionInvalid(question.id)
+                        ? 'border-destructive ring-2 ring-destructive bg-destructive/5 animate-shake'
+                        : 'border-border/60 hover:border-primary/40 focus:border-primary'
+                    "
                     hlmTextarea
                     placeholder="{{ 'placeholder_answer' | translate }}"
                     [name]="question.id"
@@ -90,16 +127,41 @@
                         hlmInput
                         type="checkbox"
                         class="sr-only peer w-fit"
-                        [checked]="selectedChannels()[question.id]?.includes(option) || false"
+                        [checked]="isChannelSelected(question.id, option)"
                         (change)="toggleMultiSelect(question.id, option)"
                       />
                       <div
-                        class="flex items-center hover:bg-primary peer-checked:bg-primary px-5 py-4 border-2 border-primary/25 rounded-xl h-full peer-checked:text-white transition-all duration-200"
-                        [class.border-destructive]="isQuestionInvalid(question.id)"
-                        [class.ring-2]="isQuestionInvalid(question.id)"
-                        [class.ring-destructive]="isQuestionInvalid(question.id)"
+                        class="group relative flex items-center justify-between px-3.5 md:px-5 py-3 md:py-4 border-2 rounded-xl h-full transition-all duration-200"
+                        [class]="
+                          isQuestionInvalid(question.id)
+                            ? 'border-destructive ring-2 ring-destructive bg-destructive/5 animate-shake'
+                            : isChannelSelected(question.id, option)
+                              ? 'border-primary bg-primary/10 dark:bg-primary/20 text-foreground ring-1 ring-primary/30 shadow-sm'
+                              : 'border-border/60 hover:border-primary/50 hover:bg-muted/40 bg-card/60'
+                        "
                       >
-                        <p hlmSmall>{{ option | translate }}</p>
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all shrink-0"
+                            [class]="
+                              isChannelSelected(question.id, option)
+                                ? 'border-primary bg-primary text-primary-foreground'
+                                : 'border-muted-foreground/50 group-hover:border-primary/60'
+                            "
+                          >
+                            @if (isChannelSelected(question.id, option)) {
+                              <ng-icon name="lucideCheck" size="13" />
+                            }
+                          </span>
+                          <p hlmSmall class="font-medium text-foreground">{{ option | translate }}</p>
+                        </div>
+
+                        @if (isAiSuggested(question.id, option)) {
+                          <span class="inline-flex items-center gap-1 text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/25">
+                            <ng-icon name="lucideSparkles" size="11" />
+                            <span>{{ 'ai_suggested' | translate }}</span>
+                          </span>
+                        }
                       </div>
                     </label>
                   }
@@ -140,22 +202,17 @@
             <ng-icon [name]="chevronNext()"></ng-icon>
           </button>
         } @else {
-          <button
-            hlmBtn
-            type="button"
-            variant="default"
-            size="lg"
+          <app-action-button
+            id="submit-interview-btn"
+            [text]="'validation_initialize' | translate"
+            icon="lucideArrowRight"
+            iconSize="18"
             [disabled]="isSubmitting()"
-            (click)="onNext()"
-            class="flex justify-center items-center gap-2 disabled:opacity-50 font-bold dark:text-white uppercase cursor-pointer disabled:cursor-not-allowed"
-          >
-            @if (isSubmitting()) {
-              <hlm-spinner class="text-lg" />
-              <span>{{ 'loading_analyzing' | translate }}</span>
-            } @else {
-              <span>{{ 'validation_initialize' | translate }}</span>
-            }
-          </button>
+            [loading]="isSubmitting()"
+            [loadingText]="'loading_analyzing' | translate"
+            (clicked)="onNext()"
+            buttonClass="w-full md:w-auto md:ms-auto uppercase"
+          />
         }
       </div>
     </div>

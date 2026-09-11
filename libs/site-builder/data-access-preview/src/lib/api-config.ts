@@ -28,6 +28,8 @@ export class ApiConfig {
   readonly baseUrl = this.resolveBaseUrl();
   readonly dashboardUrl = this.resolveDashboardUrl();
   readonly inventoLoginUrl = this.resolveLoginUrl();
+  readonly isProduction = !!this.environment.production;
+  readonly storeBaseUrl = this.resolveStoreBaseUrl();
 
   /**
    * Builds a full endpoint URL. Pass a leading-slash path, e.g. '/site-builder/publish'.
@@ -67,6 +69,18 @@ export class ApiConfig {
     return this.environment.production
       ? 'https://invento-ai.vercel.app/auth/login'
       : 'http://localhost:4400/auth/login';
+  }
+
+  private resolveStoreBaseUrl(): string {
+    const configured = this.resolve(
+      'SITE_BUILDER_STORE_BASE_URL',
+      'SITE_BASE_URL',
+      '',
+    );
+    if (configured) return configured.replace(/\/+$/, '');
+    return this.environment.production
+      ? 'https://invento-store.vercel.app'
+      : 'http://localhost:4300';
   }
 
   /** Walks the config chain for a value, preferring the compiled-in environment. */

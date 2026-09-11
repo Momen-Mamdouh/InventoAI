@@ -1,6 +1,8 @@
-import { Injectable, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { ThemeItem } from './themes-api';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { ThemeItem, ThemesApi } from './themes-api';
+import { StoreApi } from './store-api';
+import { DraftApi } from './draft-api';
+import { Observable, catchError, forkJoin, map, of } from 'rxjs';
 import {
   BuilderStepId,
   MIN_BRAINSTORM_LENGTH,
@@ -13,38 +15,45 @@ import { QuestionsApi } from './questions-api';
 
 export type AnswerValue = string | number | string[] | number[];
 
-const STORAGE_KEY = 'invento.builder-state';
+export interface HydrationOutcome {
+  readonly hasLiveStore: boolean;
+  readonly isThemed: boolean;
+  readonly isDomainConfirmed: boolean;
+  readonly isAiInterviewComplete: boolean;
+  readonly isBrainstormComplete: boolean;
+}
 
-/**
- * Logos are held as base64 data URLs and may be up to 5MB, which would blow the
- * ~5MB sessionStorage quota on its own. Anything larger is simply not persisted:
- * the logo preview is lost on refresh, but the rest of the wizard survives.
- */
-const MAX_PERSISTED_LOGO_BYTES = 512 * 1024;
-
-/** Fields restored across a page refresh. */
-interface PersistedState {
-  brainstorm: string;
-  hasLogo: boolean;
-  logoUrl: string | null;
-  aiAnswers: Record<string, AnswerValue>;
-  selectedTheme: string;
-  businessName: string;
-  businessType: string;
-  targetAudience: string;
-  domain: string;
-  brainstormAnalyzed: boolean;
-  aiInterviewSubmitted: boolean;
-  domainConfirmed: boolean;
-  aiInterviewStepIndex?: number;
+export interface StepEnforcementEvent {
+  readonly stepId: BuilderStepId;
+  readonly timestamp: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class BuilderState {
-  private readonly platformId = inject(PLATFORM_ID);
   private readonly questionsApi = inject(QuestionsApi);
+  private readonly storeApi = inject(StoreApi);
+  private readonly themesApi = inject(ThemesApi);
+  private readonly draftApi = inject(DraftApi);
 
+  readonly isHydrated = signal(false);
+  readonly hasLiveStore = signal(false);
   readonly isNavigating = signal(false);
+  readonly isTransitioning = signal(false);
+  readonly transitionLabel = signal('Invento AI');
+  readonly stepEnforcement = signal<StepEnforcementEvent | null>(null);
+
+  startTransition(label = 'Invento AI'): void {
+    this.transitionLabel.set(label);
+    this.isTransitioning.set(true);
+  }
+
+  stopTransition(): void {
+    this.isTransitioning.set(false);
+  }
+
+  triggerStepEnforcement(stepId: BuilderStepId): void {
+    this.stepEnforcement.set({ stepId, timestamp: Date.now() });
+  }
 
   /**
    * Each step is finished only when its own submit button has successfully
@@ -86,7 +95,7 @@ export class BuilderState {
   );
 
   readonly isBrainstormComplete = computed(
-    () => this.hasBrainstormInput() && this.brainstormAnalyzed(),
+    () => this.brainstormAnalyzed() || (this.hasBrainstormInput() && this.brainstormAnalyzed()),
   );
 
   /**
@@ -108,7 +117,7 @@ export class BuilderState {
   });
 
   readonly isAiInterviewComplete = computed(
-    () => this.hasAiInterviewAnswers() && this.aiInterviewSubmitted(),
+    () => this.aiInterviewSubmitted() || (this.hasAiInterviewAnswers() && this.aiInterviewSubmitted()),
   );
 
   readonly hasValidationInputs = computed(
@@ -119,7 +128,7 @@ export class BuilderState {
   );
 
   readonly isValidationComplete = computed(
-    () => this.hasValidationInputs() && this.domainConfirmed(),
+    () => this.domainConfirmed() || (this.hasValidationInputs() && this.domainConfirmed()),
   );
 
   readonly isPreviewComplete = computed(() => this.selectedTheme() !== '');
@@ -135,31 +144,142 @@ export class BuilderState {
     return this.completionByStep[step]();
   }
 
-  constructor() {
-    if (!isPlatformBrowser(this.platformId)) return;
+  hydrateFromBackend(): Observable<HydrationOutcome> {
+    if (this.isHydrated()) {
+      return of(this.getHydrationOutcome());
+    }
 
-    this.restore();
+    return forkJoin({
+      draft: this.draftApi.getDraft().pipe(catchError(() => of(null))),
+      store: this.storeApi.getMyStore().pipe(catchError(() => of(null))),
+      themesRes: this.themesApi.getThemes().pipe(catchError(() => of({ themes: [] }))),
+    }).pipe(
+      map(({ draft, store, themesRes }) => {
+        if (draft) {
+          if (draft.brainstorm) {
+            this.brainstorm.set(draft.brainstorm);
+          }
+          if (draft.logoUrl) {
+            this.logoUrl.set(draft.logoUrl);
+            this.hasLogo.set(true);
+          }
+          if (draft.answers && Array.isArray(draft.answers)) {
+            const mapAnswers: Record<string, AnswerValue> = {};
+            for (const item of draft.answers) {
+              if (item.answer !== null && item.answer !== undefined) {
+                mapAnswers[item.questionId] = item.answer;
+              }
+            }
+            this.aiAnswers.set(mapAnswers);
+          }
+          if (draft.businessName) {
+            this.businessName.set(draft.businessName);
+          }
+          if (draft.slug) {
+            this.domain.set(draft.slug);
+          }
 
-    // Persist on every change so a refresh mid-wizard doesn't drop the user's
-    // work (and get bounced back to step 1 by the guards).
-    effect(() => {
-      const snapshot: PersistedState = {
-        brainstorm: this.brainstorm(),
-        hasLogo: this.hasLogo(),
-        logoUrl: this.persistableLogo(),
-        aiAnswers: this.aiAnswers(),
-        selectedTheme: this.selectedTheme(),
-        businessName: this.businessName(),
-        businessType: this.businessType(),
-        targetAudience: this.targetAudience(),
-        domain: this.domain(),
-        brainstormAnalyzed: this.brainstormAnalyzed(),
-        aiInterviewSubmitted: this.aiInterviewSubmitted(),
-        domainConfirmed: this.domainConfirmed(),
-        aiInterviewStepIndex: this.aiInterviewStepIndex(),
-      };
-      this.persist(snapshot);
-    });
+          if (draft.step === 'brainstormed') {
+            this.brainstormAnalyzed.set(true);
+            this.aiInterviewSubmitted.set(false);
+            this.domainConfirmed.set(false);
+          } else if (draft.step === 'answered') {
+            this.brainstormAnalyzed.set(true);
+            this.aiInterviewSubmitted.set(true);
+            this.domainConfirmed.set(false);
+          } else if (
+            draft.step === 'domain_confirmed' ||
+            draft.step === 'themed' ||
+            draft.step === 'published'
+          ) {
+            this.brainstormAnalyzed.set(true);
+            this.aiInterviewSubmitted.set(true);
+            this.domainConfirmed.set(true);
+          }
+        }
+
+        if (store) {
+          if (store.status === 'live') {
+            this.hasLiveStore.set(true);
+          }
+          if (store.name && !this.businessName()) {
+            this.businessName.set(store.name);
+          }
+          if (store.slug && !this.domain()) {
+            this.domain.set(store.slug);
+          }
+          if (store.logoUrl && !this.logoUrl()) {
+            this.logoUrl.set(store.logoUrl);
+            this.hasLogo.set(true);
+          }
+          this.domainConfirmed.set(true);
+          this.aiInterviewSubmitted.set(true);
+          this.brainstormAnalyzed.set(true);
+        }
+
+        const themes = themesRes?.themes ?? [];
+        if (themes.length > 0) {
+          this.themes.set(themes);
+          this.domainConfirmed.set(true);
+          this.aiInterviewSubmitted.set(true);
+          this.brainstormAnalyzed.set(true);
+        }
+
+        this.isHydrated.set(true);
+        return this.getHydrationOutcome();
+      }),
+      catchError(() => {
+        return of(this.getHydrationOutcome());
+      }),
+    );
+  }
+
+  getHydrationOutcome(): HydrationOutcome {
+    return {
+      hasLiveStore: this.hasLiveStore(),
+      isThemed: this.themes().length > 0 && this.domainConfirmed(),
+      isDomainConfirmed: this.domainConfirmed(),
+      isAiInterviewComplete: this.isAiInterviewComplete(),
+      isBrainstormComplete: this.isBrainstormComplete(),
+    };
+  }
+
+  hasBrainstormChanged(text: string, hasNewLogo: boolean): boolean {
+    if (hasNewLogo) {
+      return true;
+    }
+    return text.trim() !== this.brainstorm().trim();
+  }
+
+  haveAiAnswersChanged(newAnswers: Record<string, AnswerValue>): boolean {
+    const current = this.aiAnswers();
+    const newKeys = Object.keys(newAnswers);
+    const currentKeys = Object.keys(current);
+
+    if (newKeys.length !== currentKeys.length) {
+      return true;
+    }
+
+    for (const key of newKeys) {
+      const valA = newAnswers[key];
+      const valB = current[key];
+      if (Array.isArray(valA) && Array.isArray(valB)) {
+        if (valA.length !== valB.length) {
+          return true;
+        }
+        const sortedA = [...valA].map(String).sort();
+        const sortedB = [...valB].map(String).sort();
+        for (let i = 0; i < sortedA.length; i++) {
+          if (sortedA[i] !== sortedB[i]) {
+            return true;
+          }
+        }
+      } else if (valA !== valB) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   reset(): void {
@@ -177,38 +297,8 @@ export class BuilderState {
     this.aiInterviewSubmitted.set(false);
     this.domainConfirmed.set(false);
     this.aiInterviewStepIndex.set(0);
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        sessionStorage.removeItem(STORAGE_KEY);
-      } catch {
-        /* storage unavailable — nothing to clean up */
-      }
-    }
-  }
-
-  /** Returns the logo data URL only when it is small enough to store. */
-  private persistableLogo(): string | null {
-    const url = this.logoUrl();
-    return url && url.length <= MAX_PERSISTED_LOGO_BYTES ? url : null;
-  }
-
-  private persist(snapshot: PersistedState): void {
-    try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
-    } catch {
-      // Quota or private-mode failure. Persistence is a convenience, never a
-      // requirement — the wizard still works entirely from memory.
-    }
-  }
-
-  /** Reads the saved snapshot, treating unreadable or corrupt storage as "nothing saved". */
-  private readSnapshot(): Partial<PersistedState> | null {
-    try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as Partial<PersistedState>) : null;
-    } catch {
-      return null;
-    }
+    this.isHydrated.set(false);
+    this.hasLiveStore.set(false);
   }
 
   /**
@@ -222,27 +312,5 @@ export class BuilderState {
     this.questionsApi.getQuestions().subscribe((response) => {
       if (response?.questions?.length) this.questions.set(response.questions);
     });
-  }
-
-  private restore(): void {
-    const saved = this.readSnapshot();
-    if (!saved) return;
-
-    if (typeof saved.brainstorm === 'string') this.brainstorm.set(saved.brainstorm);
-    if (typeof saved.hasLogo === 'boolean') this.hasLogo.set(saved.hasLogo);
-    if (typeof saved.logoUrl === 'string') this.logoUrl.set(saved.logoUrl);
-    if (saved.aiAnswers && typeof saved.aiAnswers === 'object') this.aiAnswers.set(saved.aiAnswers);
-    if (typeof saved.selectedTheme === 'string') this.selectedTheme.set(saved.selectedTheme);
-    if (typeof saved.businessName === 'string') this.businessName.set(saved.businessName);
-    if (typeof saved.businessType === 'string') this.businessType.set(saved.businessType);
-    if (typeof saved.targetAudience === 'string') this.targetAudience.set(saved.targetAudience);
-    if (typeof saved.domain === 'string') this.domain.set(saved.domain);
-    if (typeof saved.brainstormAnalyzed === 'boolean')
-      this.brainstormAnalyzed.set(saved.brainstormAnalyzed);
-    if (typeof saved.aiInterviewSubmitted === 'boolean')
-      this.aiInterviewSubmitted.set(saved.aiInterviewSubmitted);
-    if (typeof saved.domainConfirmed === 'boolean') this.domainConfirmed.set(saved.domainConfirmed);
-    if (typeof saved.aiInterviewStepIndex === 'number')
-      this.aiInterviewStepIndex.set(saved.aiInterviewStepIndex);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { ApiConfig, fallbackOnServerError } from '@invento/site-builder-data-access-preview';
+import { Observable, of, catchError } from 'rxjs';
+import { ApiConfig } from '@invento/site-builder-data-access-preview';
 
 export interface ThemeItem {
   id: string;
@@ -50,6 +50,6 @@ export class ThemesApi {
   getThemes(): Observable<GetThemesResponse> {
     return this.http
       .get<GetThemesResponse>(this.endpoint)
-      .pipe(fallbackOnServerError(() => of({ themes: [] }), 'ThemesApi.getThemes'));
+      .pipe(catchError(() => of({ themes: [] })));
   }
 }

@@ -23,6 +23,12 @@ import {
   lucideSun,
   lucideTablet,
   lucideTvMinimal,
+  lucidePalette,
+  lucidePackage,
+  lucideLayers,
+  lucideFileText,
+  lucideCheckCircle2,
+  lucideSparkles,
 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
@@ -34,16 +40,16 @@ import {
 import { ThemeSuggestion } from '@invento/shared-util-preview-types';
 import { ApiConfig } from '@invento/site-builder-data-access-preview';
 import { PageHeader } from '@invento/shared-ui-page-header';
+import { ActionButton } from '@invento/shared-ui-action-button';
 import { HlmDialogImports } from '@spartan/helm/dialog';
-import { HlmSpinner } from '@spartan/helm/spinner';
 import {
   BuilderState,
   PublishApi,
   PreviewDataClient,
+  withMinDuration,
 } from '@invento/site-builder-data-access-builder';
 import { ContainerWidth } from '@invento/shared-ui-container-width';
 import { HlmH2, HlmH3, HlmH4, HlmMuted, HlmSmall } from '@spartan/helm/typography';
-import { DoubleSlash } from '@invento/shared-ui-double-slash';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
 import { toastApiError } from '../../utils/toast-api-error';
@@ -69,17 +75,27 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
   radius: DEFAULT_RADIUS,
 };
 
+export interface BuildSummaryItem {
+  id: 'theme' | 'products' | 'variants' | 'pages' | 'status';
+  icon: string;
+  labelKey: string;
+  value: string;
+  subValue: string;
+  badge: string;
+  colors?: { background: string; primary: string };
+  isStatus?: boolean;
+}
+
 @Component({
   selector: 'app-preview',
   imports: [
     PageHeader,
+    ActionButton,
     HlmButtonImports,
     HlmDialogImports,
-    HlmSpinner,
     NgIcon,
     NgStyle,
     ContainerWidth,
-    DoubleSlash,
     TranslatePipe,
     HlmH2,
     HlmH3,
@@ -99,6 +115,12 @@ const PLACEHOLDER_THEME: ThemeSuggestion = {
       lucideChevronRight,
       lucideSun,
       lucideMoon,
+      lucidePalette,
+      lucidePackage,
+      lucideLayers,
+      lucideFileText,
+      lucideCheckCircle2,
+      lucideSparkles,
     }),
   ],
   templateUrl: './preview.html',
@@ -234,21 +256,52 @@ export class Preview {
     this._localeService.isRtl() ? 'lucideChevronLeft' : 'lucideChevronRight',
   );
 
-  readonly buildSummary = computed(() => [
-    { label: 'preview_theme', value: this._localeService.translate(this.activeTheme().name) },
+  readonly buildSummary = computed<BuildSummaryItem[]>(() => [
     {
-      label: 'preview_products',
-      value: this._localeService.translate('build_items', { n: this.products().length }),
+      id: 'theme',
+      icon: 'lucidePalette',
+      labelKey: 'preview_theme',
+      value: this._localeService.translate(this.activeTheme().name),
+      subValue: this.themeMode().toUpperCase(),
+      badge: this.themeMode().toUpperCase(),
+      colors: {
+        background: this.activeTheme().colors.background,
+        primary: this.activeTheme().colors.primary,
+      },
     },
     {
-      label: 'preview_variants',
-      value: this._localeService.translate('build_skus', { n: this.products().length * 4 }),
+      id: 'products',
+      icon: 'lucidePackage',
+      labelKey: 'preview_products',
+      value: String(this.products().length),
+      subValue: this._localeService.translate('build_items', { n: this.products().length }),
+      badge: this._localeService.translate('preview_ai_badge'),
     },
     {
-      label: 'preview_pages',
-      value: this._localeService.translate('build_routes', { n: this.navTabs().length + 4 }),
+      id: 'variants',
+      icon: 'lucideLayers',
+      labelKey: 'preview_variants',
+      value: String(this.products().length * 4),
+      subValue: this._localeService.translate('build_skus', { n: this.products().length * 4 }),
+      badge: '4x',
     },
-    { label: 'preview_status', value: this.selectedViewport().toUpperCase() },
+    {
+      id: 'pages',
+      icon: 'lucideFileText',
+      labelKey: 'preview_pages',
+      value: String(this.navTabs().length + 4),
+      subValue: this._localeService.translate('build_routes', { n: this.navTabs().length + 4 }),
+      badge: 'SEO',
+    },
+    {
+      id: 'status',
+      icon: 'lucideCheckCircle2',
+      labelKey: 'preview_status',
+      value: this._localeService.translate('preview_status_ready'),
+      subValue: `${this.simulatedPxWidth()}px`,
+      badge: this.selectedViewport().toUpperCase(),
+      isStatus: true,
+    },
   ]);
 
   private readonly _userHasManuallySelectedTheme = signal(false);
@@ -355,25 +408,38 @@ export class Preview {
     }
 
     this.isDeploying.set(true);
+    this.closeDeployDialog();
+    this.builderState.startTransition(this._localeService.translate('toast_deploying_site'));
 
-    const toastId = toast.loading(this._localeService.translate('toast_deploying_site'));
-
-    this.publishApi.publishSite({ themeId: theme.id }).subscribe({
-      next: () => {
+    withMinDuration(this.publishApi.publishSite({ themeId: theme.id }), 900).subscribe({
+      next: (response) => {
+        this.builderState.stopTransition();
         this.isDeploying.set(false);
-        this.closeDeployDialog();
         this.builderState.selectedTheme.set(theme.id);
+        this.builderState.hasLiveStore.set(true);
 
-        toast.success(this._localeService.translate('toast_deploy_success'), { id: toastId });
+        const activeSlug = response?.slug || this.builderState.domain();
+        if (activeSlug) {
+          this.builderState.domain.set(activeSlug);
+          const current = this.authService.currentUser();
+          if (current) {
+            this.authService.currentUser.set({ ...current, storeSlug: activeSlug });
+          }
+        }
 
-        const redirectUrl = `${this.apiConfig.inventoLoginUrl}?forceLogout=true`;
-        this.authService.logout();
+        toast.success(this._localeService.translate('toast_deploy_success'));
+
+        const redirectUrl = this.authService.getSsoUrl(
+          this.apiConfig.dashboardUrl,
+          '/home',
+        );
 
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 1000);
       },
       error: (err: { status?: number }) => {
+        this.builderState.stopTransition();
         this.isDeploying.set(false);
 
         // A 409 here is never about the theme — a bad themeId is a 404. It means
@@ -382,11 +448,11 @@ export class Preview {
         // recovery is to redo the Validation step, which is not something the
         // raw message says, so it is spelled out.
         if (err?.status === 409) {
-          toast.error(this._localeService.translate('preview_deploy_conflict'), { id: toastId });
+          toast.error(this._localeService.translate('preview_deploy_conflict'));
           return;
         }
 
-        toastApiError(err, 'toast_deploy_failed', this._localeService, toastId);
+        toastApiError(err, 'toast_deploy_failed', this._localeService);
       },
     });
   }

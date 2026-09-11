@@ -7,15 +7,17 @@
       description="preview_desc"
     />
 
-    <button
-      hlmBtn
-      class="main-btn uppercase rounded-(--btn-radius) w-full sm:w-auto justify-center shrink-0"
+    <app-action-button
       id="edit-profile"
-      (click)="deployDialogState.set('open')"
-    >
-      {{ 'preview_deploy' | translate }}
-      <ng-icon [name]="deployChevron()" />
-    </button>
+      [text]="'preview_deploy' | translate"
+      icon="lucideArrowRight"
+      iconSize="18"
+      [disabled]="isDeploying() || !selectedTheme() || themesUnavailable()"
+      [loading]="isDeploying()"
+      [loadingText]="'toast_deploying_site' | translate"
+      (clicked)="deployDialogState.set('open')"
+      buttonClass="uppercase w-full sm:w-auto"
+    />
   </div>
 
   <div class="preview-body">
@@ -23,7 +25,7 @@
       <div class="space-y-5 xl:col-span-1">
         <div class="preview-body-theme">
           <p class="flex items-center gap-2 uppercase preview-tag">
-            <app-double-slash /> {{ 'preview_active_theme' | translate }}
+            {{ 'preview_active_theme' | translate }}
             @if (!isLoading() && themeSuggestions().length > 1) {
               <span class="ms-auto font-mono text-[10px] text-muted-foreground normal-case">
                 {{ themeSuggestions().length }}
@@ -84,14 +86,14 @@
 
         <div class="preview-body-mode space-y-2">
           <p class="uppercase preview-tag">
-            <app-double-slash /> {{ 'preview_mode' | translate }}
+            {{ 'preview_mode' | translate }}
           </p>
           <hlm-toggle-group
             type="single"
             [nullable]="false"
             [value]="themeMode()"
             (valueChange)="onThemeModeChange($event)"
-            class="flex gap-2"
+            class="flex gap-2 w-full"
           >
             <button
               hlmToggleGroupItem
@@ -114,14 +116,14 @@
 
         <div class="preview-body-viewport">
           <p class="uppercase preview-tag">
-            <app-double-slash /> {{ 'preview_viewport' | translate }}
+            {{ 'preview_viewport' | translate }}
           </p>
           <hlm-toggle-group
             type="single"
             [nullable]="false"
             [value]="selectedViewport()"
             (valueChange)="onViewportChange($event)"
-            class="flex gap-2"
+            class="flex gap-2 w-full"
           >
             @for (viewport of viewports; track viewport.id) {
               <button
@@ -286,7 +288,7 @@
 
                 <div class="bg-foreground/10 px-4 pb-4 preview-visual-sizes">
                   <p hlmSmall class="opacity-60 pt-2 text-foreground/90 uppercase">
-                    <app-double-slash /> {{ 'preview_select_size' | translate }}
+                    {{ 'preview_select_size' | translate }}
                   </p>
 
                   <div class="flex gap-2">
@@ -319,33 +321,112 @@
           </div>
         </div>
 
-        <div class="mt-2 p-4 border border-foreground/10 rounded build-summary">
-          <p class="uppercase preview-tag">
-            <app-double-slash /> {{ 'preview_build_summary' | translate }}
-          </p>
-          <div
-            class="gap-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"
-            style="background: color-mix(in srgb, var(--color-primary) 4%, transparent)"
-          >
+        <div class="mt-4 p-5 rounded-2xl border border-border/60 bg-card/40 backdrop-blur-md shadow-xs space-y-4 build-summary">
+          <!-- Header Bar: Title, Subtitle, and Live Status Beacon -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/40">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shrink-0">
+                <ng-icon name="lucideSparkles" size="16" />
+              </div>
+              <div class="space-y-0.5 text-start">
+                <h3 class="text-sm font-bold tracking-tight text-foreground uppercase">
+                  {{ 'preview_build_summary' | translate }}
+                </h3>
+                <p class="text-xs text-muted-foreground hidden sm:block">
+                  {{ 'preview_build_summary_subtitle' | translate }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Live Readiness Pill -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold self-start sm:self-auto shadow-xs">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>{{ 'preview_status_ready' | translate }}</span>
+            </div>
+          </div>
+
+          <!-- 5-Column Bento Grid of Stat Cards -->
+          <div class="gap-3.5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
             @if (isLoading()) {
-              @for (s of buildSummary(); track $index) {
-                <div class="space-y-1.5 lg:text-left md:text-center animate-pulse">
-                  <span class="block bg-foreground/10 md:mx-auto lg:mx-0 rounded w-12 h-2"></span>
-                  <span class="block bg-foreground/15 md:mx-auto lg:mx-0 rounded w-16 h-3.5"></span>
+              @for (s of [1, 2, 3, 4, 5]; track $index) {
+                <div class="p-4 rounded-xl border border-border/40 bg-card/30 animate-pulse space-y-3">
+                  <div class="flex justify-between items-center">
+                    <span class="block bg-foreground/10 rounded-lg w-8 h-8"></span>
+                    <span class="block bg-foreground/10 rounded-full w-10 h-4"></span>
+                  </div>
+                  <span class="block bg-foreground/15 rounded w-16 h-6"></span>
+                  <div class="space-y-1">
+                    <span class="block bg-foreground/10 rounded w-12 h-3"></span>
+                    <span class="block bg-foreground/10 rounded w-20 h-2.5"></span>
+                  </div>
                 </div>
               }
             } @else {
-              @for (stat of buildSummary(); track stat.label) {
-                <div class="lg:text-left text-center">
-                  <p hlmMuted class="text-foreground/25">
-                    {{ stat.label | translate }}
-                  </p>
-                  <p hlmSmall class="text-foreground/80">
-                    {{ stat.value }}
-                  </p>
+              @for (item of buildSummary(); track item.id) {
+                <div class="group relative flex flex-col justify-between p-4 rounded-xl border border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/40 hover:bg-card/90 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md text-start">
+                  <!-- Card Header: Icon + Badge / Color Swatch -->
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/20 group-hover:scale-105 transition-transform shrink-0">
+                      <ng-icon [name]="item.icon" size="16" [class.text-emerald-500]="item.isStatus" />
+                    </div>
+
+                    @if (item.colors) {
+                      <div class="flex gap-1 shrink-0 items-center px-2 py-0.5 rounded-full bg-secondary border border-border/50">
+                        <span class="color-dot w-2.5 h-2.5 rounded-full" [style.background]="item.colors.background"></span>
+                        <span class="color-dot w-2.5 h-2.5 rounded-full" [style.background]="item.colors.primary"></span>
+                      </div>
+                    } @else if (item.badge) {
+                      <span
+                        class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full uppercase"
+                        [class]="item.isStatus ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-secondary text-secondary-foreground border border-border/50'"
+                      >
+                        {{ item.badge }}
+                      </span>
+                    }
+                  </div>
+
+                  <!-- Card Value -->
+                  <div class="mt-3">
+                    <p
+                      class="font-bold tracking-tight text-foreground truncate"
+                      [class]="item.id === 'theme' ? 'text-sm sm:text-base font-semibold' : item.isStatus ? 'text-sm sm:text-base text-emerald-600 dark:text-emerald-400' : 'text-xl font-mono'"
+                    >
+                      {{ item.value }}
+                    </p>
+                  </div>
+
+                  <!-- Card Footer: Label & Contextual Subtext -->
+                  <div class="mt-2 pt-2 border-t border-border/40 space-y-0.5">
+                    <p class="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {{ item.labelKey | translate }}
+                    </p>
+                    <p class="text-[11px] text-muted-foreground/75 truncate font-medium">
+                      {{ item.subValue }}
+                    </p>
+                  </div>
                 </div>
               }
             }
+          </div>
+
+          <!-- Bottom Assurance & Inline Fast Deploy CTA -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-border/50 text-xs">
+            <div class="flex items-center gap-2 text-muted-foreground text-start">
+              <ng-icon name="lucideCheckCircle2" size="15" class="text-emerald-500 shrink-0" />
+              <span>{{ 'preview_verified_notice' | translate }}</span>
+            </div>
+            <button
+              hlmBtn
+              size="sm"
+              class="rounded-full gap-2 px-5 py-1.5 text-xs font-semibold shrink-0 w-full sm:w-auto shadow-sm"
+              (click)="deployDialogState.set('open')"
+            >
+              <span>{{ 'preview_deploy' | translate }}</span>
+              <ng-icon [name]="deployChevron()" size="14" />
+            </button>
           </div>
         </div>
       </div>
@@ -403,7 +484,7 @@
               class="bg-primary px-6 py-3 w-fit font-bold text-background text-sm uppercase"
               style="border-radius: var(--radius, 0px)"
             >
-              <app-double-slash /> {{ 'preview_shop_now' | translate }} — ${{ product.price }}
+              {{ 'preview_shop_now' | translate }} — ${{ product.price }}
             </button>
           </div>
         }
@@ -490,19 +571,17 @@
         {{ 'preview_choose_another' | translate }}
       </button>
 
-      <button
-        hlmBtn
+      <app-action-button
+        id="confirm-deploy-btn"
+        [text]="'preview_deploy' | translate"
+        icon="lucideArrowRight"
+        iconSize="16"
         [disabled]="isDeploying()"
-        (click)="confirmDeployment()"
-        class="flex items-center gap-2 cursor-pointer"
-      >
-        @if (isDeploying()) {
-          <hlm-spinner class="text-sm" />
-          <span>{{ 'toast_deploying_site' | translate }}</span>
-        } @else {
-          <span>{{ 'preview_deploy' | translate }}</span>
-        }
-      </button>
+        [loading]="isDeploying()"
+        [loadingText]="'toast_deploying_site' | translate"
+        (clicked)="confirmDeployment()"
+        buttonClass="uppercase"
+      />
     </hlm-dialog-footer>
   </hlm-dialog-content>
 </hlm-dialog>

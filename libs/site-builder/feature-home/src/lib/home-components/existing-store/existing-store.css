@@ -1,0 +1,5 @@
+/* Existing Store styling */
+:host {
+  display: block;
+  width: 100%;
+}
