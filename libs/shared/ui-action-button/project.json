@@ -1,0 +1,20 @@
+{
+  "name": "shared-ui-action-button",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ui-action-button/src",
+  "prefix": "lib",
+  "tags": ["scope:shared", "type:ui"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui-action-button/**/*.ts",
+          "libs/shared/ui-action-button/**/*.html"
+        ]
+      }
+    }
+  }
+}
