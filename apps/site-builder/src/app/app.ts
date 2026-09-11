@@ -2,7 +2,6 @@ import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@a
 import { RouterOutlet } from '@angular/router';
 import { Loader } from '@invento/shared-ui-loader';
 import { HlmToasterImports } from '@spartan/helm/sonner';
-import { LocaleService } from '@invento/shared-util-i18n';
 import { ThemeService } from '@invento/shared-util-theme';
 
 @Component({
@@ -14,7 +13,6 @@ import { ThemeService } from '@invento/shared-util-theme';
 })
 export class App {
   private readonly themeService = inject(ThemeService);
-  private readonly localeService = inject(LocaleService);
 
   protected readonly title = signal('invento-AI');
 
@@ -26,15 +24,6 @@ export class App {
    */
   protected readonly toasterTheme = computed<'light' | 'dark'>(() =>
     this.themeService.isDark() ? 'dark' : 'light',
-  );
-
-  /**
-   * `position` is physical, not logical, so a fixed bottom-right sits on the
-   * wrong side in Arabic — over the side the eye leaves last, and on top of
-   * controls that mirrored away from it.
-   */
-  protected readonly toasterPosition = computed<'bottom-left' | 'bottom-right'>(() =>
-    this.localeService.isRtl() ? 'bottom-left' : 'bottom-right',
   );
 
   constructor() {

@@ -5,6 +5,8 @@
   overflow: hidden;
   perspective: var(--dw-perspective, 1200px);
   perspective-origin: 50% 50%;
+  contain: layout paint;
+
   --dw-tile-w: 200px;
   --dw-tile-h: 132px;
   --dw-gap: 18px;
@@ -14,14 +16,29 @@
   --dw-gray: 0;
   --dw-overlay: #060010;
   --dw-edge: 40%;
-  -webkit-mask-image:
-    radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
-    linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
-    linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
-  mask-composite: intersect;
+  --dw-tilt: 16deg;
+  --dw-turn: -14deg;
+  --dw-roll: 0deg;
+  --dw-depth: 120px;
+}
+
+/* Ambient Vignette Overlay (Replaces GPU heavy mask-composite) */
+.drift-wall__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  contain: strict;
+  background:
+    radial-gradient(
+      ellipse 82% 82% at 50% 48%,
+      transparent var(--dw-edge, 40%),
+      var(--dw-overlay, #060010) 96%
+    ),
+    linear-gradient(to top, var(--dw-overlay, #060010) 0%, transparent 18%),
+    linear-gradient(to bottom, var(--dw-overlay, #060010) 0%, transparent 18%),
+    linear-gradient(to right, var(--dw-overlay, #060010) 0%, transparent 14%),
+    linear-gradient(to left, var(--dw-overlay, #060010) 0%, transparent 8%);
 }
 
 .drift-wall__plane {
@@ -34,6 +51,14 @@
   cursor: pointer;
   transform-origin: 50% 50%;
   will-change: transform;
+  transform:
+    translate(-50%, -50%)
+    scale(1.18)
+    rotateX(calc(var(--dw-tilt, 16deg) + var(--plane-py, 0deg)))
+    rotateY(calc(var(--dw-turn, -14deg) + var(--plane-px, 0deg)))
+    rotateZ(var(--dw-roll, 0deg))
+    translateZ(calc(-1 * var(--dw-depth, 120px)));
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .drift-wall__col {
@@ -47,6 +72,50 @@
   flex-direction: column;
   will-change: transform;
   transform-style: preserve-3d;
+  animation-duration: var(--col-duration, 20s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: var(--col-delay, 0s);
+}
+
+.drift-wall__col--up .drift-wall__track {
+  animation-name: drift-up;
+}
+
+.drift-wall__col--down .drift-wall__track {
+  animation-name: drift-down;
+}
+
+@keyframes drift-up {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@keyframes drift-down {
+  0% {
+    transform: translate3d(0, -50%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Pausing behaviors */
+.drift-wall__col:hover .drift-wall__track {
+  animation-play-state: paused;
+}
+
+.drift-wall--pause-on-hover:hover .drift-wall__track {
+  animation-play-state: paused;
+}
+
+.drift-wall--paused .drift-wall__track,
+.drift-wall--reduced .drift-wall__track {
+  animation-play-state: paused !important;
 }
 
 .drift-wall__tile {
@@ -95,18 +164,24 @@
   transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Hover & Active Lift States */
+.drift-wall__tile:hover .drift-wall__inner,
 .drift-wall__tile.is-active .drift-wall__inner,
 .drift-wall__tile:focus-visible .drift-wall__inner {
   opacity: 1;
-  transform: translateZ(var(--dw-lift));
-  box-shadow: 0 24px 60px -18px rgba(0, 0, 0, 0.7);
+  transform: translateZ(var(--dw-lift, 64px)) scale(1.04);
+  box-shadow:
+    0 24px 60px -18px rgba(0, 0, 0, 0.8),
+    0 0 25px rgba(124, 58, 237, 0.25);
 }
 
+.drift-wall__tile:hover img,
 .drift-wall__tile.is-active img,
 .drift-wall__tile:focus-visible img {
-  filter: grayscale(0) saturate(1.05);
+  filter: grayscale(0) saturate(1.1);
 }
 
+.drift-wall__tile:hover .drift-wall__overlay,
 .drift-wall__tile.is-active .drift-wall__overlay,
 .drift-wall__tile:focus-visible .drift-wall__overlay {
   opacity: 0;
@@ -114,13 +189,17 @@
 
 .drift-wall__tile:focus-visible .drift-wall__inner {
   box-shadow:
-    0 24px 60px -18px rgba(0, 0, 0, 0.7),
-    0 0 0 2px rgba(255, 255, 255, 0.9);
+    0 24px 60px -18px rgba(0, 0, 0, 0.8),
+    0 0 0 2px rgba(167, 139, 250, 0.9);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .drift-wall__plane,
   .drift-wall__track {
     will-change: auto;
+    animation: none !important;
+  }
+  .drift-wall__plane {
+    transition: none !important;
   }
 }

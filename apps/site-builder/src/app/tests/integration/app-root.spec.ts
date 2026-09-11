@@ -57,17 +57,11 @@ describe('App Root Component', () => {
     expect((component as unknown as { toasterTheme: () => string }).toasterTheme()).toBe('dark');
   });
 
-  it('computes toasterPosition based on localeService.isRtl()', () => {
+  it('renders toaster element with bottom-center positioning in template', () => {
     fixture.detectChanges();
-    expect((component as unknown as { toasterPosition: () => string }).toasterPosition()).toBe(
-      'bottom-right',
-    );
-
-    isRtlSignal.set(true);
-    fixture.detectChanges();
-    expect((component as unknown as { toasterPosition: () => string }).toasterPosition()).toBe(
-      'bottom-left',
-    );
+    const toasterEl = fixture.nativeElement.querySelector('hlm-toaster');
+    expect(toasterEl).toBeTruthy();
+    expect(toasterEl.getAttribute('position')).toBe('bottom-center');
   });
 
   it('sets isLoading to false after startup timeout', () => {

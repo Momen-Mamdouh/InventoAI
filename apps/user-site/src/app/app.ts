@@ -11,7 +11,6 @@ import {
   StoreService,
   StoreSlugService,
 } from '@invento/user-site-data-access-store';
-import { LocaleService } from '@invento/shared-util-i18n';
 import { ThemeService } from '@invento/shared-util-theme';
 
 @Component({
@@ -36,7 +35,6 @@ export class App {
   private readonly storeSlugService = inject(StoreSlugService);
   private readonly storeService = inject(StoreService);
   private readonly themeService = inject(ThemeService);
-  private readonly localeService = inject(LocaleService);
 
   /**
    * HlmToaster's `theme` input defaults to 'light' and never consults the app,
@@ -44,11 +42,6 @@ export class App {
    */
   protected readonly toasterTheme = computed<'light' | 'dark'>(() =>
     this.themeService.isDark() ? 'dark' : 'light',
-  );
-
-  /** `position` is physical, so a fixed bottom-right lands on the wrong side in Arabic. */
-  protected readonly toasterPosition = computed<'bottom-left' | 'bottom-right'>(() =>
-    this.localeService.isRtl() ? 'bottom-left' : 'bottom-right',
   );
 
   /** Same `NavigationEnd` + `toSignal` pattern as `StoreSlugService.currentUrl`. */

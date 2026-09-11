@@ -2,28 +2,39 @@
   #container
   class="drift-wall"
   [class.drift-wall--reduced]="reduced()"
+  [class.drift-wall--pause-on-hover]="pauseOnHover()"
   [style.--dw-tile-w.px]="tileWidth()"
   [style.--dw-tile-h.px]="tileHeight()"
   [style.--dw-gap.px]="gap()"
   [style.--dw-radius.px]="radius()"
+  [style.--dw-tilt.deg]="tilt()"
+  [style.--dw-turn.deg]="turn()"
+  [style.--dw-roll.deg]="roll()"
+  [style.--dw-depth.px]="depth()"
   [style.--dw-perspective.px]="perspective()"
   [style.--dw-lift.px]="lift()"
   [style.--dw-dim]="dim()"
   [style.--dw-gray]="grayscale() ? 1 : 0"
   [style.--dw-overlay]="overlayColor()"
   [style.--dw-edge]="edgeValue()"
-  (pointermove)="handlePointerMove($event)"
-  (pointerenter)="handlePointerEnter()"
-  (pointerleave)="handlePointerLeave()"
   role="group"
   aria-label="Drifting wall of tiles"
 >
+  <!-- Ambient Edge Vignette (Non-masking GPU accelerated) -->
+  <div class="drift-wall__vignette" aria-hidden="true"></div>
+
   <div #plane class="drift-wall__plane">
     @for (col of columnItems(); track $index; let c = $index) {
-      <div class="drift-wall__col">
-        <!-- We use ElementRef lookup in TS instead of template refs for tracks -->
-        <div class="drift-wall__track" [attr.data-track-index]="c">
-          @for (copy of getCopiesArray(c); track $index; let copyIndex = $index) {
+      @let config = columnConfigs()[c];
+      <div
+        class="drift-wall__col"
+        [class.drift-wall__col--up]="config.movesUp"
+        [class.drift-wall__col--down]="!config.movesUp"
+        [style.--col-duration.s]="config.duration"
+        [style.--col-delay.s]="config.delay"
+      >
+        <div class="drift-wall__track">
+          @for (copyIndex of [0, 1]; track copyIndex) {
             @for (item of col; track $index; let itemIndex = $index) {
               @if (item.href) {
                 <a
@@ -33,7 +44,6 @@
                   class="drift-wall__tile"
                   [class.is-active]="activeId() === c + '-' + copyIndex + '-' + itemIndex"
                   [attr.data-tile-id]="c + '-' + copyIndex + '-' + itemIndex"
-                  [attr.data-col]="c"
                   (focus)="activate(c + '-' + copyIndex + '-' + itemIndex, c)"
                   (blur)="release()"
                 >
@@ -56,7 +66,6 @@
                   class="drift-wall__tile"
                   [class.is-active]="activeId() === c + '-' + copyIndex + '-' + itemIndex"
                   [attr.data-tile-id]="c + '-' + copyIndex + '-' + itemIndex"
-                  [attr.data-col]="c"
                   (focus)="activate(c + '-' + copyIndex + '-' + itemIndex, c)"
                   (blur)="release()"
                 >

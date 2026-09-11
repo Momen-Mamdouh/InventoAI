@@ -74,3 +74,4 @@ specs/
 screenshots/
 .removed-dead-config/
 update-imports.js
+docs/site-builder-changes-summary.md
