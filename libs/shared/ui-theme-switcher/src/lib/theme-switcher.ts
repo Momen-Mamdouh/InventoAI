@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMoon, lucideSun } from '@ng-icons/lucide';
-import { HlmButton } from '@spartan/helm/button';
 import { ThemeService } from '@invento/shared-util-theme';
 
 /**
@@ -15,24 +14,29 @@ import { ThemeService } from '@invento/shared-util-theme';
 @Component({
   selector: 'app-theme-switcher',
   standalone: true,
-  imports: [NgIcon, HlmButton],
+  imports: [NgIcon],
   providers: [provideIcons({ lucideSun, lucideMoon })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button
-      hlmBtn
       type="button"
-      variant="ghost"
-      size="icon"
-      class="rounded-full"
+      class="h-8 w-8 sm:h-9 sm:w-9 rounded-full border border-border/60 bg-muted/40 hover:bg-accent/80 hover:border-border text-muted-foreground hover:text-foreground flex items-center justify-center transition-all duration-200 shadow-2xs hover:scale-105 active:scale-95 cursor-pointer group"
       [attr.aria-label]="themeService.isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
       [attr.aria-pressed]="themeService.isDark()"
       (click)="themeService.toggle()"
     >
       @if (themeService.isDark()) {
-        <ng-icon name="lucideMoon" size="18" />
+        <ng-icon
+          name="lucideMoon"
+          size="16"
+          class="text-sky-400 group-hover:rotate-12 transition-transform duration-300"
+        />
       } @else {
-        <ng-icon name="lucideSun" size="18" />
+        <ng-icon
+          name="lucideSun"
+          size="16"
+          class="text-amber-500 group-hover:rotate-12 transition-transform duration-300"
+        />
       }
     </button>
   `,

@@ -88,6 +88,7 @@
       "@invento/shared-ui-search-input": ["./libs/shared/ui-search-input/src/index.ts"],
       "@invento/shared-ui-skeleton-block": ["./libs/shared/ui-skeleton-block/src/index.ts"],
       "@invento/shared-ui-theme-switcher": ["./libs/shared/ui-theme-switcher/src/index.ts"],
+      "@invento/shared-ui-sign-out-button": ["./libs/shared/ui-sign-out-button/src/index.ts"],
       "@invento/shared-ui-drift-wall": ["./libs/shared/ui-drift-wall/src/index.ts"],
       "@invento/user-site-data-access-store": ["./libs/user-site/data-access-store/src/index.ts"],
       "@invento/user-site-data-access-cart": ["./libs/user-site/data-access-cart/src/index.ts"],
