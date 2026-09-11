@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { StepsBar, StepsBarStep } from '@invento/shared-ui-steps-bar';
 import { Router, RouterOutlet } from '@angular/router';
 import { AiLoader } from '@invento/shared-ui-ai-loader';
+import { Loader } from '@invento/shared-ui-loader';
 import {
   BuilderState,
   BUILDER_STEPS,
@@ -12,7 +13,7 @@ import { toast } from '@spartan/helm/sonner';
 
 @Component({
   selector: 'app-builder-layout',
-  imports: [StepsBar, RouterOutlet, AiLoader],
+  imports: [StepsBar, RouterOutlet, AiLoader, Loader],
   templateUrl: './builder-layout.html',
   styleUrl: './builder-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

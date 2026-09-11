@@ -18,6 +18,7 @@
         orientation="vertical"
         [linear]="true"
         indicatorMode="number"
+        [animationDuration]="200"
         [selectedIndex]="currentStepIndex()"
         (selectionChange)="onSelectionChange($event)"
         #stepper
@@ -201,22 +202,17 @@
             <ng-icon [name]="chevronNext()"></ng-icon>
           </button>
         } @else {
-          <button
-            hlmBtn
-            type="button"
-            variant="default"
-            size="lg"
+          <app-action-button
+            id="submit-interview-btn"
+            [text]="'validation_initialize' | translate"
+            icon="lucideArrowRight"
+            iconSize="18"
             [disabled]="isSubmitting()"
-            (click)="onNext()"
-            class="flex justify-center items-center gap-2 disabled:opacity-50 font-bold dark:text-white uppercase cursor-pointer disabled:cursor-not-allowed"
-          >
-            @if (isSubmitting()) {
-              <hlm-spinner class="text-lg" />
-              <span>{{ 'loading_analyzing' | translate }}</span>
-            } @else {
-              <span>{{ 'validation_initialize' | translate }}</span>
-            }
-          </button>
+            [loading]="isSubmitting()"
+            [loadingText]="'loading_analyzing' | translate"
+            (clicked)="onNext()"
+            buttonClass="w-full md:w-auto md:ms-auto uppercase"
+          />
         }
       </div>
     </div>

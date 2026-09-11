@@ -144,7 +144,7 @@
   "preview_themes_unavailable": "تعذر تحميل قوالب متجرك، وهذه عينات فقط. عد إلى خطوة التحقق وأكملها لإنشاء قوالب حقيقية.",
   "validation_domain_confirmed": "تم تأكيد النطاق",
   "validation_domain_taken": "هذا النطاق محجوز بالفعل. جرّب أحد هذه:",
-  "validation_domain_status_available": "متاح للاستخدام",
+  "validation_domain_status_available": "ًصحيح",
   "validation_domain_status_taken": "هذا النطاق محجوز بالفعل",
   "validation_domain_status_checking": "جاري التحقق من التوفر...",
   "validation_domain_status_invalid": "صيغة نطاق غير صالحة",

@@ -144,7 +144,7 @@
   "preview_themes_unavailable": "We couldn't load your store's themes, so these are samples only. Go back to Validation and finish that step to generate real ones.",
   "validation_domain_confirmed": "Domain confirmed",
   "validation_domain_taken": "That domain is already taken. Try one of these:",
-  "validation_domain_status_available": "Available to use",
+  "validation_domain_status_available": "Valid",
   "validation_domain_status_taken": "Domain is already taken",
   "validation_domain_status_checking": "Checking availability...",
   "validation_domain_status_invalid": "Invalid domain format",

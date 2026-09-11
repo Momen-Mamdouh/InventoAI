@@ -54,6 +54,7 @@ import {
   BuilderState,
   BrainstormApi,
   MIN_BRAINSTORM_LENGTH,
+  withMinDuration,
 } from '@invento/site-builder-data-access-builder';
 import { toastApiError } from '../../utils/toast-api-error';
 
@@ -420,12 +421,10 @@ export class Brainstorm implements OnInit {
     this.builderState.brainstorm.set(text);
 
     this.isSubmitting.set(true);
-    const toastId = toast.loading(this.localeService.translate('toast_analyzing_prompt'));
+    this.builderState.startTransition(this.localeService.translate('toast_analyzing_prompt'));
 
-    this.brainstormApi.analyzePrompt(text, this.logoFile() || undefined).subscribe({
+    withMinDuration(this.brainstormApi.analyzePrompt(text, this.logoFile() || undefined), 900).subscribe({
       next: (response) => {
-        toast.success(this.localeService.translate('toast_prompt_success'), { id: toastId });
-
         const prefill: Record<string, string | number | string[] | number[]> = {};
         for (const q of response?.questions ?? []) {
           if (q.answer !== null && q.answer !== undefined) {
@@ -434,13 +433,16 @@ export class Brainstorm implements OnInit {
         }
 
         this.builderState.aiAnswers.set(prefill);
-        this.isSubmitting.set(false);
         this.builderState.brainstormAnalyzed.set(true);
+        this.isSubmitting.set(false);
         this.router.navigate(['/build/ai-interview']);
+        this.builderState.stopTransition();
+        toast.success(this.localeService.translate('toast_prompt_success'));
       },
       error: (err) => {
+        this.builderState.stopTransition();
         this.isSubmitting.set(false);
-        toastApiError(err, 'toast_prompt_failed', this.localeService, toastId);
+        toastApiError(err, 'toast_prompt_failed', this.localeService);
       },
     });
   }

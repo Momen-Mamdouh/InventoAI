@@ -46,6 +46,7 @@ import {
   BuilderState,
   PublishApi,
   PreviewDataClient,
+  withMinDuration,
 } from '@invento/site-builder-data-access-builder';
 import { ContainerWidth } from '@invento/shared-ui-container-width';
 import { HlmH2, HlmH3, HlmH4, HlmMuted, HlmSmall } from '@spartan/helm/typography';
@@ -407,16 +408,16 @@ export class Preview {
     }
 
     this.isDeploying.set(true);
+    this.closeDeployDialog();
+    this.builderState.startTransition(this._localeService.translate('toast_deploying_site'));
 
-    const toastId = toast.loading(this._localeService.translate('toast_deploying_site'));
-
-    this.publishApi.publishSite({ themeId: theme.id }).subscribe({
+    withMinDuration(this.publishApi.publishSite({ themeId: theme.id }), 900).subscribe({
       next: () => {
+        this.builderState.stopTransition();
         this.isDeploying.set(false);
-        this.closeDeployDialog();
         this.builderState.selectedTheme.set(theme.id);
 
-        toast.success(this._localeService.translate('toast_deploy_success'), { id: toastId });
+        toast.success(this._localeService.translate('toast_deploy_success'));
 
         const redirectUrl = this.authService.getSsoUrl(
           this.apiConfig.dashboardUrl,
@@ -428,6 +429,7 @@ export class Preview {
         }, 1000);
       },
       error: (err: { status?: number }) => {
+        this.builderState.stopTransition();
         this.isDeploying.set(false);
 
         // A 409 here is never about the theme — a bad themeId is a 404. It means
@@ -436,11 +438,11 @@ export class Preview {
         // recovery is to redo the Validation step, which is not something the
         // raw message says, so it is spelled out.
         if (err?.status === 409) {
-          toast.error(this._localeService.translate('preview_deploy_conflict'), { id: toastId });
+          toast.error(this._localeService.translate('preview_deploy_conflict'));
           return;
         }
 
-        toastApiError(err, 'toast_deploy_failed', this._localeService, toastId);
+        toastApiError(err, 'toast_deploy_failed', this._localeService);
       },
     });
   }
