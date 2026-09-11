@@ -4,20 +4,23 @@ on:
   push:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
   NX_NO_CLOUD: 'true'
 
 jobs:
-  verify:
+  naming-and-lint:
+    name: Lint & Naming Rules
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
       - name: Setup Node.js
-        # Angular 22 requires ^22.22.3 || ^24.15.0 || >=26.0.0 -- see
-        # @angular/core, @angular/cli and @angular/build engines fields.
         uses: actions/setup-node@v7
         with:
           node-version: '24'
@@ -30,12 +33,86 @@ jobs:
         run: npm run check:names
 
       - name: Lint
-        run: npm run lint
+        run: npx nx run-many -t lint --parallel=4
 
-      # ESLint cannot see Angular template type errors or NG8113 unused imports;
-      # only the compiler can. This is the gate that catches them.
+  typecheck:
+    name: TypeScript Compiler Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
       - name: Typecheck
         run: npm run typecheck
 
+  test:
+    name: Unit, Integration & E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: site-builder-coverage
+          path: coverage/site-builder/
+          if-no-files-found: ignore
+
+  build:
+    name: Production Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
       - name: Build all projects
         run: npm run build:all
+
+  verify-all:
+    name: All Verification Gates
+    needs: [naming-and-lint, typecheck, test, build]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all gates passed
+        run: |
+          if [ "${{ needs.naming-and-lint.result }}" != "success" ] || \
+             [ "${{ needs.typecheck.result }}" != "success" ] || \
+             [ "${{ needs.test.result }}" != "success" ] || \
+             [ "${{ needs.build.result }}" != "success" ]; then
+            echo "One or more verification gates failed."
+            exit 1
+          fi
+          echo "All verification gates passed successfully."

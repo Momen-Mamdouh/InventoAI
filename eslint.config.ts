@@ -157,6 +157,22 @@ export default defineConfig([
     rules: moduleBoundariesRule([]),
   },
   {
+    // Test specs are permitted to import components and routes from lazy-loaded feature libraries
+    files: ['**/*.spec.ts'],
+    plugins: { '@nx': nx },
+    rules: {
+      '@nx/enforce-module-boundaries': [
+        'error',
+        {
+          enforceBuildableLibDependency: false,
+          allow: [],
+          depConstraints,
+          checkDynamicDependenciesExceptions: ['@invento/**'],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.html'],
     extends: [
       ...angular.configs.templateRecommended,
