@@ -227,15 +227,11 @@
       </div>
     </div>
 
-    <button
-      hlmBtn
-      variant="ghost"
-      size="sm"
-      (click)="signOut()"
-      class="shrink-0 inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
-    >
-      <ng-icon name="lucideLogOut" size="14" />
-      <span>{{ 'existing_store_sign_out' | translate }}</span>
-    </button>
+    <app-sign-out-button
+      [text]="'existing_store_sign_out' | translate"
+      [showTextOnMobile]="true"
+      iconSize="14"
+      buttonClass="shrink-0 text-xs font-semibold"
+    />
   </div>
 </section>

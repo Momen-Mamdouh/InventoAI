@@ -1,53 +1,60 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { HlmSwitchImports } from '@spartan/helm/switch';
-import { LocaleService } from '@invento/shared-util-i18n';
+import { LocaleService, type Locale } from '@invento/shared-util-i18n';
 
 /**
- * EN / AR language toggle, shared by every app.
+ * EN / AR language segmented pill switcher, shared by every app.
  *
- * Migrated out of `apps/site-builder/src/app/shared/components/lang-selector`, where it was
- * trapped, and rebuilt on Spartan's `HlmSwitch` instead of a hand-rolled
- * `<input type="checkbox" class="sr-only peer">` with simulated track/thumb styling.
+ * Provides a tactile, unambiguous segmented capsule with instant one-click
+ * selection between English and Arabic.
  *
- * `LocaleService` handles persistence and stamps `lang`/`dir` onto the document, including
- * during server rendering, so flipping this does not cause a hydration mismatch.
+ * `LocaleService` handles persistence and stamps `lang`/`dir` onto the document,
+ * including during server rendering, preventing hydration mismatch.
  */
 @Component({
   selector: 'app-lang-switcher',
   standalone: true,
-  imports: [HlmSwitchImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <label for="lang-switcher-toggle" class="inline-flex cursor-pointer items-center gap-2" [attr.aria-label]="'Switch language'">
-      <span
-        class="text-xs font-medium transition-colors select-none"
-        [class.text-muted-foreground]="localeService.isRtl()"
+    <div
+      class="inline-flex items-center p-0.5 rounded-full bg-muted/50 border border-border/50 text-xs shadow-2xs select-none"
+      role="group"
+      aria-label="Language selector"
+    >
+      <button
+        type="button"
+        (click)="setLocale('en')"
+        class="px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer"
+        [class.bg-background]="!localeService.isRtl()"
         [class.text-foreground]="!localeService.isRtl()"
+        [class.shadow-xs]="!localeService.isRtl()"
+        [class.text-muted-foreground]="localeService.isRtl()"
+        [class.hover:text-foreground]="localeService.isRtl()"
+        [attr.aria-pressed]="!localeService.isRtl()"
       >
         EN
-      </span>
-
-      <hlm-switch
-        inputId="lang-switcher-toggle"
-        [checked]="localeService.isRtl()"
-        (checkedChange)="onToggle($event)"
-        aria-label="Switch between English and Arabic"
-      />
-
-      <span
-        class="text-xs font-medium transition-colors select-none"
-        [class.text-muted-foreground]="!localeService.isRtl()"
+      </button>
+      <button
+        type="button"
+        (click)="setLocale('ar')"
+        class="px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer"
+        [class.bg-background]="localeService.isRtl()"
         [class.text-foreground]="localeService.isRtl()"
+        [class.shadow-xs]="localeService.isRtl()"
+        [class.text-muted-foreground]="!localeService.isRtl()"
+        [class.hover:text-foreground]="!localeService.isRtl()"
+        [attr.aria-pressed]="localeService.isRtl()"
       >
-        AR
-      </span>
-    </label>
+        عربي
+      </button>
+    </div>
   `,
 })
 export class LangSwitcher {
   protected readonly localeService = inject(LocaleService);
 
-  protected onToggle(checked: boolean): void {
-    this.localeService.switchLocale(checked ? 'ar' : 'en');
+  protected setLocale(locale: Locale): void {
+    if (this.localeService.locale() !== locale) {
+      this.localeService.switchLocale(locale);
+    }
   }
 }

@@ -1,0 +1,20 @@
+{
+  "name": "shared-ui-sign-out-button",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ui-sign-out-button/src",
+  "prefix": "lib",
+  "tags": ["scope:shared", "type:feature"],
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui-sign-out-button/**/*.ts",
+          "libs/shared/ui-sign-out-button/**/*.html"
+        ]
+      }
+    }
+  }
+}

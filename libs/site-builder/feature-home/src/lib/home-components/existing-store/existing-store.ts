@@ -7,7 +7,6 @@ import {
   lucidePackage,
   lucideShoppingCart,
   lucideSparkles,
-  lucideLogOut,
   lucideArrowRight,
   lucideArrowLeft,
   lucideStore,
@@ -21,12 +20,14 @@ import { AuthService } from '@invento/shared-data-access-auth';
 import { BuilderState } from '@invento/site-builder-data-access-builder';
 import { ApiConfig, SITE_BUILDER_ENVIRONMENT } from '@invento/site-builder-data-access-preview';
 import { CtaButton } from '@invento/shared-ui-cta-button';
+import { SignOutButton } from '@invento/shared-ui-sign-out-button';
 
 @Component({
   selector: 'app-existing-store',
   standalone: true,
   imports: [
     CtaButton,
+    SignOutButton,
     NgIcon,
     HlmButton,
     HlmH1,
@@ -41,7 +42,6 @@ import { CtaButton } from '@invento/shared-ui-cta-button';
       lucidePackage,
       lucideShoppingCart,
       lucideSparkles,
-      lucideLogOut,
       lucideArrowRight,
       lucideArrowLeft,
       lucideStore,
@@ -96,8 +96,4 @@ export class ExistingStore {
       ? `https://${slug}.invento.site`
       : `http://localhost:4300/${slug}`;
   });
-
-  signOut(): void {
-    this.authService.logout();
-  }
 }
