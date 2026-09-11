@@ -1,3 +1,7 @@
+<app-loader
+  [isLoading]="builderState.isTransitioning()"
+  [label]="builderState.transitionLabel()"
+/>
 <app-ai-loader [isNavigating]="builderState.isNavigating()" />
 
 <div class="flex flex-col gap-6 flex-1 w-full">

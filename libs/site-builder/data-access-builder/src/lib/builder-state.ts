@@ -50,7 +50,18 @@ export class BuilderState {
   private readonly questionsApi = inject(QuestionsApi);
 
   readonly isNavigating = signal(false);
+  readonly isTransitioning = signal(false);
+  readonly transitionLabel = signal('Invento AI');
   readonly stepEnforcement = signal<StepEnforcementEvent | null>(null);
+
+  startTransition(label = 'Invento AI'): void {
+    this.transitionLabel.set(label);
+    this.isTransitioning.set(true);
+  }
+
+  stopTransition(): void {
+    this.isTransitioning.set(false);
+  }
 
   triggerStepEnforcement(stepId: BuilderStepId): void {
     this.stepEnforcement.set({ stepId, timestamp: Date.now() });

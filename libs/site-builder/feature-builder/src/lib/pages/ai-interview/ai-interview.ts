@@ -26,7 +26,6 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmTextarea } from '@spartan/helm/textarea';
 import { HlmSeparator } from '@spartan/helm/separator';
-import { HlmSpinner } from '@spartan/helm/spinner';
 import { Router } from '@angular/router';
 import { CdkStepper, StepperSelectionEvent } from '@angular/cdk/stepper';
 import { PageHeader } from '@invento/shared-ui-page-header';
@@ -35,9 +34,10 @@ import { HlmSmall } from '@spartan/helm/typography';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmInputImports } from '@spartan/helm/input';
 import { SpartanStepperImports } from '@spartan/helm/stepper';
+import { ActionButton } from '@invento/shared-ui-action-button';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
-import { AiInterviewApi, SubmitAnswersPayload } from '@invento/site-builder-data-access-builder';
+import { AiInterviewApi, SubmitAnswersPayload, withMinDuration } from '@invento/site-builder-data-access-builder';
 import { decodeAnswer, encodeAnswer, isAnswered } from '../../utils/answer-codec';
 import { toastApiError } from '../../utils/toast-api-error';
 
@@ -50,12 +50,12 @@ import { toastApiError } from '../../utils/toast-api-error';
     HlmLabelImports,
     HlmInputImports,
     HlmSeparator,
-    HlmSpinner,
     ReactiveFormsModule,
     PageHeader,
     SpartanStepperImports,
     TranslatePipe,
     HlmSmall,
+    ActionButton,
   ],
   providers: [
     provideIcons({
@@ -107,10 +107,22 @@ export class AiInterview implements OnInit {
     return Math.min(Math.max(0, saved), total - 1);
   });
 
+  private scrollTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private focusTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
   form = new FormGroup({});
   selectedChannels = signal<Record<string, string[]>>({});
 
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      if (this.scrollTimeoutId) {
+        clearTimeout(this.scrollTimeoutId);
+      }
+      if (this.focusTimeoutId) {
+        clearTimeout(this.focusTimeoutId);
+      }
+    });
+
     // Focus the active question as soon as the stepper has rendered, so the
     // page opens ready to type at the user's last visited question.
     afterNextRender({
@@ -146,7 +158,7 @@ export class AiInterview implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const prefill = this.builderState.aiAnswers();
     this.initialAiAnswers.set({ ...prefill });
 
@@ -174,15 +186,22 @@ export class AiInterview implements OnInit {
     });
   }
 
-  private getStepElement(index: number): HTMLElement | null {
+  private getStepContainer(index: number): HTMLElement | null {
     const stepper = this.stepper();
     if (stepper) {
+      const labelId = stepper._getStepLabelId(index);
+      const header = document.getElementById(labelId);
+      if (header?.parentElement) {
+        return header.parentElement;
+      }
       const contentId = stepper._getStepContentId(index);
       const section = document.getElementById(contentId);
-      if (section) return section;
+      if (section) {
+        return (section.closest('.flex.flex-col.gap-2') as HTMLElement) ?? section;
+      }
     }
-    const sections = document.querySelectorAll('spartan-stepper section[role="region"]');
-    return (sections[index] as HTMLElement) ?? null;
+    const allSteps = document.querySelectorAll('spartan-stepper .flex.flex-col.gap-2');
+    return (allSteps[index] as HTMLElement) ?? null;
   }
 
   /**
@@ -190,42 +209,66 @@ export class AiInterview implements OnInit {
    * can be paired with an explicit scroll rather than fighting it.
    */
   private focusStepInput(index: number): void {
-    const step = this.getStepElement(index);
-    if (!step) return;
+    const container = this.getStepContainer(index);
+    if (!container) return;
 
     const target =
-      step.querySelector<HTMLElement>('textarea, input:not([type="hidden"]), [tabindex="0"]') ??
-      step.querySelector<HTMLElement>('button');
+      container.querySelector<HTMLElement>(
+        'textarea, input:not([type="hidden"]), [tabindex="0"]',
+      ) ?? container.querySelector<HTMLElement>('button');
     target?.focus({ preventScroll: true });
   }
 
   scrollToStep(index: number, immediate = false): void {
-    const runScroll = () => {
-      const step = this.getStepElement(index);
-      if (!step) return;
+    if (this.scrollTimeoutId) {
+      clearTimeout(this.scrollTimeoutId);
+      this.scrollTimeoutId = null;
+    }
 
-      const container = step.closest('.flex.flex-col.gap-2') || step;
-      container.scrollIntoView({
-        behavior: immediate ? 'auto' : 'smooth',
-        block: 'start',
-        inline: 'nearest',
-      });
-      setTimeout(() => this.focusStepInput(index), 120);
+    const runScroll = () => {
+      const container = this.getStepContainer(index);
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const topNavOffset = 96; // 80px floating navbar + 16px safety margin
+      const bottomBarOffset = 80; // sticky bottom action bar
+      const visibleHeight = window.innerHeight - topNavOffset - bottomBarOffset;
+
+      if (rect.height > visibleHeight) {
+        // Question is taller than safe visible area: scroll so top sits below navbar
+        const targetY = window.scrollY + rect.top - topNavOffset;
+        window.scrollTo({
+          top: Math.max(0, targetY),
+          behavior: immediate ? 'auto' : 'smooth',
+        });
+      } else {
+        // Center the question container in the viewport
+        container.scrollIntoView({
+          behavior: immediate ? 'auto' : 'smooth',
+          block: 'center',
+          inline: 'nearest',
+        });
+      }
+
+      if (this.focusTimeoutId) {
+        clearTimeout(this.focusTimeoutId);
+      }
+      this.focusTimeoutId = setTimeout(() => this.focusStepInput(index), 350);
     };
 
     if (immediate) {
       runScroll();
     } else {
-      setTimeout(runScroll, 60);
+      this.scrollTimeoutId = setTimeout(runScroll, 150);
     }
   }
 
-  onSelectionChange(event: StepperSelectionEvent) {
+  onSelectionChange(event: StepperSelectionEvent): void {
     this.builderState.aiInterviewStepIndex.set(event.selectedIndex);
     this.scrollToStep(event.selectedIndex);
   }
 
-  onPrevStep() {
+  onPrevStep(): void {
     const stepper = this.stepper();
     if (!stepper) {
       return;
@@ -237,14 +280,20 @@ export class AiInterview implements OnInit {
     const prevIndex = stepper.selectedIndex - 1;
     stepper.selectedIndex = prevIndex;
     this.builderState.aiInterviewStepIndex.set(prevIndex);
-    this.scrollToStep(prevIndex);
   }
 
-  onNextStep() {
+  onNextStep(): void {
     const stepper = this.stepper();
     if (!stepper) return;
 
-    const currentQuestion = this.visibleQuestions()[stepper.selectedIndex];
+    const currentIndex = stepper.selectedIndex;
+    if (currentIndex >= this.visibleQuestions().length - 1) {
+      // Last step: trigger submit
+      this.onNext();
+      return;
+    }
+
+    const currentQuestion = this.visibleQuestions()[currentIndex];
     if (currentQuestion && currentQuestion.required) {
       const control = this.form.get(currentQuestion.id);
       if (control && (control.invalid || !isAnswered(currentQuestion, control.value))) {
@@ -259,10 +308,9 @@ export class AiInterview implements OnInit {
       this.invalidQuestionIds.update((prev) => prev.filter((id) => id !== currentQuestion.id));
     }
 
-    const nextIndex = stepper.selectedIndex + 1;
+    const nextIndex = currentIndex + 1;
     stepper.selectedIndex = nextIndex;
     this.builderState.aiInterviewStepIndex.set(nextIndex);
-    this.scrollToStep(nextIndex);
   }
 
   isQuestionCompleted(questionId: string): boolean {
@@ -324,7 +372,7 @@ export class AiInterview implements OnInit {
     });
   }
 
-  toggleMultiSelect(questionId: string, option: string) {
+  toggleMultiSelect(questionId: string, option: string): void {
     this.selectedChannels.update((current) => {
       const selected = current[questionId] || [];
       const updated = selected.includes(option)
@@ -351,7 +399,7 @@ export class AiInterview implements OnInit {
     );
   }
 
-  onNext() {
+  onNext(): void {
     const invalidIds = this.findAllInvalidQuestionIds();
     if (invalidIds.length > 0) {
       this.invalidQuestionIds.set(invalidIds);
@@ -384,7 +432,7 @@ export class AiInterview implements OnInit {
     }
 
     this.isSubmitting.set(true);
-    const toastId = toast.loading(this._localeService.translate('toast_saving_answers'));
+    this.builderState.startTransition(this._localeService.translate('toast_saving_answers'));
 
     const payload: SubmitAnswersPayload = {
       questions: this.visibleQuestions().map((q) => ({
@@ -393,25 +441,23 @@ export class AiInterview implements OnInit {
       })),
     };
 
-    this.aiInterviewApi.submitAnswers(payload).subscribe({
+    withMinDuration(this.aiInterviewApi.submitAnswers(payload), 900).subscribe({
       next: () => {
-        this.isSubmitting.set(false);
-
-        toast.success(this._localeService.translate('toast_answers_success'), { id: toastId });
-
-        // Answers alone never complete this step — the wizard guards require
-        // that submitAnswers actually reached the backend.
         this.builderState.aiInterviewSubmitted.set(true);
+        this.isSubmitting.set(false);
         this.router.navigate(['/build/validation']);
+        this.builderState.stopTransition();
+        toast.success(this._localeService.translate('toast_answers_success'));
       },
       error: (err) => {
+        this.builderState.stopTransition();
         this.isSubmitting.set(false);
-        toastApiError(err, 'toast_answers_failed', this._localeService, toastId);
+        toastApiError(err, 'toast_answers_failed', this._localeService);
       },
     });
   }
 
-  onInputEnter(event: Event) {
+  onInputEnter(event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
     if (!keyboardEvent.shiftKey) {
       keyboardEvent.preventDefault();

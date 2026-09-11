@@ -9,3 +9,4 @@ export * from './lib/publish-api';
 export * from './lib/questions-api';
 export * from './lib/themes-api';
 export * from './lib/preview-data-client';
+export * from './lib/min-duration';

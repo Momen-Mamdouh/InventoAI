@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, input, signal, effect } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  input,
+  signal,
+  effect,
+} from '@angular/core';
 
 /**
  * Reconciled from site-builder's fork (T169) — its SVG "N"-mark rendering replaced the earlier
@@ -12,23 +19,38 @@ import { ChangeDetectionStrategy, Component, input, signal, effect } from '@angu
   styleUrl: './loader.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Loader {
-  isLoading = input<boolean>(true);
-  label = input<string>('Invento AI');
-  showLabel = input<boolean>(true);
+export class Loader implements OnDestroy {
+  readonly isLoading = input<boolean>(false);
+  readonly label = input<string>('Invento AI');
+  readonly showLabel = input<boolean>(true);
 
   // This manages the actual presence in the DOM
-  protected showLoader = signal<boolean>(true);
+  protected readonly showLoader = signal<boolean>(false);
+
+  private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
-    // This effect listens for the change in the parent's isLoading signal
     effect(() => {
-      if (!this.isLoading()) {
-        // Wait for the CSS transition (0.6s) to finish before removing from DOM
-        setTimeout(() => {
+      const loading = this.isLoading();
+      if (loading) {
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId);
+          this.timeoutId = null;
+        }
+        this.showLoader.set(true);
+      } else if (this.showLoader()) {
+        this.timeoutId = setTimeout(() => {
           this.showLoader.set(false);
+          this.timeoutId = null;
         }, 600);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
   }
 }

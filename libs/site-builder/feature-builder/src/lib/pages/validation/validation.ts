@@ -48,6 +48,7 @@ import {
   BuilderState,
   DomainApi,
   ThemesApi,
+  withMinDuration,
 } from '@invento/site-builder-data-access-builder';
 import { ApiConfig } from '@invento/site-builder-data-access-preview';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
@@ -386,7 +387,7 @@ export class Validation {
     this.domainSuggestions.set([]);
     this.hintMessage.set(null);
 
-    this.domainApi
+    const pipeline$ = this.domainApi
       .confirmDomain({
         businessName: this.businessName(),
         domain: this.domain(),
@@ -397,10 +398,6 @@ export class Validation {
           if (res.hint) {
             this.hintMessage.set(res.hint);
             toast.warning(res.hint);
-          } else {
-            toast.success(
-              this._localeService.translate('validation_domain_confirmed'),
-            );
           }
         }),
         switchMap(() => {
@@ -411,29 +408,33 @@ export class Validation {
           themesRes?.themes?.length ? of(themesRes) : this.themesApi.getThemes(),
         ),
         finalize(() => this.isSubmitting.set(false)),
-      )
-      .subscribe({
-        next: (themesRes) => {
-          if (themesRes?.themes?.length) {
-            this.builderState.themes.set(themesRes.themes);
-          }
-          this.builderState.domainConfirmed.set(true);
-          this.router.navigate(['/build/preview']);
-        },
-        error: (err) => {
-          this.builderState.isNavigating.set(false);
-          this.currentStep.set('INPUT');
-          this.domainAvailability.set('unavailable');
-          if (err?.error?.suggestions) {
-            this.domainSuggestions.set(err.error.suggestions);
-          } else {
-            this.domainSuggestions.set(
-              generateAlgorithmicSuggestions(this.businessName()),
-            );
-          }
-          toastApiError(err, 'validation_domain_failed', this._localeService);
-        },
-      });
+      );
+
+    withMinDuration(pipeline$, 900).subscribe({
+      next: (themesRes) => {
+        if (themesRes?.themes?.length) {
+          this.builderState.themes.set(themesRes.themes);
+        }
+        this.builderState.domainConfirmed.set(true);
+        this.router.navigate(['/build/preview']);
+        toast.success(
+          this._localeService.translate('validation_domain_confirmed'),
+        );
+      },
+      error: (err) => {
+        this.builderState.isNavigating.set(false);
+        this.currentStep.set('INPUT');
+        this.domainAvailability.set('unavailable');
+        if (err?.error?.suggestions) {
+          this.domainSuggestions.set(err.error.suggestions);
+        } else {
+          this.domainSuggestions.set(
+            generateAlgorithmicSuggestions(this.businessName()),
+          );
+        }
+        toastApiError(err, 'validation_domain_failed', this._localeService);
+      },
+    });
   }
 }
 
