@@ -16,6 +16,9 @@ export interface PublishResponse {
   message?: string;
   success?: boolean;
   publishedUrl?: string;
+  slug?: string;
+  status?: string;
+  storeUrl?: string;
 }
 
 @Injectable({ providedIn: 'root' })

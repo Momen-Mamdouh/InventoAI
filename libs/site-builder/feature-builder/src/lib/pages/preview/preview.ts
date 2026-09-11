@@ -412,10 +412,20 @@ export class Preview {
     this.builderState.startTransition(this._localeService.translate('toast_deploying_site'));
 
     withMinDuration(this.publishApi.publishSite({ themeId: theme.id }), 900).subscribe({
-      next: () => {
+      next: (response) => {
         this.builderState.stopTransition();
         this.isDeploying.set(false);
         this.builderState.selectedTheme.set(theme.id);
+        this.builderState.hasLiveStore.set(true);
+
+        const activeSlug = response?.slug || this.builderState.domain();
+        if (activeSlug) {
+          this.builderState.domain.set(activeSlug);
+          const current = this.authService.currentUser();
+          if (current) {
+            this.authService.currentUser.set({ ...current, storeSlug: activeSlug });
+          }
+        }
 
         toast.success(this._localeService.translate('toast_deploy_success'));
 

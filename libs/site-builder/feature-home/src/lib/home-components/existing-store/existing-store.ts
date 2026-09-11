@@ -18,6 +18,7 @@ import { HlmH1, HlmP } from '@spartan/helm/typography';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { ScrollAnimateDirective } from '@invento/shared-util-directives';
 import { AuthService } from '@invento/shared-data-access-auth';
+import { BuilderState } from '@invento/site-builder-data-access-builder';
 import { ApiConfig, SITE_BUILDER_ENVIRONMENT } from '@invento/site-builder-data-access-preview';
 import { CtaButton } from '@invento/shared-ui-cta-button';
 
@@ -53,6 +54,7 @@ import { CtaButton } from '@invento/shared-ui-cta-button';
 })
 export class ExistingStore {
   private readonly authService = inject(AuthService);
+  private readonly builderState = inject(BuilderState);
   private readonly apiConfig = inject(ApiConfig);
   private readonly environment = inject(SITE_BUILDER_ENVIRONMENT);
   private readonly router = inject(Router);
@@ -60,9 +62,15 @@ export class ExistingStore {
 
   readonly isRtl = this.localeService.isRtl;
   readonly currentUser = this.authService.currentUser;
-  readonly ownerName = computed(() => this.currentUser()?.firstName || '');
+  readonly ownerName = computed(
+    () => this.currentUser()?.firstName || this.builderState.businessName() || '',
+  );
   readonly storeSlug = computed(
-    () => this.currentUser()?.storeSlug ?? this.authService.getStoreSlug() ?? '',
+    () =>
+      this.builderState.domain() ||
+      this.currentUser()?.storeSlug ||
+      this.authService.getStoreSlug() ||
+      '',
   );
 
   readonly dashboardUrl = computed(() =>

@@ -2,6 +2,8 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { BuilderState } from './builder-state';
+import { LocaleService } from '@invento/shared-util-i18n';
+import { toast } from 'ngx-sonner';
 
 /**
  * Functional guard for the wizard root (`/build`).
@@ -12,10 +14,14 @@ import { BuilderState } from './builder-state';
 export const builderResumeGuard: CanActivateFn = (): Observable<UrlTree> => {
   const builderState = inject(BuilderState);
   const router = inject(Router);
+  const localeService = inject(LocaleService);
 
   return builderState.hydrateFromBackend().pipe(
     map((outcome) => {
       if (outcome.hasLiveStore) {
+        toast.info(localeService.translate('toast_has_existing_store'), {
+          id: 'existing-store-guard-toast',
+        });
         return router.createUrlTree(['/home']);
       }
 

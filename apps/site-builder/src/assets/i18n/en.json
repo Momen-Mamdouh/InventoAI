@@ -429,5 +429,6 @@
   "existing_store_notice_desc": "Multi-store management is in active development. To build a new store today, sign out and create an account for that brand.",
   "brainstorm_resumed_notice": "Continuing with your saved brainstorm concept.",
   "interview_resumed_notice": "Continuing with your saved interview answers.",
-  "validation_resumed_notice": "Continuing with your saved domain and themes."
+  "validation_resumed_notice": "Continuing with your saved domain and themes.",
+  "toast_has_existing_store": "You already have an active store. You can currently manage one store only."
 }
