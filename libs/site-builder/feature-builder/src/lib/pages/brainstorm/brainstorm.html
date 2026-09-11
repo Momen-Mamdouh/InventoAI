@@ -1,151 +1,157 @@
-<div class="flex flex-col gap-9">
-  <div class="flex flex-col gap-2">
-    <div class="space-y-8 p-6 max-w-6xl">
-      <div class="flex flex-col gap-12 preview">
-        <div
-          class="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-3 preview-header"
-        >
-          <app-page-header
-            badgeText="brainstorm_badge"
-            [title]="!isRtl() ? 'brainstorm_title' : 'brainstorm_title_accent'"
-            [accentTitle]="!isRtl() ? 'brainstorm_title_accent' : 'brainstorm_title'"
-            description="brainstorm_desc"
-          />
-        </div>
-      </div>
-    </div>
+<div class="flex flex-col gap-8 pb-12">
+  <!-- Page Header -->
+  <div class="max-w-6xl">
+    <app-page-header
+      badgeText="brainstorm_badge"
+      [title]="!isRtl() ? 'brainstorm_title' : 'brainstorm_title_accent'"
+      [accentTitle]="!isRtl() ? 'brainstorm_title_accent' : 'brainstorm_title'"
+      description="brainstorm_desc"
+    />
   </div>
-  <div class="flex md:flex-row flex-col-reverse gap-7">
-    <div class="flex flex-col gap-5 md:w-3/5 lg:w-3/4">
+
+  <!-- Main Content Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- Left Main Column (Studio) -->
+    <div class="lg:col-span-8 flex flex-col gap-6">
+      <!-- Inspiration Starter Chips -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-semibold text-muted-foreground me-1 flex items-center gap-1.5">
+          <ng-icon name="lucideSparkles" size="14" class="text-primary" />
+          {{ 'brainstorm_inspiration_label' | translate }}
+        </span>
+        @for (chip of starterChips; track chip.id) {
+          <button
+            hlmBtn
+            variant="outline"
+            size="sm"
+            type="button"
+            (click)="applyStarterChip(chip)"
+            class="h-7 rounded-full px-3 text-xs gap-1.5 hover:border-primary hover:text-primary transition-colors cursor-pointer select-none"
+          >
+            <ng-icon [name]="chip.icon" size="13" />
+            <span>{{ chip.labelKey | translate }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Prompt Studio Card -->
       <div
-        (click)="isFocused.set(false)"
-        (keydown.escape)="isFocused.set(false)"
-        role="dialog"
-        tabindex="-1"
-        [class]="backdropClass()"
+        hlmCard
+        class="border-border bg-card shadow-sm rounded-xl overflow-hidden transition-all"
+        [class.border-destructive]="highlightErrorElement() === 'desc'"
+        [class.ring-2]="highlightErrorElement() === 'desc'"
+        [class.ring-destructive]="highlightErrorElement() === 'desc'"
+        [class.animate-shake]="highlightErrorElement() === 'desc'"
       >
         <div
-          role="document"
-          tabindex="0"
-          (click)="$event.stopPropagation()"
-          (keydown.escape)="$event.stopPropagation()"
-          [class]="
-            isFocused()
-              ? 'w-full max-w-3xl flex flex-col bg-muted border border-border rounded-md overflow-hidden shadow-2xl shadow-black/60'
-              : 'bg-muted border border-border dark:border-foreground/10 rounded-md flex flex-col overflow-hidden focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-3 transition-all'
-          "
-          [class.border-destructive]="highlightErrorElement() === 'desc'"
-          [class.ring-2]="highlightErrorElement() === 'desc'"
-          [class.ring-destructive]="highlightErrorElement() === 'desc'"
-          [class.animate-shake]="highlightErrorElement() === 'desc'"
+          hlmCardHeader
+          class="px-5 py-3 border-b border-border flex flex-row items-center justify-between bg-muted/30"
         >
-          <!-- Header -->
-          <div
-            class="flex justify-between items-center md:px-4 pl-2 border-border dark:border-foreground/10 border-b"
-          >
-            <span class="text-[0.65rem] text-primary md:text-xs tracking-wide">
-              <span class="mr-1">>_</span> {{ 'brainstorm_terminal' | translate }}
-            </span>
-
-            <!-- Exit button (focus mode) -->
-            @if (isFocused()) {
-              <button
-                hlmBtn
-                variant="ghost"
-                (click)="isFocused.set(false)"
-                class="flex items-center gap-1 text-[0.65rem] hover:text-primary tracking-widest"
-              >
-                <ng-icon name="heroXMark" /> {{ 'brainstorm_exit' | translate }}
-              </button>
-            }
-
-            <!-- Focus mode button -->
-            @else {
-              <button
-                hlmBtn
-                variant="ghost"
-                (click)="isFocused.set(true)"
-                class="flex items-center gap-1 text-[0.5rem] md:text-[0.65rem] hover:text-primary uppercase tracking-widest"
-              >
-                <ng-icon name="heroArrowsPointingOut" /> {{ 'brainstorm_focus_mode' | translate }}
-              </button>
-            }
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-primary font-bold">>_</span>
+            <h3 hlmCardTitle class="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              {{ 'brainstorm_terminal' | translate }}
+            </h3>
           </div>
 
-          <!-- Textarea -->
+          <button
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            type="button"
+            (click)="openZenStudio()"
+            class="h-7 px-2.5 text-xs text-muted-foreground hover:text-primary gap-1.5 uppercase font-medium cursor-pointer"
+          >
+            <ng-icon name="lucideMaximize2" size="13" />
+            {{ 'brainstorm_focus_mode' | translate }}
+          </button>
+        </div>
+
+        <div hlmCardContent class="p-4 sm:p-5 space-y-4">
           <textarea
             id="brainstorm-textarea"
             hlmTextarea
             dir="auto"
-            placeholder="{{ 'brainstorm_placeholder' | translate }}"
-            class="bg-transparent shadow-none border-none rounded-none outline-none focus-visible:ring-0 w-full text-base! resize-none"
-            [class]="isFocused() ? 'h-[60vh]' : 'h-60'"
+            rows="6"
             [formControl]="descriptionControl"
+            placeholder="{{ 'brainstorm_placeholder' | translate }}"
+            class="w-full resize-none border-0 p-1 bg-transparent focus-visible:ring-0 text-base leading-relaxed text-foreground shadow-none rounded-none outline-none"
           ></textarea>
 
-          <!-- Footer -->
-          <div
-            class="px-4 py-2.5 border-border dark:border-foreground/10 border-t flex items-center justify-between"
-          >
-            @switch (validationStatus()) {
-              @case ('EMPTY') {
-                <span class="flex items-center gap-1.5 text-xs text-muted-foreground tracking-wide">
-                  <ng-icon name="lucideInfo" class="text-sm" />
-                  {{ 'brainstorm_val_empty' | translate }}
+          <div class="space-y-2 pt-2 border-t border-border/50">
+            <div class="flex items-center justify-between text-xs text-muted-foreground">
+              <div class="flex items-center gap-3">
+                <span>{{ 'chars_count' | translate: { count: charCount() } }}</span>
+                <span class="text-border">|</span>
+                <span>{{ 'words_count' | translate: { count: wordCount() } }}</span>
+              </div>
+              @if (charCount() >= MIN_DESCRIPTION_LENGTH) {
+                <span class="text-emerald-500 font-medium flex items-center gap-1">
+                  <ng-icon name="lucideCheck" size="12" />
+                  {{ 'brainstorm_progress_optimal' | translate }}
+                </span>
+              } @else {
+                <span class="text-amber-500 font-medium">
+                  {{ 'brainstorm_progress_min' | translate: { min: MIN_DESCRIPTION_LENGTH } }}
                 </span>
               }
-              @case ('TOO_SHORT') {
-                <span
-                  class="flex items-center gap-1.5 text-xs text-amber-500 tracking-wide font-medium"
-                >
-                  <ng-icon name="lucideAlertTriangle" class="text-sm" />
-                  {{ 'brainstorm_val_too_short' | translate: { n: MIN_DESCRIPTION_LENGTH } }}
-                  <span class="ml-1 text-muted-foreground font-mono"
-                    >({{ descriptionControl.value.trim().length }}/{{
-                      MIN_DESCRIPTION_LENGTH
-                    }})</span
-                  >
-                </span>
-              }
-              @case ('MEANINGLESS') {
-                <span
-                  class="flex items-center gap-1.5 text-xs text-destructive tracking-wide font-medium"
-                >
-                  <ng-icon name="lucideAlertTriangle" class="text-sm" />
-                  {{ 'brainstorm_val_meaningless' | translate }}
-                </span>
-              }
-              @case ('VALID') {
-                <span
-                  class="flex items-center gap-1.5 text-xs text-emerald-500 tracking-wide font-semibold"
-                >
-                  <ng-icon name="heroCheck" class="text-sm" />
-                  {{ 'brainstorm_looks_good' | translate }}
-                </span>
-              }
-            }
+            </div>
+
+            <hlm-progress [value]="progressValue()" class="h-1.5 rounded-full bg-muted overflow-hidden">
+              <hlm-progress-indicator
+                class="h-full rounded-full transition-all"
+                [class.bg-emerald-500]="charCount() >= MIN_DESCRIPTION_LENGTH"
+                [class.bg-amber-500]="charCount() < MIN_DESCRIPTION_LENGTH"
+              />
+            </hlm-progress>
           </div>
+        </div>
+
+        <div
+          hlmCardFooter
+          class="px-5 py-3 border-t border-border/50 bg-muted/20 flex flex-wrap items-center justify-between gap-2"
+        >
+          @switch (validationStatus()) {
+            @case ('EMPTY') {
+              <span class="flex items-center gap-1.5 text-xs text-muted-foreground tracking-wide">
+                <ng-icon name="lucideInfo" size="14" />
+                {{ 'brainstorm_val_empty' | translate }}
+              </span>
+            }
+            @case ('TOO_SHORT') {
+              <span class="flex items-center gap-1.5 text-xs text-amber-500 tracking-wide font-medium">
+                <ng-icon name="lucideAlertTriangle" size="14" />
+                {{ 'brainstorm_val_too_short' | translate: { n: MIN_DESCRIPTION_LENGTH } }}
+                <span class="ms-1 text-muted-foreground font-mono">
+                  ({{ charCount() }}/{{ MIN_DESCRIPTION_LENGTH }})
+                </span>
+              </span>
+            }
+            @case ('MEANINGLESS') {
+              <span class="flex items-center gap-1.5 text-xs text-destructive tracking-wide font-medium">
+                <ng-icon name="lucideAlertTriangle" size="14" />
+                {{ 'brainstorm_val_meaningless' | translate }}
+              </span>
+            }
+            @case ('VALID') {
+              <span class="flex items-center gap-1.5 text-xs text-emerald-500 tracking-wide font-semibold">
+                <ng-icon name="lucideCheck" size="14" />
+                {{ 'brainstorm_looks_good' | translate }}
+              </span>
+            }
+          }
         </div>
       </div>
 
-      <!-- Logo Upload Zone -->
+      <!-- Logo Studio Card -->
       <div
         id="logo-dropzone"
-        class="mt-4 p-4 border-2 border-dashed border-border dark:border-foreground/10 rounded-lg flex flex-col items-center justify-center text-center cursor-pointer transition-colors relative"
-        [class.bg-muted]="!isDragging()"
-        [class.bg-primary]="isDragging()"
-        [class.border-primary]="isDragging()"
-        [class.text-primary-foreground]="isDragging()"
+        hlmCard
+        class="border-border bg-card p-5 rounded-xl transition-all relative overflow-hidden"
         [class.border-destructive]="highlightErrorElement() === 'logo'"
         [class.ring-2]="highlightErrorElement() === 'logo'"
         [class.ring-destructive]="highlightErrorElement() === 'logo'"
         [class.animate-shake]="highlightErrorElement() === 'logo'"
-        tabindex="0"
-        (keydown.enter)="fileInput.click()"
-        (click)="fileInput.click()"
-        (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave($event)"
-        (drop)="onDrop($event)"
       >
         <input
           #fileInput
@@ -156,91 +162,240 @@
         />
 
         @if (logoPreview()) {
-          <div
-            class="relative w-full max-w-50 h-32 rounded-md overflow-hidden border border-border"
-          >
-            <img
-              [src]="logoPreview()"
-              alt="Logo Preview"
-              class="w-full h-full object-contain bg-black/5"
-            />
-            <button
-              hlmBtn
-              variant="destructive"
-              size="icon"
-              class="absolute top-2 right-2 h-6 w-6 rounded-full"
-              (click)="$event.stopPropagation(); removeLogo()"
+          <div class="flex flex-col sm:flex-row items-center gap-5">
+            <div
+              class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-xl border border-border bg-muted/40 p-2 flex items-center justify-center shrink-0 overflow-hidden shadow-xs"
             >
-              <ng-icon name="heroXMark" class="text-xs" />
-            </button>
-          </div>
-        } @else if (isDragging()) {
-          <div class="flex flex-col items-center gap-2 py-4">
-            <div class="p-3 bg-primary/20 rounded-full shadow-sm animate-bounce">
-              <ng-icon name="lucideUploadCloud" class="text-primary-foreground text-4xl" />
+              <img
+                [src]="logoPreview()"
+                alt="Logo Preview"
+                class="max-w-full max-h-full object-contain"
+              />
             </div>
-            <div>
-              <p class="text-sm font-medium text-primary-foreground">
-                {{ 'brainstorm_logo_drop' | translate }}
+            <div class="flex-1 min-w-0 space-y-2 text-center sm:text-start">
+              <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <span
+                  hlmBadge
+                  variant="outline"
+                  class="text-xs border-emerald-500/30 text-emerald-500 bg-emerald-500/10 gap-1"
+                >
+                  <ng-icon name="lucideCheckCircle2" size="12" />
+                  Ready
+                </span>
+                @if (logoFile()) {
+                  <span class="text-xs text-muted-foreground font-mono truncate max-w-[200px]">
+                    {{ logoFile()?.name }}
+                  </span>
+                }
+              </div>
+              <p class="text-xs text-muted-foreground">
+                {{ 'brainstorm_logo_upload_desc' | translate }}
               </p>
+              <div class="flex items-center justify-center sm:justify-start gap-2 pt-1">
+                <button
+                  hlmBtn
+                  variant="outline"
+                  size="sm"
+                  type="button"
+                  class="h-8 gap-1.5 text-xs cursor-pointer"
+                  (click)="fileInput.click()"
+                >
+                  <ng-icon name="lucideRefreshCw" size="13" />
+                  {{ 'brainstorm_logo_change' | translate }}
+                </button>
+                <button
+                  hlmBtn
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  class="h-8 gap-1.5 text-xs text-destructive hover:bg-destructive/10 cursor-pointer"
+                  (click)="removeLogo()"
+                >
+                  <ng-icon name="lucideTrash2" size="13" />
+                  {{ 'brainstorm_logo_remove' | translate }}
+                </button>
+              </div>
             </div>
           </div>
         } @else {
-          <div class="flex flex-col items-center gap-2 py-4 pointer-events-none">
-            <div class="p-3 bg-background rounded-full shadow-sm">
-              <ng-icon name="lucideImagePlus" class="text-muted-foreground text-4xl" />
-            </div>
-            <div>
-              <p class="text-sm font-medium">
-                {{ 'brainstorm_logo_upload' | translate }}
-                <span class="text-destructive font-bold">*</span>
-              </p>
-              <p class="text-xs text-muted-foreground mt-1">
-                {{ 'brainstorm_logo_upload_desc' | translate }}
-              </p>
-            </div>
+          <div
+            tabindex="0"
+            role="button"
+            (keydown.enter)="fileInput.click()"
+            (click)="fileInput.click()"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            class="p-6 border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-center cursor-pointer transition-colors"
+            [class.border-border]="!isDragging()"
+            [class.bg-muted/30]="!isDragging()"
+            [class.bg-primary/10]="isDragging()"
+            [class.border-primary]="isDragging()"
+          >
+            @if (isDragging()) {
+              <div class="flex flex-col items-center gap-2 py-2">
+                <div class="p-3 bg-primary/20 rounded-full shadow-sm animate-bounce">
+                  <ng-icon name="lucideUploadCloud" size="32" class="text-primary" />
+                </div>
+                <p class="text-sm font-medium text-primary">
+                  {{ 'brainstorm_logo_drop' | translate }}
+                </p>
+              </div>
+            } @else {
+              <div class="flex flex-col items-center gap-2 py-2 pointer-events-none">
+                <div class="p-3 bg-background rounded-full shadow-sm border border-border">
+                  <ng-icon name="lucideImagePlus" size="28" class="text-muted-foreground" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium">
+                    {{ 'brainstorm_logo_upload' | translate }}
+                    <span class="text-destructive font-bold">*</span>
+                  </p>
+                  <p class="text-xs text-muted-foreground mt-1">
+                    {{ 'brainstorm_logo_upload_desc' | translate }}
+                  </p>
+                  <p class="text-[11px] text-muted-foreground/80 mt-1">
+                    {{ 'brainstorm_logo_formats' | translate }}
+                  </p>
+                </div>
+              </div>
+            }
           </div>
         }
       </div>
 
-      <button
-        id="initiate-btn"
-        hlmBtn
-        (click)="onNext()"
-        [disabled]="!canSubmit()"
-        class="flex items-center gap-2 disabled:hover:bg-primary md:px-9 py-7 md:w-fit disabled:cursor-not-allowed disabled:pointer-events-auto transition-all"
-        [class.ring-4]="highlightErrorElement() === 'initiate'"
-        [class.ring-destructive]="highlightErrorElement() === 'initiate'"
-        [class.animate-shake]="highlightErrorElement() === 'initiate'"
-      >
-        @if (isSubmitting()) {
-          <hlm-spinner class="text-lg" />
-          <span class="uppercase">{{ 'loading_analyzing' | translate }}</span>
-        } @else {
-          <ng-icon name="heroBolt" />
-          <span class="uppercase">{{ 'brainstorm_initiate' | translate }}</span>
-          <ng-icon name="heroArrowRight" />
-        }
-      </button>
+      <!-- Action Button -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+        <app-action-button
+          id="initiate-btn"
+          [text]="'brainstorm_initiate' | translate"
+          icon="lucideArrowRight"
+          iconSize="18"
+          [disabled]="!canSubmit()"
+          [loading]="isSubmitting()"
+          [loadingText]="'loading_analyzing' | translate"
+          (clicked)="onNext()"
+          [buttonClass]="
+            'w-full sm:w-auto ' +
+            (highlightErrorElement() === 'initiate' ? 'ring-4 ring-destructive animate-shake' : '')
+          "
+        />
+      </div>
     </div>
-    <div class="flex flex-col md:flex-1 gap-4">
-      <h2 hlmH2 class="text-muted-foreground/50 uppercase">
-        {{ 'brainstorm_context' | translate }}
-      </h2>
-      <hlm-item-group>
-        @for (item of contextChecklist; track item.id) {
-          <hlm-item variant="muted" class="border border-border">
-            <hlm-item-content>
-              <p hlmItemDescription>
-                <span hlmBadge class="bg-muted mr-2 rounded-full size-5 text-muted-foreground">{{
-                  item.id
-                }}</span
-                >{{ item.content | translate }}
-              </p>
-            </hlm-item-content>
-          </hlm-item>
-        }
-      </hlm-item-group>
+
+    <!-- Right Side Column (AI Generation Checklist) -->
+    <div class="lg:col-span-4 flex flex-col gap-6">
+      <div hlmCard class="border-border bg-card shadow-sm rounded-xl overflow-hidden sticky top-6">
+        <div hlmCardHeader class="p-5 pb-3 border-b border-border bg-muted/20">
+          <div class="flex items-center justify-between">
+            <h3 hlmCardTitle class="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              {{ 'brainstorm_context' | translate }}
+            </h3>
+            <span
+              hlmBadge
+              [variant]="fulfilledCount() === 4 ? 'default' : 'outline'"
+              class="text-xs px-2 py-0.5"
+            >
+              {{ fulfilledCount() }}/4
+            </span>
+          </div>
+          <p hlmCardDescription class="text-xs text-muted-foreground mt-1">
+            {{ 'brainstorm_missing_hint' | translate }}
+          </p>
+        </div>
+
+        <div hlmCardContent class="p-3 space-y-2">
+          @for (item of contextChecklist; track item.id) {
+            <div
+              class="flex items-start gap-3 p-3 rounded-lg border transition-all duration-200"
+              [class.bg-emerald-500/5]="checklistFulfillment()[item.id]"
+              [class.border-emerald-500/30]="checklistFulfillment()[item.id]"
+              [class.border-border]="!checklistFulfillment()[item.id]"
+              [class.bg-muted/10]="!checklistFulfillment()[item.id]"
+            >
+              @if (checklistFulfillment()[item.id]) {
+                <span
+                  class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0 mt-0.5"
+                >
+                  <ng-icon name="lucideCheck" size="12" />
+                </span>
+              } @else {
+                <span
+                  class="w-5 h-5 rounded-full bg-muted border border-border text-muted-foreground flex items-center justify-center shrink-0 mt-0.5 text-xs font-mono"
+                >
+                  {{ item.id }}
+                </span>
+              }
+              <span
+                class="text-xs leading-relaxed"
+                [class.text-foreground]="checklistFulfillment()[item.id]"
+                [class.font-medium]="checklistFulfillment()[item.id]"
+                [class.text-muted-foreground]="!checklistFulfillment()[item.id]"
+              >
+                {{ item.content | translate }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Zen Studio Dialog -->
+  @if (isFocused()) {
+    <hlm-dialog [state]="'open'" (stateChanged)="onZenDialogStateChanged($event)">
+      <hlm-dialog-content
+        *brnDialogContent="let ctx"
+        class="w-full max-w-4xl p-0 gap-0 overflow-hidden border-border bg-card shadow-2xl"
+      >
+        <hlm-dialog-header
+          class="p-6 pb-4 border-b border-border bg-muted/30 flex flex-row items-center justify-between"
+        >
+          <div>
+            <h3 hlmDialogTitle class="text-lg font-bold flex items-center gap-2">
+              <ng-icon name="lucideSparkles" size="18" class="text-primary" />
+              {{ 'zen_studio_title' | translate }}
+            </h3>
+            <p hlmDialogDescription class="text-xs text-muted-foreground mt-0.5">
+              {{ 'zen_studio_subtitle' | translate }}
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span hlmBadge variant="outline" class="text-xs font-mono">
+              {{ 'words_count' | translate: { count: wordCount() } }}
+            </span>
+            <span hlmBadge variant="outline" class="text-xs font-mono">
+              {{ 'reading_time_min' | translate: { count: readingTime() } }}
+            </span>
+          </div>
+        </hlm-dialog-header>
+
+        <div class="p-6">
+          <textarea
+            hlmTextarea
+            dir="auto"
+            [formControl]="descriptionControl"
+            placeholder="{{ 'brainstorm_placeholder' | translate }}"
+            class="w-full h-[50vh] p-4 text-lg sm:text-xl leading-relaxed resize-none border-0 bg-transparent focus-visible:ring-0 outline-none text-foreground"
+          ></textarea>
+        </div>
+
+        <hlm-dialog-footer
+          class="p-4 border-t border-border bg-muted/20 flex flex-row items-center justify-between sm:justify-between"
+        >
+          <div class="text-xs text-muted-foreground font-mono">
+            {{ 'chars_count' | translate: { count: charCount() } }}
+          </div>
+          <button
+            hlmBtn
+            type="button"
+            (click)="closeZenStudio()"
+            class="rounded-full px-6 cursor-pointer"
+          >
+            {{ 'zen_studio_done' | translate }}
+          </button>
+        </hlm-dialog-footer>
+      </hlm-dialog-content>
+    </hlm-dialog>
+  }
 </div>

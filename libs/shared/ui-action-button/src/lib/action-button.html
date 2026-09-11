@@ -1,0 +1,21 @@
+<button
+  hlmBtn
+  [type]="type()"
+  [disabled]="disabled() || loading()"
+  [attr.aria-label]="ariaLabel() || text()"
+  (click)="handleClick($event)"
+  class="group relative inline-flex items-center justify-center gap-3 px-6 py-5 rounded-full font-bold text-[15px] bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none shadow-sm select-none"
+  [class]="buttonClass()"
+>
+  @if (loading()) {
+    <hlm-spinner class="text-current text-sm" />
+    <span>{{ loadingText() || text() }}</span>
+  } @else {
+    <span>{{ text() }}</span>
+    <span
+      class="w-7 h-7 rounded-full border-2 border-current/75 flex items-center justify-center shrink-0 transition-transform duration-300 ease-out ltr:group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5"
+    >
+      <ng-icon [name]="effectiveIcon()" [size]="iconSize()" />
+    </span>
+  }
+</button>
