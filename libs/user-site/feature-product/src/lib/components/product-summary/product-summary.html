@@ -1,47 +1,118 @@
-@let p = store.product()!;
-@let cv = store.currentVariant();
-@let price = cv?.priceAmount ?? p.minPriceAmount;
-@let compare =
-  cv?.compareAtAmount ?? (p.maxPriceAmount > p.minPriceAmount && !cv ? p.maxPriceAmount : null);
-@let savings = compare ? ((compare - price) / compare) * 100 : 0;
+@if (store.product(); as p) {
+  @let cv = store.currentVariant();
+  @let price = cv?.priceAmount ?? p.minPriceAmount;
+  @let compare =
+    cv?.compareAtAmount ?? (p.maxPriceAmount > p.minPriceAmount && !cv ? p.maxPriceAmount : null);
+  @let savings = compare && compare > price ? ((compare - price) / compare) * 100 : 0;
+  @let stock = cv?.stockLeft;
 
-@if (p.categories && p.categories.length > 0) {
-  <div class="mb-3 flex items-center gap-2">
-    <div class="flex flex-wrap items-center gap-2">
-      @for (cat of p.categories; track cat.slug) {
+  <div class="space-y-4">
+    <!-- Category Tag (Top Level Navigation) -->
+    @if (p.categories && p.categories.length > 0) {
+      <div class="flex flex-wrap items-center gap-2">
+        @for (cat of p.categories; track cat.slug) {
+          <a
+            [routerLink]="['/', storeSlug(), 'products']"
+            [queryParams]="{ category: cat.slug }"
+            dir="auto"
+            class="group/cat inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-muted/60 text-foreground/80 hover:bg-primary hover:text-primary-foreground border border-border/80 hover:border-primary transition-all duration-200 shadow-2xs hover:shadow-xs active:scale-95 cursor-pointer"
+          >
+            <ng-icon
+              name="lucideTag"
+              size="12"
+              class="text-primary group-hover/cat:text-primary-foreground transition-colors"
+            />
+            <span>{{ cat.name }}</span>
+          </a>
+        }
+      </div>
+    }
+
+    <!-- Product Title & Short Description -->
+    <div>
+      <h1
+        hlmH1
+        dir="auto"
+        class="text-2xl font-bold tracking-tight text-foreground md:text-3xl leading-tight"
+      >
+        {{ p.title }}
+      </h1>
+      @if (p.shortDescription) {
+        <p dir="auto" class="mt-2 text-sm text-muted-foreground leading-relaxed">
+          {{ p.shortDescription }}
+        </p>
+      }
+    </div>
+
+    <!-- Stock Status & SKU Row (Dedicated Availability Level) -->
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-0.5">
+      @if (store.canAddToCart()) {
+        @if (stock !== null && stock !== undefined && stock <= 10) {
+          <span
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25 shadow-2xs"
+          >
+            <ng-icon name="lucideFlame" size="14" />
+            <span>{{ 'product.summary.low_stock' | translate: { count: stock } }}</span>
+          </span>
+        } @else {
+          <span
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 shadow-2xs"
+          >
+            <ng-icon name="lucideCheckCircle2" size="14" />
+            <span>{{ 'product.summary.in_stock' | translate }}</span>
+          </span>
+        }
+      } @else {
+        <span
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-destructive/10 text-destructive border border-destructive/25 shadow-2xs"
+        >
+          <ng-icon name="lucideBan" size="14" />
+          <span>{{ 'product.summary.out_of_stock' | translate }}</span>
+        </span>
+      }
+
+      @if (cv?.id) {
+        <span class="text-xs text-muted-foreground/60 font-mono">
+          {{ 'product.summary.sku_label' | translate }} {{ cv.id }}
+        </span>
+      }
+    </div>
+
+    <!-- Price & Savings Row -->
+    <div class="flex flex-wrap items-baseline gap-3 pt-1 border-b border-border/60 pb-4">
+      <span class="text-3xl font-extrabold tracking-tight text-foreground">
+        {{ price / 100 | currency }}
+      </span>
+
+      @if (compare && compare > price) {
+        <span
+          class="text-lg font-medium text-muted-foreground/70 line-through decoration-muted-foreground/50"
+        >
+          {{ compare / 100 | currency }}
+        </span>
         <span
           hlmBadge
-          dir="auto"
-          class="bg-primary/10 text-primary hover:bg-primary/20 border-transparent shadow-none"
-          >{{ cat.name }}</span
+          class="bg-destructive/10 text-destructive border-destructive/20 text-xs font-bold px-2 py-0.5 rounded-full"
         >
+          {{ 'product.summary.save' | translate: { percentage: (savings | number: '1.0-0') ?? '0' } }}
+        </span>
       }
+    </div>
+
+    <!-- Micro-Trust Value Propositions -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 py-1 text-xs text-muted-foreground">
+      <div class="flex items-center gap-2 p-2 rounded-lg bg-muted/40 border border-border/40">
+        <ng-icon name="lucideTruck" size="16" class="text-primary shrink-0" />
+        <span class="line-clamp-1">{{ 'product.summary.free_shipping' | translate }}</span>
+      </div>
+      <div class="flex items-center gap-2 p-2 rounded-lg bg-muted/40 border border-border/40">
+        <ng-icon name="lucideShieldCheck" size="16" class="text-primary shrink-0" />
+        <span class="line-clamp-1">{{ 'product.summary.secure_checkout' | translate }}</span>
+      </div>
+      <div class="flex items-center gap-2 p-2 rounded-lg bg-muted/40 border border-border/40">
+        <ng-icon name="lucideRotateCcw" size="16" class="text-primary shrink-0" />
+        <span class="line-clamp-1">{{ 'product.summary.easy_returns' | translate }}</span>
+      </div>
     </div>
   </div>
 }
-
-<h1 hlmH1 dir="auto" class="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-  {{ p.title }}
-</h1>
-@if (p.shortDescription) {
-  <p hlmP dir="auto" class="mb-5 text-base text-muted-foreground">{{ p.shortDescription }}</p>
-}
-
-<div class="flex items-center gap-3">
-  <span class="text-3xl font-bold text-primary">
-    {{ price / 100 | currency }}
-  </span>
-
-  @if (compare) {
-    <span
-      class="text-xl font-medium text-muted-foreground line-through decoration-muted-foreground/50"
-    >
-      {{ compare / 100 | currency }}
-    </span>
-    @if (savings > 0) {
-      <span hlmBadge class="bg-destructive/10 text-destructive border-transparent shadow-none ms-1">
-        {{ 'product.summary.save' | translate: { percentage: (savings | number: '1.0-0') ?? '0' } }}
-      </span>
-    }
-  }
-</div>

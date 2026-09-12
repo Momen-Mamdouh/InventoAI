@@ -173,35 +173,63 @@
       "toast_add_failed": "تعذرت إضافة المنتج إلى السلة."
     },
     "summary": {
-      "save": "وفر {{percentage}}%"
+      "save": "وفر {{percentage}}%",
+      "sku_label": "رمز المنتج:",
+      "in_stock": "متوفر في المخزون - جاهز للشحن",
+      "low_stock": "متبقي {{count}} قطع فقط في المخزون!",
+      "out_of_stock": "غير متوفر حالياً في المخزون",
+      "free_shipping": "شحن مجاني للطلبات المؤهلة",
+      "secure_checkout": "دفع آمن ومشفّر 100%",
+      "easy_returns": "ضمان استرجاع سهل خلال 30 يوماً"
     },
     "variant": {
-      "select_option": "اختر {{name}}"
+      "select_option": "اختر {{name}}",
+      "selected_label": "المحدد:",
+      "out_of_stock": "غير متوفر"
     },
     "accordion": {
       "details": "تفاصيل المنتج",
-      "specifications": "المواصفات"
+      "specifications": "المواصفات الفنية",
+      "shipping_returns": "الشحن والاسترجاع",
+      "shipping_title": "شحن سريع وموثوق",
+      "shipping_desc": "تتم معالجة الطلبات خلال 24-48 ساعة. يستغرق التوصيل العادي من 3 إلى 5 أيام عمل. يسري الشحن المجاني على الطلبات التي تتجاوز الحد الأدنى المعتمد.",
+      "returns_title": "إرجاع سهل خلال 30 يوماً",
+      "returns_desc": "لست راضياً تماماً عن طلبك؟ يمكنك إرجاع المنتجات المؤهلة بحالتها الأصلية خلال 30 يوماً لاسترداد كامل المبلغ أو الاستبدال.",
+      "warranty": "الضمان والجودة",
+      "warranty_title": "ضمان الشركة المصنعة",
+      "warranty_desc": "يشمل كل منتج ضمان استرداد الأموال لمدة 30 يوماً وضمان الشركة المصنعة المعتمد ضد عيوب الصناعة.",
+      "quality_title": "ضمان الجودة 100%",
+      "quality_subtitle": "ضمان الأصالة والجودة المعتمدة",
+      "quality_desc": "يخضع كل منتج لفحص دقيق ومعايير جودة صارمة قبل الشحن لضمان وصوله إليك بأعلى مستوى من الجودة.",
+      "features_title": "أبرز مميزات المنتج",
+      "no_specs": "لا تتوفر مواصفات فنية إضافية لهذا المنتج."
     },
     "actions": {
-      "low_stock": "تبقى {{count}} فقط في المخزون",
-      "in_stock": "متوفر",
-      "out_of_stock": "نفدت الكمية",
       "add_to_cart": "أضف إلى السلة",
-      "toast_added": "تمت إضافة {{quantity}} × \"{{title}}\" إلى السلة!"
+      "in_stock": "متوفر في المخزون",
+      "low_stock": "مخزون منخفض: متبقي {{count}}",
+      "out_of_stock": "نفد من المخزون",
+      "toast_added": "تمت إضافة {{quantity}}x من \"{{title}}\" إلى سلتك",
+      "toast_select_variant": "يرجى تحديد خيار منتج متوفر"
     },
     "recommended": {
-      "title": "موصى به لك",
-      "previous_slide": "الشريحة السابقة",
-      "next_slide": "الشريحة التالية"
+      "title": "قد يعجبك أيضاً",
+      "subtitle": "استكشف منتجات مختارة بعناية تتناسب مع اختيارك",
+      "previous_slide": "المنتجات السابقة",
+      "next_slide": "المنتجات التالية"
     },
     "stepper": {
-      "decrease": "إنقاص الكمية",
-      "increase": "زيادة الكمية"
+      "decrease": "تقليل الكمية",
+      "increase": "زيادة الكمية",
+      "quantity_label": "الكمية"
     },
     "gallery": {
-      "view_image": "عرض الصورة {{index}} من {{name}}",
+      "view_image": "عرض الصورة {{index}} لـ {{name}}",
       "carousel_previous": "الصورة السابقة",
-      "carousel_next": "الصورة التالية"
+      "carousel_next": "الصورة التالية",
+      "zoom_hint": "مرر للتكبير",
+      "image_counter": "{{current}} من {{total}}",
+      "primary_badge": "الصورة الرئيسية"
     },
     "filters": {
       "title": "التصنيفات",
@@ -247,7 +275,17 @@
     },
     "breadcrumb": {
       "shop": "المتجر",
-      "nav_label": "مسار التصفح"
+      "nav_label": "مسار التنقل",
+      "back_to_products": "الرجوع إلى المنتجات"
+    },
+    "product_details": {
+      "not_found_title": "المنتج غير موجود",
+      "not_found_desc": "العنصر الذي تبحث عنه غير متوفر أو ربما تمت إزالته من المتجر.",
+      "browse_products": "تصفح كافة المنتجات",
+      "back_home": "العودة للرئيسية"
+    },
+    "sticky_bar": {
+      "add_to_cart": "أضف إلى السلة"
     },
     "products": {
       "title": "المنتجات",
@@ -267,10 +305,6 @@
       "title": "لا تتوفر أي منتجات حالياً",
       "desc": "لم يقم هذا المتجر بإضافة أي منتجات حتى الآن. يُرجى التحقق مرة أخرى قريباً.",
       "home_btn": "العودة للرئيسية"
-    },
-    "product_details": {
-      "not_found_title": "المنتج غير موجود",
-      "not_found_desc": "قد يكون هذا المنتج قد تمت إزالته أو أن الرابط غير صحيح."
     }
   },
   "home": {

@@ -200,18 +200,20 @@
       [routerLink]="['/', activeStoreSlug(), 'checkout']"
       id="cart-icon"
       hlmBtn
-      variant="default"
+      variant="ghost"
       size="icon"
-      class="relative ms-1 h-9 w-9 sm:h-10 sm:w-10 rounded-full shadow-sm transition-transform hover:scale-105"
+      class="relative ms-1 h-9 w-9 sm:h-10 sm:w-10 rounded-xl border border-border/60 hover:border-primary/40 bg-card/40 hover:bg-accent/40 text-foreground hover:text-primary transition-all duration-200 group/cart cursor-pointer shadow-2xs hover:shadow-xs"
       [attr.aria-label]="('nav.cart' | translate) + ': ' + cartCount()"
     >
-      <ng-icon name="lucideShoppingCart" size="18" />
+      <ng-icon
+        name="lucideShoppingCart"
+        size="19"
+        class="transition-transform duration-200 group-hover/cart:scale-110"
+      />
       @if (cartCount() > 0) {
         <span
-          hlmBadge
-          variant="destructive"
           id="cart-count"
-          class="animate-in zoom-in-75 absolute -top-1.5 -end-1.5 h-5 min-w-[20px] justify-center rounded-full border-2 border-background px-1 text-[10px] font-extrabold tabular-nums duration-150"
+          class="animate-in zoom-in-75 absolute -top-1.5 -end-1.5 flex items-center justify-center min-w-[20px] h-5 px-1 rounded-full text-[11px] font-extrabold bg-primary text-primary-foreground shadow-sm ring-2 ring-background tabular-nums duration-150 pointer-events-none"
         >
           {{ cartBadge() }}
         </span>

@@ -6,7 +6,6 @@ import {
   lucideTriangleAlert,
   lucideBan,
 } from '@ng-icons/lucide';
-import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { toast } from '@spartan/helm/sonner';
 import { flyToCart } from '../../utils';
@@ -20,7 +19,7 @@ import { ProductStore } from '@invento/user-site-data-access-product';
   selector: 'app-purchase-actions',
   templateUrl: './purchase-actions.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIcon, HlmBadge, HlmButton, QuantityStepper, TranslatePipe],
+  imports: [NgIcon, HlmButton, QuantityStepper, TranslatePipe],
   providers: [
     provideIcons({ lucideCircleCheck, lucideShoppingCart, lucideTriangleAlert, lucideBan }),
   ],
@@ -37,7 +36,7 @@ export class PurchaseActions {
     const quantity = this.store.quantity();
 
     if (!product || !variant) {
-      toast.warning('Please select an available product variant.');
+      toast.warning(this.locale.translate('product.actions.toast_select_variant'));
       return;
     }
 

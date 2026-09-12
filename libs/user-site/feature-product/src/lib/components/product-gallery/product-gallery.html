@@ -1,81 +1,102 @@
-@let images = store.product()?.images ?? []; @let activeIdx = activeIndex();
-@let active = activeImage(); @let name = store.product()?.title ?? '';
-
-<div class="flex flex-col-reverse gap-3 md:flex-row">
+@let images = store.product()?.images ?? [];
+@let activeIdx = activeIndex();
+@let active = activeImage();
+@let name = store.product()?.title ?? '';
+@let savings = savingsPercentage();
+<div class="flex flex-col-reverse gap-4 md:flex-row items-start justify-center w-full max-w-[560px] mx-auto lg:mx-0">
+  <!-- Thumbnail Rail (Secondary & Primary Selector) -->
   @if (images.length > 1) {
-    <hlm-carousel
-      class="relative w-full md:w-24 block"
-      [orientation]="isDesktop() ? 'vertical' : 'horizontal'"
+    <div
+      class="flex flex-row md:flex-col gap-2.5 w-full md:w-16 lg:w-20 shrink-0 overflow-x-auto md:overflow-y-auto max-h-[440px] py-1 px-0.5 no-scrollbar"
+      role="tablist"
+      [attr.aria-label]="'product.gallery.nav_label' | translate"
     >
-      <div hlmCarouselContent class="pb-1 md:pb-0 h-96">
-        @for (img of images; track img.url || $index; let i = $index) {
-          <button
-            hlmCarouselItem
-            type="button"
-            (click)="selectImage(i)"
-            [attr.aria-pressed]="i === activeIdx"
-            [attr.aria-label]="
-              'product.gallery.view_image' | translate: { index: i + 1, name: name }
-            "
-            class="basis-auto h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 bg-card transition-colors md:h-24 md:w-full"
-            [class.border-primary]="i === activeIdx"
-            [class.border-border]="i !== activeIdx"
-          >
-            <img [src]="img.url" [alt]="img.altText || ''" class="h-full w-full object-cover" />
-          </button>
-        }
-      </div>
-      <button
-        hlmCarouselPrevious
-        class="hidden"
-        [attr.aria-label]="'product.gallery.carousel_previous' | translate"
-      ></button>
-      <button
-        hlmCarouselNext
-        class="hidden"
-        [attr.aria-label]="'product.gallery.carousel_next' | translate"
-      ></button>
-    </hlm-carousel>
+      @for (img of images; track img.url || $index; let i = $index) {
+        <button
+          type="button"
+          (click)="selectImage(i)"
+          [attr.aria-pressed]="i === activeIdx"
+          [attr.aria-label]="
+            'product.gallery.view_image' | translate: { index: i + 1, name: name }
+          "
+          class="group/thumb relative aspect-square w-14 h-14 md:w-16 md:h-16 shrink-0 overflow-hidden rounded-xl border-2 p-1 bg-card transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          [class.border-primary]="i === activeIdx"
+          [class.ring-2]="i === activeIdx"
+          [class.ring-primary/20]="i === activeIdx"
+          [class.shadow-xs]="i === activeIdx"
+          [class.scale-[1.03]]="i === activeIdx"
+          [class.border-border]="i !== activeIdx"
+          [class.opacity-70]="i !== activeIdx"
+          [class.hover:opacity-100]="i !== activeIdx"
+          [class.hover:border-primary/50]="i !== activeIdx"
+        >
+          <img
+            [src]="img.url"
+            [alt]="img.altText || ('product.gallery.view_image' | translate: { index: i + 1, name: name })"
+            class="h-full w-full object-contain rounded-lg transition-transform duration-200 group-hover/thumb:scale-105"
+            loading="lazy"
+          />
+        </button>
+      }
+    </div>
   }
 
+  <!-- Main Stage Display Container (Balanced Sizing) -->
   <div
-    class="group relative aspect-square grow overflow-hidden rounded-xl border border-border bg-card shadow-sm flex items-center justify-center cursor-zoom-in"
+    class="group relative aspect-square w-full max-w-[440px] grow overflow-hidden rounded-2xl border border-border bg-card/60 shadow-sm flex items-center justify-center select-none"
+    [class.cursor-zoom-in]="active && !isZoomed()"
+    [class.cursor-zoom-out]="active && isZoomed()"
+    (mouseenter)="onMouseEnter($event)"
     (mousemove)="onMouseMove($event)"
     (mouseleave)="onMouseLeave()"
   >
+    <!-- Discount Floating Pill -->
+    @if (savings > 0) {
+      <span
+        class="absolute top-3.5 start-3.5 z-10 px-2.5 py-1 rounded-full text-xs font-bold bg-destructive text-destructive-foreground shadow-md pointer-events-none"
+      >
+        -{{ savings }}%
+      </span>
+    }
+
+    <!-- Image Counter Chip -->
+    @if (images.length > 1) {
+      <div
+        class="absolute bottom-3.5 start-3.5 z-10 px-2.5 py-1 rounded-full text-xs font-medium bg-background/85 backdrop-blur-md border border-border/70 text-foreground shadow-sm flex items-center gap-1.5 pointer-events-none"
+      >
+        <ng-icon name="lucideImage" size="13" />
+        <span>{{ activeIdx + 1 }} / {{ images.length }}</span>
+      </div>
+    }
+
+    <!-- Interactive Desktop Zoom Hint (Only when image is available) -->
+    @if (active) {
+      <div
+        class="hidden md:flex absolute bottom-3.5 end-3.5 z-10 px-2.5 py-1 rounded-full text-xs font-medium bg-background/85 backdrop-blur-md border border-border/70 text-muted-foreground shadow-sm items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none"
+        [class.opacity-0]="isZoomed()"
+      >
+        <ng-icon name="lucideZoomIn" size="13" />
+        <span>{{ 'product.gallery.zoom_hint' | translate }}</span>
+      </div>
+    }
+
+    <!-- Active Image View -->
     @if (active) {
       <img
         [src]="active.url"
-        [alt]="active.altText || ''"
-        class="h-full w-full object-cover transition-transform duration-200 ease-out"
-        [style.transform]="isZoomed() ? 'scale(2.5)' : 'scale(1)'"
-        [style.transform-origin]="zoomOrigin()"
+        [alt]="active.altText || name"
+        class="h-full w-full max-h-[420px] object-contain p-2 md:p-3 pointer-events-none transition-transform will-change-transform"
+        [class.duration-200]="!isZoomed()"
+        [style.transform]="isZoomed() ? 'scale(2.2)' : 'scale(1)'"
+        [style.transformOrigin]="zoomOrigin()"
       />
     } @else {
       <div
-        class="w-full h-full flex items-center justify-center text-muted-foreground/50 bg-secondary transition-transform duration-200 ease-out"
-        [style.transform]="isZoomed() ? 'scale(2.5)' : 'scale(1)'"
-        [style.transform-origin]="zoomOrigin()"
+        class="w-full h-full flex flex-col items-center justify-center gap-2 text-muted-foreground/40 bg-secondary/30"
       >
-        <ng-icon name="lucideImage" size="48" />
+        <ng-icon name="lucideImage" size="52" />
+        <span class="text-xs text-muted-foreground/60 font-medium">No image available</span>
       </div>
     }
   </div>
 </div>
-
-<!-- Mo'men Comment: Why use @let instead of define it inside the ts file
-
-Zero Boilerplate (Clean TypeScript): Variables like @let images = store.product()?.images ?? [] are purely "convenience aliases" so we
-  don't have to repeatedly type store.product()?.images everywhere in the HTML. If we put this in the .ts file, we would have to write extra
-  boilerplate like images = computed(() => this.store.product()?.images ?? []);. Using @let keeps your TypeScript file strictly focused on
-  actual business logic and events, rather than cluttered with visual formatting variables.
-
-Template-Local Scope: These variables are only needed for drawing the UI. By declaring them with @let right at the top of the HTML, you
-  colocate the data directly next to the elements that consume it.
-
-Perfect Reactivity: Because store.product() is an Angular Signal, the @let variable automatically acts as a reactive binding. Whenever
-the store's product changes, the @let updates instantly and efficiently in the view. It replaces the old, messy Angular workaround of doing
-ngIf="store.product() as product".
-
-
--->

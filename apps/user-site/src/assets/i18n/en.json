@@ -173,35 +173,63 @@
       "toast_add_failed": "Could not add this product to your cart."
     },
     "summary": {
-      "save": "Save {{percentage}}%"
+      "save": "Save {{percentage}}%",
+      "sku_label": "SKU:",
+      "in_stock": "In Stock - Ready to Ship",
+      "low_stock": "Only {{count}} left in stock!",
+      "out_of_stock": "Currently Out of Stock",
+      "free_shipping": "Free shipping on eligible orders",
+      "secure_checkout": "100% Secure & encrypted checkout",
+      "easy_returns": "30-day hassle-free return guarantee"
     },
     "variant": {
-      "select_option": "Select {{name}}"
+      "select_option": "Select {{name}}",
+      "selected_label": "Selected:",
+      "out_of_stock": "Out of stock"
     },
     "accordion": {
-      "details": "Product Details",
-      "specifications": "Specifications"
+      "details": "Product Description",
+      "specifications": "Specifications",
+      "shipping_returns": "Shipping & Returns",
+      "shipping_title": "Fast & Reliable Delivery",
+      "shipping_desc": "Orders are processed within 24-48 hours. Standard delivery typically takes 3-5 business days. Free standard shipping applies to orders over qualifying thresholds.",
+      "returns_title": "Easy 30-Day Returns",
+      "returns_desc": "Not completely satisfied with your purchase? Return eligible items in their original condition within 30 days for a full refund or exchange.",
+      "warranty": "Guarantee & Warranty",
+      "warranty_title": "Manufacturer Guarantee",
+      "warranty_desc": "Every product includes a 30-day money-back guarantee and authentic manufacturer warranty against defects.",
+      "quality_title": "100% Quality Assurance",
+      "quality_subtitle": "Authenticity & Quality Guarantee",
+      "quality_desc": "Every item undergoes rigorous quality testing and inspection prior to dispatch, guaranteeing you receive the highest standard product.",
+      "features_title": "Product Highlights",
+      "no_specs": "No technical specifications available for this item."
     },
     "actions": {
-      "low_stock": "Only {{count}} left in stock",
-      "in_stock": "In Stock",
-      "out_of_stock": "Out of Stock",
       "add_to_cart": "Add to Cart",
-      "toast_added": "Added {{quantity}} × \"{{title}}\" to cart!"
+      "in_stock": "In Stock",
+      "low_stock": "Low Stock: {{count}} remaining",
+      "out_of_stock": "Out of Stock",
+      "toast_added": "Added {{quantity}}x \"{{title}}\" to your cart",
+      "toast_select_variant": "Please select an available product option"
     },
     "recommended": {
-      "title": "Recommended for You",
-      "previous_slide": "Previous slide",
-      "next_slide": "Next slide"
+      "title": "You May Also Like",
+      "subtitle": "Discover complementary products handpicked for you",
+      "previous_slide": "Previous products",
+      "next_slide": "Next products"
     },
     "stepper": {
       "decrease": "Decrease quantity",
-      "increase": "Increase quantity"
+      "increase": "Increase quantity",
+      "quantity_label": "Quantity"
     },
     "gallery": {
       "view_image": "View image {{index}} of {{name}}",
-      "carousel_previous": "Carousel Previous",
-      "carousel_next": "Carousel Next"
+      "carousel_previous": "Previous image",
+      "carousel_next": "Next image",
+      "zoom_hint": "Hover to zoom",
+      "image_counter": "{{current}} / {{total}}",
+      "primary_badge": "Primary Image"
     },
     "filters": {
       "title": "Filters",
@@ -247,7 +275,17 @@
     },
     "breadcrumb": {
       "shop": "Shop",
-      "nav_label": "Breadcrumb"
+      "nav_label": "Breadcrumb",
+      "back_to_products": "Back to products"
+    },
+    "product_details": {
+      "not_found_title": "Product Not Found",
+      "not_found_desc": "The item you are looking for does not exist or has been removed from the catalog.",
+      "browse_products": "Browse All Products",
+      "back_home": "Back to Home"
+    },
+    "sticky_bar": {
+      "add_to_cart": "Add to Cart"
     },
     "products": {
       "title": "Products",
@@ -267,10 +305,6 @@
       "title": "No products available yet",
       "desc": "This store doesn't have any products in its catalogue right now. Please check back soon.",
       "home_btn": "Back to Home"
-    },
-    "product_details": {
-      "not_found_title": "Product not found",
-      "not_found_desc": "This product might have been removed or the link is incorrect."
     }
   },
   "home": {
