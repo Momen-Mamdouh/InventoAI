@@ -12,3 +12,5 @@ export interface AppEnvironment {
 export function resolveApiBaseUrl(env: AppEnvironment, platformId: object): string {
   return isPlatformBrowser(platformId) ? env.apiUrl : env.ssrApiUrl;
 }
+
+export { NetworkService } from './lib/network.service';

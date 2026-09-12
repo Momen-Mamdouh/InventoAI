@@ -53,6 +53,7 @@ import { HlmH2, HlmH3, HlmH4, HlmMuted, HlmSmall } from '@spartan/helm/typograph
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { toast } from '@spartan/helm/sonner';
 import { toastApiError } from '../../utils/toast-api-error';
+import { CrossAppNavService } from '@invento/shared-ui-loader';
 import {
   PALETTE_DEFAULTS,
   DEFAULT_RADIUS,
@@ -135,6 +136,7 @@ export class Preview {
   private readonly publishApi = inject(PublishApi);
   private readonly authService = inject(AuthService);
   private readonly apiConfig = inject(ApiConfig);
+  private readonly crossAppNav = inject(CrossAppNavService);
 
   readonly themeSuggestions = this.previewDataClientService.themeSuggestions;
   readonly products = this.previewDataClientService.products;
@@ -435,7 +437,7 @@ export class Preview {
         );
 
         setTimeout(() => {
-          window.location.href = redirectUrl;
+          this.crossAppNav.navigateCrossApp(redirectUrl);
         }, 1000);
       },
       error: (err: { status?: number }) => {

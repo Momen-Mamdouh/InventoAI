@@ -12,46 +12,15 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <!-- Theme Switcher -->
-      <button
-        hlmBtn
-        variant="ghost"
-        size="icon"
-        class="!rounded-full hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer"
-        (click)="toggleTheme()"
-        [attr.aria-label]="'theme_switch' | translate"
-      >
-        @if (isDark()) {
-          <ng-icon name="lucideSun" size="18" />
-        } @else {
-          <ng-icon name="lucideMoon" size="18" />
-        }
-      </button>
+      <!-- System Controls: Language & Theme -->
+      <app-lang-switcher />
+      <app-theme-switcher />
 
-      <!-- Language Switcher -->
-      <button
-        hlmBtn
-        variant="ghost"
-        size="icon"
-        class="!rounded-full hover:bg-primary/10 hover:text-primary transition-colors duration-200 cursor-pointer"
-        (click)="switchLocale()"
-        [attr.aria-label]="'lang_switch' | translate"
-      >
-        <ng-icon name="lucideGlobe" size="18" />
-      </button>
+      <!-- Vertical Glass Divider -->
+      <div class="h-4 w-px bg-border/60 mx-0.5 sm:mx-1" aria-hidden="true"></div>
 
       <!-- Logout Button -->
-      <button
-        hlmBtn
-        variant="ghost"
-        size="icon"
-        class="!rounded-full text-destructive/80 hover:text-destructive hover:bg-destructive/10 transition-colors duration-200 cursor-pointer ms-1"
-        (click)="logout()"
-        [hlmTooltip]="'nav_logout' | translate"
-        [attr.aria-label]="'nav_logout' | translate"
-      >
-        <ng-icon name="lucideLogOut" size="18" />
-      </button>
+      <app-sign-out-button />
     </div>
   </header>
 

@@ -5,6 +5,8 @@ import { filter, map, startWith } from 'rxjs';
 import { Footer, Navbar } from '@invento/user-site-feature-storefront';
 import { Chatbot } from '@invento/user-site-feature-chatbot';
 import { HlmToasterImports } from '@spartan/helm/sonner';
+import { CrossAppProgress } from '@invento/shared-ui-loader';
+import { NetworkService } from '@invento/shared-util-environment';
 import {
   StoreSeoService,
   StoreThemeService,
@@ -14,7 +16,7 @@ import {
 import { ThemeService } from '@invento/shared-util-theme';
 
 @Component({
-  imports: [RouterModule, Chatbot, Navbar, Footer, HlmToasterImports],
+  imports: [RouterModule, Chatbot, Navbar, Footer, CrossAppProgress, HlmToasterImports],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -22,6 +24,8 @@ import { ThemeService } from '@invento/shared-util-theme';
 })
 export class App {
   protected title = 'user-site';
+
+  private readonly networkService = inject(NetworkService);
 
   /**
    * Both are root-provided and purely reactive, so nothing injects them otherwise and they
