@@ -18,7 +18,7 @@
       <button
         hlmBtn
         variant="outline"
-        class="flex justify-center items-center gap-3 !py-4 w-full font-medium text-base"
+        class="flex justify-center items-center gap-3 h-11 sm:h-12 rounded-xl w-full font-medium text-sm sm:text-base"
         (click)="loginWithGoogle()"
         type="button"
         [disabled]="isGoogleLoading()"
@@ -64,20 +64,30 @@
       </div>
     </div>
 
-    <div class="space-y-3 w-full text-left stagger-4">
+    <div class="space-y-3 w-full text-start stagger-4">
       <!-- Name Row -->
-      <div class="gap-4 grid grid-cols-2">
-        <div>
-          <input
-            hlmInput
-            id="firstName"
-            formControlName="firstName"
-            (blur)="registerForm.get('firstName')?.markAsTouched()"
-            [placeholder]="'auth_first_name' | translate"
-            class="px-4 !py-4 w-full text-base"
-          />
+      <div class="gap-3 sm:gap-4 grid grid-cols-2">
+        <div class="space-y-1.5">
+          <label hlmLabel for="firstName" class="text-xs sm:text-sm font-medium text-foreground block">
+            {{ 'auth_first_name_label' | translate }}
+          </label>
+          <div class="relative flex items-center group">
+            <ng-icon
+              name="lucideUser"
+              size="18"
+              class="absolute start-3 text-muted-foreground/60 transition-colors pointer-events-none group-focus-within:text-primary"
+            />
+            <input
+              hlmInput
+              id="firstName"
+              formControlName="firstName"
+              (blur)="registerForm.get('firstName')?.markAsTouched()"
+              [placeholder]="'auth_first_name' | translate"
+              class="h-11 sm:h-12 w-full rounded-xl ps-9 pe-3 bg-background/50 border-input text-sm sm:text-base placeholder:text-muted-foreground/50 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring"
+            />
+          </div>
           @if (registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid) {
-            <div class="space-y-0.5 mt-1 pl-2 text-destructive text-xs">
+            <div class="space-y-0.5 mt-0.5 ps-1 text-destructive text-xs text-start">
               @if (registerForm.get('firstName')?.errors?.['required']) {
                 <div>{{ 'auth_first_name_req' | translate }}</div>
               }
@@ -90,17 +100,27 @@
             </div>
           }
         </div>
-        <div>
-          <input
-            hlmInput
-            id="lastName"
-            formControlName="lastName"
-            (blur)="registerForm.get('lastName')?.markAsTouched()"
-            [placeholder]="'auth_last_name' | translate"
-            class="px-4 !py-4 w-full text-base"
-          />
+        <div class="space-y-1.5">
+          <label hlmLabel for="lastName" class="text-xs sm:text-sm font-medium text-foreground block">
+            {{ 'auth_last_name_label' | translate }}
+          </label>
+          <div class="relative flex items-center group">
+            <ng-icon
+              name="lucideUser"
+              size="18"
+              class="absolute start-3 text-muted-foreground/60 transition-colors pointer-events-none group-focus-within:text-primary"
+            />
+            <input
+              hlmInput
+              id="lastName"
+              formControlName="lastName"
+              (blur)="registerForm.get('lastName')?.markAsTouched()"
+              [placeholder]="'auth_last_name' | translate"
+              class="h-11 sm:h-12 w-full rounded-xl ps-9 pe-3 bg-background/50 border-input text-sm sm:text-base placeholder:text-muted-foreground/50 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring"
+            />
+          </div>
           @if (registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid) {
-            <div class="space-y-0.5 mt-1 pl-2 text-destructive text-xs">
+            <div class="space-y-0.5 mt-0.5 ps-1 text-destructive text-xs text-start">
               @if (registerForm.get('lastName')?.errors?.['required']) {
                 <div>{{ 'auth_last_name_req' | translate }}</div>
               }
@@ -116,35 +136,66 @@
       </div>
 
       <!-- Email -->
-      <div>
-        <input
-          hlmInput
-          id="email"
-          type="email"
-          formControlName="email"
-          (blur)="registerForm.get('email')?.markAsTouched()"
-          [placeholder]="'auth_email_placeholder' | translate"
-          class="px-4 !py-4 w-full text-base"
-        />
+      <div class="space-y-1.5">
+        <label hlmLabel for="registerEmail" class="text-xs sm:text-sm font-medium text-foreground block">
+          {{ 'auth_email_label' | translate }}
+        </label>
+        <div class="relative flex items-center group">
+          <ng-icon
+            name="lucideMail"
+            size="18"
+            class="absolute start-3.5 text-muted-foreground/60 transition-colors pointer-events-none group-focus-within:text-primary"
+          />
+          <input
+            hlmInput
+            id="registerEmail"
+            type="email"
+            formControlName="email"
+            (blur)="registerForm.get('email')?.markAsTouched()"
+            [placeholder]="'auth_email_placeholder' | translate"
+            class="h-11 sm:h-12 w-full rounded-xl ps-10 pe-4 bg-background/50 border-input text-sm sm:text-base placeholder:text-muted-foreground/50 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring"
+          />
+        </div>
         @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
-          <div class="mt-1 pl-2 text-destructive text-xs">{{ 'auth_email_error' | translate }}</div>
+          <div class="ps-1 pt-0.5 text-xs text-destructive text-start">{{ 'auth_email_error' | translate }}</div>
         }
       </div>
 
       <!-- Passwords Row -->
-      <div class="gap-4 grid grid-cols-2">
-        <div>
-          <input
-            hlmInput
-            id="password"
-            type="password"
-            formControlName="password"
-            (blur)="registerForm.get('password')?.markAsTouched()"
-            placeholder="Password"
-            class="px-4 !py-4 w-full text-base"
-          />
+      <div class="gap-3 sm:gap-4 grid grid-cols-2">
+        <div class="space-y-1.5">
+          <label hlmLabel for="registerPassword" class="text-xs sm:text-sm font-medium text-foreground block">
+            {{ 'auth_password_label' | translate }}
+          </label>
+          <div class="relative flex items-center group">
+            <ng-icon
+              name="lucideLock"
+              size="18"
+              class="absolute start-3 text-muted-foreground/60 transition-colors pointer-events-none group-focus-within:text-primary"
+            />
+            <input
+              hlmInput
+              id="registerPassword"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              (blur)="registerForm.get('password')?.markAsTouched()"
+              [placeholder]="'auth_password_placeholder' | translate"
+              class="h-11 sm:h-12 w-full rounded-xl ps-9 pe-9 bg-background/50 border-input text-sm sm:text-base placeholder:text-muted-foreground/50 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring"
+            />
+            <button
+              type="button"
+              hlmBtn
+              variant="ghost"
+              size="icon-sm"
+              (click)="showPassword.set(!showPassword())"
+              [attr.aria-label]="(showPassword() ? 'auth_hide_password' : 'auth_show_password') | translate"
+              class="absolute end-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer"
+            >
+              <ng-icon [name]="showPassword() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+            </button>
+          </div>
           @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
-            <div class="space-y-0.5 mt-1 pl-2 text-destructive text-xs">
+            <div class="space-y-0.5 mt-0.5 ps-1 text-destructive text-xs text-start">
               @if (registerForm.get('password')?.errors?.['required']) {
                 <div>{{ 'auth_password_error' | translate }}</div>
               }
@@ -157,18 +208,39 @@
             </div>
           }
         </div>
-        <div>
-          <input
-            hlmInput
-            id="confirmPassword"
-            type="password"
-            formControlName="confirmPassword"
-            (blur)="registerForm.get('confirmPassword')?.markAsTouched()"
-            [placeholder]="'auth_confirm_pwd' | translate"
-            class="px-4 !py-4 w-full text-base"
-          />
+        <div class="space-y-1.5">
+          <label hlmLabel for="confirmPassword" class="text-xs sm:text-sm font-medium text-foreground block">
+            {{ 'auth_confirm_password_label' | translate }}
+          </label>
+          <div class="relative flex items-center group">
+            <ng-icon
+              name="lucideLock"
+              size="18"
+              class="absolute start-3 text-muted-foreground/60 transition-colors pointer-events-none group-focus-within:text-primary"
+            />
+            <input
+              hlmInput
+              id="confirmPassword"
+              [type]="showConfirmPassword() ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              (blur)="registerForm.get('confirmPassword')?.markAsTouched()"
+              [placeholder]="'auth_confirm_pwd' | translate"
+              class="h-11 sm:h-12 w-full rounded-xl ps-9 pe-9 bg-background/50 border-input text-sm sm:text-base placeholder:text-muted-foreground/50 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring"
+            />
+            <button
+              type="button"
+              hlmBtn
+              variant="ghost"
+              size="icon-sm"
+              (click)="showConfirmPassword.set(!showConfirmPassword())"
+              [attr.aria-label]="(showConfirmPassword() ? 'auth_hide_password' : 'auth_show_password') | translate"
+              class="absolute end-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer"
+            >
+              <ng-icon [name]="showConfirmPassword() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+            </button>
+          </div>
           @if (registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched) {
-            <div class="mt-1 pl-2 text-destructive text-xs">
+            <div class="ps-1 pt-0.5 text-destructive text-xs text-start">
               {{ 'auth_pwd_mismatch' | translate }}
             </div>
           }
@@ -180,7 +252,7 @@
     <div class="mt-4 w-full stagger-5">
       <button
         hlmBtn
-        class="!py-4 w-full font-semibold text-base"
+        class="h-11 sm:h-12 w-full rounded-xl font-semibold text-sm sm:text-base"
         type="submit"
         [disabled]="isLoading()"
       >

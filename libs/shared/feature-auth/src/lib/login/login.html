@@ -18,7 +18,7 @@
       <button
         hlmBtn
         variant="outline"
-        class="flex justify-center items-center gap-3 !py-6 w-full font-medium text-base"
+        class="flex justify-center items-center gap-3 h-11 sm:h-12 rounded-xl w-full font-medium text-sm sm:text-base"
         (click)="loginWithGoogle()"
         type="button"
         [disabled]="isGoogleLoading()"
@@ -64,46 +64,81 @@
       </div>
     </div>
 
-    <!-- Email Input -->
-    <div class="space-y-4 w-full text-left stagger-4">
-      <div class="group relative">
-        <input
-          hlmInput
-          id="email"
-          type="email"
-          formControlName="email"
-          [placeholder]="'auth_email_placeholder' | translate"
-          class="px-4 !py-6 w-full text-base"
-        />
-      </div>
-      @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
-        <div class="mt-1 pl-2 text-destructive text-xs">{{ 'auth_email_error' | translate }}</div>
-      }
-
-      <!-- Password Input -->
-      <div class="group relative">
-        <input
-          hlmInput
-          id="password"
-          type="password"
-          formControlName="password"
-          [placeholder]="'auth_password_placeholder' | translate"
-          class="px-4 !py-6 w-full text-base"
-        />
-      </div>
-      @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
-        <div class="mt-1 pl-2 text-destructive text-xs">
-          {{ 'auth_password_error' | translate }}
+    <!-- Inputs Container -->
+    <div class="space-y-4 w-full text-start stagger-4">
+      <!-- Email Field -->
+      <div class="space-y-1.5">
+        <label hlmLabel for="email" class="text-xs sm:text-sm font-medium text-foreground block">
+          {{ 'auth_email_label' | translate }}
+        </label>
+        <div class="relative flex items-center group">
+          <ng-icon
+            name="lucideMail"
+            size="18"
+            class="absolute start-3.5 text-muted-foreground/60 transition-colors pointer-events-none group-focus-within:text-primary"
+          />
+          <input
+            hlmInput
+            id="email"
+            type="email"
+            formControlName="email"
+            [placeholder]="'auth_email_placeholder' | translate"
+            class="h-11 sm:h-12 w-full rounded-xl ps-10 pe-4 bg-background/50 border-input text-sm sm:text-base placeholder:text-muted-foreground/50 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring"
+          />
         </div>
-      }
+        @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
+          <div class="ps-1 pt-0.5 text-xs text-destructive text-start">
+            {{ 'auth_email_error' | translate }}
+          </div>
+        }
+      </div>
 
-      <div class="flex justify-end mt-1">
-        <a
-          [routerLink]="[authBasePath, 'forgot-password']"
-          class="font-medium text-primary text-sm hover:underline"
-          tabindex="-1"
-          >{{ 'auth_login_forgot' | translate }}</a
-        >
+      <!-- Password Field -->
+      <div class="space-y-1.5">
+        <label hlmLabel for="password" class="text-xs sm:text-sm font-medium text-foreground block">
+          {{ 'auth_password_label' | translate }}
+        </label>
+        <div class="relative flex items-center group">
+          <ng-icon
+            name="lucideLock"
+            size="18"
+            class="absolute start-3.5 text-muted-foreground/60 transition-colors pointer-events-none group-focus-within:text-primary"
+          />
+          <input
+            hlmInput
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            [placeholder]="'auth_password_placeholder' | translate"
+            class="h-11 sm:h-12 w-full rounded-xl ps-10 pe-11 bg-background/50 border-input text-sm sm:text-base placeholder:text-muted-foreground/50 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring"
+          />
+          <button
+            type="button"
+            hlmBtn
+            variant="ghost"
+            size="icon-sm"
+            (click)="showPassword.set(!showPassword())"
+            [attr.aria-label]="(showPassword() ? 'auth_hide_password' : 'auth_show_password') | translate"
+            class="absolute end-1.5 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer"
+          >
+            <ng-icon [name]="showPassword() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
+          </button>
+        </div>
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+          <div class="ps-1 pt-0.5 text-xs text-destructive text-start">
+            {{ 'auth_password_error' | translate }}
+          </div>
+        }
+
+        <div class="flex justify-end pt-1">
+          <a
+            [routerLink]="[authBasePath, 'forgot-password']"
+            class="font-medium text-primary text-xs sm:text-sm hover:underline"
+            tabindex="-1"
+          >
+            {{ 'auth_login_forgot' | translate }}
+          </a>
+        </div>
       </div>
     </div>
 
@@ -111,7 +146,7 @@
     <div class="mt-6 w-full stagger-5">
       <button
         hlmBtn
-        class="!py-6 w-full font-semibold text-base"
+        class="h-11 sm:h-12 w-full rounded-xl font-semibold text-sm sm:text-base"
         type="submit"
         [disabled]="isLoading()"
       >

@@ -28,19 +28,19 @@ import type { ClassValue } from 'clsx';
 			[style]="userStyle()"
 		>
 			<ng-template #loadingIcon>
-				<ng-icon name="lucideLoader2" class="overflow-visible! text-base [&>svg]:motion-safe:animate-spin" />
+				<ng-icon name="lucideLoader2" size="16" class="overflow-visible! text-primary [&>svg]:motion-safe:animate-spin" />
 			</ng-template>
 			<ng-template #successIcon>
-				<ng-icon name="lucideCircleCheck" class="overflow-visible! text-base" />
+				<ng-icon name="lucideCircleCheck" size="16" class="overflow-visible! text-emerald-500 dark:text-emerald-400" />
 			</ng-template>
 			<ng-template #errorIcon>
-				<ng-icon name="lucideOctagonX" class="overflow-visible! text-base" />
+				<ng-icon name="lucideOctagonX" size="16" class="overflow-visible! text-rose-500 dark:text-rose-400" />
 			</ng-template>
 			<ng-template #infoIcon>
-				<ng-icon name="lucideInfo" class="overflow-visible! text-base" />
+				<ng-icon name="lucideInfo" size="16" class="overflow-visible! text-sky-500 dark:text-sky-400" />
 			</ng-template>
 			<ng-template #warningIcon>
-				<ng-icon name="lucideTriangleAlert" class="overflow-visible! text-base" />
+				<ng-icon name="lucideTriangleAlert" size="16" class="overflow-visible! text-amber-500 dark:text-amber-400" />
 			</ng-template>
 		</brn-sonner-toaster>
 	`,
@@ -50,7 +50,7 @@ export class HlmToaster {
 		transform: booleanAttribute,
 	});
 	public readonly theme = input<ToasterProps['theme']>('light');
-	public readonly position = input<ToasterProps['position']>('bottom-right');
+	public readonly position = input<ToasterProps['position']>('bottom-center');
 	public readonly hotKey = input<ToasterProps['hotkey']>(['altKey', 'KeyT']);
 	public readonly richColors = input<ToasterProps['richColors'], BooleanInput>(false, {
 		transform: booleanAttribute,
@@ -75,7 +75,24 @@ export class HlmToaster {
 			...options,
 			classes: {
 				...options?.classes,
-				toast: hlm('rounded-2xl!', options?.classes?.toast),
+				toast: hlm(
+					'group toast rounded-2xl! border! backdrop-blur-md! shadow-xl! font-medium!',
+					'transition-all duration-300',
+					options?.classes?.toast,
+				),
+				description: hlm('text-xs! leading-relaxed! opacity-90', options?.classes?.description),
+				actionButton: hlm(
+					'rounded-xl! bg-primary! text-primary-foreground! text-xs! font-semibold! px-3! py-1.5! hover:bg-primary/90! transition-colors!',
+					options?.classes?.actionButton,
+				),
+				cancelButton: hlm(
+					'rounded-xl! bg-muted! text-muted-foreground! text-xs! font-medium! px-3! py-1.5! hover:bg-accent! transition-colors!',
+					options?.classes?.cancelButton,
+				),
+				closeButton: hlm(
+					'rounded-full! border! border-border/60! bg-background/80! hover:bg-accent! text-muted-foreground! hover:text-foreground! transition-all!',
+					options?.classes?.closeButton,
+				),
 			},
 		};
 	});
@@ -83,10 +100,10 @@ export class HlmToaster {
 	public readonly userClass = input<ClassValue>('', { alias: 'class' });
 	public readonly userStyle = input<Record<string, string>>(
 		{
-			'--normal-bg': 'var(--popover)',
+			'--normal-bg': 'color-mix(in srgb, var(--popover) 85%, transparent)',
 			'--normal-text': 'var(--popover-foreground)',
-			'--normal-border': 'var(--border)',
-			'--border-radius': 'var(--radius)',
+			'--normal-border': 'color-mix(in srgb, var(--border) 70%, transparent)',
+			'--border-radius': '1rem',
 		},
 		{ alias: 'style' },
 	);

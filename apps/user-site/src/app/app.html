@@ -1,3 +1,4 @@
+<app-cross-app-progress />
 @if (showStorefrontChrome()) {
   <app-navbar />
 }
@@ -9,7 +10,7 @@
   </div>
 }
 <hlm-toaster
-  [position]="toasterPosition()"
+  position="bottom-center"
   [theme]="toasterTheme()"
   richColors
   closeButton

@@ -1,9 +1,10 @@
+<app-cross-app-progress />
 <app-loader [isLoading]="isLoading()"></app-loader>
 <div class="bg-background">
   <router-outlet></router-outlet>
 </div>
 <hlm-toaster
-  [position]="toasterPosition()"
+  position="bottom-center"
   [theme]="toasterTheme()"
   richColors
   closeButton

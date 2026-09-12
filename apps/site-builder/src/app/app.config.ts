@@ -1,5 +1,5 @@
 import { ApplicationConfig, PLATFORM_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter, withViewTransitions } from '@angular/router';
+import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
 import { resolveApiBaseUrl } from '@invento/shared-util-environment';
 import { provideSpartanHlm } from '@spartan/helm/utils';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
@@ -11,7 +11,7 @@ import {
   withNoIncrementalHydration,
 } from '@angular/platform-browser';
 import { HlmStyleService } from '@spartan/styles';
-import { TRANSLATION_LOADER } from '@invento/shared-util-i18n';
+import { provideDirectionalitySync, TRANSLATION_LOADER } from '@invento/shared-util-i18n';
 import type { Locale } from '@invento/shared-util-i18n';
 import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
 import { BuilderState } from '@invento/site-builder-data-access-builder';
@@ -60,12 +60,17 @@ function buildAuthConfig(builderState: BuilderState, platformId: object): AuthCo
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withViewTransitions()),
+    provideRouter(
+      routes,
+      withViewTransitions(),
+      withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
+    ),
     // withFetch() is already the v22 default; naming it keeps the SSR path explicit.
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     provideClientHydration(withEventReplay(), withNoIncrementalHydration()),
     HlmStyleService,
     provideSpartanHlm(),
+    ...provideDirectionalitySync(),
     { provide: AUTH_CONFIG, useFactory: buildAuthConfig, deps: [BuilderState, PLATFORM_ID] },
     { provide: SITE_BUILDER_ENVIRONMENT, useValue: environment satisfies SiteBuilderEnvironment },
     {

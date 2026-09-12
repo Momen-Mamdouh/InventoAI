@@ -6,6 +6,34 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href="icon.png" />
+    <script>
+      (function () {
+        try {
+          var match = document.cookie.match(/(?:^|;\s*)invento_theme=([^;]+)/);
+          var theme = match ? decodeURIComponent(match[1]) : null;
+          if (theme !== 'dark' && theme !== 'light') {
+            theme = localStorage.getItem('invento_theme');
+          }
+          if (theme !== 'dark' && theme !== 'light') {
+            theme =
+              window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          }
+          var root = document.documentElement;
+          if (theme === 'dark') {
+            root.classList.add('dark');
+            root.style.colorScheme = 'dark';
+          } else {
+            root.classList.remove('dark');
+            root.style.colorScheme = 'light';
+          }
+          if (localStorage.getItem('theme')) {
+            localStorage.removeItem('theme');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <app-root></app-root>

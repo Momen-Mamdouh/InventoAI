@@ -1,18 +1,22 @@
 import {
   ApplicationConfig,
-  effect,
   inject,
   PLATFORM_ID,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { resolveApiBaseUrl } from '@invento/shared-util-environment';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { Router, provideRouter, withViewTransitions, withRouterConfig } from '@angular/router';
+import {
+  Router,
+  provideRouter,
+  withInMemoryScrolling,
+  withViewTransitions,
+  withRouterConfig,
+} from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideSpartanHlm } from '@spartan/helm/utils';
-import { Directionality, type Direction } from '@angular/cdk/bidi';
-import { LocaleService, TRANSLATION_LOADER } from '@invento/shared-util-i18n';
+import { provideDirectionalitySync, TRANSLATION_LOADER } from '@invento/shared-util-i18n';
 import type { Locale } from '@invento/shared-util-i18n';
 import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
 import { StoreSlugService, normalizeSlug } from '@invento/user-site-data-access-store';
@@ -33,6 +37,7 @@ export const appConfig: ApplicationConfig = {
       routes,
       withViewTransitions(),
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),
+      withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
     ),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideSpartanHlm(),
@@ -96,41 +101,6 @@ export const appConfig: ApplicationConfig = {
       provide: TRANSLATION_LOADER,
       useValue: (locale: Locale) => (locale === 'ar' ? ar : en),
     },
-    // Angular CDK's `Directionality` resolves the document direction ONCE, in its constructor,
-    // and never re-checks it - there is no MutationObserver on `documentElement.dir`. It only
-    // ever changes when something explicitly pushes a new value into `valueSignal`/`change`.
-    //
-    // `LocaleService.applyToDocument()` flips `documentElement.dir` imperatively whenever the
-    // locale switches, which plain CSS (`:dir()`/logical properties) picks up immediately. CDK
-    // primitives - `BrnAccordion`, `BrnNavigationMenu`, and anything else that injects
-    // `Directionality` - do NOT, because they read the cached signal from construction time, not
-    // the DOM. Without this override, switching from Arabic to English leaves those components
-    // mirrored (chevrons on the wrong side, menus running the wrong way) while the rest of the
-    // page correctly flips to LTR.
-    //
-    // The fix: override the root `Directionality` token with an instance kept in sync with
-    // `LocaleService.isRtl()` via an `effect`. `inject(LocaleService)` runs BEFORE
-    // `new Directionality()` below, so `LocaleService`'s constructor (which calls
-    // `applyToDocument` synchronously, including on the server) has already stamped the correct
-    // `dir` onto `DOCUMENT` by the time `Directionality` reads it - so first paint is correct on
-    // both server and client, in either locale, not just on subsequent switches. Do NOT delete
-    // this thinking it's redundant with CSS: CSS direction and CDK's cached direction are two
-    // separate systems that happen to agree only until the first language switch.
-    {
-      provide: Directionality,
-      useFactory: () => {
-        const locale = inject(LocaleService);
-        const directionality = new Directionality();
-
-        effect(() => {
-          const next: Direction = locale.isRtl() ? 'rtl' : 'ltr';
-          if (directionality.valueSignal() === next) return;
-          directionality.valueSignal.set(next);
-          directionality.change.emit(next);
-        });
-
-        return directionality;
-      },
-    },
+    ...provideDirectionalitySync(),
   ],
 };

@@ -21,9 +21,12 @@ import {
 } from '@invento/shared-data-access-auth';
 
 import { HlmInput } from '@spartan/helm/input';
+import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmH1 } from '@spartan/helm/typography';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideEye, lucideEyeOff, lucideLock, lucideMail, lucideUser } from '@ng-icons/lucide';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
@@ -32,7 +35,18 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-register',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmButton, HlmSpinner, HlmH1],
+  imports: [
+    TranslatePipe,
+    ReactiveFormsModule,
+    RouterLink,
+    HlmInput,
+    HlmLabel,
+    HlmButton,
+    HlmSpinner,
+    HlmH1,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideUser, lucideMail, lucideLock, lucideEye, lucideEyeOff })],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -50,6 +64,8 @@ export class Register implements OnInit, AfterViewInit {
 
   isLoading = signal(false);
   isGoogleLoading = signal(false);
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
 
   registerForm = this.fb.group(
     {

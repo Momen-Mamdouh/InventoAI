@@ -3,8 +3,20 @@
   <div
     class="w-full md:w-[45%] lg:w-[40%] flex flex-col p-4 md:p-6 lg:px-12 relative bg-background border-r border-border overflow-y-auto no-scrollbar"
   >
+    <!-- Little Center Switcher Navbar -->
+    <header class="w-full flex justify-center pt-2 pb-1">
+      <nav
+        class="inline-flex items-center gap-2 p-1.5 px-3 rounded-full bg-card/80 hover:bg-card backdrop-blur-md border border-border/60 shadow-2xs transition-all select-none"
+        aria-label="Preferences"
+      >
+        <app-lang-switcher />
+        <div class="h-4 w-px bg-border/60 mx-0.5" aria-hidden="true"></div>
+        <app-theme-switcher />
+      </nav>
+    </header>
+
     <!-- Logo at the top -->
-    <div class="flex items-center justify-center mb-8 mt-12">
+    <div class="flex items-center justify-center mb-6 mt-3">
       <img src="/light-logo.png" alt="Invento OS" class="h-16 object-contain dark:hidden" />
       <img src="/logo.png" alt="Invento OS" class="h-16 object-contain hidden dark:block" />
     </div>

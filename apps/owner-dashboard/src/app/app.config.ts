@@ -10,7 +10,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { appRoutes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideSpartanHlm } from '@spartan/helm/utils';
-import { TRANSLATION_LOADER } from '@invento/shared-util-i18n';
+import { provideDirectionalitySync, TRANSLATION_LOADER } from '@invento/shared-util-i18n';
 import type { Locale } from '@invento/shared-util-i18n';
 import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
 import { SITE_BUILDER_URL } from '@invento/owner-dashboard-util-site-builder-url';
@@ -39,6 +39,7 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideSpartanHlm(),
+    ...provideDirectionalitySync(),
     {
       provide: AUTH_CONFIG,
       useFactory: (): AuthConfig => {

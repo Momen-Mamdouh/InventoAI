@@ -1,31 +1,27 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { HlmButton } from '@spartan/helm/button';
-import {
-  lucideBell,
-  lucideGlobe,
-  lucideMoon,
-  lucideSun,
-  lucideChevronRight,
-} from '@ng-icons/lucide';
+import { lucideChevronRight } from '@ng-icons/lucide';
 import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HlmBreadcrumbImports } from '@spartan/helm/breadcrumb';
-import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
-import { ThemeService } from '@invento/shared-util-theme';
-
+import { TranslatePipe } from '@invento/shared-util-i18n';
+import { ThemeSwitcher } from '@invento/shared-ui-theme-switcher';
+import { LangSwitcher } from '@invento/shared-ui-lang-switcher';
 import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, NgIcon, HlmButton, TranslatePipe, HlmBreadcrumbImports],
+  imports: [
+    RouterLink,
+    NgIcon,
+    TranslatePipe,
+    HlmBreadcrumbImports,
+    ThemeSwitcher,
+    LangSwitcher,
+  ],
   providers: [
     provideIcons({
-      lucideBell,
-      lucideGlobe,
-      lucideMoon,
-      lucideSun,
       lucideChevronRight,
     }),
   ],
@@ -33,12 +29,9 @@ import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  protected readonly localeService = inject(LocaleService);
-  private readonly themeService = inject(ThemeService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly router = inject(Router);
 
-  protected readonly isDark = this.themeService.isDark;
   private readonly currentUrl = signal<string>(this.router.url);
 
   protected readonly breadcrumbs = computed<{ label: string; route: string }[]>(() => {
@@ -86,20 +79,5 @@ export class Header {
       .subscribe((event) => {
         this.currentUrl.set(event.urlAfterRedirects);
       });
-  }
-
-  switchLocale(): void {
-    const next = this.localeService.locale() === 'en' ? 'ar' : 'en';
-    this.localeService.switchLocale(next);
-  }
-
-  /**
-   * Delegates to the shared ThemeService rather than poking classList and
-   * localStorage directly. The hand-rolled version was invisible to the rest of
-   * the app — App could not read it to theme the toaster — and being
-   * localStorage-only it flashed the wrong theme on every SSR load.
-   */
-  toggleTheme(): void {
-    this.themeService.toggle();
   }
 }
