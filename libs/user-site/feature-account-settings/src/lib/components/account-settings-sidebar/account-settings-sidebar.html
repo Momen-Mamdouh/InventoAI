@@ -1,25 +1,54 @@
-<aside class="flex flex-row md:flex-col justify-between gap-2 md:gap-0 w-full md:w-60 md:h-full">
-  <nav class="flex flex-row md:flex-col gap-1 pb-1 md:pb-0 md:overflow-visible overflow-x-auto">
-    @for (item of navItems(); track item.route) {
+<aside class="flex flex-col gap-4 w-full md:w-64 shrink-0">
+  <!-- Segmented Navigation Tab Pill List -->
+  <nav
+    class="flex flex-row md:flex-col gap-1.5 p-1.5 rounded-2xl bg-muted/50 border border-border/60 overflow-x-auto scrollbar-none"
+  >
+    @for (item of navItems(); track item.id) {
       <a
-        [routerLink]="item.route"
-        routerLinkActive="bg-primary/20 text-primary hover:bg-primary/20"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="flex items-center gap-2 md:gap-3 hover:bg-muted px-3 py-2 rounded-lg font-medium text-muted-foreground text-sm whitespace-nowrap transition-colors"
+        [routerLink]="item.path"
+        (click)="onNavClick(item.path, $event)"
+        routerLinkActive="bg-background text-primary font-semibold shadow-xs border-border/80"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [class.bg-background]="isCurrentRoute(item.path)"
+        [class.text-primary]="isCurrentRoute(item.path)"
+        [class.font-semibold]="isCurrentRoute(item.path)"
+        [class.shadow-xs]="isCurrentRoute(item.path)"
+        [class.border-border/80]="isCurrentRoute(item.path)"
+        class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl font-medium text-muted-foreground text-sm whitespace-nowrap transition-all duration-200 border border-transparent hover:text-foreground hover:bg-background/50 min-h-[44px] cursor-pointer"
       >
         <ng-icon [name]="item.icon" size="18" />
-        {{ item.label }}
+        <span class="flex-1">{{ item.label }}</span>
       </a>
     }
   </nav>
 
-  <button
-    hlmBtn
-    variant="ghost"
-    type="button"
-    class="hidden md:flex justify-start gap-3 hover:bg-destructive/10 w-full text-destructive hover:text-destructive"
+  <!-- Support Assistance Card (Desktop) -->
+  <div
+    class="hidden md:flex flex-col gap-3 p-4 rounded-2xl border border-border/70 bg-gradient-to-b from-card/80 to-muted/30 shadow-xs"
   >
-    <ng-icon name="lucideTrash2" size="18" />
-    {{ 'account_settings.delete_account' | translate }}
-  </button>
+    <div class="flex items-center gap-2.5 text-primary">
+      <div class="p-1.5 rounded-lg bg-primary/10 flex items-center justify-center">
+        <ng-icon name="lucideHelpCircle" size="18" />
+      </div>
+      <span class="text-xs font-bold uppercase tracking-wider">
+        {{ 'account_settings.sidebar.help_title' | translate }}
+      </span>
+    </div>
+    <p class="text-xs text-muted-foreground leading-relaxed">
+      {{ 'account_settings.sidebar.help_desc' | translate }}
+    </p>
+    <a
+      [routerLink]="['/', storeSlug(), 'faq']"
+      (click)="onNavClick(['/', storeSlug(), 'faq'], $event)"
+      class="inline-flex items-center justify-between text-xs font-semibold text-primary hover:underline group pt-1 cursor-pointer"
+    >
+      <span>{{ 'account_settings.sidebar.help_cta' | translate }}</span>
+      <ng-icon
+        name="lucideChevronRight"
+        size="14"
+        class="transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180"
+      />
+    </a>
+  </div>
 </aside>
+

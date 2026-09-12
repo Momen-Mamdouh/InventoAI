@@ -21,7 +21,7 @@ import { GenericSelectImports, GenericSelectOption } from '@invento/shared-ui-ge
 import { SearchInput } from '@invento/shared-ui-search-input';
 import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideInfo, lucideSearchX } from '@ng-icons/lucide';
+import { lucideInfo, lucideSearchX, lucideFilter, lucideLayoutGrid, lucideLayoutList } from '@ng-icons/lucide';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { HlmButton } from '@spartan/helm/button';
 
@@ -45,7 +45,15 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
     HlmButton,
     TranslatePipe,
   ],
-  providers: [provideIcons({ lucideInfo, lucideSearchX })],
+  providers: [
+    provideIcons({
+      lucideInfo,
+      lucideSearchX,
+      lucideFilter,
+      lucideLayoutGrid,
+      lucideLayoutList,
+    }),
+  ],
 })
 export class ProductsToolbar implements OnInit, OnDestroy {
   /** Multi-tenant: the slug in the URL, not the build-time fallback constant. */
@@ -54,6 +62,11 @@ export class ProductsToolbar implements OnInit, OnDestroy {
   public readonly title = input<string>('Products');
   public readonly count = input<number>(0);
   public readonly sort = input<SortOption>('relevance');
+  public readonly activeFilterCount = input<number>(0);
+  public readonly density = input<'comfortable' | 'compact'>('comfortable');
+
+  public readonly openMobileFilter = output<void>();
+  public readonly densityChange = output<'comfortable' | 'compact'>();
 
   private readonly localeService = inject(LocaleService);
 

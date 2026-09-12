@@ -1,8 +1,23 @@
-<nav hlmBreadcrumb [attr.aria-label]="'product.breadcrumb.nav_label' | translate" class="mb-4">
+<nav
+  hlmBreadcrumb
+  [attr.aria-label]="'product.breadcrumb.nav_label' | translate"
+  class="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm"
+>
   <ul
     hlmBreadcrumbList
-    class="flex items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5"
+    class="flex items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2"
   >
+    <!-- Back to Products quick link -->
+    <li class="inline-flex items-center">
+      <a
+        [routerLink]="['/', storeSlug(), 'products']"
+        class="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors pe-2 border-e border-border/80 me-1"
+      >
+        <ng-icon name="lucideArrowLeft" size="14" class="rtl:rotate-180" />
+        <span>{{ 'product.breadcrumb.back_to_products' | translate }}</span>
+      </a>
+    </li>
+
     <li hlmBreadcrumbItem class="inline-flex items-center gap-1.5">
       <a hlmBreadcrumbLink [routerLink]="['/', storeSlug(), 'products']">
         {{ 'product.breadcrumb.shop' | translate }}
@@ -11,7 +26,7 @@
     </li>
     @if (store.product(); as product) {
       @if (product.categories && product.categories.length > 0) {
-        <li hlmBreadcrumbItem class="hidden md:inline-flex items-center gap-1.5">
+        <li hlmBreadcrumbItem class="hidden sm:inline-flex items-center gap-1.5">
           <a
             hlmBreadcrumbLink
             dir="auto"
@@ -20,16 +35,18 @@
           >
             {{ product.categories[0]?.name }}
           </a>
+          <span hlmBreadcrumbSeparator class="flex items-center"></span>
         </li>
-        <li hlmBreadcrumbItem class="md:hidden inline-flex items-center gap-1.5">
-          <span hlmBreadcrumbEllipsis></span>
-        </li>
-        <span hlmBreadcrumbSeparator class="flex items-center"></span>
       }
       <li hlmBreadcrumbItem class="inline-flex items-center gap-1.5">
-        <span hlmBreadcrumbPage dir="auto" class="text-foreground font-semibold">{{
-          product.title
-        }}</span>
+        <span
+          hlmBreadcrumbPage
+          dir="auto"
+          class="text-foreground font-semibold truncate max-w-[180px] sm:max-w-xs md:max-w-sm"
+          [title]="product.title"
+        >
+          {{ product.title }}
+        </span>
       </li>
     }
   </ul>

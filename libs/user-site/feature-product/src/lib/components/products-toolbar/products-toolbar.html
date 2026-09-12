@@ -1,16 +1,39 @@
 <div
-  class="flex sm:flex-row flex-col justify-between sm:items-center gap-3 bg-card p-4 border border-border rounded-xl"
+  class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-card p-4 border border-border rounded-xl shadow-xs"
 >
-  <!-- Title -->
-  <div class="flex items-center gap-2 shrink-0">
-    <h4 hlmH4 class="m-0 font-semibold text-foreground text-xl">{{ title() }}</h4>
-    <span hlmBadge variant="secondary" class="text-xs"
-      >{{ count() }} {{ 'product.toolbar.items' | translate }}</span
+  <!-- Title & Mobile Filter Trigger -->
+  <div class="flex items-center justify-between gap-3 shrink-0">
+    <div class="flex items-center gap-2">
+      <h4 hlmH4 class="m-0 font-semibold text-foreground text-xl">{{ title() }}</h4>
+      <span hlmBadge variant="secondary" class="text-xs font-medium">
+        {{ count() }} {{ 'product.toolbar.items' | translate }}
+      </span>
+    </div>
+
+    <!-- Mobile Filter Drawer Trigger (visible on < md) -->
+    <button
+      hlmBtn
+      variant="outline"
+      size="sm"
+      (click)="openMobileFilter.emit()"
+      class="md:hidden flex items-center gap-1.5 h-9 px-3 rounded-lg border-border hover:bg-muted/80"
     >
+      <ng-icon name="lucideFilter" size="16" class="text-foreground" />
+      <span class="text-xs font-semibold">{{ 'product.toolbar.filter_btn' | translate }}</span>
+      @if (activeFilterCount() > 0) {
+        <span
+          hlmBadge
+          variant="default"
+          class="h-5 min-w-5 px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center bg-primary text-primary-foreground"
+        >
+          {{ activeFilterCount() }}
+        </span>
+      }
+    </button>
   </div>
 
   <!-- Search -->
-  <div class="relative flex-1 sm:max-w-sm">
+  <div class="relative flex-1 md:max-w-sm">
     <app-search-input
       [control]="searchControl"
       [isInvalid]="searchControl.invalid && searchControl.value?.length === 1"
@@ -21,7 +44,7 @@
 
     @if (showSuggestions()) {
       <div
-        class="absolute top-full inset-s-0 z-50 w-full mt-2 bg-card border border-border shadow-lg rounded-xl overflow-hidden flex flex-col"
+        class="absolute top-full inset-s-0 z-50 w-full mt-2 bg-popover/95 dark:bg-card/95 text-popover-foreground border border-border shadow-2xl backdrop-blur-md rounded-xl overflow-hidden flex flex-col"
       >
         @if (searchControl.invalid && searchTerm().length === 1) {
           <!-- Validation State -->
@@ -64,7 +87,7 @@
                   hlmBtn
                   variant="ghost"
                   (click)="onSuggestionClick(suggestion)"
-                  class="w-full text-left px-4 py-6 rounded-none flex items-center justify-between transition-colors border-b border-border/50 last:border-0"
+                  class="w-full text-start px-4 py-6 rounded-none flex items-center justify-between transition-colors border-b border-border/50 last:border-0"
                 >
                   <span hlmP dir="auto" class="truncate font-medium m-0">{{
                     suggestion.title
@@ -96,16 +119,53 @@
     }
   </div>
 
-  <!-- Sort -->
-  <div class="flex items-center gap-2 shrink-0 z-50">
-    <span hlmSmall class="text-muted-foreground text-sm">{{
-      'product.toolbar.sort_by' | translate
-    }}</span>
-    <app-generic-select
-      [options]="sortOptions"
-      [value]="sort()"
-      triggerWidth="w-[180px]"
-      (valueChange)="onSortChange($event)"
-    />
+  <!-- Controls: Density Switcher & Sort -->
+  <div class="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
+    <!-- Grid Density Switcher (visible on sm+) -->
+    <div class="hidden sm:flex items-center p-1 bg-muted/60 border border-border rounded-lg gap-0.5">
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon"
+        [class.bg-card]="density() === 'comfortable'"
+        [class.shadow-xs]="density() === 'comfortable'"
+        [class.text-foreground]="density() === 'comfortable'"
+        [class.text-muted-foreground]="density() !== 'comfortable'"
+        (click)="densityChange.emit('comfortable')"
+        class="h-8 w-8 rounded-md p-0 transition-colors"
+        [attr.aria-label]="'product.toolbar.view_comfortable' | translate"
+        [title]="'product.toolbar.view_comfortable' | translate"
+      >
+        <ng-icon name="lucideLayoutGrid" size="16" />
+      </button>
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon"
+        [class.bg-card]="density() === 'compact'"
+        [class.shadow-xs]="density() === 'compact'"
+        [class.text-foreground]="density() === 'compact'"
+        [class.text-muted-foreground]="density() !== 'compact'"
+        (click)="densityChange.emit('compact')"
+        class="h-8 w-8 rounded-md p-0 transition-colors"
+        [attr.aria-label]="'product.toolbar.view_compact' | translate"
+        [title]="'product.toolbar.view_compact' | translate"
+      >
+        <ng-icon name="lucideLayoutList" size="16" />
+      </button>
+    </div>
+
+    <!-- Sort Dropdown -->
+    <div class="flex items-center gap-2">
+      <span hlmSmall class="text-muted-foreground text-sm hidden lg:inline">
+        {{ 'product.toolbar.sort_by' | translate }}
+      </span>
+      <app-generic-select
+        [options]="sortOptions"
+        [value]="sort()"
+        triggerWidth="w-[150px] sm:w-[170px]"
+        (valueChange)="onSortChange($event)"
+      />
+    </div>
   </div>
 </div>

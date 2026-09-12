@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
-import { Footer, Navbar } from '@invento/user-site-feature-storefront';
+import { Footer, Navbar, StoreLoader } from '@invento/user-site-feature-storefront';
 import { Chatbot } from '@invento/user-site-feature-chatbot';
 import { HlmToasterImports } from '@spartan/helm/sonner';
 import { CrossAppProgress } from '@invento/shared-ui-loader';
@@ -16,7 +16,15 @@ import {
 import { ThemeService } from '@invento/shared-util-theme';
 
 @Component({
-  imports: [RouterModule, Chatbot, Navbar, Footer, CrossAppProgress, HlmToasterImports],
+  imports: [
+    RouterModule,
+    Chatbot,
+    Navbar,
+    Footer,
+    CrossAppProgress,
+    HlmToasterImports,
+    StoreLoader,
+  ],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',

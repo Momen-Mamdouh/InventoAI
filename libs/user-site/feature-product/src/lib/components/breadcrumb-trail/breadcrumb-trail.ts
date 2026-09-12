@@ -3,7 +3,8 @@ import { ProductStore } from '@invento/user-site-data-access-product';
 import { HlmBreadcrumbImports } from '@spartan/helm/breadcrumb';
 import { hlmUl } from '@spartan/helm/typography';
 import { RouterModule } from '@angular/router';
-
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideArrowLeft } from '@ng-icons/lucide';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreSlugService } from '@invento/user-site-data-access-store';
 
@@ -11,7 +12,8 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
   selector: 'app-breadcrumb-trail',
   templateUrl: './breadcrumb-trail.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HlmBreadcrumbImports, RouterModule, TranslatePipe],
+  imports: [HlmBreadcrumbImports, RouterModule, TranslatePipe, NgIcon],
+  providers: [provideIcons({ lucideArrowLeft })],
 })
 export class BreadcrumbTrail {
   protected readonly hlmUl = hlmUl;

@@ -1,6 +1,12 @@
 {
   "lang_switch": "العربية",
   "app_name": "My Store",
+  "store_loader": {
+    "welcome": "Welcome to",
+    "loading": "Loading...",
+    "preparing": "Preparing your shopping experience...",
+    "navigating": "Loading page..."
+  },
   "nav": {
     "home": "Home",
     "shop": "Shop",
@@ -25,7 +31,8 @@
     "customer_service": "Customer Service",
     "faq": "FAQ",
     "rights": "All rights reserved.",
-    "social_email": "Email us"
+    "social_email": "Email us",
+    "back_to_top": "Back to top"
   },
   "pagination": {
     "showing": "Showing {{from}}–{{to}} of {{total}}",
@@ -43,6 +50,8 @@
     "search_aria": "Search frequently asked questions",
     "total_questions": "Total Questions",
     "categories": "Categories",
+    "category_single": "Category",
+    "category_plural": "Categories",
     "support": "Support",
     "error_title": "Unable to Load FAQs",
     "try_again": "Try Again",
@@ -58,7 +67,28 @@
     "cta_desc": "Can't find the answer you're looking for? Reach out to our customer support team or use our AI assistant for immediate help.",
     "contact_support": "Contact Support",
     "help_center_badge": "Help Center & FAQs",
-    "show_all": "Show all"
+    "show_all": "Show all",
+    "quick_topics_label": "Popular topics:",
+    "quick_topic_shipping": "Shipping & Delivery",
+    "quick_topic_returns": "Returns & Refunds",
+    "quick_topic_sizing": "Size Guide",
+    "quick_topic_payment": "Payment Methods",
+    "quick_topic_orders": "Order Tracking",
+    "copy_link": "Copy link to answer",
+    "link_copied": "Link copied to clipboard!",
+    "helpful_question": "Was this answer helpful?",
+    "helpful_yes": "Yes",
+    "helpful_no": "No",
+    "helpful_thank_you": "Thank you for your feedback!",
+    "ask_ai_assistant": "Ask AI Assistant",
+    "ai_assistant_desc": "Get immediate answers to your specific queries 24/7 with our store AI.",
+    "ai_assistant_badge": "24/7 Instant Answers",
+    "email_support": "Email Store Support",
+    "email_support_desc": "Need personalized assistance? Send our support team a direct message.",
+    "reply_time_badge": "Replies within 24h",
+    "support_active_badge": "Support Active",
+    "results_found": "matching questions",
+    "all_questions": "All Questions"
   },
   "no_store": {
     "title": "No store selected",
@@ -165,40 +195,70 @@
     "card": {
       "add_to_cart": "Add",
       "out_of_stock": "Out of Stock",
+      "sale_badge": "Sale",
+      "save_percentage": "Save {{percentage}}%",
       "toast_added": "Added “{{title}}” to your cart",
       "toast_out_of_stock": "This product is currently out of stock.",
       "toast_add_failed": "Could not add this product to your cart."
     },
     "summary": {
-      "save": "Save {{percentage}}%"
+      "save": "Save {{percentage}}%",
+      "sku_label": "SKU:",
+      "in_stock": "In Stock - Ready to Ship",
+      "low_stock": "Only {{count}} left in stock!",
+      "out_of_stock": "Currently Out of Stock",
+      "free_shipping": "Free shipping on eligible orders",
+      "secure_checkout": "100% Secure & encrypted checkout",
+      "easy_returns": "30-day hassle-free return guarantee"
     },
     "variant": {
-      "select_option": "Select {{name}}"
+      "select_option": "Select {{name}}",
+      "selected_label": "Selected:",
+      "out_of_stock": "Out of stock"
     },
     "accordion": {
-      "details": "Product Details",
-      "specifications": "Specifications"
+      "details": "Product Description",
+      "specifications": "Specifications",
+      "shipping_returns": "Shipping & Returns",
+      "shipping_title": "Fast & Reliable Delivery",
+      "shipping_desc": "Orders are processed within 24-48 hours. Standard delivery typically takes 3-5 business days. Free standard shipping applies to orders over qualifying thresholds.",
+      "returns_title": "Easy 30-Day Returns",
+      "returns_desc": "Not completely satisfied with your purchase? Return eligible items in their original condition within 30 days for a full refund or exchange.",
+      "warranty": "Guarantee & Warranty",
+      "warranty_title": "Manufacturer Guarantee",
+      "warranty_desc": "Every product includes a 30-day money-back guarantee and authentic manufacturer warranty against defects.",
+      "quality_title": "100% Quality Assurance",
+      "quality_subtitle": "Authenticity & Quality Guarantee",
+      "quality_desc": "Every item undergoes rigorous quality testing and inspection prior to dispatch, guaranteeing you receive the highest standard product.",
+      "features_title": "Product Highlights",
+      "no_specs": "No technical specifications available for this item."
     },
     "actions": {
-      "low_stock": "Only {{count}} left in stock",
-      "in_stock": "In Stock",
-      "out_of_stock": "Out of Stock",
       "add_to_cart": "Add to Cart",
-      "toast_added": "Added {{quantity}} × \"{{title}}\" to cart!"
+      "in_stock": "In Stock",
+      "low_stock": "Low Stock: {{count}} remaining",
+      "out_of_stock": "Out of Stock",
+      "toast_added": "Added {{quantity}}x \"{{title}}\" to your cart",
+      "toast_select_variant": "Please select an available product option"
     },
     "recommended": {
-      "title": "Recommended for You",
-      "previous_slide": "Previous slide",
-      "next_slide": "Next slide"
+      "title": "You May Also Like",
+      "subtitle": "Discover complementary products handpicked for you",
+      "previous_slide": "Previous products",
+      "next_slide": "Next products"
     },
     "stepper": {
       "decrease": "Decrease quantity",
-      "increase": "Increase quantity"
+      "increase": "Increase quantity",
+      "quantity_label": "Quantity"
     },
     "gallery": {
       "view_image": "View image {{index}} of {{name}}",
-      "carousel_previous": "Carousel Previous",
-      "carousel_next": "Carousel Next"
+      "carousel_previous": "Previous image",
+      "carousel_next": "Next image",
+      "zoom_hint": "Hover to zoom",
+      "image_counter": "{{current}} / {{total}}",
+      "primary_badge": "Primary Image"
     },
     "filters": {
       "title": "Filters",
@@ -208,10 +268,17 @@
       "price_range": "Price Range",
       "in_stock_only": "In Stock Only",
       "empty_title": "No filters found",
-      "empty_description": "We couldn't load any filters for your current search."
+      "empty_description": "We couldn't load any filters for your current search.",
+      "all_categories": "All Categories",
+      "mobile_desc": "Refine and filter products",
+      "show_results": "Show {{count}} Products",
+      "show_all_results": "Show Products"
     },
     "toolbar": {
       "items": "Items",
+      "filter_btn": "Filters",
+      "view_comfortable": "Comfortable grid",
+      "view_compact": "Compact grid",
       "search_placeholder": "Search products...",
       "search_validation": "Keep typing... enter at least 2 characters to search.",
       "searching_for": "Searching for \"{{term}}\"...",
@@ -226,24 +293,51 @@
       "sort_title_asc": "Title: A-Z",
       "sort_title_desc": "Title: Z-A"
     },
+    "chips": {
+      "active_filters": "Active filters:",
+      "clear_all": "Clear all",
+      "category": "Category: {{name}}",
+      "price_under": "Under {{price}}",
+      "in_stock": "In stock only",
+      "search": "Search: \"{{query}}\"",
+      "attr": "{{key}}: {{value}}"
+    },
     "breadcrumb": {
       "shop": "Shop",
-      "nav_label": "Breadcrumb"
+      "nav_label": "Breadcrumb",
+      "back_to_products": "Back to products"
+    },
+    "product_details": {
+      "not_found_title": "Product Not Found",
+      "not_found_desc": "The item you are looking for does not exist or has been removed from the catalog.",
+      "browse_products": "Browse All Products",
+      "back_home": "Back to Home"
+    },
+    "sticky_bar": {
+      "add_to_cart": "Add to Cart"
     },
     "products": {
       "title": "Products",
+      "subtitle": "Explore our full catalogue of handcrafted, quality items.",
       "did_you_mean": "Showing results for <span class=\"font-bold\">{{term}}</span> instead of your original search.",
       "no_products": "No products found",
       "no_products_desc": "Try adjusting your filters or search terms to find what you're looking for.",
       "clear_all": "Clear all filters"
     },
-    "product_details": {
-      "not_found_title": "Product not found",
-      "not_found_desc": "This product might have been removed or the link is incorrect."
+    "empty_filtered": {
+      "title": "No products match your filters",
+      "search_title": "No results found for \"{{query}}\"",
+      "desc": "Try adjusting your search terms or clearing some filters to see more products.",
+      "clear_btn": "Clear all filters"
+    },
+    "empty_store": {
+      "title": "No products available yet",
+      "desc": "This store doesn't have any products in its catalogue right now. Please check back soon.",
+      "home_btn": "Back to Home"
     }
   },
   "home": {
-    "badge": "New Collection",
+    "badge": "Official Store • Open for Orders",
     "hero_fallback_title": "Welcome to our store",
     "hero_fallback_subtitle": "Browse the collection and find something you love.",
     "shop_now": "Shop Now",
@@ -252,35 +346,90 @@
     "featured_products": "Featured Products",
     "view_all": "View All",
     "about": "About this store",
+    "about_eyebrow": "Our Story",
     "all_categories": "See all categories",
+    "empty_badge": "Full Catalogue Available",
     "empty_title": "Nothing featured yet",
-    "empty_description": "This store has not highlighted anything on its landing page yet. The full catalogue is still available.",
+    "empty_description": "This store has not highlighted specific items on its landing page yet, but the full catalogue is open and ready for orders.",
+    "empty_browse_cta": "Explore Catalogue",
+    "empty_help_cta": "Help & FAQ",
+    "empty_orders_cta": "Track Orders",
     "browse_products": "Browse the catalogue",
     "error_title": "We could not load this store",
     "error_message": "Something went wrong while fetching the storefront. Please try again.",
     "retry": "Try again",
     "value_secure_title": "Secure checkout",
-    "value_secure_body": "Your order and payment details stay protected.",
+    "value_secure_body": "Your order and payment details stay protected with 256-bit encryption.",
     "value_orders_title": "Track your orders",
-    "value_orders_body": "Follow every order from confirmation to delivery.",
+    "value_orders_body": "Follow every order in real-time from confirmation to delivery.",
     "value_help_title": "Questions answered",
-    "value_help_body": "Read the store FAQ or ask the assistant anything."
+    "value_help_body": "Read the store FAQ or ask our AI assistant anything.",
+    "curated_badge": "Curated Selection",
+    "all_filter": "All Products",
+    "trust_verified": "Verified Merchant",
+    "trust_delivery": "Fast Delivery",
+    "items_count": "{{count}} items",
+    "promo_badge": "Special Highlight",
+    "promo_title": "Curated Quality, Thoughtfully Delivered",
+    "promo_desc": "Every product in our collection is handpicked to meet our high standards of quality, craftsmanship, and sustainability.",
+    "promo_cta": "Explore Collection",
+    "newsletter_badge": "VIP Community",
+    "newsletter_title": "Stay in the Loop",
+    "newsletter_desc": "Subscribe for early access to new collections, exclusive drops, and insider member perks.",
+    "newsletter_placeholder": "Enter your email address...",
+    "newsletter_btn": "Subscribe",
+    "newsletter_subscribed": "Subscribed!",
+    "newsletter_privacy": "We respect your privacy. Unsubscribe at any time.",
+    "newsletter_toast_success": "Thank you for subscribing to our updates!",
+    "newsletter_toast_invalid": "Please enter a valid email address."
   },
   "checkout": {
     "nav": {
-      "back_to_orders": "Back to My Orders"
+      "back_to_orders": "Back to My Orders",
+      "back_to_store": "Back to Store"
+    },
+    "breadcrumbs": {
+      "store": "Store",
+      "cart": "Cart",
+      "checkout": "Checkout"
+    },
+    "steps": {
+      "information": "Information",
+      "shipping": "Shipping",
+      "payment": "Payment"
     },
     "page": {
       "title": "Checkout",
-      "subtitle": "Review the items and complete your delivery details below."
+      "subtitle": "Review your order and complete delivery details below."
+    },
+    "guest": {
+      "badge": "Guest Checkout",
+      "has_account": "Already have an account?",
+      "sign_in_link": "Sign in",
+      "benefits_note": "for fast checkout with saved addresses."
+    },
+    "auth": {
+      "signed_in_as": "Signed in as",
+      "switch_account": "Switch account"
     },
     "summary": {
+      "order_summary": "Order Summary",
+      "show_summary": "Show order summary",
+      "hide_summary": "Hide order summary",
       "order_items": "Order Items ({{count}})",
       "clear_all": "Clear All",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
       "free": "Free",
-      "total": "Total"
+      "free_badge": "Free Delivery",
+      "estimated_delivery": "Estimated Delivery",
+      "delivery_timeline": "2-4 business days",
+      "total": "Total",
+      "promo_code": "Discount Code",
+      "apply": "Apply",
+      "promo_placeholder": "Enter promo code",
+      "need_help": "Need help with your order?",
+      "contact_faq": "Browse our FAQ or ask our AI Assistant in the corner."
     },
     "empty": {
       "title": "Your cart is empty",
@@ -295,23 +444,23 @@
     "form": {
       "contact": {
         "heading": "Recipient & Contact Details",
-        "first_name_label": "First Name *",
+        "first_name_label": "First Name",
         "first_name_placeholder": "First name",
-        "last_name_label": "Last Name *",
+        "last_name_label": "Last Name",
         "last_name_placeholder": "Last name",
-        "email_label": "Email Address *",
+        "email_label": "Email Address",
         "account_email_badge": "Account Email",
         "email_placeholder": "name@example.com",
-        "phone_label": "Phone Number *",
+        "phone_label": "Phone Number",
         "phone_placeholder": "+201001234567"
       },
       "address": {
         "heading": "Delivery Address",
-        "line1_label": "Street Address (Line 1) *",
+        "line1_label": "Street Address (Line 1)",
         "line1_placeholder": "e.g., 18 Talaat Harb St",
         "line2_label": "Apartment, Suite, Building (Optional)",
         "line2_placeholder": "e.g., Apt 5, Floor 3",
-        "city_label": "City *",
+        "city_label": "City",
         "city_placeholder": "e.g., Cairo",
         "governorate_label": "Governorate (Optional)",
         "governorate_placeholder": "e.g., Cairo",
@@ -324,8 +473,18 @@
     "payment": {
       "heading": "Payment Method",
       "cod_label": "Cash on Delivery (COD)",
+      "cod_badge": "Zero Extra Fees",
       "cod_description_prefix": "Pay in cash with",
-      "cod_description_suffix": "directly to the courier upon receiving your package."
+      "cod_description_suffix": "directly to the courier upon receiving your package.",
+      "cod_reminder": "Please prepare the exact amount upon delivery for a smooth courier handover.",
+      "card_label": "Credit / Debit Card",
+      "card_coming_soon": "Online card payments launching soon. Currently accepting Cash on Delivery."
+    },
+    "trust": {
+      "secure_ssl": "256-Bit SSL Encrypted",
+      "cod_available": "Cash on Delivery Available",
+      "fast_delivery": "Doorstep Delivery",
+      "easy_returns": "Hassle-Free Returns"
     },
     "actions": {
       "placing_order": "Placing Order...",
@@ -355,7 +514,9 @@
       "order_placed": "Order #{{orderNumber}} placed successfully!",
       "order_failed": "Failed to place your order. Please check your details and try again.",
       "unavailable_items": "Some items in your cart are no longer available in this store. Clear your cart to continue.",
-      "clear_cart_action": "Clear Cart"
+      "clear_cart_action": "Clear Cart",
+      "promo_applied": "Promo code applied successfully!",
+      "promo_empty": "Please enter a promo code first."
     }
   },
   "orders": {
@@ -518,26 +679,49 @@
   },
   "account_settings": {
     "title": "Account Settings",
-    "subtitle": "Manage your profile and security.",
+    "subtitle": "Manage your personal profile, security credentials, and account preferences.",
+    "badge": "SHOPPER PROFILE • PREFERENCES",
     "delete_account": "Delete Account",
     "sidebar": {
       "profile": "Profile",
-      "security": "Security"
+      "security": "Security",
+      "help_title": "Need Assistance?",
+      "help_desc": "Browse answers or contact our store team.",
+      "help_cta": "Help Center"
     },
     "profile": {
       "photo_title": "Profile Photo",
-      "photo_description": "Upload a profile photo visible to your team and customers.",
+      "photo_description": "Your profile avatar and customer account status.",
       "info_title": "Personal Information",
-      "info_description": "Your name and contact details on file with Storai.",
+      "info_description": "Your customer details on file with this store.",
       "first_name": "First Name",
       "last_name": "Last Name",
       "email": "Email Address",
-      "edit_notice": "Profile editing isn't available yet. Reach out to support if any of these details need to change.",
-      "sign_in_prompt": "Sign in to view your profile details."
+      "account_type": "Account Type",
+      "customer_role": "Customer Account",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "resend_code": "Resend Code",
+      "resending": "Sending…",
+      "code_sent": "Verification code has been sent to your email.",
+      "member_since": "Member since {{date}}",
+      "copy": "Copy",
+      "copied": "Copied to clipboard",
+      "edit_notice": "Account details are synchronized with your store account. To change your name or email, please contact customer support.",
+      "sign_in_prompt": "Sign in to view your profile details.",
+      "my_orders_title": "My Orders",
+      "my_orders_desc": "Track active shipments and download receipts",
+      "change_password_title": "Change Password",
+      "change_password_desc": "Update your security credentials",
+      "faq_title": "Help & Support",
+      "faq_desc": "Frequently asked questions and store policies"
     },
     "security": {
       "title": "Change Password",
-      "description": "Use a strong password at least 12 characters long.",
+      "description": "Use a strong password with at least 8 characters containing letters and numbers.",
+      "google_oauth_title": "Google Account Authentication",
+      "google_oauth_desc": "Your account is linked with Google Sign-In. Passwords, two-factor authentication, and credentials are securely managed by your Google account.",
+      "google_badge": "Google OAuth",
       "current_password": "Current Password",
       "current_password_placeholder": "Enter current password",
       "new_password": "New Password",
@@ -546,6 +730,9 @@
       "confirm_password_placeholder": "Repeat new password",
       "show_password": "Show password",
       "hide_password": "Hide password",
+      "req_min_chars": "At least 8 characters",
+      "req_letters_digits": "Letters and numbers",
+      "req_match": "Passwords match",
       "error_min_length": "Password must be at least 8 characters.",
       "error_pattern": "Password must contain at least one letter and one number.",
       "error_mismatch": "Passwords do not match.",
@@ -553,6 +740,12 @@
       "submitting": "Updating…",
       "toast_success": "Password updated successfully",
       "toast_error": "Failed to update password. Please try again."
+    },
+    "delete_modal": {
+      "title": "Account Deletion Policy",
+      "desc": "Under e-commerce regulations, completed transaction receipts, invoices, and delivery manifests must be legally retained. If you would like to request account closure or data anonymization, please reach out to our customer support team.",
+      "contact_support": "Contact Support",
+      "close": "Close"
     },
     "billing": {
       "payment_methods_title": "Payment Methods",
@@ -580,6 +773,43 @@
     }
   },
   "chatbot": {
-    "new_chat": "New Chat"
+    "new_chat": "New Chat",
+    "focus_mode": "Focus Mode",
+    "exit_focus_mode": "Exit Focus Mode",
+    "minimize": "Minimize",
+    "close": "Close",
+    "online_status": "Online • AI Assistant",
+    "interface_title": "Digital Shopping Assistant",
+    "quick_suggestions": "Suggested Topics",
+    "prompt_track_order": "Where is my order? 📦",
+    "prompt_shipping": "What are your shipping policies? 🚚",
+    "prompt_returns": "How do I return an item? 🔄",
+    "prompt_bestsellers": "Recommend popular products ✨",
+    "prompt_contact": "How can I contact store support? ✉️",
+    "copy_message": "Copy message",
+    "message_copied": "Copied to clipboard!",
+    "helpful_yes": "Helpful",
+    "helpful_no": "Not helpful",
+    "placeholder": "Type your message...",
+    "esc_hint": "Press Esc to exit Focus Mode",
+    "enter_hint": "Enter to send • Shift+Enter for new line",
+    "restart": "Restart conversation",
+    "history": "Chat History",
+    "select_session": "Select a session...",
+    "past_chats": "Past Chats",
+    "your_history": "Your History",
+    "retention_notice": "Conversations are kept for 180 days and then deleted",
+    "from_faq": "From our FAQ:",
+    "read_more_faq": "Read more in FAQ",
+    "view_product": "View Details",
+    "order": "Order",
+    "item": "item",
+    "items": "items",
+    "sign_in": "Sign in",
+    "send": "Send",
+    "fullscreen": "Full screen",
+    "exit_fullscreen": "Exit full screen",
+    "recommended_products": "Recommended Products:",
+    "disclaimer": "AI assistant powered by store data"
   }
 }

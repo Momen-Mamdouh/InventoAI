@@ -1,51 +1,281 @@
-@let p = store.product()!;
-
-<div class="border-t border-border pt-4">
-  <hlm-accordion type="multiple" class="space-y-2">
-    @if (p.description) {
-      <hlm-accordion-item
-        class="bg-card rounded-lg border border-border px-4 border-b-0 overflow-hidden"
-        [isOpened]="true"
-      >
-        <hlm-accordion-trigger
-          class="hover:no-underline hover:text-foreground text-foreground py-4"
+@if (store.product(); as p) {
+  <div class="w-full bg-card rounded-2xl border border-border/80 shadow-xs overflow-hidden">
+    <div hlmTabs [tab]="defaultTab()" class="w-full">
+      <!-- Tabs Navigation Header Bar -->
+      <div class="border-b border-border bg-muted/30 px-4 sm:px-6 pt-3 pb-0">
+        <div
+          hlmTabsList
+          variant="line"
+          class="flex items-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar -mb-px"
         >
-          {{ 'product.accordion.details' | translate }}
-        </hlm-accordion-trigger>
-        <hlm-accordion-content class="text-muted-foreground text-sm">
-          <!-- Description -->
-          <div [innerHTML]="p.description"></div>
-        </hlm-accordion-content>
-      </hlm-accordion-item>
-    }
+          @if (p.description) {
+            <button
+              hlmTabsTrigger="details"
+              class="pb-3.5 pt-1.5 px-2 font-semibold text-sm sm:text-base flex items-center gap-2 cursor-pointer transition-colors"
+            >
+              <ng-icon name="lucideFileText" size="17" class="text-primary shrink-0" />
+              <span>{{ 'product.accordion.details' | translate }}</span>
+            </button>
+          }
 
-    @if (p.specs && p.specs.length > 0) {
-      <hlm-accordion-item
-        class="bg-card rounded-lg border border-border px-4 border-b-0 overflow-hidden"
-        [isOpened]="!p.description"
-      >
-        <hlm-accordion-trigger
-          class="hover:no-underline hover:text-foreground text-foreground py-4"
-        >
-          {{ 'product.accordion.specifications' | translate }}
-        </hlm-accordion-trigger>
-        <hlm-accordion-content class="text-muted-foreground text-sm">
-          <dl class="divide-y divide-border">
+          @if (p.specs && p.specs.length > 0) {
+            <button
+              hlmTabsTrigger="specifications"
+              class="pb-3.5 pt-1.5 px-2 font-semibold text-sm sm:text-base flex items-center gap-2 cursor-pointer transition-colors"
+            >
+              <ng-icon name="lucideSliders" size="17" class="text-primary shrink-0" />
+              <span>{{ 'product.accordion.specifications' | translate }}</span>
+              <span
+                class="ms-1 px-1.5 py-0.5 rounded-full text-[11px] font-bold bg-muted text-muted-foreground"
+              >
+                {{ p.specs.length }}
+              </span>
+            </button>
+          }
+
+          <button
+            hlmTabsTrigger="shipping"
+            class="pb-3.5 pt-1.5 px-2 font-semibold text-sm sm:text-base flex items-center gap-2 cursor-pointer transition-colors"
+          >
+            <ng-icon name="lucideTruck" size="17" class="text-primary shrink-0" />
+            <span>{{ 'product.accordion.shipping_returns' | translate }}</span>
+          </button>
+
+          <button
+            hlmTabsTrigger="warranty"
+            class="pb-3.5 pt-1.5 px-2 font-semibold text-sm sm:text-base flex items-center gap-2 cursor-pointer transition-colors"
+          >
+            <ng-icon name="lucideShieldCheck" size="17" class="text-primary shrink-0" />
+            <span>{{ 'product.accordion.warranty' | translate }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 1: Product Description -->
+      @if (p.description) {
+        <div hlmTabsContent="details" class="p-6 md:p-8">
+          @if (p.shortDescription) {
+            <div
+              class="mb-6 p-4 rounded-xl bg-primary/5 border border-primary/15 text-foreground flex items-start gap-3"
+            >
+              <div
+                class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <ng-icon name="lucideSparkles" size="16" />
+              </div>
+              <div class="space-y-0.5">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-primary">
+                  {{ 'product.accordion.features_title' | translate }}
+                </h4>
+                <p class="text-sm font-medium text-foreground/90 leading-relaxed">
+                  {{ p.shortDescription }}
+                </p>
+              </div>
+            </div>
+          }
+
+          <div
+            [innerHTML]="p.description"
+            class="prose prose-neutral dark:prose-invert max-w-none text-muted-foreground leading-relaxed text-sm md:text-base"
+          ></div>
+        </div>
+      }
+
+      <!-- Tab 2: Technical Specifications -->
+      @if (p.specs && p.specs.length > 0) {
+        <div hlmTabsContent="specifications" class="p-6 md:p-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             @for (spec of p.specs; track spec.key) {
-              <div class="px-1 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt dir="auto" class="text-sm font-medium leading-6 text-foreground">
+              <div
+                class="p-4 rounded-xl border border-border/80 bg-muted/20 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+              >
+                <dt
+                  dir="auto"
+                  class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary/70 shrink-0"></span>
                   {{ spec.name || spec.key }}
                 </dt>
-                <dd class="mt-1 text-sm leading-6 text-muted-foreground sm:col-span-2 sm:mt-0">
+                <dd class="text-sm font-semibold text-foreground text-start sm:text-end">
                   @for (val of spec.values; track val.slug) {
-                    <span dir="auto">{{ val.value }}{{ $last ? '' : ', ' }}</span>
+                    <span
+                      dir="auto"
+                      class="inline-block px-2.5 py-1 rounded-md bg-background border border-border/60 shadow-2xs text-xs font-medium"
+                    >
+                      {{ val.value }}
+                    </span>
+                    @if (!$last) {
+                      <span class="text-muted-foreground/40 mx-1">,</span>
+                    }
                   }
                 </dd>
               </div>
             }
-          </dl>
-        </hlm-accordion-content>
-      </hlm-accordion-item>
-    }
-  </hlm-accordion>
-</div>
+          </div>
+        </div>
+      }
+
+      <!-- Tab 3: Shipping & Returns -->
+      <div hlmTabsContent="shipping" class="p-6 md:p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Fast Delivery Card -->
+          <div
+            class="p-6 rounded-2xl border border-border/80 bg-card hover:border-primary/40 hover:shadow-sm transition-all space-y-4"
+          >
+            <div class="flex items-center gap-3.5">
+              <div
+                class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-2xs"
+              >
+                <ng-icon name="lucideTruck" size="22" />
+              </div>
+              <div>
+                <h4 class="text-base font-bold text-foreground">
+                  {{ 'product.accordion.shipping_title' | translate }}
+                </h4>
+                <p class="text-xs text-muted-foreground font-medium">
+                  {{ 'product.summary.free_shipping' | translate }}
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-muted-foreground leading-relaxed">
+              {{ 'product.accordion.shipping_desc' | translate }}
+            </p>
+            <ul class="space-y-2 pt-2 border-t border-border/50 text-xs font-medium text-foreground/80">
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-primary shrink-0" />
+                <span>Standard delivery: 3–5 business days</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-primary shrink-0" />
+                <span>Order tracking available by email</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-primary shrink-0" />
+                <span>Carefully packed with protective materials</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Easy Returns Card -->
+          <div
+            class="p-6 rounded-2xl border border-border/80 bg-card hover:border-primary/40 hover:shadow-sm transition-all space-y-4"
+          >
+            <div class="flex items-center gap-3.5">
+              <div
+                class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs"
+              >
+                <ng-icon name="lucideRotateCcw" size="22" />
+              </div>
+              <div>
+                <h4 class="text-base font-bold text-foreground">
+                  {{ 'product.accordion.returns_title' | translate }}
+                </h4>
+                <p class="text-xs text-muted-foreground font-medium">
+                  {{ 'product.summary.easy_returns' | translate }}
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-muted-foreground leading-relaxed">
+              {{ 'product.accordion.returns_desc' | translate }}
+            </p>
+            <ul class="space-y-2 pt-2 border-t border-border/50 text-xs font-medium text-foreground/80">
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-emerald-500 shrink-0" />
+                <span>30 days return window from delivery</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-emerald-500 shrink-0" />
+                <span>100% full refund or item exchange</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-emerald-500 shrink-0" />
+                <span>Simple, hassle-free customer support</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Guarantee & Warranty -->
+      <div hlmTabsContent="warranty" class="p-6 md:p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Warranty Card -->
+          <div
+            class="p-6 rounded-2xl border border-border/80 bg-card hover:border-primary/40 hover:shadow-sm transition-all space-y-4"
+          >
+            <div class="flex items-center gap-3.5">
+              <div
+                class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-2xs"
+              >
+                <ng-icon name="lucideShieldCheck" size="22" />
+              </div>
+              <div>
+                <h4 class="text-base font-bold text-foreground">
+                  {{ 'product.accordion.warranty_title' | translate }}
+                </h4>
+                <p class="text-xs text-muted-foreground font-medium">
+                  {{ 'product.summary.secure_checkout' | translate }}
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-muted-foreground leading-relaxed">
+              {{ 'product.accordion.warranty_desc' | translate }}
+            </p>
+            <ul class="space-y-2 pt-2 border-t border-border/50 text-xs font-medium text-foreground/80">
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-primary shrink-0" />
+                <span>100% Genuine and authentic product</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-primary shrink-0" />
+                <span>Protection against manufacturing defects</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-primary shrink-0" />
+                <span>Dedicated support team for assistance</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Quality Card -->
+          <div
+            class="p-6 rounded-2xl border border-border/80 bg-card hover:border-primary/40 hover:shadow-sm transition-all space-y-4"
+          >
+            <div class="flex items-center gap-3.5">
+              <div
+                class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 shadow-2xs"
+              >
+                <ng-icon name="lucideCheckCircle2" size="22" />
+              </div>
+              <div>
+                <h4 class="text-base font-bold text-foreground">
+                  {{ 'product.accordion.quality_title' | translate }}
+                </h4>
+                <p class="text-xs text-muted-foreground font-medium">
+                  {{ 'product.accordion.quality_subtitle' | translate }}
+                </p>
+              </div>
+            </div>
+            <p class="text-sm text-muted-foreground leading-relaxed">
+              {{ 'product.accordion.quality_desc' | translate }}
+            </p>
+            <ul class="space-y-2 pt-2 border-t border-border/50 text-xs font-medium text-foreground/80">
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-amber-500 shrink-0" />
+                <span>Multi-point quality inspection prior to dispatch</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-amber-500 shrink-0" />
+                <span>Premium fabrics and craftsmanship</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <ng-icon name="lucideCheck" size="14" class="text-amber-500 shrink-0" />
+                <span>Complete customer satisfaction commitment</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,6 +1,12 @@
 {
   "lang_switch": "English",
   "app_name": "متجري",
+  "store_loader": {
+    "welcome": "أهلاً بك في",
+    "loading": "جاري التحميل...",
+    "preparing": "جاري تجهيز تجربة التسوق...",
+    "navigating": "جاري تحميل الصفحة..."
+  },
   "nav": {
     "home": "الرئيسية",
     "shop": "المتجر",
@@ -25,7 +31,8 @@
     "customer_service": "خدمة العملاء",
     "faq": "الأسئلة الشائعة",
     "rights": "جميع الحقوق محفوظة.",
-    "social_email": "راسلنا"
+    "social_email": "راسلنا",
+    "back_to_top": "العودة للأعلى"
   },
   "pagination": {
     "showing": "عرض {{from}}–{{to}} من {{total}}",
@@ -43,6 +50,8 @@
     "search_aria": "البحث في الأسئلة الشائعة",
     "total_questions": "إجمالي الأسئلة",
     "categories": "الفئات",
+    "category_single": "فئة",
+    "category_plural": "فئات",
     "support": "الدعم",
     "error_title": "تعذّر تحميل الأسئلة الشائعة",
     "try_again": "حاول مرة أخرى",
@@ -58,7 +67,28 @@
     "cta_desc": "لم تجد الإجابة التي تبحث عنها؟ تواصل مع فريق دعم العملاء أو استخدم المساعد الذكي للحصول على مساعدة فورية.",
     "contact_support": "تواصل مع الدعم",
     "help_center_badge": "مركز المساعدة والأسئلة الشائعة",
-    "show_all": "عرض الكل"
+    "show_all": "عرض الكل",
+    "quick_topics_label": "مواضيع شائعة:",
+    "quick_topic_shipping": "الشحن والتوصيل",
+    "quick_topic_returns": "الإرجاع والاسترداد",
+    "quick_topic_sizing": "دليل المقاسات",
+    "quick_topic_payment": "طرق الدفع",
+    "quick_topic_orders": "تتبع الطلب",
+    "copy_link": "نسخ رابط الإجابة",
+    "link_copied": "تم نسخ الرابط إلى الحافظة!",
+    "helpful_question": "هل كانت هذه الإجابة مفيدة؟",
+    "helpful_yes": "نعم",
+    "helpful_no": "لا",
+    "helpful_thank_you": "شكراً لتقييمك!",
+    "ask_ai_assistant": "اسأل المساعد الذكي",
+    "ai_assistant_desc": "احصل على إجابات فورية لاستفساراتك على مدار الساعة طوال أيام الأسبوع.",
+    "ai_assistant_badge": "إجابات فورية 24/7",
+    "email_support": "مراسلة دعم المتجر",
+    "email_support_desc": "هل تحتاج لمساعدة مخصصة؟ راسل فريق دعم المتجر مباشرة.",
+    "reply_time_badge": "الرد خلال 24 ساعة",
+    "support_active_badge": "الدعم متاح",
+    "results_found": "أسئلة مطابقة",
+    "all_questions": "جميع الأسئلة"
   },
   "no_store": {
     "title": "لم يتم تحديد متجر",
@@ -165,40 +195,70 @@
     "card": {
       "add_to_cart": "أضف",
       "out_of_stock": "نفدت الكمية",
+      "sale_badge": "تخفيض",
+      "save_percentage": "وفر {{percentage}}%",
       "toast_added": "تمت إضافة “{{title}}” إلى سلتك",
       "toast_out_of_stock": "هذا المنتج غير متوفر حالياً.",
       "toast_add_failed": "تعذرت إضافة المنتج إلى السلة."
     },
     "summary": {
-      "save": "وفر {{percentage}}%"
+      "save": "وفر {{percentage}}%",
+      "sku_label": "رمز المنتج:",
+      "in_stock": "متوفر في المخزون - جاهز للشحن",
+      "low_stock": "متبقي {{count}} قطع فقط في المخزون!",
+      "out_of_stock": "غير متوفر حالياً في المخزون",
+      "free_shipping": "شحن مجاني للطلبات المؤهلة",
+      "secure_checkout": "دفع آمن ومشفّر 100%",
+      "easy_returns": "ضمان استرجاع سهل خلال 30 يوماً"
     },
     "variant": {
-      "select_option": "اختر {{name}}"
+      "select_option": "اختر {{name}}",
+      "selected_label": "المحدد:",
+      "out_of_stock": "غير متوفر"
     },
     "accordion": {
       "details": "تفاصيل المنتج",
-      "specifications": "المواصفات"
+      "specifications": "المواصفات الفنية",
+      "shipping_returns": "الشحن والاسترجاع",
+      "shipping_title": "شحن سريع وموثوق",
+      "shipping_desc": "تتم معالجة الطلبات خلال 24-48 ساعة. يستغرق التوصيل العادي من 3 إلى 5 أيام عمل. يسري الشحن المجاني على الطلبات التي تتجاوز الحد الأدنى المعتمد.",
+      "returns_title": "إرجاع سهل خلال 30 يوماً",
+      "returns_desc": "لست راضياً تماماً عن طلبك؟ يمكنك إرجاع المنتجات المؤهلة بحالتها الأصلية خلال 30 يوماً لاسترداد كامل المبلغ أو الاستبدال.",
+      "warranty": "الضمان والجودة",
+      "warranty_title": "ضمان الشركة المصنعة",
+      "warranty_desc": "يشمل كل منتج ضمان استرداد الأموال لمدة 30 يوماً وضمان الشركة المصنعة المعتمد ضد عيوب الصناعة.",
+      "quality_title": "ضمان الجودة 100%",
+      "quality_subtitle": "ضمان الأصالة والجودة المعتمدة",
+      "quality_desc": "يخضع كل منتج لفحص دقيق ومعايير جودة صارمة قبل الشحن لضمان وصوله إليك بأعلى مستوى من الجودة.",
+      "features_title": "أبرز مميزات المنتج",
+      "no_specs": "لا تتوفر مواصفات فنية إضافية لهذا المنتج."
     },
     "actions": {
-      "low_stock": "تبقى {{count}} فقط في المخزون",
-      "in_stock": "متوفر",
-      "out_of_stock": "نفدت الكمية",
       "add_to_cart": "أضف إلى السلة",
-      "toast_added": "تمت إضافة {{quantity}} × \"{{title}}\" إلى السلة!"
+      "in_stock": "متوفر في المخزون",
+      "low_stock": "مخزون منخفض: متبقي {{count}}",
+      "out_of_stock": "نفد من المخزون",
+      "toast_added": "تمت إضافة {{quantity}}x من \"{{title}}\" إلى سلتك",
+      "toast_select_variant": "يرجى تحديد خيار منتج متوفر"
     },
     "recommended": {
-      "title": "موصى به لك",
-      "previous_slide": "الشريحة السابقة",
-      "next_slide": "الشريحة التالية"
+      "title": "قد يعجبك أيضاً",
+      "subtitle": "استكشف منتجات مختارة بعناية تتناسب مع اختيارك",
+      "previous_slide": "المنتجات السابقة",
+      "next_slide": "المنتجات التالية"
     },
     "stepper": {
-      "decrease": "إنقاص الكمية",
-      "increase": "زيادة الكمية"
+      "decrease": "تقليل الكمية",
+      "increase": "زيادة الكمية",
+      "quantity_label": "الكمية"
     },
     "gallery": {
-      "view_image": "عرض الصورة {{index}} من {{name}}",
+      "view_image": "عرض الصورة {{index}} لـ {{name}}",
       "carousel_previous": "الصورة السابقة",
-      "carousel_next": "الصورة التالية"
+      "carousel_next": "الصورة التالية",
+      "zoom_hint": "مرر للتكبير",
+      "image_counter": "{{current}} من {{total}}",
+      "primary_badge": "الصورة الرئيسية"
     },
     "filters": {
       "title": "التصنيفات",
@@ -208,10 +268,17 @@
       "price_range": "نطاق السعر",
       "in_stock_only": "المتوفر فقط",
       "empty_title": "لم يتم العثور على نتائج",
-      "empty_description": "لم نتمكن من تحميل أي عوامل تصفية لبحثك الحالي."
+      "empty_description": "لم نتمكن من تحميل أي عوامل تصفية لبحثك الحالي.",
+      "all_categories": "كل الفئات",
+      "mobile_desc": "تصفية وتخصيص نتائج المنتجات",
+      "show_results": "عرض {{count}} منتج",
+      "show_all_results": "عرض المنتجات"
     },
     "toolbar": {
       "items": "عناصر",
+      "filter_btn": "التصفية",
+      "view_comfortable": "عرض مريح",
+      "view_compact": "عرض مضغوط",
       "search_placeholder": "ابحث عن المنتجات...",
       "search_validation": "استمر في الكتابة... أدخل حرفين على الأقل للبحث.",
       "searching_for": "جاري البحث عن \"{{term}}\"...",
@@ -226,24 +293,51 @@
       "sort_title_asc": "العنوان: أ-ي",
       "sort_title_desc": "العنوان: ي-أ"
     },
+    "chips": {
+      "active_filters": "الفلاتر النشطة:",
+      "clear_all": "مسح الكل",
+      "category": "الفئة: {{name}}",
+      "price_under": "أقل من {{price}}",
+      "in_stock": "المتوفر فقط",
+      "search": "بحث: \"{{query}}\"",
+      "attr": "{{key}}: {{value}}"
+    },
     "breadcrumb": {
       "shop": "المتجر",
-      "nav_label": "مسار التصفح"
+      "nav_label": "مسار التنقل",
+      "back_to_products": "الرجوع إلى المنتجات"
+    },
+    "product_details": {
+      "not_found_title": "المنتج غير موجود",
+      "not_found_desc": "العنصر الذي تبحث عنه غير متوفر أو ربما تمت إزالته من المتجر.",
+      "browse_products": "تصفح كافة المنتجات",
+      "back_home": "العودة للرئيسية"
+    },
+    "sticky_bar": {
+      "add_to_cart": "أضف إلى السلة"
     },
     "products": {
       "title": "المنتجات",
+      "subtitle": "استكشف الكتالوج الكامل لمنتجاتنا المنتقاة بعناية.",
       "did_you_mean": "نعرض نتائج <span class=\"font-bold\">{{term}}</span> بدلاً من بحثك الأصلي.",
       "no_products": "لم يتم العثور على منتجات",
       "no_products_desc": "حاول ضبط عوامل التصفية أو مصطلحات البحث للعثور على ما تبحث عنه.",
       "clear_all": "مسح جميع التصنيفات"
     },
-    "product_details": {
-      "not_found_title": "المنتج غير موجود",
-      "not_found_desc": "قد يكون هذا المنتج قد تمت إزالته أو أن الرابط غير صحيح."
+    "empty_filtered": {
+      "title": "لا توجد منتجات تطابق خيارات التصفية",
+      "search_title": "لا توجد نتائج بحث عن \"{{query}}\"",
+      "desc": "جرّب تعديل كلمات البحث أو مسح بعض الفلاتر لعرض المنتجات المتوفرة.",
+      "clear_btn": "مسح جميع الفلاتر"
+    },
+    "empty_store": {
+      "title": "لا تتوفر أي منتجات حالياً",
+      "desc": "لم يقم هذا المتجر بإضافة أي منتجات حتى الآن. يُرجى التحقق مرة أخرى قريباً.",
+      "home_btn": "العودة للرئيسية"
     }
   },
   "home": {
-    "badge": "تشكيلة جديدة",
+    "badge": "المتجر الرسمي • متاح للطلب الآن",
     "hero_fallback_title": "أهلاً بك في متجرنا",
     "hero_fallback_subtitle": "تصفّح المجموعة واعثر على ما يناسبك.",
     "shop_now": "تسوّق الآن",
@@ -252,35 +346,90 @@
     "featured_products": "منتجات مميزة",
     "view_all": "عرض الكل",
     "about": "عن المتجر",
+    "about_eyebrow": "قصتنا",
     "all_categories": "عرض كل الفئات",
+    "empty_badge": "الكتالوج الكامل متاح",
     "empty_title": "لا يوجد مميز بعد",
-    "empty_description": "لم يقم هذا المتجر بتمييز أي شيء على صفحته الرئيسية بعد. الكتالوج الكامل متاح.",
+    "empty_description": "لم يقم هذا المتجر بتمييز عناصر محددة في صفحته الرئيسية بعد، ولكن الكتالوج الكامل مفتوح وجاهز للطلب.",
+    "empty_browse_cta": "استكشف الكتالوج",
+    "empty_help_cta": "المساعدة والأسئلة الشائعة",
+    "empty_orders_cta": "تتبّع الطلبات",
     "browse_products": "تصفّح الكتالوج",
     "error_title": "تعذر تحميل هذا المتجر",
     "error_message": "حدث خطأ أثناء جلب بيانات المتجر. يرجى المحاولة مرة أخرى.",
     "retry": "أعد المحاولة",
-    "value_secure_title": "دفع آمن",
-    "value_secure_body": "تبقى بيانات طلبك ودفعك محمية.",
-    "value_orders_title": "تتبّع طلباتك",
-    "value_orders_body": "تابع كل طلب من التأكيد حتى التسليم.",
-    "value_help_title": "إجابات لأسئلتك",
-    "value_help_body": "اقرأ الأسئلة الشائعة أو اسأل المساعد."
+    "value_secure_title": "دفع آمن ومحمي",
+    "value_secure_body": "بيانات طلبك ودفعك محمية ومشفّرة بالكامل بأعلى معايير الأمان.",
+    "value_orders_title": "تتبّع طلباتك لحظياً",
+    "value_orders_body": "تابع كل تفاصيل طلبك مباشرة من التأكيد وحتى وصوله إلى بابك.",
+    "value_help_title": "إجابات فورية لأسئلتك",
+    "value_help_body": "اقرأ الأسئلة الشائعة أو اسأل مساعد الذكاء الاصطناعي في أي وقت.",
+    "curated_badge": "مختارات منتقاة",
+    "all_filter": "جميع المنتجات",
+    "trust_verified": "متجر موثوق",
+    "trust_delivery": "توصيل سريع",
+    "items_count": "{{count}} منتج",
+    "promo_badge": "ميزة خاصة",
+    "promo_title": "جودة مختارة بعناية، وتوصيل موثوق",
+    "promo_desc": "تم اختيار كل منتج في مجموعتنا بعناية فائقة ليلبي أعلى معايير الجودة والإتقان.",
+    "promo_cta": "استكشف المجموعة",
+    "newsletter_badge": "مجتمع النخبة",
+    "newsletter_title": "ابقَ على اطلاع دائم",
+    "newsletter_desc": "اشترك لتصلك أحدث المجموعات، والإطلاقات الحصرية، ومزايا الأعضاء الخاصة.",
+    "newsletter_placeholder": "أدخل بريدك الإلكتروني...",
+    "newsletter_btn": "اشتراك",
+    "newsletter_subscribed": "تم الاشتراك!",
+    "newsletter_privacy": "نحن نحترم خصوصيتك. يمكنك إلغاء الاشتراك في أي وقت.",
+    "newsletter_toast_success": "شكراً لاشتراكك في نشرتنا الإخبارية!",
+    "newsletter_toast_invalid": "يرجى إدخال عنوان بريد إلكتروني صحيح."
   },
   "checkout": {
     "nav": {
-      "back_to_orders": "العودة إلى طلباتي"
+      "back_to_orders": "العودة إلى طلباتي",
+      "back_to_store": "العودة إلى المتجر"
+    },
+    "breadcrumbs": {
+      "store": "المتجر",
+      "cart": "سلة التسوق",
+      "checkout": "إتمام الشراء"
+    },
+    "steps": {
+      "information": "البيانات",
+      "shipping": "الشحن",
+      "payment": "الدفع"
     },
     "page": {
       "title": "إتمام الشراء",
-      "subtitle": "راجع المنتجات وأكمل بيانات التوصيل أدناه."
+      "subtitle": "راجع طلبك وأكمل بيانات التوصيل أدناه."
+    },
+    "guest": {
+      "badge": "طلب كزائر",
+      "has_account": "هل لديك حساب بالفعل؟",
+      "sign_in_link": "تسجيل الدخول",
+      "benefits_note": "لإتمام سريع مع عناوينك المحفوظة."
+    },
+    "auth": {
+      "signed_in_as": "تم تسجيل الدخول باسم",
+      "switch_account": "تبديل الحساب"
     },
     "summary": {
+      "order_summary": "ملخص الطلب",
+      "show_summary": "عرض ملخص الطلب",
+      "hide_summary": "إخفاء ملخص الطلب",
       "order_items": "منتجات الطلب ({{count}})",
       "clear_all": "إفراغ الكل",
       "subtotal": "الإجمالي الفرعي",
       "shipping": "الشحن",
       "free": "مجاني",
-      "total": "الإجمالي"
+      "free_badge": "توصيل مجاني",
+      "estimated_delivery": "موعد التوصيل المتوقع",
+      "delivery_timeline": "خلال 2-4 أيام عمل",
+      "total": "الإجمالي",
+      "promo_code": "كوبون الخصم",
+      "apply": "تطبيق",
+      "promo_placeholder": "أدخل كود الخصم",
+      "need_help": "هل تحتاج لمساعدة في طلبك؟",
+      "contact_faq": "راجع الأسئلة الشائعة أو تحدث مع المساعد الذكي في الزاوية."
     },
     "empty": {
       "title": "سلتك فارغة",
@@ -295,23 +444,23 @@
     "form": {
       "contact": {
         "heading": "بيانات المستلم والتواصل",
-        "first_name_label": "الاسم الأول *",
+        "first_name_label": "الاسم الأول",
         "first_name_placeholder": "الاسم الأول",
-        "last_name_label": "اسم العائلة *",
+        "last_name_label": "اسم العائلة",
         "last_name_placeholder": "اسم العائلة",
-        "email_label": "البريد الإلكتروني *",
+        "email_label": "البريد الإلكتروني",
         "account_email_badge": "بريد الحساب",
         "email_placeholder": "name@example.com",
-        "phone_label": "رقم الهاتف *",
+        "phone_label": "رقم الهاتف",
         "phone_placeholder": "+201001234567"
       },
       "address": {
         "heading": "عنوان التوصيل",
-        "line1_label": "عنوان الشارع (السطر الأول) *",
+        "line1_label": "عنوان الشارع (السطر الأول)",
         "line1_placeholder": "مثال: 18 شارع طلعت حرب",
         "line2_label": "الشقة، الدور، المبنى (اختياري)",
         "line2_placeholder": "مثال: شقة 5، الدور 3",
-        "city_label": "المدينة *",
+        "city_label": "المدينة",
         "city_placeholder": "مثال: القاهرة",
         "governorate_label": "المحافظة (اختياري)",
         "governorate_placeholder": "مثال: القاهرة",
@@ -324,8 +473,18 @@
     "payment": {
       "heading": "طريقة الدفع",
       "cod_label": "الدفع عند الاستلام",
+      "cod_badge": "بدون أي رسوم إضافية",
       "cod_description_prefix": "ادفع نقدًا مبلغ",
-      "cod_description_suffix": "مباشرةً لمندوب التوصيل عند استلام طلبك."
+      "cod_description_suffix": "مباشرةً لمندوب التوصيل عند استلام طلبك.",
+      "cod_reminder": "يُرجى تجهيز المبلغ المحدد نقدًا عند الاستلام لتسريع إجراءات الاستلام.",
+      "card_label": "البطاقة الائتمانية / الخصم المباشر",
+      "card_coming_soon": "الدفع الإلكتروني سيتوفر قريباً. نقبل حالياً الدفع عند الاستلام."
+    },
+    "trust": {
+      "secure_ssl": "تشفير SSL آمن 256-بت",
+      "cod_available": "الدفع نقداً عند الاستلام",
+      "fast_delivery": "توصيل سريع لباب المنزل",
+      "easy_returns": "استرجاع واستبدال مرن"
     },
     "actions": {
       "placing_order": "جارٍ إتمام الطلب...",
@@ -355,7 +514,9 @@
       "order_placed": "تم إتمام الطلب رقم #{{orderNumber}} بنجاح!",
       "order_failed": "تعذّر إتمام طلبك. يُرجى مراجعة بياناتك والمحاولة مرة أخرى.",
       "unavailable_items": "بعض المنتجات في سلتك لم تعد متوفرة في هذا المتجر. أفرغ سلتك للمتابعة.",
-      "clear_cart_action": "إفراغ السلة"
+      "clear_cart_action": "إفراغ السلة",
+      "promo_applied": "تم تطبيق كود الخصم بنجاح!",
+      "promo_empty": "يُرجى إدخال كود الخصم أولاً."
     }
   },
   "orders": {
@@ -518,26 +679,49 @@
   },
   "account_settings": {
     "title": "إعدادات الحساب",
-    "subtitle": "إدارة ملفك الشخصي والأمان.",
+    "subtitle": "إدارة ملفك الشخصي، بيانات الأمان، وتفضيلات الحساب.",
+    "badge": "ملف المتسوق • التفضيلات",
     "delete_account": "حذف الحساب",
     "sidebar": {
       "profile": "الملف الشخصي",
-      "security": "الأمان"
+      "security": "الأمان",
+      "help_title": "هل تحتاج إلى مساعدة؟",
+      "help_desc": "تصفح الإجابات أو تواصل مع فريق المتجر.",
+      "help_cta": "مركز المساعدة"
     },
     "profile": {
       "photo_title": "الصورة الشخصية",
-      "photo_description": "قم برفع صورة شخصية تظهر لفريقك وعملائك.",
+      "photo_description": "الصورة الرمزية وحالة حسابك كمتسوق.",
       "info_title": "المعلومات الشخصية",
-      "info_description": "اسمك وبيانات التواصل المسجلة لدى Storai.",
+      "info_description": "بيانات حسابك المسجلة لدى هذا المتجر.",
       "first_name": "الاسم الأول",
       "last_name": "اسم العائلة",
       "email": "البريد الإلكتروني",
-      "edit_notice": "تعديل الملف الشخصي غير متاح حاليًا. تواصل مع الدعم إذا احتجت لتغيير أي من هذه البيانات.",
-      "sign_in_prompt": "سجّل الدخول لعرض تفاصيل ملفك الشخصي."
+      "account_type": "نوع الحساب",
+      "customer_role": "حساب متسوق",
+      "verified": "مفعّل",
+      "unverified": "غير مؤكد",
+      "resend_code": "إعادة إرسال الرمز",
+      "resending": "جارٍ الإرسال…",
+      "code_sent": "تم إرسال رمز التحقق إلى بريدك الإلكتروني.",
+      "member_since": "عضو منذ {{date}}",
+      "copy": "نسخ",
+      "copied": "تم النسخ إلى الحافظة",
+      "edit_notice": "تتم مزامنة بيانات الحساب مع حسابك في المتجر. لتغيير اسمك أو بريدك، يرجى التواصل مع الدعم.",
+      "sign_in_prompt": "سجّل الدخول لعرض تفاصيل ملفك الشخصي.",
+      "my_orders_title": "طلباتي",
+      "my_orders_desc": "تتبع الشحنات النشطة وتنزيل الإيصالات",
+      "change_password_title": "تغيير كلمة المرور",
+      "change_password_desc": "تحديث بيانات الأمان وكلمة المرور",
+      "faq_title": "المساعدة والدعم",
+      "faq_desc": "الأسئلة الشائعة وسياسات المتجر"
     },
     "security": {
       "title": "تغيير كلمة المرور",
-      "description": "استخدم كلمة مرور قوية لا تقل عن 12 حرفًا.",
+      "description": "استخدم كلمة مرور قوية لا تقل عن 8 أحرف تحتوي على حروف وأرقام.",
+      "google_oauth_title": "المصادقة عبر حساب Google",
+      "google_oauth_desc": "تم ربط حسابك بتسجيل الدخول عبر Google. تتم إدارة كلمات المرور والمصادقة الثنائية بأمان عبر حساب Google الخاص بك.",
+      "google_badge": "Google OAuth",
       "current_password": "كلمة المرور الحالية",
       "current_password_placeholder": "أدخل كلمة المرور الحالية",
       "new_password": "كلمة المرور الجديدة",
@@ -546,6 +730,9 @@
       "confirm_password_placeholder": "أعد إدخال كلمة المرور الجديدة",
       "show_password": "إظهار كلمة المرور",
       "hide_password": "إخفاء كلمة المرور",
+      "req_min_chars": "8 أحرف على الأقل",
+      "req_letters_digits": "حروف وأرقام",
+      "req_match": "تطابق كلمتي المرور",
       "error_min_length": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
       "error_pattern": "يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد على الأقل.",
       "error_mismatch": "كلمتا المرور غير متطابقتين.",
@@ -553,6 +740,12 @@
       "submitting": "جارٍ التحديث…",
       "toast_success": "تم تحديث كلمة المرور بنجاح",
       "toast_error": "تعذر تحديث كلمة المرور. حاول مرة أخرى."
+    },
+    "delete_modal": {
+      "title": "سياسة حذف الحساب",
+      "desc": "وفقًا للوائح التجارة الإلكترونية، يجب الاحتفاظ بسجلات المعاملات المكتملة والإيصالات وبيانات الشحن قانونيًا. إذا كنت ترغب في طلب إغلاق الحساب أو مسح البيانات، يرجى التواصل مع فريق الدعم لدينا.",
+      "contact_support": "التواصل مع الدعم",
+      "close": "إغلاق"
     },
     "billing": {
       "payment_methods_title": "طرق الدفع",
@@ -580,6 +773,43 @@
     }
   },
   "chatbot": {
-    "new_chat": "محادثة جديدة"
+    "new_chat": "محادثة جديدة",
+    "focus_mode": "وضع التركيز",
+    "exit_focus_mode": "تصغير وضع التركيز",
+    "minimize": "تصغير",
+    "close": "إغلاق",
+    "online_status": "متصل • مساعد ذكي",
+    "interface_title": "مساعد التسوق الذكي",
+    "quick_suggestions": "اقتراحات سريعة",
+    "prompt_track_order": "أين طلبي؟ 📦",
+    "prompt_shipping": "ما هي سياسة الشحن والتوصيل؟ 🚚",
+    "prompt_returns": "كيف يمكنني إرجاع منتج؟ 🔄",
+    "prompt_bestsellers": "اقترح لي أكثر المنتجات طلباً ✨",
+    "prompt_contact": "كيف أتواصل مع دعم المتجر؟ ✉️",
+    "copy_message": "نسخ الرسالة",
+    "message_copied": "تم النسخ بنجاح!",
+    "helpful_yes": "مفيد",
+    "helpful_no": "غير مفيد",
+    "placeholder": "اكتب رسالتك هنا...",
+    "esc_hint": "اضغط Esc للخروج من وضع التركيز",
+    "enter_hint": "Enter للإرسال • Shift+Enter لسطر جديد",
+    "restart": "بدء محادثة جديدة",
+    "history": "سجل المحادثات",
+    "select_session": "اختر جلسة...",
+    "past_chats": "محادثات سابقة",
+    "your_history": "سجل محادثاتك",
+    "retention_notice": "يتم الاحتفاظ بالمحادثات لمدة 180 يوماً ثم تُحذف",
+    "from_faq": "من الأسئلة الشائعة:",
+    "read_more_faq": "اقرأ المزيد في الأسئلة الشائعة",
+    "view_product": "عرض التفاصيل",
+    "order": "طلب",
+    "item": "منتج",
+    "items": "منتجات",
+    "sign_in": "تسجيل الدخول",
+    "send": "إرسال",
+    "fullscreen": "ملء الشاشة",
+    "exit_fullscreen": "إنهاء ملء الشاشة",
+    "recommended_products": "منتجات مقترحة:",
+    "disclaimer": "مساعد ذكي مدعوم ببيانات المتجر"
   }
 }

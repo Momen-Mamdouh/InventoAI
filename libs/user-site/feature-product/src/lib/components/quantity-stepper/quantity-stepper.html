@@ -1,19 +1,20 @@
-<hlm-button-group class="bg-background border border-input rounded-md shadow-sm h-10">
+<hlm-button-group class="bg-card border border-border rounded-xl shadow-xs h-11 md:h-12 overflow-hidden">
   <button
     hlmBtn
     variant="ghost"
     size="icon"
+    type="button"
     [disabled]="store.quantity() <= 1"
     (click)="store.decrement()"
-    class="hover:bg-muted h-full w-10 shrink-0"
+    class="hover:bg-muted/80 h-full w-10 md:w-11 shrink-0 transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
     [attr.aria-label]="'product.stepper.decrease' | translate"
   >
-    <ng-icon name="lucideMinus" size="16" class="text-foreground" />
+    <ng-icon name="lucideMinus" size="15" class="text-foreground" />
   </button>
 
   <span
     hlmButtonGroupText
-    class="w-12 justify-center text-sm font-medium text-foreground h-full"
+    class="w-11 md:w-12 justify-center text-sm font-semibold text-foreground h-full select-none"
     aria-live="polite"
   >
     {{ store.quantity() }}
@@ -23,10 +24,11 @@
     hlmBtn
     variant="ghost"
     size="icon"
+    type="button"
     (click)="store.increment()"
-    class="hover:bg-muted h-full w-10 shrink-0"
+    class="hover:bg-muted/80 h-full w-10 md:w-11 shrink-0 transition-colors cursor-pointer"
     [attr.aria-label]="'product.stepper.increase' | translate"
   >
-    <ng-icon name="lucidePlus" size="16" class="text-foreground" />
+    <ng-icon name="lucidePlus" size="15" class="text-foreground" />
   </button>
 </hlm-button-group>

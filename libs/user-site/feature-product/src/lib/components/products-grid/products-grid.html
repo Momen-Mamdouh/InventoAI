@@ -1,4 +1,14 @@
-<div class="items-stretch gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+<div
+  class="items-stretch grid transition-all duration-300"
+  [class.grid-cols-1]="density() === 'comfortable'"
+  [class.sm:grid-cols-2]="density() === 'comfortable'"
+  [class.lg:grid-cols-3]="density() === 'comfortable'"
+  [class.gap-6]="density() === 'comfortable'"
+  [class.grid-cols-2]="density() === 'compact'"
+  [class.sm:grid-cols-3]="density() === 'compact'"
+  [class.lg:grid-cols-4]="density() === 'compact'"
+  [class.gap-4]="density() === 'compact'"
+>
   @for (product of products(); track product.slug) {
     <div class="h-full">
       <app-product-card [product]="product" />

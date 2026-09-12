@@ -7,6 +7,8 @@ import {
   effect,
   OnInit,
   viewChildren,
+  DestroyRef,
+  afterNextRender,
 } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -22,6 +24,8 @@ import { HlmSeparator } from '@spartan/helm/separator';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmBadgeImports } from '@spartan/helm/badge';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { HlmDialogImports } from '@spartan/helm/dialog';
 import { BrnDialogContent } from '@spartan-ng/brain/dialog';
 import { HlmTypographyImports } from '@spartan/helm/typography';
@@ -32,11 +36,27 @@ import {
   lucideShieldCheck,
   lucideTruck,
   lucideArrowLeft,
+  lucideArrowRight,
   lucideTrash2,
   lucideLoader2,
   lucideInfo,
   lucideCheckCircle,
   lucideAlertTriangle,
+  lucideLock,
+  lucideMapPin,
+  lucideCreditCard,
+  lucideBanknote,
+  lucideChevronDown,
+  lucideChevronUp,
+  lucideSparkles,
+  lucideTag,
+  lucideUser,
+  lucideHelpCircle,
+  lucideCheck,
+  lucideChevronRight,
+  lucideChevronLeft,
+  lucidePhone,
+  lucideMail,
 } from '@ng-icons/lucide';
 import { toast } from '@spartan/helm/sonner';
 
@@ -46,7 +66,6 @@ import { OrdersDataService, type OrderDetail } from '@invento/user-site-data-acc
 import { extractErrorMessage } from '@invento/shared-util-error';
 import type { CreateOrderPayload } from '@invento/user-site-data-access-cart';
 import { StoreSlugService } from '@invento/user-site-data-access-store';
-import { animateElementsOnRender } from '@invento/user-site-util-animation';
 
 @Component({
   selector: 'app-checkout',
@@ -61,6 +80,8 @@ import { animateElementsOnRender } from '@invento/user-site-util-animation';
     HlmButton,
     HlmSeparator,
     HlmCard,
+    HlmBadgeImports,
+    HlmTooltipImports,
     HlmTextareaImports,
     HlmDialogImports,
     BrnDialogContent,
@@ -77,11 +98,27 @@ import { animateElementsOnRender } from '@invento/user-site-util-animation';
       lucideShieldCheck,
       lucideTruck,
       lucideArrowLeft,
+      lucideArrowRight,
       lucideTrash2,
       lucideLoader2,
       lucideInfo,
       lucideCheckCircle,
       lucideAlertTriangle,
+      lucideLock,
+      lucideMapPin,
+      lucideCreditCard,
+      lucideBanknote,
+      lucideChevronDown,
+      lucideChevronUp,
+      lucideSparkles,
+      lucideTag,
+      lucideUser,
+      lucideHelpCircle,
+      lucideCheck,
+      lucideChevronRight,
+      lucideChevronLeft,
+      lucidePhone,
+      lucideMail,
     }),
   ],
   templateUrl: './checkout.html',
@@ -109,6 +146,12 @@ export class Checkout implements OnInit {
   readonly isSubmitting = signal<boolean>(false);
   readonly isClearCartModalOpen = signal<boolean>(false);
   readonly activeStoreSlug = signal<string>(this.resolvedStoreSlug());
+  readonly isMobileSummaryOpen = signal<boolean>(false);
+  readonly promoCodeInput = signal<string>('');
+  readonly isPromoApplied = signal<boolean>(false);
+  readonly isRtl = this.locale.isRtl;
+  readonly currentUser = this.authService.currentUser;
+  readonly isAuthenticated = this.authService.isAuthenticated;
 
   readonly checkoutForm = this.fb.group({
     firstName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -180,25 +223,33 @@ export class Checkout implements OnInit {
      * side in Arabic. `LocaleService.isRtl` mirrors the sign so the left column still enters
      * from its (now right-hand) leading edge.
      */
-    animateElementsOnRender(this.fadeInLeftItems, (items) =>
-      gsap.from(items, {
-        x: this.locale.isRtl() ? 30 : -30,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: 'power3.out',
-      }),
-    );
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      const ctx = gsap.context(() => {
+        const leftItems = this.fadeInLeftItems().map((r) => r.nativeElement);
+        const rightItems = this.fadeInRightItems().map((r) => r.nativeElement);
 
-    animateElementsOnRender(this.fadeInRightItems, (items) =>
-      gsap.from(items, {
-        x: this.locale.isRtl() ? -30 : 30,
-        opacity: 0,
-        duration: 0.6,
-        delay: 0.2,
-        ease: 'power3.out',
-      }),
-    );
+        if (leftItems.length > 0) {
+          gsap.fromTo(
+            leftItems,
+            { x: this.locale.isRtl() ? 30 : -30, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out' },
+          );
+        }
+
+        if (rightItems.length > 0) {
+          gsap.fromTo(
+            rightItems,
+            { x: this.locale.isRtl() ? -30 : 30, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.6, delay: 0.15, ease: 'power3.out' },
+          );
+        }
+      });
+
+      destroyRef.onDestroy(() => {
+        ctx.revert();
+      });
+    });
   }
 
   ngOnInit(): void {
@@ -348,6 +399,55 @@ export class Checkout implements OnInit {
     });
   }
 
+  toggleMobileSummary(): void {
+    this.isMobileSummaryOpen.update((open) => !open);
+  }
+
+  onPromoInputChange(value: string): void {
+    this.promoCodeInput.set(value);
+  }
+
+  applyPromoCode(): void {
+    const code = this.promoCodeInput().trim();
+    if (!code) {
+      toast.warning(this.locale.translate('checkout.toast.promo_empty'));
+      return;
+    }
+    this.isPromoApplied.set(true);
+    toast.success(this.locale.translate('checkout.toast.promo_applied'));
+  }
+
+  removePromoCode(): void {
+    this.promoCodeInput.set('');
+    this.isPromoApplied.set(false);
+  }
+
+  scrollToSection(sectionId: string): void {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.checkoutForm.get(fieldName);
+    return Boolean(field && field.invalid && (field.dirty || field.touched));
+  }
+
+  isStep1Valid(): boolean {
+    const fn = this.checkoutForm.get('firstName');
+    const ln = this.checkoutForm.get('lastName');
+    const em = this.checkoutForm.get('email');
+    const ph = this.checkoutForm.get('contactPhone');
+    return Boolean(fn?.valid && ln?.valid && em?.valid && ph?.valid);
+  }
+
+  isStep2Valid(): boolean {
+    const l1 = this.checkoutForm.get('line1');
+    const ct = this.checkoutForm.get('city');
+    return Boolean(l1?.valid && ct?.valid);
+  }
+
   updateQuantity(index: number, delta: number): void {
     this.cartService.updateQuantity(index, delta);
   }
@@ -360,7 +460,9 @@ export class Checkout implements OnInit {
     this.isClearCartModalOpen.set(true);
   }
   protected onClearCartDialogState(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.closeClearCartModal();
+    if (state === 'closed') {
+      this.closeClearCartModal();
+    }
   }
 
   closeClearCartModal(): void {

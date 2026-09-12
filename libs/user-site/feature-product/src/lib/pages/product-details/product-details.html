@@ -1,37 +1,177 @@
-<main class="mx-auto px-4 md:px-8 py-8 w-full max-w-6xl grow relative min-h-[500px]">
-  <app-breadcrumb-trail />
-
+<main class="mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10 w-full max-w-7xl grow relative min-h-[600px] pb-24 md:pb-10">
   @if (isLoading()) {
-    <div class="absolute inset-0 z-10 flex items-center justify-center">
-      <hlm-spinner class="text-[32px] text-primary" />
-    </div>
-  } @else if (notFound()) {
-    <app-empty-state
-      icon="lucideAlertCircle"
-      [title]="'product.product_details.not_found_title' | translate"
-      [description]="'product.product_details.not_found_desc' | translate"
-    />
-  } @else {
-    @let p = store.product();
-    @if (p) {
-      <div class="gap-8 grid grid-cols-1 lg:grid-cols-12 mb-12">
-        <div class="lg:col-span-7">
-          <app-product-gallery />
+    <!-- High-Fidelity Two-Column Skeleton (Zero Layout Shift) -->
+    <div class="animate-pulse space-y-8" aria-busy="true">
+      <!-- Breadcrumb Skeleton -->
+      <div class="flex items-center gap-2 mb-6">
+        <div hlmSkeleton class="h-4 w-16 rounded-md"></div>
+        <div class="text-muted-foreground/30 text-xs">/</div>
+        <div hlmSkeleton class="h-4 w-24 rounded-md"></div>
+        <div class="text-muted-foreground/30 text-xs">/</div>
+        <div hlmSkeleton class="h-4 w-36 rounded-md"></div>
+      </div>
+
+      <!-- Two-Column Product Grid Skeleton -->
+      <div class="gap-10 lg:gap-14 grid grid-cols-1 lg:grid-cols-12 items-start">
+        <!-- Gallery Skeleton (Left, 6 columns) -->
+        <div class="lg:col-span-6 flex flex-col-reverse md:flex-row gap-4 items-start max-w-[560px] mx-auto lg:mx-0 w-full">
+          <div class="flex flex-row md:flex-col gap-2.5 w-full md:w-16 lg:w-20 shrink-0">
+            <div hlmSkeleton class="aspect-square w-14 h-14 md:w-16 md:h-16 rounded-xl"></div>
+            <div hlmSkeleton class="aspect-square w-14 h-14 md:w-16 md:h-16 rounded-xl"></div>
+            <div hlmSkeleton class="aspect-square w-14 h-14 md:w-16 md:h-16 rounded-xl"></div>
+          </div>
+          <div hlmSkeleton class="aspect-square w-full max-w-[440px] rounded-2xl"></div>
         </div>
 
-        <div class="flex flex-col lg:col-span-5">
-          <app-product-summary class="mb-6" />
-          @if (p.variants && p.variants.length > 0) {
-            <app-variant-selector />
-          }
-          <app-purchase-actions />
-          @if (p.description || (p.specs && p.specs.length > 0)) {
-            <app-product-details-accordion />
-          }
+        <!-- Summary & Buy Box Skeleton (Right, 6 columns) -->
+        <div class="lg:col-span-6 space-y-5">
+          <div class="flex justify-between items-center">
+            <div hlmSkeleton class="h-6 w-24 rounded-full"></div>
+            <div hlmSkeleton class="h-6 w-20 rounded-full"></div>
+          </div>
+          <div hlmSkeleton class="h-9 w-4/5 rounded-lg"></div>
+          <div hlmSkeleton class="h-4 w-3/5 rounded-md"></div>
+          <div hlmSkeleton class="h-8 w-36 rounded-lg"></div>
+
+          <!-- Micro-Trust Skeleton -->
+          <div class="grid grid-cols-3 gap-2 py-1">
+            <div hlmSkeleton class="h-9 rounded-lg"></div>
+            <div hlmSkeleton class="h-9 rounded-lg"></div>
+            <div hlmSkeleton class="h-9 rounded-lg"></div>
+          </div>
+
+          <!-- Variants Skeleton -->
+          <div class="space-y-2 pt-2">
+            <div hlmSkeleton class="h-4 w-20 rounded-md"></div>
+            <div class="flex gap-2">
+              <div hlmSkeleton class="h-10 w-10 rounded-full"></div>
+              <div hlmSkeleton class="h-10 w-10 rounded-full"></div>
+              <div hlmSkeleton class="h-10 w-10 rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- Actions Skeleton -->
+          <div class="flex gap-3 pt-2">
+            <div hlmSkeleton class="h-12 w-28 rounded-xl"></div>
+            <div hlmSkeleton class="h-12 flex-1 rounded-xl"></div>
+          </div>
         </div>
       </div>
 
+      <!-- Product Information Tabs Skeleton (Below Hero) -->
+      <div class="mt-14 mb-16 p-6 rounded-2xl border border-border bg-card space-y-6">
+        <div class="flex gap-6 border-b border-border pb-3">
+          <div hlmSkeleton class="h-8 w-32 rounded-lg"></div>
+          <div hlmSkeleton class="h-8 w-32 rounded-lg"></div>
+          <div hlmSkeleton class="h-8 w-32 rounded-lg"></div>
+        </div>
+        <div class="space-y-3">
+          <div hlmSkeleton class="h-4 w-full rounded-md"></div>
+          <div hlmSkeleton class="h-4 w-5/6 rounded-md"></div>
+          <div hlmSkeleton class="h-4 w-3/4 rounded-md"></div>
+        </div>
+      </div>
+    </div>
+  } @else if (notFound()) {
+    <!-- Elevated 404 Recovery State -->
+    <div class="py-20 text-center max-w-md mx-auto flex flex-col items-center">
+      <div
+        class="w-16 h-16 rounded-2xl bg-muted/60 border border-border flex items-center justify-center text-muted-foreground mb-5 shadow-xs"
+      >
+        <ng-icon name="lucidePackageX" size="32" />
+      </div>
+      <h2 class="text-2xl font-bold text-foreground mb-2">
+        {{ 'product.product_details.not_found_title' | translate }}
+      </h2>
+      <p class="text-sm text-muted-foreground mb-6 leading-relaxed">
+        {{ 'product.product_details.not_found_desc' | translate }}
+      </p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a
+          hlmBtn
+          [routerLink]="['/', storeSlug(), 'products']"
+          class="rounded-xl px-5 h-11 shadow-sm flex items-center"
+        >
+          <ng-icon name="lucideShoppingBag" size="16" class="me-2" />
+          {{ 'product.product_details.browse_products' | translate }}
+        </a>
+        <a
+          hlmBtn
+          variant="outline"
+          [routerLink]="['/', storeSlug()]"
+          class="rounded-xl px-5 h-11"
+        >
+          {{ 'product.product_details.back_home' | translate }}
+        </a>
+      </div>
+    </div>
+  } @else {
+    @let p = store.product();
+    @if (p) {
+      <app-breadcrumb-trail />
+
+      <!-- Main Two-Column E-Commerce Layout -->
+      <div class="gap-10 lg:gap-14 grid grid-cols-1 lg:grid-cols-12 mb-14 items-start">
+        <!-- Media Showcase (Left, 6 columns) -->
+        <div class="lg:col-span-6">
+          <app-product-gallery />
+        </div>
+
+        <!-- Sticky Commerce Hub (Right, 6 columns) -->
+        <div class="flex flex-col lg:col-span-6 lg:sticky lg:top-24 self-start space-y-6">
+          <app-product-summary />
+
+          @if (p.variants && p.variants.length > 0) {
+            <app-variant-selector />
+          }
+
+          <app-purchase-actions />
+        </div>
+      </div>
+
+      <!-- Dedicated Full-Width Product Information Hub -->
+      <section class="mb-16">
+        <app-product-details-accordion />
+      </section>
+
+      <!-- Recommended Complementary Products -->
       <app-recommended-products />
+
+      <!-- Mobile Floating Sticky Action Bar -->
+      @let cv = store.currentVariant();
+      @let price = cv?.priceAmount ?? p.minPriceAmount;
+      <div
+        class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 shadow-2xl flex items-center justify-between gap-3"
+      >
+        <div class="flex items-center gap-2.5 min-w-0">
+          @if (p.images && p.images.length > 0) {
+            <img
+              [src]="p.images[0].url"
+              [alt]="p.title"
+              class="w-11 h-11 rounded-lg border border-border object-contain shrink-0 bg-card p-0.5"
+            />
+          }
+          <div class="min-w-0">
+            <p class="text-xs font-semibold text-foreground truncate max-w-[150px]">{{ p.title }}</p>
+            <p class="text-sm font-bold text-primary">{{ price / 100 | currency }}</p>
+          </div>
+        </div>
+
+        <button
+          hlmBtn
+          type="button"
+          class="h-10 px-4 rounded-xl text-xs font-semibold shrink-0 shadow-sm cursor-pointer flex items-center"
+          [disabled]="!store.canAddToCart()"
+          (click)="addStickyToCart($event)"
+        >
+          @if (store.canAddToCart()) {
+            <ng-icon name="lucideShoppingCart" size="15" class="me-1.5" />
+            <span>{{ 'product.sticky_bar.add_to_cart' | translate }}</span>
+          } @else {
+            <span>{{ 'product.actions.out_of_stock' | translate }}</span>
+          }
+        </button>
+      </div>
     }
   }
 </main>

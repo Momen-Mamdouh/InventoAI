@@ -1,42 +1,219 @@
-<section class="px-4 sm:px-8 md:px-16 lg:px-24 pt-4 pb-10">
+<section class="px-4 sm:px-8 md:px-12 lg:px-20 pt-6 pb-16 max-w-7xl mx-auto">
+  <!-- 1. Storefront Catalogue Header & Breadcrumbs -->
+  <header class="mb-6 space-y-4">
+    <!-- Breadcrumbs -->
+    <nav
+      class="flex items-center gap-1.5 text-xs text-muted-foreground"
+      [attr.aria-label]="'product.breadcrumb.nav_label' | translate"
+    >
+      <a
+        [routerLink]="['/', storeSlug()]"
+        class="hover:text-foreground transition-colors font-medium"
+      >
+        {{ 'nav.home' | translate }}
+      </a>
+      <ng-icon
+        name="lucideChevronRight"
+        size="14"
+        class="rtl:rotate-180 shrink-0 text-muted-foreground/60"
+      />
+      <a
+        [routerLink]="['/', storeSlug(), 'products']"
+        class="hover:text-foreground transition-colors font-medium"
+        [class.text-foreground]="!selectedCategorySlug()"
+      >
+        {{ 'product.breadcrumb.shop' | translate }}
+      </a>
+      @if (activeCategoryName(); as catName) {
+        <ng-icon
+          name="lucideChevronRight"
+          size="14"
+          class="rtl:rotate-180 shrink-0 text-muted-foreground/60"
+        />
+        <span class="text-foreground font-semibold truncate">{{ catName }}</span>
+      }
+    </nav>
+
+    <!-- Catalogue Title & Lead -->
+    <div class="flex flex-col gap-1.5">
+      <h1 hlmH1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground m-0">
+        {{ activeCategoryName() || ('product.products.title' | translate) }}
+      </h1>
+      <p hlmP class="text-sm sm:text-base text-muted-foreground m-0">
+        {{ 'product.products.subtitle' | translate }}
+      </p>
+    </div>
+
+    <!-- Category Pills Quick Bar (Horizontal scroll on mobile) -->
+    @if (categories().length > 0) {
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 pt-1 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+        <button
+          hlmBtn
+          [variant]="!selectedCategorySlug() ? 'default' : 'outline'"
+          size="sm"
+          (click)="onCategoryChange('')"
+          class="rounded-full text-xs font-medium shrink-0 h-8 px-4 transition-all"
+        >
+          {{ 'product.filters.all_categories' | translate }}
+        </button>
+        @for (cat of categories(); track cat.slug) {
+          <button
+            hlmBtn
+            [variant]="selectedCategorySlug() === cat.slug ? 'default' : 'outline'"
+            size="sm"
+            (click)="onCategoryChange(cat.slug)"
+            class="rounded-full text-xs font-medium shrink-0 h-8 px-3.5 transition-all flex items-center gap-1.5"
+          >
+            <span>{{ cat.name }}</span>
+            <span
+              [class.bg-primary-foreground/20]="selectedCategorySlug() === cat.slug"
+              [class.text-primary-foreground]="selectedCategorySlug() === cat.slug"
+              [class.bg-muted]="selectedCategorySlug() !== cat.slug"
+              [class.text-muted-foreground]="selectedCategorySlug() !== cat.slug"
+              class="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+            >
+              {{ cat.count }}
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </header>
+
+  <!-- 2. Products Toolbar (Search, Count, Sort, Density Switcher, Mobile Filter Drawer Trigger) -->
   <app-products-toolbar
     [title]="'product.products.title' | translate"
     [count]="productsResponse()?.total || 0"
     [sort]="currentSort()"
+    [activeFilterCount]="activeFilterCount()"
+    [density]="density()"
     (sortChange)="onSortChange($event)"
     (searchSubmit)="onSearchSubmit($event)"
+    (densityChange)="density.set($event)"
+    (openMobileFilter)="isMobileFilterOpen.set(true)"
   />
 
+  <!-- 3. Active Filter Chips Bar (1-click dismiss chips & Clear all) -->
+  @if (activeChips().length > 0) {
+    <div
+      class="flex flex-wrap items-center gap-2 mt-4 p-3 bg-muted/40 border border-border/80 rounded-xl"
+    >
+      <span class="text-xs font-semibold text-muted-foreground shrink-0 me-1">
+        {{ 'product.chips.active_filters' | translate }}
+      </span>
+
+      @for (chip of activeChips(); track chip.id) {
+        <span
+          hlmBadge
+          variant="secondary"
+          class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-lg text-xs font-medium bg-background border border-border text-foreground shadow-2xs hover:bg-muted/60 transition-colors"
+        >
+          <span>{{ chip.label }}</span>
+          <button
+            type="button"
+            (click)="chip.remove()"
+            class="rounded-xs hover:bg-muted p-0.5 text-muted-foreground hover:text-foreground transition-colors inline-flex items-center justify-center cursor-pointer"
+            [attr.aria-label]="'Clear ' + chip.label"
+          >
+            <ng-icon name="lucideX" size="13" />
+          </button>
+        </span>
+      }
+
+      <button
+        hlmBtn
+        variant="ghost"
+        size="sm"
+        (click)="onClearAll()"
+        class="text-xs text-primary hover:text-primary/80 font-semibold h-7 px-2 ms-auto"
+      >
+        {{ 'product.chips.clear_all' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- Fuzzy Search "Did you mean" alert -->
   @let dym = didYouMean();
   @if (searchMode() === 'fuzzy' && dym) {
     <div
-      class="mt-4 p-4 bg-primary/10 text-primary rounded-lg border border-primary/20 flex items-center gap-2"
+      class="mt-4 p-4 bg-primary/10 text-primary rounded-xl border border-primary/20 flex items-center gap-2"
     >
-      <ng-icon name="lucideInfo" class="w-5 h-5"></ng-icon>
+      <ng-icon name="lucideInfo" size="18" class="shrink-0" />
       <span [innerHTML]="'product.products.did_you_mean' | translate: { term: dym }"></span>
     </div>
   }
 
-  <div class="flex md:flex-row flex-col gap-10 mt-6">
-    <aside class="w-full md:w-64 shrink-0">
-      <app-filters-sidebar
-        [filters]="filterResponse()"
-        [isLoading]="isLoading()"
-        (categoryChange)="onCategoryChange($event)"
-        (priceChange)="onPriceChange($event)"
-        (inStockChange)="onInStockChange($event)"
-        (attributeChange)="onAttributeChange($event)"
-        (clearAll)="onClearAll()"
-      />
+  <!-- 4. Main Product Catalog Layout (Desktop Sticky Sidebar + Grid) -->
+  <div class="flex md:flex-row flex-col gap-8 mt-6">
+    <!-- Desktop Sidebar (Hidden on < md viewports) -->
+    <aside class="hidden md:block w-64 shrink-0">
+      <div class="sticky top-24">
+        <app-filters-sidebar
+          [filters]="filterResponse()"
+          [isLoading]="isLoading()"
+          (categoryChange)="onCategoryChange($event)"
+          (priceChange)="onPriceChange($event)"
+          (inStockChange)="onInStockChange($event)"
+          (attributeChange)="onAttributeChange($event)"
+          (clearAll)="onClearAll()"
+        />
+      </div>
     </aside>
 
+    <!-- Mobile Filter Drawer (HlmSheet slide-over) -->
+    <hlm-sheet
+      side="left"
+      [state]="isMobileFilterOpen() ? 'open' : 'closed'"
+      (stateChanged)="onMobileFilterStateChanged($event)"
+    >
+      <hlm-sheet-content
+        *hlmSheetPortal="let ctx"
+        class="flex flex-col justify-between p-0 max-w-sm w-full h-full overflow-hidden bg-background"
+      >
+        <hlm-sheet-header class="p-5 border-b border-border">
+          <h3 hlmSheetTitle class="text-lg font-bold text-foreground m-0">
+            {{ 'product.filters.title' | translate }}
+          </h3>
+          <p hlmSheetDescription class="text-xs text-muted-foreground m-0 mt-1">
+            {{ 'product.filters.mobile_desc' | translate }}
+          </p>
+        </hlm-sheet-header>
+
+        <div class="flex-1 overflow-y-auto p-5">
+          <app-filters-sidebar
+            [filters]="filterResponse()"
+            [isLoading]="isLoading()"
+            (categoryChange)="onCategoryChange($event)"
+            (priceChange)="onPriceChange($event)"
+            (inStockChange)="onInStockChange($event)"
+            (attributeChange)="onAttributeChange($event)"
+            (clearAll)="onClearAll()"
+          />
+        </div>
+
+        <hlm-sheet-footer class="p-4 border-t border-border bg-card">
+          <button hlmBtn class="w-full" (click)="isMobileFilterOpen.set(false)">
+            {{
+              'product.filters.show_results'
+                | translate: { count: productsResponse()?.total || 0 }
+            }}
+          </button>
+        </hlm-sheet-footer>
+      </hlm-sheet-content>
+    </hlm-sheet>
+
+    <!-- Products Grid Section -->
     <div class="flex flex-col flex-1 gap-6 relative min-h-100">
-      <div class="products-grid-wrapper px-1 py-2 overflow-x-hidden">
+      <div class="products-grid-wrapper px-1 pt-2 pb-6">
         @if (isLoading()) {
-          <div class="items-stretch gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            class="items-stretch gap-6 grid grid-cols-1 sm:grid-cols-2"
+            [class.lg:grid-cols-3]="density() === 'comfortable'"
+            [class.lg:grid-cols-4]="density() === 'compact'"
+          >
             @for (i of [1, 2, 3, 4, 5, 6]; track i) {
               <div class="flex flex-col gap-3 h-full">
-                <app-skeleton-block class="aspect-4/5 w-full rounded-xl" />
+                <app-skeleton-block class="aspect-4/5 w-full rounded-2xl" />
                 <div class="space-y-2 mt-2">
                   <app-skeleton-block class="h-4 w-3/4" />
                   <app-skeleton-block class="h-4 w-1/2" />
@@ -49,31 +226,73 @@
             }
           </div>
         } @else if (productsResponse()?.items?.length) {
-          <app-products-grid [products]="productsResponse()?.items || []" />
+          <app-products-grid
+            [products]="productsResponse()?.items || []"
+            [density]="density()"
+          />
         } @else {
-          <div class="py-10">
-            <app-empty-state
-              icon="lucideSearchX"
-              [title]="'product.products.no_products' | translate"
-              [description]="'product.products.no_products_desc' | translate"
-            >
-              <button hlmBtn (click)="onClearAll()">
-                {{ 'product.products.clear_all' | translate }}
+          @if (hasActiveFilters()) {
+            <!-- State 1: Active filters or search query with zero matches -->
+            <div class="py-16 px-4 flex flex-col items-center justify-center text-center max-w-md mx-auto animate-in fade-in-50 duration-300">
+              <div
+                class="w-16 h-16 rounded-2xl bg-muted/60 border border-border/80 flex items-center justify-center text-muted-foreground mb-5 shadow-xs"
+              >
+                <ng-icon name="lucideSearchX" size="28" class="text-foreground/80" />
+              </div>
+
+              <h3 hlmH3 class="text-xl font-bold text-foreground tracking-tight m-0">
+                @if (searchQuery(); as q) {
+                  {{ 'product.empty_filtered.search_title' | translate: { query: q } }}
+                } @else {
+                  {{ 'product.empty_filtered.title' | translate }}
+                }
+              </h3>
+              <p hlmP class="text-sm text-muted-foreground mt-2 mb-6 max-w-sm">
+                {{ 'product.empty_filtered.desc' | translate }}
+              </p>
+
+              <button hlmBtn variant="outline" (click)="onClearAll()" class="gap-2 h-10 px-5 shadow-2xs">
+                <ng-icon name="lucideRotateCcw" size="14" />
+                <span>{{ 'product.empty_filtered.clear_btn' | translate }}</span>
               </button>
-            </app-empty-state>
-          </div>
+            </div>
+          } @else {
+            <!-- State 2: Store catalogue has no products published yet (no filters applied) -->
+            <div class="py-16 px-4 flex flex-col items-center justify-center text-center max-w-md mx-auto animate-in fade-in-50 duration-300">
+              <div
+                class="w-16 h-16 rounded-2xl bg-muted/60 border border-border/80 flex items-center justify-center text-muted-foreground mb-5 shadow-xs"
+              >
+                <ng-icon name="lucidePackageOpen" size="28" class="text-foreground/80" />
+              </div>
+
+              <h3 hlmH3 class="text-xl font-bold text-foreground tracking-tight m-0">
+                {{ 'product.empty_store.title' | translate }}
+              </h3>
+              <p hlmP class="text-sm text-muted-foreground mt-2 mb-6 max-w-sm">
+                {{ 'product.empty_store.desc' | translate }}
+              </p>
+
+              <a hlmBtn [routerLink]="['/', storeSlug()]" class="gap-2 h-10 px-5 shadow-2xs">
+                <ng-icon name="lucideArrowLeft" size="14" class="rtl:rotate-180" />
+                <span>{{ 'product.empty_store.home_btn' | translate }}</span>
+              </a>
+            </div>
+          }
         }
       </div>
 
-      @if (productsResponse()?.totalPages && productsResponse()!.totalPages > 1) {
-        <app-pagination
-          class="mt-8"
-          [currentPage]="productsResponse()!.page"
-          [totalPages]="productsResponse()!.totalPages"
-          [totalItems]="productsResponse()!.total"
-          [pageSize]="productsResponse()!.limit"
-          (pageChange)="onPageChange($event)"
-        />
+      <!-- Pagination -->
+      @if (productsResponse(); as res) {
+        @if (res.totalPages > 1) {
+          <app-pagination
+            class="mt-8"
+            [currentPage]="res.page"
+            [totalPages]="res.totalPages"
+            [totalItems]="res.total"
+            [pageSize]="res.limit"
+            (pageChange)="onPageChange($event)"
+          />
+        }
       }
     </div>
   </div>

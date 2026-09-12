@@ -10,4 +10,5 @@ import { ProductListItem } from '@invento/user-site-data-access-product';
 })
 export class ProductsGrid {
   public readonly products = input.required<ProductListItem[]>();
+  public readonly density = input<'comfortable' | 'compact'>('comfortable');
 }

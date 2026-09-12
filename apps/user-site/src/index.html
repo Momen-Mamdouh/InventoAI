@@ -31,6 +31,34 @@
           if (localStorage.getItem('theme')) {
             localStorage.removeItem('theme');
           }
+
+          // Pre-hydrate store theme stylesheet to eliminate color flashing (FOUC)
+          var existingTheme = document.getElementById('store-theme');
+          if (!existingTheme) {
+            var host = window.location.hostname || '';
+            var nonTenant = { www: 1, localhost: 1, app: 1, api: 1 };
+            var slug = '';
+            var hostLabels = host.split('.');
+            if (hostLabels.length >= 3 && !nonTenant[hostLabels[0].toLowerCase()]) {
+              slug = hostLabels[0].toLowerCase();
+            }
+            if (!slug) {
+              var pathSegments = (window.location.pathname || '').split('/').filter(Boolean);
+              if (pathSegments.length > 0 && pathSegments[0] !== 'store-not-found') {
+                slug = pathSegments[0].toLowerCase();
+              }
+            }
+            if (slug && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+              var cachedCss = localStorage.getItem('invento_store_theme:' + slug);
+              if (cachedCss) {
+                var styleEl = document.createElement('style');
+                styleEl.id = 'store-theme';
+                styleEl.setAttribute('data-slug', slug);
+                styleEl.textContent = cachedCss;
+                document.head.appendChild(styleEl);
+              }
+            }
+          }
         } catch (e) {}
       })();
     </script>

@@ -1,31 +1,40 @@
 @if (products().length) {
-  <section class="mt-12 border-t border-border pt-12">
+  <section class="mt-16 border-t border-border/80 pt-12">
     <hlm-carousel
       orientation="horizontal"
-      class="w-full flex flex-col-reverse max-w-5xl mx-auto overflow-hidden"
+      class="w-full flex flex-col-reverse max-w-7xl mx-auto overflow-hidden"
       [options]="{ align: 'start', loop: true }"
     >
-      <div class="flex items-center justify-between mb-6">
-        <h2 hlmH2 class="text-xl font-semibold text-foreground m-0 border-none">
-          {{ 'product.recommended.title' | translate }}
-        </h2>
-        <div class="flex items-center gap-2">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <h2 hlmH2 class="text-xl md:text-2xl font-bold text-foreground m-0 border-none">
+            {{ 'product.recommended.title' | translate }}
+          </h2>
+          <p class="text-sm text-muted-foreground mt-1">
+            {{ 'product.recommended.subtitle' | translate }}
+          </p>
+        </div>
+        <div class="flex items-center gap-2 self-end sm:self-auto">
           <button
             hlmCarouselPrevious
-            class="static translate-y-0 flex"
+            class="static translate-y-0 h-9 w-9 rounded-full border border-border bg-card hover:bg-accent flex items-center justify-center transition-colors cursor-pointer"
             [attr.aria-label]="'product.recommended.previous_slide' | translate"
-          ></button>
+          >
+            <ng-icon name="lucideChevronLeft" size="16" class="rtl:rotate-180" />
+          </button>
           <button
             hlmCarouselNext
-            class="static translate-y-0 flex"
+            class="static translate-y-0 h-9 w-9 rounded-full border border-border bg-card hover:bg-accent flex items-center justify-center transition-colors cursor-pointer"
             [attr.aria-label]="'product.recommended.next_slide' | translate"
-          ></button>
+          >
+            <ng-icon name="lucideChevronRight" size="16" class="rtl:rotate-180" />
+          </button>
         </div>
       </div>
 
-      <div hlmCarouselContent class="p-1 h-full" [class.justify-center]="products().length <= 2">
+      <div hlmCarouselContent class="p-1 h-full -ms-3" [class.justify-center]="products().length <= 2">
         @for (product of products(); track product.slug) {
-          <div hlmCarouselItem class="basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-[27%]">
+          <div hlmCarouselItem class="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 ps-3">
             <app-product-card [product]="product" />
           </div>
         }

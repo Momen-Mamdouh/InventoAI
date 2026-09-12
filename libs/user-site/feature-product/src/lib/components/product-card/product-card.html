@@ -1,21 +1,40 @@
 <div
   hlmCard
-  class="group relative flex flex-col hover:shadow-lg p-0 h-full overflow-hidden transition-shadow duration-300 cursor-pointer"
+  class="group relative flex flex-col h-full rounded-2xl border border-border/70 bg-card overflow-hidden transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:-translate-y-1 cursor-pointer p-0"
 >
-  <!--
-    Stretched link rather than [routerLink] on the card <div>: a div emits no href, so the
-    storefront was server-rendered but its product pages were unreachable to a crawler
-    following links from the home page, and the card could not be focused by keyboard.
-    The add-to-cart button stays a sibling above it, which also avoids nesting a <button>
-    inside an <a>.
-  -->
+  <!-- Stretched link for keyboard focus and crawler accessibility -->
   <a
     [routerLink]="['/', storeSlug(), 'product-details', product().slug]"
     [attr.aria-label]="product().title"
     class="absolute inset-0 z-10 rounded-[inherit] focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none"
   ></a>
-  <!-- Image -->
-  <div class="flex justify-center items-center bg-muted aspect-square w-full overflow-hidden">
+
+  <!-- Image & Badges -->
+  <div class="relative flex justify-center items-center bg-muted/40 aspect-square w-full overflow-hidden">
+    @if (hasDiscount()) {
+      <div class="absolute top-2.5 start-2.5 z-20 pointer-events-none">
+        <span
+          hlmBadge
+          variant="destructive"
+          class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-md shadow-xs"
+        >
+          -{{ discountPercentage() }}%
+        </span>
+      </div>
+    }
+
+    @if (!product().inStock) {
+      <div class="absolute top-2.5 end-2.5 z-20 pointer-events-none">
+        <span
+          hlmBadge
+          variant="secondary"
+          class="border border-destructive/20 bg-background/90 text-destructive backdrop-blur-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-xs"
+        >
+          {{ 'product.card.out_of_stock' | translate }}
+        </span>
+      </div>
+    }
+
     @if (product().imageUrl) {
       <img
         [src]="product().imageUrl"
@@ -25,24 +44,24 @@
         decoding="async"
         [attr.loading]="eager() ? 'eager' : 'lazy'"
         [attr.fetchpriority]="eager() ? 'high' : null"
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
       />
     } @else {
       <div
-        class="w-full h-full flex items-center justify-center text-muted-foreground/50 bg-secondary group-hover:scale-105 transition-transform duration-500"
+        class="w-full h-full flex items-center justify-center text-muted-foreground/40 bg-secondary/50 group-hover:scale-105 transition-transform duration-500 ease-out"
       >
-        <ng-icon name="lucideImage" size="48" />
+        <ng-icon name="lucideImage" size="44" />
       </div>
     }
   </div>
 
-  <div hlmCardContent class="flex flex-col flex-1 gap-3 p-4">
+  <div hlmCardContent class="flex flex-col flex-1 gap-2.5 p-3.5 sm:p-4">
     <div hlmCardHeader class="gap-1 p-0">
-      <h3 hlmCardTitle dir="auto" class="text-base line-clamp-1 leading-tight">
+      <h3 hlmCardTitle dir="auto" class="text-sm sm:text-base font-bold line-clamp-1 leading-tight text-foreground transition-colors group-hover:text-primary">
         {{ product().title }}
       </h3>
       @if (product().shortDescription) {
-        <p hlmCardDescription dir="auto" class="text-sm line-clamp-1">
+        <p hlmCardDescription dir="auto" class="text-xs line-clamp-1 text-muted-foreground">
           {{ product().shortDescription }}
         </p>
       }
@@ -50,49 +69,55 @@
 
     <!-- Swatches preview (if any) -->
     @if (product().swatches.length > 0) {
-      <div class="flex flex-wrap gap-1 mt-1">
+      <div class="flex flex-wrap gap-1 mt-0.5">
         @for (swatch of product().swatches | slice: 0 : 5; track swatch.slug) {
           <app-color-swatch [hex]="swatch.swatchHex" [name]="swatch.value" />
         }
         @if (product().swatches.length > 5) {
-          <span hlmSmall class="text-xs text-muted-foreground ms-1 flex items-center">
-            <ng-icon name="lucidePlus" size="12" class="me-0.5" />
+          <span hlmSmall class="text-[11px] text-muted-foreground ms-1 flex items-center font-medium">
+            <ng-icon name="lucidePlus" size="10" class="me-0.5" />
             {{ product().swatches.length - 5 }}
           </span>
         }
       </div>
     }
 
-    <div class="flex justify-between items-center mt-auto pt-2">
-      <!-- Price -->
-      <div class="flex flex-col">
-        <span hlmH4 class="font-semibold text-primary m-0 text-lg">{{
-          product().minPriceAmount / 100 | currency: storeCurrency()
-        }}</span>
-        @if (product().maxPriceAmount > product().minPriceAmount) {
-          <span hlmSmall class="text-muted-foreground text-xs flex items-center">
-            <ng-icon name="lucideMinus" size="12" class="mx-1" />
+    <div class="flex justify-between items-end mt-auto pt-3 border-t border-border/40 gap-2">
+      <!-- Price (Vertical Stacking) -->
+      <div class="flex flex-col min-w-0 flex-1 pe-1">
+        @if (hasDiscount()) {
+          <span class="text-muted-foreground/80 line-through text-[11px] font-medium leading-none mb-1 truncate">
             {{ product().maxPriceAmount / 100 | currency: storeCurrency() }}
           </span>
         }
+        <span hlmH4 class="font-extrabold text-primary m-0 text-base sm:text-lg leading-tight truncate">
+          {{ product().minPriceAmount / 100 | currency: storeCurrency() }}
+        </span>
       </div>
 
-      <!-- Add / Out of Stock -->
-      @if (product().inStock) {
-        <button
-          hlmBtn
-          size="sm"
-          variant="outline"
-          type="button"
-          (click)="onAddToCart($event)"
-          class="relative z-20 flex items-center gap-1.5 bg-primary/10 hover:bg-primary border-transparent text-primary hover:text-primary-foreground transition-colors"
-        >
-          {{ 'product.card.add_to_cart' | translate }}
-          <ng-icon name="lucideShoppingCart" size="16" />
-        </button>
-      } @else {
-        <app-page-badge variant="simple" [badgeText]="'product.card.out_of_stock' | translate" />
-      }
+      <!-- Add to Cart / Out of Stock -->
+      <div class="shrink-0">
+        @if (product().inStock) {
+          <button
+            hlmBtn
+            size="sm"
+            variant="outline"
+            type="button"
+            [disabled]="isAdding()"
+            (click)="onAddToCart($event)"
+            class="relative z-20 flex items-center gap-1.5 rounded-lg border-primary/25 bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary hover:text-primary-foreground transition-colors shadow-xs shrink-0"
+          >
+            @if (isAdding()) {
+              <ng-icon name="lucideRefreshCw" size="14" class="animate-spin" />
+            } @else {
+              <span>{{ 'product.card.add_to_cart' | translate }}</span>
+              <ng-icon name="lucideShoppingCart" size="14" />
+            }
+          </button>
+        } @else {
+          <app-page-badge variant="simple" [badgeText]="'product.card.out_of_stock' | translate" class="shrink-0" />
+        }
+      </div>
     </div>
   </div>
 </div>

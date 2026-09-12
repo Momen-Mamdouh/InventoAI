@@ -12,7 +12,8 @@ import { ProductApiService } from '@invento/user-site-data-access-product';
 import { ProductListItem } from '@invento/user-site-data-access-product';
 import { Subscription } from 'rxjs';
 import { HlmTypographyImports } from '@spartan/helm/typography';
-
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreSlugService } from '@invento/user-site-data-access-store';
 
@@ -20,7 +21,8 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
   selector: 'app-recommended-products',
   templateUrl: './recommended-products.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [...HlmCarouselImports, ProductCard, ...HlmTypographyImports, TranslatePipe],
+  imports: [...HlmCarouselImports, ProductCard, ...HlmTypographyImports, TranslatePipe, NgIcon],
+  providers: [provideIcons({ lucideChevronLeft, lucideChevronRight })],
 })
 export class RecommendedProducts implements OnInit, OnDestroy {
   /** Multi-tenant: the slug in the URL, not the build-time fallback constant. */

@@ -1,112 +1,164 @@
-<footer class="bg-muted/20 border-border/60 mt-16 border-t">
+<footer class="mt-16 border-t border-border/60 bg-muted/20">
+  <!-- Main footer links -->
   <div
-    class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-12 sm:px-8 md:grid-cols-3 md:px-16 lg:px-24"
+    class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-12 sm:px-8 md:grid-cols-12 md:px-12 lg:px-20"
   >
-    <!-- Brand -->
-    <div class="flex flex-col gap-3">
+    <!-- Brand column -->
+    <div class="flex flex-col gap-3.5 md:col-span-6 lg:col-span-6">
       <a
         [routerLink]="['/', activeStoreSlug()]"
-        class="flex w-fit items-center gap-2 text-xl font-bold"
+        class="flex w-fit items-center gap-2.5 text-xl font-bold tracking-tight text-foreground transition-opacity hover:opacity-90"
       >
         @if (storeService.logoUrl(); as logo) {
-          <img [src]="logo" alt="" class="h-7 w-7 rounded-lg object-contain" aria-hidden="true" />
+          <img [src]="logo" alt="" class="h-8 w-8 rounded-xl object-contain shadow-xs ring-1 ring-border/60" aria-hidden="true" />
         } @else if (storeService.monogram(); as initials) {
           <span
-            class="bg-primary text-primary-foreground flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-extrabold"
+            class="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-xl text-xs font-extrabold shadow-xs"
             aria-hidden="true"
             >{{ initials }}</span
           >
         }
         <span dir="auto">{{ storeService.displayName() }}</span>
       </a>
-      <p hlmMuted dir="auto" class="max-w-xs text-sm">
+
+      <p hlmMuted dir="auto" class="max-w-md text-sm leading-relaxed">
         {{ storeService.store()?.description || ('footer.tagline' | translate) }}
       </p>
+
       @if (hasSocialLinks()) {
-        <div class="mt-2 flex items-center gap-3">
+        <div class="mt-2 flex items-center gap-2">
           @if (storeService.social()?.facebook; as url) {
             <a
+              hlmBtn
+              variant="outline"
+              size="icon"
               [href]="url"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-muted-foreground hover:text-foreground transition-colors"
+              class="h-9 w-9 rounded-full border-border/60 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-foreground"
               aria-label="Facebook"
             >
-              <ng-icon name="lucideFacebook" size="18" />
+              <ng-icon name="lucideFacebook" size="16" />
             </a>
           }
           @if (storeService.social()?.instagram; as url) {
             <a
+              hlmBtn
+              variant="outline"
+              size="icon"
               [href]="url"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-muted-foreground hover:text-foreground transition-colors"
+              class="h-9 w-9 rounded-full border-border/60 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-foreground"
               aria-label="Instagram"
             >
-              <ng-icon name="lucideInstagram" size="18" />
+              <ng-icon name="lucideInstagram" size="16" />
             </a>
           }
           @if (storeService.social()?.twitter; as url) {
             <a
+              hlmBtn
+              variant="outline"
+              size="icon"
               [href]="url"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-muted-foreground hover:text-foreground transition-colors"
+              class="h-9 w-9 rounded-full border-border/60 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-foreground"
               aria-label="Twitter"
             >
-              <ng-icon name="lucideTwitter" size="18" />
+              <ng-icon name="lucideTwitter" size="16" />
             </a>
           }
           @if (storeService.contactEmail(); as email) {
             <a
+              hlmBtn
+              variant="outline"
+              size="icon"
               [href]="'mailto:' + email"
-              class="text-muted-foreground hover:text-foreground transition-colors"
+              class="h-9 w-9 rounded-full border-border/60 text-muted-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-foreground"
               [attr.aria-label]="'footer.social_email' | translate"
             >
-              <ng-icon name="lucideMail" size="18" />
+              <ng-icon name="lucideMail" size="16" />
             </a>
           }
         </div>
       }
     </div>
 
-    <!-- Quick links -->
-    <nav class="flex flex-col gap-3" aria-labelledby="footer-shop">
-      <h3 hlmH3 id="footer-shop">{{ 'footer.shop' | translate }}</h3>
+    <!-- Quick links column -->
+    <nav class="flex flex-col gap-3 md:col-span-3 lg:col-span-3" aria-labelledby="footer-shop">
+      <h3 hlmH4 id="footer-shop" class="text-xs font-bold tracking-wider uppercase text-foreground">
+        {{ 'footer.shop' | translate }}
+      </h3>
       <a
         [routerLink]="['/', activeStoreSlug(), 'products']"
-        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors"
-        >{{ 'footer.all_products' | translate }}</a
+        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors py-0.5"
       >
+        {{ 'footer.all_products' | translate }}
+      </a>
       <a
         [routerLink]="['/', activeStoreSlug(), 'orders']"
-        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors"
-        >{{ 'footer.my_orders' | translate }}</a
+        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors py-0.5"
       >
+        {{ 'footer.my_orders' | translate }}
+      </a>
       <a
         [routerLink]="['/', activeStoreSlug(), 'checkout']"
-        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors"
-        >{{ 'footer.cart' | translate }}</a
+        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors py-0.5"
       >
+        {{ 'footer.cart' | translate }}
+      </a>
     </nav>
 
-    <!-- Customer service -->
-    <nav class="flex flex-col gap-3" aria-labelledby="footer-care">
-      <h3 hlmH3 id="footer-care">
+    <!-- Customer service column -->
+    <nav class="flex flex-col gap-3 md:col-span-3 lg:col-span-3" aria-labelledby="footer-care">
+      <h3 hlmH4 id="footer-care" class="text-xs font-bold tracking-wider uppercase text-foreground">
         {{ 'footer.customer_service' | translate }}
       </h3>
       <a
         [routerLink]="['/', activeStoreSlug(), 'faq']"
-        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors"
-        >{{ 'footer.faq' | translate }}</a
+        class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors py-0.5"
       >
+        {{ 'footer.faq' | translate }}
+      </a>
+      @if (storeService.contactEmail(); as email) {
+        <a
+          [href]="'mailto:' + email"
+          class="text-muted-foreground hover:text-foreground w-fit text-sm transition-colors py-0.5"
+        >
+          {{ 'footer.social_email' | translate }}
+        </a>
+      }
     </nav>
   </div>
 
-  <div class="border-border/60 border-t px-4 py-5 sm:px-8 md:px-16 lg:px-24">
-    <p hlmMuted class="text-center text-xs">
-      &copy; {{ year }} <span dir="auto">{{ storeService.displayName() }}</span
-      >. {{ 'footer.rights' | translate }}
-    </p>
+  <hlm-separator class="border-border/50" />
+
+  <!-- Bottom legal bar -->
+  <div class="px-4 py-6 sm:px-8 md:px-12 lg:px-20">
+    <div class="mx-auto flex max-w-7xl items-center justify-center text-center">
+      <p hlmMuted class="text-xs">
+        &copy; {{ year }} <span dir="auto" class="font-medium text-foreground">{{ storeService.displayName() }}</span>. {{ 'footer.rights' | translate }}
+      </p>
+    </div>
   </div>
 </footer>
+
+<!-- Circular Floating Back to Top Button in bottom-left -->
+<button
+  hlmBtn
+  variant="default"
+  size="icon"
+  type="button"
+  (click)="scrollToTop()"
+  [attr.aria-label]="'footer.back_to_top' | translate"
+  class="fixed bottom-6 start-6 z-40 h-11 w-11 rounded-full bg-primary p-2.5 text-primary-foreground shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
+  [class.opacity-100]="showBackToTop()"
+  [class.pointer-events-auto]="showBackToTop()"
+  [class.translate-y-0]="showBackToTop()"
+  [class.opacity-0]="!showBackToTop()"
+  [class.pointer-events-none]="!showBackToTop()"
+  [class.translate-y-4]="!showBackToTop()"
+>
+  <ng-icon name="lucideArrowUp" size="20" />
+</button>

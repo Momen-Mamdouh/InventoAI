@@ -10,7 +10,6 @@ import { HlmInputImports } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
 import { HlmH1, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
-import { EmptyState } from '@invento/shared-ui-empty-state';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideImage,
@@ -47,6 +46,12 @@ import { AuthService } from '@invento/shared-data-access-auth';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
 import { SITE_BUILDER_URL } from '@invento/owner-dashboard-util-site-builder-url';
+import {
+  StorefrontHome,
+  StorefrontHomeHero,
+  StorefrontHomeCategory,
+  StorefrontHomeProduct,
+} from '@invento/shared-ui-storefront-home';
 
 interface Category {
   id: string;
@@ -73,7 +78,6 @@ interface Product {
     TranslatePipe,
     HlmSkeleton,
     HlmSpinner,
-    EmptyState,
     HlmButtonImports,
     HlmInputImports,
     HlmLabelImports,
@@ -84,6 +88,7 @@ interface Product {
     HlmMuted,
     HlmToggleGroupImports,
     HlmSeparator,
+    StorefrontHome,
   ],
   templateUrl: './home.html',
   styleUrl: './home.css',
@@ -231,6 +236,35 @@ export class Home implements OnInit {
 
   // Computed Properties
   selectedProducts = computed(() => this.products().filter((product) => product.selected));
+
+  readonly previewHero = computed<StorefrontHomeHero>(() => ({
+    imageUrl: this.heroImageUrl(),
+    headline: this.heroTitle(),
+    subtitle: this.heroSubtitle(),
+    ctaLabel: this.heroCtaLabel(),
+    ctaHref: this.heroCtaHref(),
+  }));
+
+  readonly previewCategories = computed<readonly StorefrontHomeCategory[]>(() =>
+    this.categories().map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      icon: cat.icon,
+      imageUrl: cat.imageUrl,
+      slug: cat.slug || cat.id,
+    })),
+  );
+
+  readonly previewProducts = computed<readonly StorefrontHomeProduct[]>(() =>
+    this.selectedProducts().map((prod) => ({
+      id: prod.id,
+      name: prod.name,
+      title: prod.name,
+      price: prod.price,
+      imageUrl: prod.img,
+      img: prod.img,
+    })),
+  );
 
   ngOnInit(): void {
     // Initialize snapshot with default values

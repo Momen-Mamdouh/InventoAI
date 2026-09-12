@@ -1,4 +1,4 @@
-<section #ordersHeroAnim class="relative mb-10">
+<section class="relative mb-10">
   <div
     class="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-8 md:p-12 border border-border rounded-3xl overflow-hidden"
   >
@@ -8,7 +8,7 @@
         variant="outline"
         class="inline-flex items-center gap-2 bg-primary/10 mb-4 px-3 py-1 border-primary/30 font-semibold text-primary text-xs uppercase tracking-widest"
       >
-        <ng-icon name="lucidePackage" class="text-sm"></ng-icon>
+        <ng-icon name="lucidePackage" size="14" />
         {{ 'orders.hero.badge' | translate }}
       </span>
 
@@ -30,8 +30,7 @@
     >
       <!-- Card 1: Total Orders -->
       <div
-        #ordersStatCard
-        class="flex flex-col justify-between bg-card/60 backdrop-blur-sm p-3 sm:p-4 border border-border/80 rounded-2xl min-w-0 overflow-hidden"
+        class="group flex flex-col justify-between bg-card/60 backdrop-blur-sm p-3 sm:p-4 border border-border/80 rounded-2xl min-w-0 overflow-hidden transition-all duration-200 hover:border-primary/30 hover:shadow-md hover:ring-1 hover:ring-primary/10"
       >
         <span
           class="mb-1 font-semibold text-[11px] text-muted-foreground sm:text-xs truncate uppercase tracking-wider"
@@ -43,17 +42,16 @@
             >{{ ordersService.statusCounts().all }}</span
           >
           <div
-            class="flex justify-center items-center bg-primary/10 rounded-xl w-8 sm:w-9 h-8 sm:h-9 text-primary shrink-0"
+            class="flex justify-center items-center bg-primary/10 group-hover:bg-primary/20 rounded-xl w-8 sm:w-9 h-8 sm:h-9 text-primary shrink-0 transition-colors"
           >
-            <ng-icon name="lucidePackage" class="text-base sm:text-lg"></ng-icon>
+            <ng-icon name="lucidePackage" size="18" />
           </div>
         </div>
       </div>
 
       <!-- Card 2: In Progress / Active -->
       <div
-        #ordersStatCard
-        class="flex flex-col justify-between bg-card/60 backdrop-blur-sm p-3 sm:p-4 border border-border/80 rounded-2xl min-w-0 overflow-hidden"
+        class="group flex flex-col justify-between bg-card/60 backdrop-blur-sm p-3 sm:p-4 border border-border/80 rounded-2xl min-w-0 overflow-hidden transition-all duration-200 hover:border-primary/30 hover:shadow-md hover:ring-1 hover:ring-primary/10"
       >
         <span
           class="mb-1 font-semibold text-[11px] text-muted-foreground sm:text-xs truncate uppercase tracking-wider"
@@ -69,17 +67,16 @@
             }}</span
           >
           <div
-            class="flex justify-center items-center bg-primary/10 rounded-xl w-8 sm:w-9 h-8 sm:h-9 text-primary shrink-0"
+            class="flex justify-center items-center bg-primary/10 group-hover:bg-primary/20 rounded-xl w-8 sm:w-9 h-8 sm:h-9 text-primary shrink-0 transition-colors"
           >
-            <ng-icon name="lucideTruck" class="text-base sm:text-lg"></ng-icon>
+            <ng-icon name="lucideTruck" size="18" />
           </div>
         </div>
       </div>
 
       <!-- Card 3: Delivered -->
       <div
-        #ordersStatCard
-        class="flex flex-col justify-between bg-card/60 backdrop-blur-sm p-3 sm:p-4 border border-border/80 rounded-2xl min-w-0 overflow-hidden"
+        class="group flex flex-col justify-between bg-card/60 backdrop-blur-sm p-3 sm:p-4 border border-border/80 rounded-2xl min-w-0 overflow-hidden transition-all duration-200 hover:border-success/30 hover:shadow-md hover:ring-1 hover:ring-success/10"
       >
         <span
           class="mb-1 font-semibold text-[11px] text-muted-foreground sm:text-xs truncate uppercase tracking-wider"
@@ -91,17 +88,16 @@
             >{{ ordersService.statusCounts().delivered }}</span
           >
           <div
-            class="flex justify-center items-center bg-success/10 rounded-xl w-8 sm:w-9 h-8 sm:h-9 text-success shrink-0"
+            class="flex justify-center items-center bg-success/10 group-hover:bg-success/20 rounded-xl w-8 sm:w-9 h-8 sm:h-9 text-success shrink-0 transition-colors"
           >
-            <ng-icon name="lucideCircleCheck" class="text-base sm:text-lg"></ng-icon>
+            <ng-icon name="lucideCircleCheck" size="18" />
           </div>
         </div>
       </div>
 
       <!-- Card 4: Total Spent -->
       <div
-        #ordersStatCard
-        class="flex flex-col justify-between bg-card/60 backdrop-blur-sm p-3 sm:p-4 border border-border/80 rounded-2xl min-w-0 overflow-hidden"
+        class="group flex flex-col justify-between bg-card/60 backdrop-blur-sm p-3 sm:p-4 border border-border/80 rounded-2xl min-w-0 overflow-hidden transition-all duration-200 hover:border-primary/30 hover:shadow-md hover:ring-1 hover:ring-primary/10"
       >
         <span
           class="mb-1 font-semibold text-[11px] text-muted-foreground sm:text-xs truncate uppercase tracking-wider"
@@ -113,12 +109,13 @@
             >{{ ordersService.totalSpent() | currency: ordersService.currency() }}</span
           >
           <div
-            class="flex justify-center items-center bg-primary/10 rounded-xl w-8 sm:w-9 h-8 sm:h-9 text-primary shrink-0"
+            class="flex justify-center items-center bg-primary/10 group-hover:bg-primary/20 rounded-xl w-8 sm:w-9 h-8 sm:h-9 text-primary shrink-0 transition-colors"
           >
-            <ng-icon name="lucideDollarSign" class="text-base sm:text-lg"></ng-icon>
+            <ng-icon name="lucideWallet" size="18" />
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+

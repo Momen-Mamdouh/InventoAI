@@ -82,9 +82,11 @@ export function updateCartBadge(cartIconId = 'cart-icon'): void {
   const cartIcon = document.getElementById(cartIconId);
   if (!cartIcon) return;
 
-  cartIcon.style.transition = 'transform 0.15s ease';
-  cartIcon.style.transform = 'scale(1.4)';
+  const cartCount = document.getElementById('cart-count');
+  const targetEl = cartCount ?? cartIcon;
+  targetEl.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  targetEl.style.transform = 'scale(1.35)';
   setTimeout(() => {
-    cartIcon.style.transform = 'scale(1)';
-  }, 200);
+    targetEl.style.transform = 'scale(1)';
+  }, 220);
 }
