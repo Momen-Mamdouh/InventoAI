@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect, HostListener } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBotMessageSquare,
@@ -56,6 +56,13 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
 })
 export class Chatbot implements OnInit {
   inputMessage = '';
+  
+  @HostListener('window:invento:open-chat', ['$event'])
+  onExternalOpenChat(event: Event): void {
+    if (event instanceof CustomEvent && event.detail?.query) {
+      this.inputMessage = event.detail.query;
+    }
+  }
 
   private readonly chatService = inject(ChatService);
   private readonly storeSlugService = inject(StoreSlugService);

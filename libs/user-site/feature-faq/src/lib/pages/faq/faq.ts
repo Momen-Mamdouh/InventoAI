@@ -22,11 +22,12 @@ import { HlmButton } from '@spartan/helm/button';
 import { HlmAccordionImports } from '@spartan/helm/accordion';
 import { HlmTypographyImports } from '@spartan/helm/typography';
 import { HlmSeparator } from '@spartan/helm/separator';
+import { toast } from '@spartan/helm/sonner';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { ErrorState } from '@invento/shared-ui-error-state';
 import { SearchInput } from '@invento/shared-ui-search-input';
 import { SkeletonBlock } from '@invento/shared-ui-skeleton-block';
-import { TranslatePipe } from '@invento/shared-util-i18n';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 
 // Icons
 import { provideIcons, NgIconComponent } from '@ng-icons/core';
@@ -44,6 +45,13 @@ import {
   lucideAlertCircle,
   lucideSparkles,
   lucideMessageCircleQuestion,
+  lucideLink,
+  lucideThumbsUp,
+  lucideThumbsDown,
+  lucideCheck,
+  lucideBot,
+  lucideMail,
+  lucideArrowRight,
 } from '@ng-icons/lucide';
 
 // Feature
@@ -85,6 +93,13 @@ import { animateElementsOnRender } from '@invento/user-site-util-animation';
       lucideAlertCircle,
       lucideSparkles,
       lucideMessageCircleQuestion,
+      lucideLink,
+      lucideThumbsUp,
+      lucideThumbsDown,
+      lucideCheck,
+      lucideBot,
+      lucideMail,
+      lucideArrowRight,
     }),
   ],
   templateUrl: './faq.html',
@@ -96,6 +111,7 @@ export class Faq {
 
   private readonly faqDataService = inject(FaqDataService);
   private readonly route = inject(ActivatedRoute);
+  private readonly locale = inject(LocaleService);
   protected readonly storeService = inject(StoreService);
   private readonly injector = inject(Injector);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -103,11 +119,43 @@ export class Faq {
   readonly activeCategory = signal<string>('general');
   readonly searchQuery = signal<string>('');
   readonly openFaqIdentifier = signal<string | null>(null);
+  readonly helpfulVotes = signal<Record<string, 'yes' | 'no'>>({});
 
   readonly faqs = this.faqDataService.faqs;
   readonly isLoading = this.faqDataService.isLoading;
   readonly error = this.faqDataService.error;
   readonly totalQuestions = this.faqDataService.totalQuestions;
+
+  readonly quickTopics = computed(() => {
+    const isAr = this.locale.isRtl();
+    return [
+      {
+        labelKey: 'faq.quick_topic_shipping',
+        query: isAr ? 'توصيل' : 'delivery',
+        icon: 'lucideTruck',
+      },
+      {
+        labelKey: 'faq.quick_topic_returns',
+        query: isAr ? 'إرجاع' : 'return',
+        icon: 'lucideShield',
+      },
+      {
+        labelKey: 'faq.quick_topic_sizing',
+        query: isAr ? 'مقاس' : 'size',
+        icon: 'lucideSparkles',
+      },
+      {
+        labelKey: 'faq.quick_topic_payment',
+        query: isAr ? 'دفع' : 'payment',
+        icon: 'lucideCreditCard',
+      },
+      {
+        labelKey: 'faq.quick_topic_orders',
+        query: isAr ? 'طلب' : 'order',
+        icon: 'lucidePackage',
+      },
+    ];
+  });
 
   /**
    * Group FAQ items into categories.
@@ -183,6 +231,12 @@ export class Faq {
    */
   readonly activeFaqItems = computed<readonly FaqItem[]>(() => {
     return this.activeCategoryData()?.items ?? [];
+  });
+
+  readonly categoryCount = computed<number>(() => this.categories().length);
+
+  readonly matchingQuestionsCount = computed<number>(() => {
+    return this.filteredCategories().reduce((acc, cat) => acc + cat.items.length, 0);
   });
 
   /**
@@ -302,6 +356,58 @@ export class Faq {
 
   clearSearch(): void {
     this.searchQuery.set('');
+  }
+
+  selectQuickTopic(query: string): void {
+    if (this.searchQuery().toLowerCase() === query.toLowerCase()) {
+      this.clearSearch();
+    } else {
+      this.onSearchChange(query);
+    }
+  }
+
+  voteHelpful(key: string, vote: 'yes' | 'no', event?: MouseEvent): void {
+    event?.stopPropagation();
+    this.helpfulVotes.update((prev) => ({ ...prev, [key]: vote }));
+    toast.success(this.locale.translate('faq.helpful_thank_you'));
+  }
+
+  copyFaqLink(item: FaqItem, index: number, event?: MouseEvent): void {
+    event?.stopPropagation();
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const targetId = item.id || `faq-${index}`;
+    const url = `${window.location.origin}${window.location.pathname}#${targetId}`;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        toast.success(this.locale.translate('faq.link_copied'));
+      })
+      .catch(() => {
+        toast.info(url);
+      });
+  }
+
+  openChatbot(initialQuery?: string): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    if (initialQuery) {
+      window.dispatchEvent(
+        new CustomEvent('invento:open-chat', { detail: { query: initialQuery } }),
+      );
+    }
+
+    const trigger = document.getElementById('storefront-chatbot-trigger');
+    if (trigger) {
+      const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+      if (!isExpanded) {
+        trigger.click();
+      }
+    }
   }
 
   onRetry(): void {

@@ -85,3 +85,18 @@
   border-radius: 9999px;
   opacity: 0.4;
 }
+
+/* Deep link target pulse ring */
+@keyframes faqDeepLinkPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 8px hsl(var(--primary) / 0);
+  }
+}
+
+.faq-deep-link-pulse {
+  animation: faqDeepLinkPulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) 3;
+}
