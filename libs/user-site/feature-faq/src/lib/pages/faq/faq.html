@@ -12,7 +12,7 @@
             variant="secondary"
             class="inline-flex items-center gap-1.5 mb-5 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 font-bold tracking-wider uppercase text-[11px] px-3.5 py-1 rounded-full"
           >
-            <ng-icon name="lucideSparkles" size="14px"></ng-icon>
+            <ng-icon name="lucideSparkles" size="14"></ng-icon>
             {{ 'faq.help_center_badge' | translate }}
           </span>
 
@@ -42,7 +42,7 @@
           <!-- Quick Topic Pills -->
           <div #faqHeroAnim class="flex flex-wrap items-center gap-2 mt-4">
             <span class="text-xs font-semibold text-muted-foreground flex items-center gap-1 me-1">
-              <ng-icon name="lucideSparkles" size="12px" class="text-primary" />
+              <ng-icon name="lucideSparkles" size="12" class="text-primary" />
               {{ 'faq.quick_topics_label' | translate }}
             </span>
             @for (topic of quickTopics(); track topic.query) {
@@ -58,7 +58,7 @@
               >
                 <ng-icon
                   [name]="topic.icon"
-                  size="12px"
+                  size="12"
                   [ngClass]="
                     searchQuery().toLowerCase() === topic.query.toLowerCase()
                       ? 'text-primary-foreground'
@@ -80,7 +80,7 @@
             <div
               class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold"
             >
-              <ng-icon name="lucideHelpCircle" size="20px" />
+              <ng-icon name="lucideHelpCircle" size="20" />
             </div>
             <div class="flex flex-col text-start">
               <span class="text-xl sm:text-2xl font-extrabold text-foreground leading-none">
@@ -98,7 +98,7 @@
             <div
               class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold"
             >
-              <ng-icon name="lucidePackage" size="20px" />
+              <ng-icon name="lucidePackage" size="20" />
             </div>
             <div class="flex flex-col text-start">
               <span class="text-xl sm:text-2xl font-extrabold text-foreground leading-none">
@@ -119,7 +119,7 @@
             <div
               class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold"
             >
-              <ng-icon name="lucideHeadphones" size="20px" />
+              <ng-icon name="lucideHeadphones" size="20" />
             </div>
             <div class="flex flex-col text-start">
               <span class="text-xl sm:text-2xl font-extrabold text-foreground leading-none">
@@ -208,7 +208,7 @@
                 (click)="clearSearch()"
                 class="inline-flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-semibold border-border cursor-pointer"
               >
-                <ng-icon name="lucideX" size="16px" />
+                <ng-icon name="lucideX" size="16" />
                 {{ 'faq.clear_search' | translate }}
               </button>
               <button
@@ -216,7 +216,7 @@
                 (click)="openChatbot(searchQuery())"
                 class="inline-flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs cursor-pointer"
               >
-                <ng-icon name="lucideBot" size="16px" />
+                <ng-icon name="lucideBot" size="16" />
                 {{ 'faq.ask_ai_assistant' | translate }}
               </button>
             </div>
@@ -243,7 +243,7 @@
                 >
                   <ng-icon
                     [name]="category.icon"
-                    size="16px"
+                    size="16"
                     [ngClass]="
                       activeCategory() === category.id
                         ? 'text-primary-foreground'
@@ -275,7 +275,7 @@
                 <div
                   class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shadow-xs border border-primary/20 shrink-0"
                 >
-                  <ng-icon [name]="activeCat.icon" size="20px" />
+                  <ng-icon [name]="activeCat.icon" size="20" />
                 </div>
                 <div>
                   <h2 hlmH2 dir="auto" class="text-xl font-bold text-foreground border-none pb-0">
@@ -361,7 +361,7 @@
                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/50 text-xs font-medium transition-colors cursor-pointer"
                           [title]="'faq.copy_link' | translate"
                         >
-                          <ng-icon name="lucideLink" size="13px" class="text-primary" />
+                          <ng-icon name="lucideLink" size="13" class="text-primary" />
                           <span>{{ 'faq.copy_link' | translate }}</span>
                         </button>
 
@@ -374,7 +374,7 @@
                             <span
                               class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20"
                             >
-                              <ng-icon name="lucideCheck" size="13px" />
+                              <ng-icon name="lucideCheck" size="13" />
                               {{ 'faq.helpful_thank_you' | translate }}
                             </span>
                           } @else {
@@ -384,7 +384,7 @@
                                 (click)="voteHelpful(item.id || item.question, 'yes', $event)"
                                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border/60 hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-medium cursor-pointer"
                               >
-                                <ng-icon name="lucideThumbsUp" size="13px" />
+                                <ng-icon name="lucideThumbsUp" size="13" />
                                 <span>{{ 'faq.helpful_yes' | translate }}</span>
                               </button>
                               <button
@@ -392,7 +392,7 @@
                                 (click)="voteHelpful(item.id || item.question, 'no', $event)"
                                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border/60 hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive transition-colors font-medium cursor-pointer"
                               >
-                                <ng-icon name="lucideThumbsDown" size="13px" />
+                                <ng-icon name="lucideThumbsDown" size="13" />
                                 <span>{{ 'faq.helpful_no' | translate }}</span>
                               </button>
                             </div>
@@ -445,7 +445,7 @@
               <div
                 class="w-11 h-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shadow-xs border border-primary/20"
               >
-                <ng-icon name="lucideSparkles" size="22px" />
+                <ng-icon name="lucideSparkles" size="22" />
               </div>
               <span
                 class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20"
@@ -466,11 +466,11 @@
             (click)="openChatbot()"
             class="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all shadow-xs group-hover:scale-[1.01] cursor-pointer"
           >
-            <ng-icon name="lucideBot" size="18px" />
+            <ng-icon name="lucideBot" size="18" />
             <span>{{ 'faq.ask_ai_assistant' | translate }}</span>
             <ng-icon
               name="lucideArrowRight"
-              size="16px"
+              size="16"
               class="ms-1 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform"
             />
           </button>
@@ -485,7 +485,7 @@
               <div
                 class="w-11 h-11 rounded-2xl bg-muted text-foreground flex items-center justify-center shadow-xs border border-border"
               >
-                <ng-icon name="lucideMail" size="20px" />
+                <ng-icon name="lucideMail" size="20" />
               </div>
               <span
                 class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border/60"
@@ -506,7 +506,7 @@
               [href]="'mailto:' + email"
               class="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-muted hover:bg-muted/80 text-foreground font-semibold text-sm border border-border/80 transition-all shadow-xs group-hover:scale-[1.01]"
             >
-              <ng-icon name="lucideMail" size="16px" />
+              <ng-icon name="lucideMail" size="16" />
               <span>{{ 'faq.contact_support' | translate }}</span>
               <span class="text-xs text-muted-foreground font-normal">({{ email }})</span>
             </a>
@@ -516,7 +516,7 @@
               disabled
               class="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl bg-muted/50 text-muted-foreground font-medium text-sm border border-border/50 opacity-70 cursor-not-allowed"
             >
-              <ng-icon name="lucideMail" size="16px" />
+              <ng-icon name="lucideMail" size="16" />
               <span>{{ 'faq.contact_support' | translate }}</span>
             </button>
           }

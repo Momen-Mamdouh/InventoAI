@@ -71,9 +71,8 @@ export interface StorePublic {
   featuredCategories: StoreCategory[];
   featuredProducts: StoreFeaturedProduct[];
   /**
-   * Not yet returned by `GET /site/:slug`. The data exists in the database
-   * (`stores.ownerId` -> `users.email`) but no public DTO exposes it, so every consumer must
-   * treat these as absent and render nothing until the backend adds them.
+   * The store owner's registered email, returned by `GET /site/:slug`
+   * (`stores.ownerId` -> `users.email`). `null` if the owner account has no email on record.
    */
   readonly contactEmail?: string | null;
   readonly social?: {
