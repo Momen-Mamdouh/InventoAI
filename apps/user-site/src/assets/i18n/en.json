@@ -379,19 +379,51 @@
   },
   "checkout": {
     "nav": {
-      "back_to_orders": "Back to My Orders"
+      "back_to_orders": "Back to My Orders",
+      "back_to_store": "Back to Store"
+    },
+    "breadcrumbs": {
+      "store": "Store",
+      "cart": "Cart",
+      "checkout": "Checkout"
+    },
+    "steps": {
+      "information": "Information",
+      "shipping": "Shipping",
+      "payment": "Payment"
     },
     "page": {
       "title": "Checkout",
-      "subtitle": "Review the items and complete your delivery details below."
+      "subtitle": "Review your order and complete delivery details below."
+    },
+    "guest": {
+      "badge": "Guest Checkout",
+      "has_account": "Already have an account?",
+      "sign_in_link": "Sign in",
+      "benefits_note": "for fast checkout with saved addresses."
+    },
+    "auth": {
+      "signed_in_as": "Signed in as",
+      "switch_account": "Switch account"
     },
     "summary": {
+      "order_summary": "Order Summary",
+      "show_summary": "Show order summary",
+      "hide_summary": "Hide order summary",
       "order_items": "Order Items ({{count}})",
       "clear_all": "Clear All",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
       "free": "Free",
-      "total": "Total"
+      "free_badge": "Free Delivery",
+      "estimated_delivery": "Estimated Delivery",
+      "delivery_timeline": "2-4 business days",
+      "total": "Total",
+      "promo_code": "Discount Code",
+      "apply": "Apply",
+      "promo_placeholder": "Enter promo code",
+      "need_help": "Need help with your order?",
+      "contact_faq": "Browse our FAQ or ask our AI Assistant in the corner."
     },
     "empty": {
       "title": "Your cart is empty",
@@ -406,23 +438,23 @@
     "form": {
       "contact": {
         "heading": "Recipient & Contact Details",
-        "first_name_label": "First Name *",
+        "first_name_label": "First Name",
         "first_name_placeholder": "First name",
-        "last_name_label": "Last Name *",
+        "last_name_label": "Last Name",
         "last_name_placeholder": "Last name",
-        "email_label": "Email Address *",
+        "email_label": "Email Address",
         "account_email_badge": "Account Email",
         "email_placeholder": "name@example.com",
-        "phone_label": "Phone Number *",
+        "phone_label": "Phone Number",
         "phone_placeholder": "+201001234567"
       },
       "address": {
         "heading": "Delivery Address",
-        "line1_label": "Street Address (Line 1) *",
+        "line1_label": "Street Address (Line 1)",
         "line1_placeholder": "e.g., 18 Talaat Harb St",
         "line2_label": "Apartment, Suite, Building (Optional)",
         "line2_placeholder": "e.g., Apt 5, Floor 3",
-        "city_label": "City *",
+        "city_label": "City",
         "city_placeholder": "e.g., Cairo",
         "governorate_label": "Governorate (Optional)",
         "governorate_placeholder": "e.g., Cairo",
@@ -435,8 +467,18 @@
     "payment": {
       "heading": "Payment Method",
       "cod_label": "Cash on Delivery (COD)",
+      "cod_badge": "Zero Extra Fees",
       "cod_description_prefix": "Pay in cash with",
-      "cod_description_suffix": "directly to the courier upon receiving your package."
+      "cod_description_suffix": "directly to the courier upon receiving your package.",
+      "cod_reminder": "Please prepare the exact amount upon delivery for a smooth courier handover.",
+      "card_label": "Credit / Debit Card",
+      "card_coming_soon": "Online card payments launching soon. Currently accepting Cash on Delivery."
+    },
+    "trust": {
+      "secure_ssl": "256-Bit SSL Encrypted",
+      "cod_available": "Cash on Delivery Available",
+      "fast_delivery": "Doorstep Delivery",
+      "easy_returns": "Hassle-Free Returns"
     },
     "actions": {
       "placing_order": "Placing Order...",
@@ -466,7 +508,9 @@
       "order_placed": "Order #{{orderNumber}} placed successfully!",
       "order_failed": "Failed to place your order. Please check your details and try again.",
       "unavailable_items": "Some items in your cart are no longer available in this store. Clear your cart to continue.",
-      "clear_cart_action": "Clear Cart"
+      "clear_cart_action": "Clear Cart",
+      "promo_applied": "Promo code applied successfully!",
+      "promo_empty": "Please enter a promo code first."
     }
   },
   "orders": {

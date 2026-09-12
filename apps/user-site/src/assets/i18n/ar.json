@@ -379,19 +379,51 @@
   },
   "checkout": {
     "nav": {
-      "back_to_orders": "العودة إلى طلباتي"
+      "back_to_orders": "العودة إلى طلباتي",
+      "back_to_store": "العودة إلى المتجر"
+    },
+    "breadcrumbs": {
+      "store": "المتجر",
+      "cart": "سلة التسوق",
+      "checkout": "إتمام الشراء"
+    },
+    "steps": {
+      "information": "البيانات",
+      "shipping": "الشحن",
+      "payment": "الدفع"
     },
     "page": {
       "title": "إتمام الشراء",
-      "subtitle": "راجع المنتجات وأكمل بيانات التوصيل أدناه."
+      "subtitle": "راجع طلبك وأكمل بيانات التوصيل أدناه."
+    },
+    "guest": {
+      "badge": "طلب كزائر",
+      "has_account": "هل لديك حساب بالفعل؟",
+      "sign_in_link": "تسجيل الدخول",
+      "benefits_note": "لإتمام سريع مع عناوينك المحفوظة."
+    },
+    "auth": {
+      "signed_in_as": "تم تسجيل الدخول باسم",
+      "switch_account": "تبديل الحساب"
     },
     "summary": {
+      "order_summary": "ملخص الطلب",
+      "show_summary": "عرض ملخص الطلب",
+      "hide_summary": "إخفاء ملخص الطلب",
       "order_items": "منتجات الطلب ({{count}})",
       "clear_all": "إفراغ الكل",
       "subtotal": "الإجمالي الفرعي",
       "shipping": "الشحن",
       "free": "مجاني",
-      "total": "الإجمالي"
+      "free_badge": "توصيل مجاني",
+      "estimated_delivery": "موعد التوصيل المتوقع",
+      "delivery_timeline": "خلال 2-4 أيام عمل",
+      "total": "الإجمالي",
+      "promo_code": "كوبون الخصم",
+      "apply": "تطبيق",
+      "promo_placeholder": "أدخل كود الخصم",
+      "need_help": "هل تحتاج لمساعدة في طلبك؟",
+      "contact_faq": "راجع الأسئلة الشائعة أو تحدث مع المساعد الذكي في الزاوية."
     },
     "empty": {
       "title": "سلتك فارغة",
@@ -406,23 +438,23 @@
     "form": {
       "contact": {
         "heading": "بيانات المستلم والتواصل",
-        "first_name_label": "الاسم الأول *",
+        "first_name_label": "الاسم الأول",
         "first_name_placeholder": "الاسم الأول",
-        "last_name_label": "اسم العائلة *",
+        "last_name_label": "اسم العائلة",
         "last_name_placeholder": "اسم العائلة",
-        "email_label": "البريد الإلكتروني *",
+        "email_label": "البريد الإلكتروني",
         "account_email_badge": "بريد الحساب",
         "email_placeholder": "name@example.com",
-        "phone_label": "رقم الهاتف *",
+        "phone_label": "رقم الهاتف",
         "phone_placeholder": "+201001234567"
       },
       "address": {
         "heading": "عنوان التوصيل",
-        "line1_label": "عنوان الشارع (السطر الأول) *",
+        "line1_label": "عنوان الشارع (السطر الأول)",
         "line1_placeholder": "مثال: 18 شارع طلعت حرب",
         "line2_label": "الشقة، الدور، المبنى (اختياري)",
         "line2_placeholder": "مثال: شقة 5، الدور 3",
-        "city_label": "المدينة *",
+        "city_label": "المدينة",
         "city_placeholder": "مثال: القاهرة",
         "governorate_label": "المحافظة (اختياري)",
         "governorate_placeholder": "مثال: القاهرة",
@@ -435,8 +467,18 @@
     "payment": {
       "heading": "طريقة الدفع",
       "cod_label": "الدفع عند الاستلام",
+      "cod_badge": "بدون أي رسوم إضافية",
       "cod_description_prefix": "ادفع نقدًا مبلغ",
-      "cod_description_suffix": "مباشرةً لمندوب التوصيل عند استلام طلبك."
+      "cod_description_suffix": "مباشرةً لمندوب التوصيل عند استلام طلبك.",
+      "cod_reminder": "يُرجى تجهيز المبلغ المحدد نقدًا عند الاستلام لتسريع إجراءات الاستلام.",
+      "card_label": "البطاقة الائتمانية / الخصم المباشر",
+      "card_coming_soon": "الدفع الإلكتروني سيتوفر قريباً. نقبل حالياً الدفع عند الاستلام."
+    },
+    "trust": {
+      "secure_ssl": "تشفير SSL آمن 256-بت",
+      "cod_available": "الدفع نقداً عند الاستلام",
+      "fast_delivery": "توصيل سريع لباب المنزل",
+      "easy_returns": "استرجاع واستبدال مرن"
     },
     "actions": {
       "placing_order": "جارٍ إتمام الطلب...",
@@ -466,7 +508,9 @@
       "order_placed": "تم إتمام الطلب رقم #{{orderNumber}} بنجاح!",
       "order_failed": "تعذّر إتمام طلبك. يُرجى مراجعة بياناتك والمحاولة مرة أخرى.",
       "unavailable_items": "بعض المنتجات في سلتك لم تعد متوفرة في هذا المتجر. أفرغ سلتك للمتابعة.",
-      "clear_cart_action": "إفراغ السلة"
+      "clear_cart_action": "إفراغ السلة",
+      "promo_applied": "تم تطبيق كود الخصم بنجاح!",
+      "promo_empty": "يُرجى إدخال كود الخصم أولاً."
     }
   },
   "orders": {
