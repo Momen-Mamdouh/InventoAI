@@ -62,10 +62,13 @@ export class ThemeService {
       const fromCookie = readCookie(this._document.cookie, THEME_STORAGE_KEY);
       if (isTheme(fromCookie)) return fromCookie;
       try {
-        const legacy = localStorage.getItem(THEME_STORAGE_KEY);
-        if (isTheme(legacy)) return legacy;
+        const fromStorage = localStorage.getItem(THEME_STORAGE_KEY);
+        if (isTheme(fromStorage)) return fromStorage;
       } catch {
         /* storage can be blocked */
+      }
+      if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
       }
       return 'light';
     }
@@ -97,6 +100,7 @@ export class ThemeService {
     this._document.cookie = buildCookie(THEME_STORAGE_KEY, theme);
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);
+      localStorage.removeItem('theme');
     } catch {
       /* non-fatal */
     }
