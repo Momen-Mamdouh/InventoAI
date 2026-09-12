@@ -27,9 +27,9 @@
           class="flex flex-col justify-center items-center bg-card shadow-sm p-12 border border-border rounded-3xl text-center"
         >
           <div
-            class="flex justify-center items-center bg-warning/10 mb-4 rounded-full w-16 h-16 text-warning"
+            class="flex justify-center items-center bg-gradient-to-br from-warning/20 to-warning/5 mb-4 rounded-full w-20 h-20 text-warning border border-warning/20"
           >
-            <ng-icon name="lucideLock" class="text-2xl"></ng-icon>
+            <ng-icon name="lucideLock" size="32" />
           </div>
           <h3 hlmH3 class="text-foreground mb-2 text-xl font-bold">
             {{ 'orders.signin_title' | translate }}
@@ -42,7 +42,7 @@
             (click)="goToLogin()"
             class="px-8 rounded-xl font-bold inline-flex items-center gap-2 cursor-pointer shadow-sm"
           >
-            <ng-icon name="lucideLogIn" class="text-base"></ng-icon>
+            <ng-icon name="lucideLogIn" size="16" />
             <span>{{ 'orders.log_in' | translate }}</span>
           </button>
         </div>
@@ -93,7 +93,7 @@
                   [routerLink]="['/', storeSlug(), 'products']"
                   class="inline-flex cursor-pointer items-center gap-2 rounded-xl px-6"
                 >
-                  <ng-icon name="lucideShoppingBag" class="text-base"></ng-icon>
+                  <ng-icon name="lucideShoppingBag" size="16" />
                   <span>{{ 'orders.browse_store' | translate }}</span>
                 </a>
               </div>
@@ -110,7 +110,7 @@
                 [routerLink]="['/', storeSlug(), 'products']"
                 class="inline-flex cursor-pointer items-center gap-2 rounded-xl px-6"
               >
-                <ng-icon name="lucideShoppingBag" class="text-base"></ng-icon>
+                <ng-icon name="lucideShoppingBag" size="16" />
                 <span>{{ 'orders.browse_store' | translate }}</span>
               </a>
             </app-empty-state>

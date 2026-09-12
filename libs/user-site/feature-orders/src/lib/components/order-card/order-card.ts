@@ -32,6 +32,8 @@ import {
   lucideInfo,
   lucideLoader2,
   lucideShoppingCart,
+  lucideChevronDown,
+  lucideChevronUp,
 } from '@ng-icons/lucide';
 import { toast } from '@spartan/helm/sonner';
 import { CartService } from '@invento/user-site-data-access-cart';
@@ -95,6 +97,8 @@ interface PresetReason {
       lucideInfo,
       lucideLoader2,
       lucideShoppingCart,
+      lucideChevronDown,
+      lucideChevronUp,
     }),
   ],
   templateUrl: './order-card.html',
