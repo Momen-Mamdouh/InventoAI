@@ -166,6 +166,8 @@
     "card": {
       "add_to_cart": "أضف",
       "out_of_stock": "نفدت الكمية",
+      "sale_badge": "تخفيض",
+      "save_percentage": "وفر {{percentage}}%",
       "toast_added": "تمت إضافة “{{title}}” إلى سلتك",
       "toast_out_of_stock": "هذا المنتج غير متوفر حالياً.",
       "toast_add_failed": "تعذرت إضافة المنتج إلى السلة."
@@ -209,10 +211,17 @@
       "price_range": "نطاق السعر",
       "in_stock_only": "المتوفر فقط",
       "empty_title": "لم يتم العثور على نتائج",
-      "empty_description": "لم نتمكن من تحميل أي عوامل تصفية لبحثك الحالي."
+      "empty_description": "لم نتمكن من تحميل أي عوامل تصفية لبحثك الحالي.",
+      "all_categories": "كل الفئات",
+      "mobile_desc": "تصفية وتخصيص نتائج المنتجات",
+      "show_results": "عرض {{count}} منتج",
+      "show_all_results": "عرض المنتجات"
     },
     "toolbar": {
       "items": "عناصر",
+      "filter_btn": "التصفية",
+      "view_comfortable": "عرض مريح",
+      "view_compact": "عرض مضغوط",
       "search_placeholder": "ابحث عن المنتجات...",
       "search_validation": "استمر في الكتابة... أدخل حرفين على الأقل للبحث.",
       "searching_for": "جاري البحث عن \"{{term}}\"...",
@@ -227,16 +236,37 @@
       "sort_title_asc": "العنوان: أ-ي",
       "sort_title_desc": "العنوان: ي-أ"
     },
+    "chips": {
+      "active_filters": "الفلاتر النشطة:",
+      "clear_all": "مسح الكل",
+      "category": "الفئة: {{name}}",
+      "price_under": "أقل من {{price}}",
+      "in_stock": "المتوفر فقط",
+      "search": "بحث: \"{{query}}\"",
+      "attr": "{{key}}: {{value}}"
+    },
     "breadcrumb": {
       "shop": "المتجر",
       "nav_label": "مسار التصفح"
     },
     "products": {
       "title": "المنتجات",
+      "subtitle": "استكشف الكتالوج الكامل لمنتجاتنا المنتقاة بعناية.",
       "did_you_mean": "نعرض نتائج <span class=\"font-bold\">{{term}}</span> بدلاً من بحثك الأصلي.",
       "no_products": "لم يتم العثور على منتجات",
       "no_products_desc": "حاول ضبط عوامل التصفية أو مصطلحات البحث للعثور على ما تبحث عنه.",
       "clear_all": "مسح جميع التصنيفات"
+    },
+    "empty_filtered": {
+      "title": "لا توجد منتجات تطابق خيارات التصفية",
+      "search_title": "لا توجد نتائج بحث عن \"{{query}}\"",
+      "desc": "جرّب تعديل كلمات البحث أو مسح بعض الفلاتر لعرض المنتجات المتوفرة.",
+      "clear_btn": "مسح جميع الفلاتر"
+    },
+    "empty_store": {
+      "title": "لا تتوفر أي منتجات حالياً",
+      "desc": "لم يقم هذا المتجر بإضافة أي منتجات حتى الآن. يُرجى التحقق مرة أخرى قريباً.",
+      "home_btn": "العودة للرئيسية"
     },
     "product_details": {
       "not_found_title": "المنتج غير موجود",

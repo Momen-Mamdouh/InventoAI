@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, inject, signal, computed } from '@angular/core';
 import { CurrencyPipe, SlicePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideShoppingCart, lucideImage, lucidePlus, lucideMinus } from '@ng-icons/lucide';
+import { lucideShoppingCart, lucideImage, lucidePlus, lucideMinus, lucideRefreshCw } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import {
   HlmCard,
   HlmCardHeader,
@@ -40,11 +41,12 @@ import { StoreSlugService } from '@invento/user-site-data-access-store';
     HlmCardDescription,
     HlmCardContent,
     HlmButton,
+    HlmBadge,
     HlmTypographyImports,
     PageBadge,
     ColorSwatch,
   ],
-  providers: [provideIcons({ lucideShoppingCart, lucideImage, lucidePlus, lucideMinus })],
+  providers: [provideIcons({ lucideShoppingCart, lucideImage, lucidePlus, lucideMinus, lucideRefreshCw })],
 })
 export class ProductCard {
   public readonly product = input.required<ProductListItem>();
@@ -67,6 +69,19 @@ export class ProductCard {
   protected readonly storeCurrency = this.storeService.currency;
 
   protected readonly isAdding = signal<boolean>(false);
+
+  protected readonly hasDiscount = computed<boolean>(() => {
+    const p = this.product();
+    return p.maxPriceAmount > p.minPriceAmount;
+  });
+
+  protected readonly discountPercentage = computed<number>(() => {
+    const p = this.product();
+    if (p.maxPriceAmount <= p.minPriceAmount || p.maxPriceAmount === 0) {
+      return 0;
+    }
+    return Math.round(((p.maxPriceAmount - p.minPriceAmount) / p.maxPriceAmount) * 100);
+  });
 
   protected onAddToCart(event: MouseEvent): void {
     event.stopPropagation();

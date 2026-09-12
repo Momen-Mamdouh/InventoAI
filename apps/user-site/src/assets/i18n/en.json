@@ -166,6 +166,8 @@
     "card": {
       "add_to_cart": "Add",
       "out_of_stock": "Out of Stock",
+      "sale_badge": "Sale",
+      "save_percentage": "Save {{percentage}}%",
       "toast_added": "Added “{{title}}” to your cart",
       "toast_out_of_stock": "This product is currently out of stock.",
       "toast_add_failed": "Could not add this product to your cart."
@@ -209,10 +211,17 @@
       "price_range": "Price Range",
       "in_stock_only": "In Stock Only",
       "empty_title": "No filters found",
-      "empty_description": "We couldn't load any filters for your current search."
+      "empty_description": "We couldn't load any filters for your current search.",
+      "all_categories": "All Categories",
+      "mobile_desc": "Refine and filter products",
+      "show_results": "Show {{count}} Products",
+      "show_all_results": "Show Products"
     },
     "toolbar": {
       "items": "Items",
+      "filter_btn": "Filters",
+      "view_comfortable": "Comfortable grid",
+      "view_compact": "Compact grid",
       "search_placeholder": "Search products...",
       "search_validation": "Keep typing... enter at least 2 characters to search.",
       "searching_for": "Searching for \"{{term}}\"...",
@@ -227,16 +236,37 @@
       "sort_title_asc": "Title: A-Z",
       "sort_title_desc": "Title: Z-A"
     },
+    "chips": {
+      "active_filters": "Active filters:",
+      "clear_all": "Clear all",
+      "category": "Category: {{name}}",
+      "price_under": "Under {{price}}",
+      "in_stock": "In stock only",
+      "search": "Search: \"{{query}}\"",
+      "attr": "{{key}}: {{value}}"
+    },
     "breadcrumb": {
       "shop": "Shop",
       "nav_label": "Breadcrumb"
     },
     "products": {
       "title": "Products",
+      "subtitle": "Explore our full catalogue of handcrafted, quality items.",
       "did_you_mean": "Showing results for <span class=\"font-bold\">{{term}}</span> instead of your original search.",
       "no_products": "No products found",
       "no_products_desc": "Try adjusting your filters or search terms to find what you're looking for.",
       "clear_all": "Clear all filters"
+    },
+    "empty_filtered": {
+      "title": "No products match your filters",
+      "search_title": "No results found for \"{{query}}\"",
+      "desc": "Try adjusting your search terms or clearing some filters to see more products.",
+      "clear_btn": "Clear all filters"
+    },
+    "empty_store": {
+      "title": "No products available yet",
+      "desc": "This store doesn't have any products in its catalogue right now. Please check back soon.",
+      "home_btn": "Back to Home"
     },
     "product_details": {
       "not_found_title": "Product not found",
