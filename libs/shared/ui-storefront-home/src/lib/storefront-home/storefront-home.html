@@ -1,0 +1,650 @@
+<div class="bg-background text-foreground font-sans" [class.min-h-screen]="!isPreview()" [class.pb-20]="!isPreview()" [class.pb-8]="isPreview()">
+  <div class="mx-auto max-w-[1400px] px-4 pt-4 md:px-10 md:pt-6">
+    @if (error()) {
+      <app-error-state
+        class="block py-20"
+        [title]="'home.error_title' | translate"
+        [message]="'home.error_message' | translate"
+      >
+        <button hlmBtn variant="outline" type="button" (click)="onRetry()" class="gap-2">
+          <ng-icon name="lucideRefreshCw" size="16" />
+          {{ 'home.retry' | translate }}
+        </button>
+      </app-error-state>
+    } @else if (isLoading() && !hero()) {
+      <div class="mb-12 md:mb-16">
+        <app-skeleton-block class="mb-8 block h-[500px] w-full rounded-2xl md:h-[600px]" />
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-6 lg:grid-cols-6">
+          @for (placeholder of [1, 2, 3, 4, 5, 6]; track placeholder) {
+            <app-skeleton-block class="block aspect-square w-full rounded-xl" />
+          }
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4">
+        @for (placeholder of [1, 2, 3, 4]; track placeholder) {
+          <app-skeleton-block class="block h-80 w-full rounded-xl" />
+        }
+      </div>
+    } @else {
+      <!-- Hero Section -->
+      <section
+        #heroSection
+        class="relative mb-12 min-h-[500px] w-full overflow-hidden rounded-3xl border border-border/50 bg-muted shadow-sm md:mb-16 md:min-h-[580px]"
+      >
+        @if (hero()?.imageUrl; as heroImage) {
+          <img
+            [src]="heroImage"
+            [alt]="storeName()"
+            width="1600"
+            height="900"
+            fetchpriority="high"
+            loading="eager"
+            decoding="async"
+            class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
+          />
+          <div
+            class="from-background/95 via-background/85 to-background/25 absolute inset-0 bg-gradient-to-r backdrop-blur-[1px] rtl:bg-gradient-to-l"
+          ></div>
+        } @else {
+          <!-- Ambient dynamic gradient mesh fallback -->
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/20">
+            <div class="absolute -top-24 end-0 h-96 w-96 rounded-full bg-primary/15 blur-3xl filter"></div>
+            <div class="absolute -bottom-24 start-1/4 h-80 w-80 rounded-full bg-primary/10 blur-2xl filter"></div>
+            <div
+              class="absolute inset-0 opacity-[0.04] dark:opacity-[0.08]"
+              style="background-image: radial-gradient(currentColor 1px, transparent 1px); background-size: 24px 24px;"
+            ></div>
+          </div>
+        }
+
+        <div class="relative z-10 flex h-full min-h-[500px] max-w-2xl flex-col justify-center px-6 py-10 sm:px-10 md:min-h-[580px] md:px-16">
+          <span
+            #heroItem
+            hlmBadge
+            variant="outline"
+            class="mb-4 inline-flex items-center gap-2 rounded-full border-primary/30 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary backdrop-blur-md md:mb-6 w-fit"
+          >
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+            </span>
+            <span class="tracking-wide uppercase text-[11px] font-bold">{{ 'home.badge' | translate }}</span>
+          </span>
+
+          <h1
+            #heroItem
+            hlmH1
+            dir="auto"
+            class="mb-4 text-3xl font-extrabold tracking-tight sm:text-5xl md:mb-6 md:text-6xl md:leading-[1.1]"
+          >
+            {{ hero()?.headline || ('home.hero_fallback_title' | translate) }}
+          </h1>
+
+          <p
+            #heroItem
+            hlmLead
+            dir="auto"
+            class="mb-8 max-w-lg text-base leading-relaxed text-muted-foreground md:mb-10 md:text-lg"
+          >
+            {{ hero()?.subtitle || ('home.hero_fallback_subtitle' | translate) }}
+          </p>
+
+          <div
+            #heroItem
+            class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center md:gap-4"
+          >
+            <a
+              hlmBtn
+              [routerLink]="heroCtaLink()"
+              (click)="onLinkClick($event)"
+              class="group relative inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm font-bold shadow-md shadow-primary/20 transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 sm:w-auto md:px-8 md:py-4 md:text-base"
+            >
+              <span>{{ heroCtaLabel() }}</span>
+              <ng-icon
+                name="lucideArrowRight"
+                size="18"
+                class="transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+              />
+            </a>
+            <a
+              hlmBtn
+              variant="outline"
+              [routerLink]="['/', storeSlug(), 'products']"
+              (click)="onLinkClick($event)"
+              class="inline-flex items-center justify-center gap-2 rounded-xl border-border/80 bg-background/70 px-7 py-3.5 text-sm font-bold backdrop-blur-md transition-all duration-300 hover:bg-accent hover:border-primary/40 sm:w-auto md:px-8 md:py-4 md:text-base"
+            >
+              <ng-icon name="lucideShoppingBag" size="18" />
+              <span>{{ 'home.browse_all' | translate }}</span>
+            </a>
+          </div>
+
+          <div #heroItem class="mt-8 flex flex-wrap items-center gap-4 text-xs font-medium text-muted-foreground md:mt-10">
+            <span class="inline-flex items-center gap-1.5">
+              <ng-icon name="lucideBadgeCheck" size="16" class="text-primary" />
+              {{ 'home.trust_verified' | translate }}
+            </span>
+            <span class="text-muted-foreground/40">•</span>
+            <span class="inline-flex items-center gap-1.5">
+              <ng-icon name="lucideTruck" size="16" class="text-primary" />
+              {{ 'home.trust_delivery' | translate }}
+            </span>
+            <span class="text-muted-foreground/40">•</span>
+            <span class="inline-flex items-center gap-1.5">
+              <ng-icon name="lucideShieldCheck" size="16" class="text-primary" />
+              {{ 'home.value_secure_title' | translate }}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Trust & Value Proposition Cards -->
+      <section
+        #trustSection
+        class="mb-12 grid gap-4 sm:grid-cols-3 md:mb-16 md:gap-6"
+      >
+        <div
+          #trustCard
+          hlmCard
+          class="group relative flex items-start gap-4 rounded-2xl border border-border/60 bg-card/60 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md md:p-6"
+        >
+          <span
+            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary shadow-inner transition-transform duration-300 group-hover:scale-105"
+          >
+            <ng-icon name="lucideShieldCheck" size="22" />
+          </span>
+          <div>
+            <p hlmSmall class="font-bold text-foreground transition-colors group-hover:text-primary">
+              {{ 'home.value_secure_title' | translate }}
+            </p>
+            <p hlmMuted class="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {{ 'home.value_secure_body' | translate }}
+            </p>
+          </div>
+        </div>
+
+        <a
+          #trustCard
+          hlmCard
+          [routerLink]="['/', storeSlug(), 'orders']"
+          (click)="onLinkClick($event)"
+          class="group relative flex items-start gap-4 rounded-2xl border border-border/60 bg-card/60 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md md:p-6 cursor-pointer"
+        >
+          <span
+            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary shadow-inner transition-transform duration-300 group-hover:scale-105"
+          >
+            <ng-icon name="lucidePackage" size="22" />
+          </span>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <p hlmSmall class="font-bold text-foreground transition-colors group-hover:text-primary">
+                {{ 'home.value_orders_title' | translate }}
+              </p>
+              <ng-icon
+                name="lucideArrowRight"
+                size="14"
+                class="text-muted-foreground opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
+              />
+            </div>
+            <p hlmMuted class="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {{ 'home.value_orders_body' | translate }}
+            </p>
+          </div>
+        </a>
+
+        <a
+          #trustCard
+          hlmCard
+          [routerLink]="['/', storeSlug(), 'faq']"
+          (click)="onLinkClick($event)"
+          class="group relative flex items-start gap-4 rounded-2xl border border-border/60 bg-card/60 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md md:p-6 cursor-pointer"
+        >
+          <span
+            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary shadow-inner transition-transform duration-300 group-hover:scale-105"
+          >
+            <ng-icon name="lucideCircleHelp" size="22" />
+          </span>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <p hlmSmall class="font-bold text-foreground transition-colors group-hover:text-primary">
+                {{ 'home.value_help_title' | translate }}
+              </p>
+              <ng-icon
+                name="lucideArrowRight"
+                size="14"
+                class="text-muted-foreground opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5"
+              />
+            </div>
+            <p hlmMuted class="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {{ 'home.value_help_body' | translate }}
+            </p>
+          </div>
+        </a>
+      </section>
+
+      <!-- Brand Story Section -->
+      @if (storeDescription(); as description) {
+        <section #storySection class="mb-12 md:mb-16">
+          <div
+            #storyItem
+            hlmCard
+            class="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-card/80 via-card/40 to-muted/30 p-7 shadow-sm backdrop-blur-sm md:p-12"
+          >
+            <div class="absolute -top-6 end-8 text-primary/10 select-none pointer-events-none">
+              <ng-icon name="lucideQuote" size="130" />
+            </div>
+
+            <div class="relative z-10 max-w-3xl">
+              <span hlmBadge variant="outline" class="mb-3 inline-flex items-center gap-1.5 border-primary/25 bg-primary/10 text-primary">
+                <ng-icon name="lucideSparkles" size="14" />
+                <span>{{ 'home.about_eyebrow' | translate }}</span>
+              </span>
+              <h2 hlmH2 class="mb-3 border-none pb-0 text-xl font-extrabold tracking-tight text-foreground sm:text-2xl md:text-3xl">
+                {{ storeName() }}
+              </h2>
+              <p
+                hlmP
+                dir="auto"
+                class="m-0 text-base leading-relaxed text-muted-foreground md:text-lg font-normal"
+              >
+                “{{ description }}”
+              </p>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Empty State when no categories and no products -->
+      @if (!hasFeaturedContent()) {
+        <section class="my-12 md:my-16">
+          <div
+            hlmCard
+            class="border-border/60 bg-gradient-to-br from-card/90 via-card/50 to-muted/20 relative overflow-hidden rounded-3xl p-8 shadow-sm backdrop-blur-sm md:p-14 text-center"
+          >
+            <div class="absolute -top-24 start-1/2 -translate-x-1/2 h-48 w-72 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 mx-auto max-w-xl">
+              <span hlmBadge variant="outline" class="mb-4 inline-flex items-center gap-1.5 border-primary/25 bg-primary/10 text-primary">
+                <ng-icon name="lucideSparkles" size="14" />
+                <span>{{ 'home.empty_badge' | translate }}</span>
+              </span>
+
+              <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary shadow-inner">
+                <ng-icon name="lucideStore" size="32" />
+              </div>
+
+              <h3 hlmCardTitle class="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+                {{ 'home.empty_title' | translate }}
+              </h3>
+
+              <p hlmCardDescription class="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">
+                {{ 'home.empty_description' | translate }}
+              </p>
+
+              <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <a
+                  hlmBtn
+                  [routerLink]="['/', storeSlug(), 'products']"
+                  (click)="onLinkClick($event)"
+                  class="group inline-flex w-full items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold shadow-md shadow-primary/20 transition-all hover:shadow-lg sm:w-auto"
+                >
+                  <span>{{ 'home.empty_browse_cta' | translate }}</span>
+                  <ng-icon
+                    name="lucideArrowRight"
+                    size="16"
+                    class="transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                  />
+                </a>
+                <a
+                  hlmBtn
+                  variant="outline"
+                  [routerLink]="['/', storeSlug(), 'faq']"
+                  (click)="onLinkClick($event)"
+                  class="inline-flex w-full items-center justify-center gap-2 rounded-xl border-border bg-background/60 px-6 py-3 text-sm font-semibold transition-all hover:bg-accent sm:w-auto"
+                >
+                  <ng-icon name="lucideCircleHelp" size="16" />
+                  <span>{{ 'home.empty_help_cta' | translate }}</span>
+                </a>
+                <a
+                  hlmBtn
+                  variant="outline"
+                  [routerLink]="['/', storeSlug(), 'orders']"
+                  (click)="onLinkClick($event)"
+                  class="inline-flex w-full items-center justify-center gap-2 rounded-xl border-border bg-background/60 px-6 py-3 text-sm font-semibold transition-all hover:bg-accent sm:w-auto"
+                >
+                  <ng-icon name="lucidePackage" size="16" />
+                  <span>{{ 'home.empty_orders_cta' | translate }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Featured Categories Section -->
+      @if (categories().length > 0) {
+        <section #categorySection class="mb-12 md:mb-16">
+          <div class="mb-6 flex items-end justify-between">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-primary">
+                {{ 'home.categories' | translate }}
+              </span>
+              <h2 hlmH2 class="mt-1 border-none pb-0 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                {{ 'home.categories' | translate }}
+              </h2>
+            </div>
+            <a
+              [routerLink]="['/', storeSlug(), 'products']"
+              (click)="onLinkClick($event)"
+              class="group flex items-center gap-1.5 text-xs font-bold text-primary transition-colors hover:text-primary/80 md:text-sm"
+            >
+              <span>{{ 'home.all_categories' | translate }}</span>
+              <ng-icon
+                name="lucideArrowRight"
+                size="16"
+                class="transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+              />
+            </a>
+          </div>
+
+          <div class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 sm:flex-wrap sm:justify-center md:gap-6 lg:overflow-visible lg:pb-0">
+            @for (category of categories(); track category.slug || category.id || category.name) {
+              <a
+                #categoryCard
+                hlmCard
+                [routerLink]="['/', storeSlug(), 'products']"
+                [queryParams]="{ category: category.slug || category.id }"
+                (click)="onCategoryClick($event, category)"
+                class="group relative flex aspect-square w-36 shrink-0 snap-center cursor-pointer flex-col items-center justify-between overflow-hidden rounded-2xl border border-border/70 bg-card p-4 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg sm:w-auto sm:basis-[calc(33.333%-0.75rem)] md:basis-[calc(33.333%-1rem)] lg:basis-[calc(16.666%-1.25rem)]"
+              >
+                <div class="absolute -top-6 -end-6 h-16 w-16 rounded-full bg-primary/5 transition-transform duration-500 group-hover:scale-150 group-hover:bg-primary/10"></div>
+
+                <div
+                  class="relative mt-2 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-muted/60 p-1 shadow-sm transition-transform duration-500 group-hover:scale-110 md:h-20 md:w-20"
+                >
+                  @if (category.imageUrl) {
+                    <img
+                      [src]="category.imageUrl"
+                      [alt]="category.name"
+                      width="96"
+                      height="96"
+                      loading="lazy"
+                      decoding="async"
+                      class="h-full w-full rounded-xl object-cover"
+                    />
+                  } @else {
+                    <div class="flex h-full w-full items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <ng-icon name="lucideTag" size="24" />
+                    </div>
+                  }
+                </div>
+
+                <div class="relative z-10 mt-3 flex flex-col items-center gap-1 text-center">
+                  <span
+                    dir="auto"
+                    class="line-clamp-1 text-xs font-bold text-foreground transition-colors group-hover:text-primary md:text-sm"
+                  >
+                    {{ category.name }}
+                  </span>
+                  @if (category.productCount) {
+                    <span class="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                      {{ 'home.items_count' | translate: { count: category.productCount } }}
+                    </span>
+                  }
+                </div>
+              </a>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Promotional feature highlight banner -->
+      <section
+        #promoSection
+        hlmCard
+        class="mb-12 overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card/70 to-card p-6 shadow-sm backdrop-blur-sm md:mb-16 md:p-10"
+      >
+        <div #promoItem class="grid items-center gap-6 md:grid-cols-2 md:gap-10">
+          <div>
+            <span hlmBadge variant="outline" class="mb-3 inline-flex items-center gap-2 border-primary/25 bg-primary/15 text-primary">
+              <ng-icon name="lucideSparkles" size="14" />
+              <span>{{ 'home.promo_badge' | translate }}</span>
+            </span>
+            <h3 hlmCardTitle class="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+              {{ 'home.promo_title' | translate }}
+            </h3>
+            <p hlmCardDescription class="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base">
+              {{ 'home.promo_desc' | translate }}
+            </p>
+            <div class="mt-6">
+              <a
+                hlmBtn
+                [routerLink]="['/', storeSlug(), 'products']"
+                (click)="onLinkClick($event)"
+                class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-bold shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:shadow-primary/30"
+              >
+                <span>{{ 'home.promo_cta' | translate }}</span>
+                <ng-icon name="lucideArrowRight" size="16" class="rtl:rotate-180" />
+              </a>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 md:gap-4">
+            <div hlmCard class="flex flex-col items-center rounded-2xl border border-border/50 bg-background/60 p-4 text-center backdrop-blur-sm shadow-none">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <ng-icon name="lucideBadgeCheck" size="20" />
+              </span>
+              <span class="mt-2 text-xs font-bold text-foreground">{{ 'home.trust_verified' | translate }}</span>
+            </div>
+            <div hlmCard class="flex flex-col items-center rounded-2xl border border-border/50 bg-background/60 p-4 text-center backdrop-blur-sm shadow-none">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <ng-icon name="lucideTruck" size="20" />
+              </span>
+              <span class="mt-2 text-xs font-bold text-foreground">{{ 'home.trust_delivery' | translate }}</span>
+            </div>
+            <div hlmCard class="flex flex-col items-center rounded-2xl border border-border/50 bg-background/60 p-4 text-center backdrop-blur-sm shadow-none">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <ng-icon name="lucideShieldCheck" size="20" />
+              </span>
+              <span class="mt-2 text-xs font-bold text-foreground">{{ 'home.value_secure_title' | translate }}</span>
+            </div>
+            <div hlmCard class="flex flex-col items-center rounded-2xl border border-border/50 bg-background/60 p-4 text-center backdrop-blur-sm shadow-none">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <ng-icon name="lucideCircleHelp" size="20" />
+              </span>
+              <span class="mt-2 text-xs font-bold text-foreground">{{ 'home.value_help_title' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Products with Quick-Filter Tabs -->
+      @if (products().length > 0) {
+        <section #productsSection class="mb-12 md:mb-16">
+          <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span hlmBadge variant="outline" class="text-xs font-bold uppercase tracking-wider text-primary border-primary/20 bg-primary/10">
+                {{ 'home.curated_badge' | translate }}
+              </span>
+              <h2 hlmH2 class="mt-1 border-none pb-0 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                {{ 'home.featured_products' | translate }}
+              </h2>
+            </div>
+
+            @if (hasMultipleCategories()) {
+              <app-filter-tabs
+                [tabs]="categoryTabs()"
+                [active]="selectedCategory()"
+                (tabChange)="onSelectCategory($event)"
+                ariaLabel="Filter featured products by category"
+              />
+            } @else {
+              <a
+                [routerLink]="['/', storeSlug(), 'products']"
+                (click)="onLinkClick($event)"
+                class="group flex items-center gap-1.5 text-xs font-bold text-primary transition-colors hover:text-primary/80 md:text-sm"
+              >
+                <span>{{ 'home.view_all' | translate }}</span>
+                <ng-icon
+                  name="lucideArrowRight"
+                  size="16"
+                  class="transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                />
+              </a>
+            }
+          </div>
+
+          <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+            @for (product of filteredProducts(); track product.slug || product.id || product.name || product.title) {
+              <div
+                #productCard
+                class="h-full w-full max-w-[340px] basis-full sm:max-w-none sm:basis-[calc(50%-0.5rem)] md:basis-[calc(50%-0.75rem)] lg:basis-[calc(25%-1.125rem)]"
+              >
+                <div
+                  hlmCard
+                  class="group relative flex flex-col hover:shadow-lg p-0 h-full overflow-hidden transition-all duration-300 border-border/70 bg-card rounded-2xl"
+                >
+                  <a
+                    [routerLink]="['/', storeSlug(), 'product-details', product.slug || product.id]"
+                    (click)="onProductClick($event, product)"
+                    [attr.aria-label]="product.title || product.name"
+                    class="absolute inset-0 z-10 rounded-[inherit] focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none"
+                  ></a>
+
+                  <!-- Product Image -->
+                  <div class="flex justify-center items-center bg-muted/60 aspect-square w-full overflow-hidden">
+                    @if (product.imageUrl || product.img) {
+                      <img
+                        [src]="product.imageUrl || product.img"
+                        [alt]="product.title || product.name"
+                        width="400"
+                        height="400"
+                        loading="lazy"
+                        decoding="async"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    } @else {
+                      <div class="w-full h-full flex items-center justify-center text-primary/40 bg-primary/5">
+                        <ng-icon name="lucidePackage" size="36" />
+                      </div>
+                    }
+                  </div>
+
+                  <div hlmCardContent class="flex flex-col flex-1 gap-2 p-4">
+                    <div hlmCardHeader class="gap-1 p-0">
+                      <h3 hlmCardTitle dir="auto" class="text-sm font-bold line-clamp-1 leading-tight text-foreground">
+                        {{ product.title || product.name }}
+                      </h3>
+                      @if (product.shortDescription) {
+                        <p hlmCardDescription dir="auto" class="text-xs line-clamp-1 text-muted-foreground">
+                          {{ product.shortDescription }}
+                        </p>
+                      }
+                    </div>
+
+                    <div class="flex justify-between items-center mt-auto pt-2">
+                      <span class="font-bold text-primary text-base">
+                        {{ product.price || (product.minPriceAmount !== null && product.minPriceAmount !== undefined ? (product.minPriceAmount / 100 | currency: currency()) : '') }}
+                      </span>
+                      <button
+                        hlmBtn
+                        size="sm"
+                        variant="outline"
+                        type="button"
+                        (click)="onAddToCart($event, product)"
+                        class="relative z-20 flex items-center gap-1.5 rounded-lg border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                      >
+                        <span>{{ 'home.shop_now' | translate }}</span>
+                        <ng-icon name="lucideShoppingCart" size="14" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (hasMultipleCategories()) {
+            <div class="mt-8 flex justify-center">
+              <a
+                hlmBtn
+                variant="outline"
+                [routerLink]="['/', storeSlug(), 'products']"
+                (click)="onLinkClick($event)"
+                class="group inline-flex items-center gap-2 rounded-xl border-border px-6 py-3 text-sm font-semibold transition-all duration-300 hover:border-primary/50 hover:bg-accent"
+              >
+                <span>{{ 'home.view_all' | translate }}</span>
+                <ng-icon
+                  name="lucideArrowRight"
+                  size="16"
+                  class="transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
+                />
+              </a>
+            </div>
+          }
+        </section>
+      }
+
+      <!-- VIP Newsletter Subscription Strip -->
+      <section
+        #newsletterSection
+        hlmCard
+        class="relative mb-12 overflow-hidden rounded-3xl border border-border/70 bg-card p-6 shadow-sm md:mb-16 md:p-12 text-center"
+      >
+        <div class="absolute -bottom-24 start-1/2 -translate-x-1/2 h-64 w-96 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+
+        <div #newsletterItem class="relative z-10 mx-auto max-w-xl">
+          <span hlmBadge variant="outline" class="mb-3 inline-flex items-center gap-2 border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+            <ng-icon name="lucideMail" size="14" />
+            <span>{{ 'home.newsletter_badge' | translate }}</span>
+          </span>
+          <h3 hlmCardTitle class="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+            {{ 'home.newsletter_title' | translate }}
+          </h3>
+          <p class="mt-2 text-sm text-muted-foreground md:text-base">
+            {{ 'home.newsletter_desc' | translate }}
+          </p>
+
+          @if (isSubscribed()) {
+            <div class="mt-6 inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-5 py-3 text-sm font-bold text-primary animate-in fade-in zoom-in-95 duration-300">
+              <ng-icon name="lucideCheck" size="18" />
+              <span>{{ 'home.newsletter_subscribed' | translate }}</span>
+            </div>
+          } @else {
+            <form
+              (submit)="onSubscribeNewsletter($event)"
+              class="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-2"
+            >
+              <input
+                type="email"
+                hlmInput
+                [value]="newsletterEmail()"
+                (input)="onEmailInput($event)"
+                [placeholder]="'home.newsletter_placeholder' | translate"
+                class="h-11 flex-1 rounded-xl border-border bg-background px-4 text-sm"
+                required
+              />
+              <button
+                hlmBtn
+                type="submit"
+                [disabled]="isSubmittingNewsletter()"
+                class="h-11 rounded-xl px-6 font-bold shadow-md shadow-primary/20 transition-all hover:shadow-lg"
+              >
+                @if (isSubmittingNewsletter()) {
+                  <ng-icon name="lucideRefreshCw" size="16" class="animate-spin" />
+                } @else {
+                  <span class="inline-flex items-center gap-1.5">
+                    <span>{{ 'home.newsletter_btn' | translate }}</span>
+                    <ng-icon name="lucideSend" size="14" class="rtl:rotate-180" />
+                  </span>
+                }
+              </button>
+            </form>
+            <p class="mt-3 text-[11px] text-muted-foreground">
+              {{ 'home.newsletter_privacy' | translate }}
+            </p>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</div>

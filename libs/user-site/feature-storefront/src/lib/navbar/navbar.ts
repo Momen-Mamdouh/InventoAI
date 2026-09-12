@@ -17,7 +17,6 @@ import {
   lucideSettings,
   lucideLogOut,
 } from '@ng-icons/lucide';
-import { HlmNavigationMenuImports } from '@spartan/helm/navigation-menu';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmSeparator } from '@spartan/helm/separator';
@@ -46,7 +45,6 @@ interface NavLink {
     RouterLink,
     RouterLinkActive,
     NgIcon,
-    HlmNavigationMenuImports,
     HlmSheetImports,
     HlmButtonImports,
     HlmSeparator,

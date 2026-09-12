@@ -85,8 +85,10 @@ export class Chatbot implements OnInit {
   }
 
   ngOnInit() {
-    this.loadHistory();
-    this.sessionId = localStorage.getItem('chatbot_session_id') || undefined;
+    if (typeof localStorage !== 'undefined') {
+      this.loadHistory();
+      this.sessionId = localStorage.getItem('chatbot_session_id') || undefined;
+    }
   }
 
   private loadChatSettings(slug: string) {
@@ -270,6 +272,9 @@ export class Chatbot implements OnInit {
 
   private loadHistory() {
     try {
+      if (typeof localStorage === 'undefined') {
+        return;
+      }
       const history = localStorage.getItem('chatbot_history');
       if (history) {
         this.chatHistory.set(JSON.parse(history));
@@ -280,7 +285,9 @@ export class Chatbot implements OnInit {
   }
 
   private saveCurrentSessionToHistory() {
-    if (!this.sessionId || this.messages().length <= 1) return; // don't save empty chats
+    if (!this.sessionId || this.messages().length <= 1) {
+      return; // don't save empty chats
+    }
 
     let history = this.chatHistory();
     const existingIdx = history.findIndex((h) => h.sessionId === this.sessionId);
@@ -294,14 +301,20 @@ export class Chatbot implements OnInit {
     history.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
     this.chatHistory.set(history);
-    localStorage.setItem('chatbot_history', JSON.stringify(history));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('chatbot_history', JSON.stringify(history));
+    }
   }
 
   selectSession(sessionId: string) {
-    if (!sessionId) return;
+    if (!sessionId) {
+      return;
+    }
 
     this.sessionId = sessionId;
-    localStorage.setItem('chatbot_session_id', sessionId);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('chatbot_session_id', sessionId);
+    }
     this.loadConversation(this.initialGreeting);
   }
 }
