@@ -1,6 +1,12 @@
 {
   "lang_switch": "English",
   "app_name": "متجري",
+  "store_loader": {
+    "welcome": "أهلاً بك في",
+    "loading": "جاري التحميل...",
+    "preparing": "جاري تجهيز تجربة التسوق...",
+    "navigating": "جاري تحميل الصفحة..."
+  },
   "nav": {
     "home": "الرئيسية",
     "shop": "المتجر",

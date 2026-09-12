@@ -1,4 +1,5 @@
 export { StoreService } from './lib/store.service';
+export { StoreLoaderService } from './lib/store-loader.service';
 export { StoreSeoService } from './lib/store-seo.service';
 export { StoreThemeService } from './lib/store-theme.service';
 export { StoreSlugService } from './lib/store-slug.service';

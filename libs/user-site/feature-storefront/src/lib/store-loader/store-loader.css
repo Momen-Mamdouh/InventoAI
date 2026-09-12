@@ -1,0 +1,22 @@
+:host {
+  display: contents;
+}
+
+.orbital-ring {
+  animation: orbitalSpin 12s linear infinite;
+}
+
+@keyframes orbitalSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbital-ring {
+    animation: none;
+  }
+}

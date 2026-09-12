@@ -20,3 +20,4 @@ export { NotFound } from './lib/not-found/not-found';
 export { NoStore } from './lib/no-store/no-store';
 export { StoreNotFound } from './lib/store-not-found/store-not-found';
 export { AuthLayout } from './lib/auth-layout/auth-layout';
+export { StoreLoader } from './lib/store-loader/store-loader';

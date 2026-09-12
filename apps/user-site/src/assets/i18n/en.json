@@ -1,6 +1,12 @@
 {
   "lang_switch": "العربية",
   "app_name": "My Store",
+  "store_loader": {
+    "welcome": "Welcome to",
+    "loading": "Loading...",
+    "preparing": "Preparing your shopping experience...",
+    "navigating": "Loading page..."
+  },
   "nav": {
     "home": "Home",
     "shop": "Shop",

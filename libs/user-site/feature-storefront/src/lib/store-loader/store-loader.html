@@ -1,0 +1,115 @@
+@if (loaderService.isLoading()) {
+  @if (loaderService.isInitialSplash()) {
+    <!-- Full-Screen Branded Splash Overlay (Initial Visit / Redirection) -->
+    <div
+      class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-background/95 backdrop-blur-md transition-opacity duration-300 animate-in fade-in"
+      role="status"
+      aria-live="polite"
+      [attr.aria-label]="storeName() ? storeName() + ' is loading' : 'Loading store'"
+    >
+      <!-- Ambient Backlight Glow -->
+      <div
+        class="absolute w-72 h-72 rounded-full bg-primary/20 blur-3xl animate-pulse pointer-events-none"
+        aria-hidden="true"
+      ></div>
+
+      <!-- Centered Frosted Brand Card -->
+      <div
+        class="relative flex flex-col items-center gap-5 p-7 sm:p-9 max-w-sm w-full mx-auto text-center rounded-3xl border border-border/80 bg-card/80 shadow-2xl backdrop-blur-xl animate-in zoom-in-95 duration-200"
+      >
+        <!-- Store Brand Emblem Container -->
+        <div class="relative flex items-center justify-center w-24 h-24">
+          <!-- Orbital Rotating Dashed Ring -->
+          <div
+            class="orbital-ring absolute -inset-1.5 rounded-3xl border-2 border-dashed border-primary/50"
+            aria-hidden="true"
+          ></div>
+
+          @if (logoUrl()) {
+            <img
+              [src]="logoUrl()"
+              [alt]="storeName()"
+              class="w-20 h-20 object-contain rounded-2xl p-2 bg-background/90 shadow-sm border border-border/60 select-none"
+            />
+          } @else {
+            <div
+              class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/30 flex items-center justify-center text-primary font-black text-2xl tracking-widest shadow-inner select-none"
+            >
+              {{ monogram() }}
+            </div>
+          }
+        </div>
+
+        <!-- Store Name & Welcome Label -->
+        <div class="flex flex-col items-center gap-1.5">
+          <div
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider"
+          >
+            <ng-icon name="lucideSparkles" size="13" />
+            <span>{{ 'store_loader.welcome' | translate }}</span>
+          </div>
+
+          @if (storeName()) {
+            <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-foreground line-clamp-1">
+              {{ storeName() }}
+            </h2>
+          }
+        </div>
+
+        <!-- Dynamic Brand Progress Pill -->
+        <div class="w-48 flex flex-col items-center gap-2">
+          <div class="w-full h-1.5 rounded-full bg-muted overflow-hidden relative" role="progressbar" [attr.aria-valuenow]="loaderService.progress()" aria-valuemin="0" aria-valuemax="100">
+            <div
+              class="h-full bg-primary rounded-full transition-all duration-300 ease-out shadow-[0_0_8px_var(--primary)]"
+              [style.width.%]="loaderService.progress()"
+            ></div>
+          </div>
+          <span class="text-xs text-muted-foreground animate-pulse">
+            {{ loaderService.statusKey() | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <!-- Page-to-Page Route Transition Mode: Top Progress Bar + Ambient Floating Brand Chip -->
+    <div
+      class="fixed top-0 inset-x-0 z-[9999] h-[3px] pointer-events-none overflow-hidden bg-primary/20"
+      role="progressbar"
+      [attr.aria-valuenow]="loaderService.progress()"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-label="Page navigation progress"
+    >
+      <div
+        class="h-full bg-primary shadow-[0_0_10px_var(--primary)] transition-all duration-150 ease-out"
+        [style.width.%]="loaderService.progress()"
+      ></div>
+    </div>
+
+    <!-- Ambient Floating Branded Chip -->
+    <aside
+      class="fixed top-3 end-4 z-[9998] inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-border/80 bg-background/90 shadow-lg backdrop-blur-md text-foreground transition-all duration-300 animate-in fade-in slide-in-from-top-2"
+      role="status"
+      aria-live="polite"
+    >
+      @if (logoUrl()) {
+        <img
+          [src]="logoUrl()"
+          [alt]="storeName()"
+          class="w-5 h-5 rounded-full object-contain bg-muted p-0.5"
+        />
+      } @else {
+        <span
+          class="w-5 h-5 rounded-full bg-primary/15 text-primary text-[10px] font-black flex items-center justify-center leading-none select-none"
+        >
+          {{ monogram() }}
+        </span>
+      }
+
+      <ng-icon name="lucideLoader2" size="14" class="animate-spin text-primary" />
+      <span class="text-xs font-medium text-muted-foreground whitespace-nowrap">
+        {{ 'store_loader.navigating' | translate }}
+      </span>
+    </aside>
+  }
+}
