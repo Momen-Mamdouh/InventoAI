@@ -20,9 +20,12 @@ import {
 } from '@invento/shared-data-access-auth';
 
 import { HlmInput } from '@spartan/helm/input';
+import { HlmLabel } from '@spartan/helm/label';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmH1 } from '@spartan/helm/typography';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideEye, lucideEyeOff, lucideLock, lucideMail } from '@ng-icons/lucide';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
@@ -36,7 +39,18 @@ import { extractErrorMessage } from '@invento/shared-util-error';
   selector: 'app-login',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmButton, HlmSpinner, HlmH1],
+  imports: [
+    TranslatePipe,
+    ReactiveFormsModule,
+    RouterLink,
+    HlmInput,
+    HlmLabel,
+    HlmButton,
+    HlmSpinner,
+    HlmH1,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideMail, lucideLock, lucideEye, lucideEyeOff })],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -59,6 +73,7 @@ export class Login implements AfterViewInit {
 
   isLoading = signal(false);
   isGoogleLoading = signal(false);
+  showPassword = signal(false);
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

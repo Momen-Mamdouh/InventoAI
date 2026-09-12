@@ -14,6 +14,9 @@ import { HlmInputOtpImports } from '@spartan/helm/input-otp';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideEye, lucideEyeOff, lucideLock } from '@ng-icons/lucide';
+
 /** One `ResetPassword` for all three apps (SC-005). Ported from invento/site-builder's shared template. */
 @Component({
   selector: 'app-reset-password',
@@ -29,7 +32,9 @@ import { extractErrorMessage } from '@invento/shared-util-error';
     HlmMuted,
     BrnInputOtp,
     ...HlmInputOtpImports,
+    NgIcon,
   ],
+  providers: [provideIcons({ lucideLock, lucideEye, lucideEyeOff })],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })
@@ -45,6 +50,8 @@ export class ResetPassword implements OnInit {
 
   isLoading = signal(false);
   isResending = signal(false);
+  showNewPassword = signal(false);
+  showConfirmPassword = signal(false);
   userEmail = '';
 
   currentStep = signal<'otp' | 'password'>('otp');

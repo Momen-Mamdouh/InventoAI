@@ -13,12 +13,26 @@ import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 
 import { extractErrorMessage } from '@invento/shared-util-error';
 
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideMail } from '@ng-icons/lucide';
+
 /** One `ForgotPassword` for all three apps (SC-005). Ported from invento/site-builder's shared template. */
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, HlmInput, HlmLabel, HlmButton, HlmH1, HlmMuted],
+  imports: [
+    TranslatePipe,
+    ReactiveFormsModule,
+    RouterLink,
+    HlmInput,
+    HlmLabel,
+    HlmButton,
+    HlmH1,
+    HlmMuted,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideMail })],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
 })

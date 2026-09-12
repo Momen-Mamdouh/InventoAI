@@ -1,17 +1,17 @@
-<div class="flex flex-col h-full text-left">
+<div class="flex flex-col h-full text-start">
   <div class="mb-8">
-    <h1 hlmH1 class="text-slate-900 dark:text-white mb-2">
+    <h1 hlmH1 class="text-foreground mb-2">
       {{ 'auth_verify_title' | translate }}
     </h1>
-    <p hlmMuted class="text-slate-500 dark:text-zinc-400">
+    <p hlmMuted class="text-muted-foreground">
       {{ 'auth_we_sent_code' | translate }} <strong>{{ userEmail }}</strong
       >.
     </p>
   </div>
 
   <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="space-y-5 flex-1">
-    <div class="space-y-1.5">
-      <label hlmLabel for="otp1" class="text-sm font-semibold text-slate-700 dark:text-white">{{
+    <div class="space-y-1.5 text-start">
+      <label hlmLabel for="otp1" class="text-xs sm:text-sm font-medium text-foreground block">{{
         'auth_verify_code_label' | translate
       }}</label>
       <brn-input-otp
@@ -23,37 +23,37 @@
       >
         <hlm-input-otp-slot
           [index]="0"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+          class="w-full h-13 sm:h-14 text-center text-xl sm:text-2xl font-bold rounded-xl border border-input bg-background/50 text-foreground transition-all has-[brn-input-otp-slot[data-active='true']]:border-primary has-[brn-input-otp-slot[data-active='true']]:ring-2 has-[brn-input-otp-slot[data-active='true']]:ring-primary/20"
         />
         <hlm-input-otp-slot
           [index]="1"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+          class="w-full h-13 sm:h-14 text-center text-xl sm:text-2xl font-bold rounded-xl border border-input bg-background/50 text-foreground transition-all has-[brn-input-otp-slot[data-active='true']]:border-primary has-[brn-input-otp-slot[data-active='true']]:ring-2 has-[brn-input-otp-slot[data-active='true']]:ring-primary/20"
         />
         <hlm-input-otp-slot
           [index]="2"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+          class="w-full h-13 sm:h-14 text-center text-xl sm:text-2xl font-bold rounded-xl border border-input bg-background/50 text-foreground transition-all has-[brn-input-otp-slot[data-active='true']]:border-primary has-[brn-input-otp-slot[data-active='true']]:ring-2 has-[brn-input-otp-slot[data-active='true']]:ring-primary/20"
         />
         <hlm-input-otp-slot
           [index]="3"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+          class="w-full h-13 sm:h-14 text-center text-xl sm:text-2xl font-bold rounded-xl border border-input bg-background/50 text-foreground transition-all has-[brn-input-otp-slot[data-active='true']]:border-primary has-[brn-input-otp-slot[data-active='true']]:ring-2 has-[brn-input-otp-slot[data-active='true']]:ring-primary/20"
         />
         <hlm-input-otp-slot
           [index]="4"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+          class="w-full h-13 sm:h-14 text-center text-xl sm:text-2xl font-bold rounded-xl border border-input bg-background/50 text-foreground transition-all has-[brn-input-otp-slot[data-active='true']]:border-primary has-[brn-input-otp-slot[data-active='true']]:ring-2 has-[brn-input-otp-slot[data-active='true']]:ring-primary/20"
         />
         <hlm-input-otp-slot
           [index]="5"
-          class="w-full h-14 text-center text-2xl font-bold !rounded-xl !border-slate-200 border bg-transparent has-[brn-input-otp-slot[data-active='true']]:border-blue-500 has-[brn-input-otp-slot[data-active='true']]:ring-1 has-[brn-input-otp-slot[data-active='true']]:ring-blue-500"
+          class="w-full h-13 sm:h-14 text-center text-xl sm:text-2xl font-bold rounded-xl border border-input bg-background/50 text-foreground transition-all has-[brn-input-otp-slot[data-active='true']]:border-primary has-[brn-input-otp-slot[data-active='true']]:ring-2 has-[brn-input-otp-slot[data-active='true']]:ring-primary/20"
         />
       </brn-input-otp>
       @if (verifyForm.get('otp')?.touched && verifyForm.get('otp')?.invalid) {
-        <div class="text-xs text-red-500 mt-1">{{ 'auth_verify_code_req' | translate }}</div>
+        <div class="ps-1 pt-0.5 text-xs text-destructive text-start">{{ 'auth_verify_code_req' | translate }}</div>
       }
     </div>
 
     <button
       hlmBtn
-      class="w-full mt-8 !py-6 text-base font-semibold"
+      class="w-full mt-8 h-11 sm:h-12 rounded-xl text-sm sm:text-base font-semibold"
       type="submit"
       [disabled]="isLoading()"
     >
@@ -65,7 +65,7 @@
     </button>
   </form>
 
-  <p hlmMuted class="text-center text-slate-500 mt-8">
+  <p hlmMuted class="text-center text-muted-foreground text-sm mt-8">
     {{ 'auth_didnt_receive' | translate }}
     <button
       hlmBtn
@@ -73,7 +73,7 @@
       type="button"
       (click)="resendCode()"
       [disabled]="isResending()"
-      class="h-auto p-0 font-bold text-blue-500 hover:underline disabled:opacity-50 disabled:no-underline"
+      class="h-auto p-0 font-medium text-primary hover:underline disabled:opacity-50 disabled:no-underline cursor-pointer"
     >
       @if (!isResending()) {
         <span>{{ 'auth_verify_resend' | translate }}</span>

@@ -4,6 +4,18 @@
     class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] opacity-60 pointer-events-none"
   ></div>
 
+  <!-- Little Center Switcher Navbar -->
+  <header class="mb-6 z-20">
+    <nav
+      class="inline-flex items-center gap-2 p-1.5 px-3 rounded-full bg-card/80 hover:bg-card backdrop-blur-md border border-border/60 shadow-xs transition-all select-none"
+      aria-label="Preferences"
+    >
+      <app-lang-switcher />
+      <div class="h-4 w-px bg-border/60 mx-0.5" aria-hidden="true"></div>
+      <app-theme-switcher />
+    </nav>
+  </header>
+
   <div
     class="w-full max-w-[480px] bg-card text-card-foreground border border-border/60 rounded-[2rem] shadow-xl overflow-hidden relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out"
   >
