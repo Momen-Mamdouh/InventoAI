@@ -28,19 +28,19 @@ import type { ClassValue } from 'clsx';
 			[style]="userStyle()"
 		>
 			<ng-template #loadingIcon>
-				<ng-icon name="lucideLoader2" class="overflow-visible! text-base text-primary [&>svg]:motion-safe:animate-spin" />
+				<ng-icon name="lucideLoader2" size="16" class="overflow-visible! text-primary [&>svg]:motion-safe:animate-spin" />
 			</ng-template>
 			<ng-template #successIcon>
-				<ng-icon name="lucideCircleCheck" class="overflow-visible! text-base text-emerald-500 dark:text-emerald-400" />
+				<ng-icon name="lucideCircleCheck" size="16" class="overflow-visible! text-emerald-500 dark:text-emerald-400" />
 			</ng-template>
 			<ng-template #errorIcon>
-				<ng-icon name="lucideOctagonX" class="overflow-visible! text-base text-rose-500 dark:text-rose-400" />
+				<ng-icon name="lucideOctagonX" size="16" class="overflow-visible! text-rose-500 dark:text-rose-400" />
 			</ng-template>
 			<ng-template #infoIcon>
-				<ng-icon name="lucideInfo" class="overflow-visible! text-base text-sky-500 dark:text-sky-400" />
+				<ng-icon name="lucideInfo" size="16" class="overflow-visible! text-sky-500 dark:text-sky-400" />
 			</ng-template>
 			<ng-template #warningIcon>
-				<ng-icon name="lucideTriangleAlert" class="overflow-visible! text-base text-amber-500 dark:text-amber-400" />
+				<ng-icon name="lucideTriangleAlert" size="16" class="overflow-visible! text-amber-500 dark:text-amber-400" />
 			</ng-template>
 		</brn-sonner-toaster>
 	`,
@@ -77,11 +77,10 @@ export class HlmToaster {
 				...options?.classes,
 				toast: hlm(
 					'group toast rounded-2xl! border! backdrop-blur-md! shadow-xl! font-medium!',
-					'bg-popover/90! text-popover-foreground! border-border/80!',
 					'transition-all duration-300',
 					options?.classes?.toast,
 				),
-				description: hlm('text-muted-foreground! text-xs! leading-relaxed!', options?.classes?.description),
+				description: hlm('text-xs! leading-relaxed! opacity-90', options?.classes?.description),
 				actionButton: hlm(
 					'rounded-xl! bg-primary! text-primary-foreground! text-xs! font-semibold! px-3! py-1.5! hover:bg-primary/90! transition-colors!',
 					options?.classes?.actionButton,
@@ -101,10 +100,10 @@ export class HlmToaster {
 	public readonly userClass = input<ClassValue>('', { alias: 'class' });
 	public readonly userStyle = input<Record<string, string>>(
 		{
-			'--normal-bg': 'var(--popover)',
+			'--normal-bg': 'color-mix(in srgb, var(--popover) 85%, transparent)',
 			'--normal-text': 'var(--popover-foreground)',
-			'--normal-border': 'var(--border)',
-			'--border-radius': 'var(--radius)',
+			'--normal-border': 'color-mix(in srgb, var(--border) 70%, transparent)',
+			'--border-radius': '1rem',
 		},
 		{ alias: 'style' },
 	);
