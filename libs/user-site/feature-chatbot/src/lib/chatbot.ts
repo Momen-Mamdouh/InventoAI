@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit, effect, HostListener } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  OnInit,
+  effect,
+  HostListener,
+} from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBotMessageSquare,
@@ -8,19 +16,48 @@ import {
   lucideHistory,
   lucideMessageSquare,
   lucideChevronDown,
+  lucideMaximize2,
+  lucideMinimize2,
+  lucideExpand,
+  lucideShrink,
+  lucideMinus,
+  lucideCopy,
+  lucideCheck,
+  lucideThumbsUp,
+  lucideThumbsDown,
+  lucideRotateCcw,
+  lucideExternalLink,
+  lucideArrowUpRight,
+  lucideSparkles,
+  lucideTruck,
+  lucidePackage,
+  lucideHelpCircle,
+  lucideMail,
+  lucideBot,
 } from '@ng-icons/lucide';
 import { HlmPopoverImports } from '@spartan/helm/popover';
 import { HlmButtonImports } from '@spartan/helm/button';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { HlmBadgeImports } from '@spartan/helm/badge';
+import { HlmDialogImports } from '@spartan/helm/dialog';
+import { BrnDialogImports } from '@spartan-ng/brain/dialog';
+import { toast } from '@spartan/helm/sonner';
 import { FormsModule } from '@angular/forms';
-import { ChatService, ChatMessage } from './service/chat.service';
 import { RouterModule } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { StoreSlugService } from '@invento/user-site-data-access-store';
+import { StoreSlugService, StoreService } from '@invento/user-site-data-access-store';
 import { HlmP, HlmMuted } from '@spartan/helm/typography';
-import { HlmTooltipImports } from '@spartan/helm/tooltip';
-import { TranslatePipe } from '@invento/shared-util-i18n';
+import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
+import { ChatService, ChatMessage } from './service/chat.service';
+
+export interface PromptStarter {
+  readonly id: string;
+  readonly labelKey: string;
+  readonly icon: string;
+  readonly query: string;
+}
 
 @Component({
   selector: 'app-chatbot',
@@ -39,6 +76,9 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
     HlmP,
     HlmMuted,
     HlmTooltipImports,
+    HlmBadgeImports,
+    HlmDialogImports,
+    BrnDialogImports,
     TranslatePipe,
   ],
   templateUrl: './chatbot.html',
@@ -51,27 +91,93 @@ import { TranslatePipe } from '@invento/shared-util-i18n';
       lucideHistory,
       lucideMessageSquare,
       lucideChevronDown,
+      lucideMaximize2,
+      lucideMinimize2,
+      lucideExpand,
+      lucideShrink,
+      lucideMinus,
+      lucideCopy,
+      lucideCheck,
+      lucideThumbsUp,
+      lucideThumbsDown,
+      lucideRotateCcw,
+      lucideExternalLink,
+      lucideArrowUpRight,
+      lucideSparkles,
+      lucideTruck,
+      lucidePackage,
+      lucideHelpCircle,
+      lucideMail,
+      lucideBot,
     }),
   ],
 })
 export class Chatbot implements OnInit {
   inputMessage = '';
-  
+
   @HostListener('window:invento:open-chat', ['$event'])
   onExternalOpenChat(event: Event): void {
     if (event instanceof CustomEvent && event.detail?.query) {
       this.inputMessage = event.detail.query;
+      if (event.detail?.focus) {
+        this.enterFocusMode();
+      }
     }
   }
 
   private readonly chatService = inject(ChatService);
   private readonly storeSlugService = inject(StoreSlugService);
+  private readonly storeService = inject(StoreService);
+  private readonly locale = inject(LocaleService);
+
   readonly messages = signal<ChatMessage[]>([]);
   readonly isLoading = signal<boolean>(false);
   readonly isSending = signal<boolean>(false);
   readonly showWidget = signal<boolean>(false);
   readonly storeName = signal<string>('');
   readonly chatHistory = signal<{ sessionId: string; updatedAt: string }[]>([]);
+
+  readonly storeCurrency = this.storeService.currency;
+  readonly storeLogo = this.storeService.logoUrl;
+  readonly storeMonogram = this.storeService.monogram;
+
+  readonly isFocusMode = signal<boolean>(false);
+  readonly isFullScreen = signal<boolean>(false);
+  readonly copiedMessageId = signal<string | null>(null);
+  readonly messageFeedback = signal<Record<string, 'yes' | 'no'>>({});
+
+  readonly promptStarters: readonly PromptStarter[] = [
+    {
+      id: 'track_order',
+      labelKey: 'chatbot.prompt_track_order',
+      icon: 'lucidePackage',
+      query: 'Where is my order and how can I track it?',
+    },
+    {
+      id: 'shipping',
+      labelKey: 'chatbot.prompt_shipping',
+      icon: 'lucideTruck',
+      query: 'What are your shipping policies and delivery timelines?',
+    },
+    {
+      id: 'returns',
+      labelKey: 'chatbot.prompt_returns',
+      icon: 'lucideRotateCcw',
+      query: 'What is your return and refund policy?',
+    },
+    {
+      id: 'bestsellers',
+      labelKey: 'chatbot.prompt_bestsellers',
+      icon: 'lucideSparkles',
+      query: 'Can you recommend popular products and bestsellers in this store?',
+    },
+    {
+      id: 'contact',
+      labelKey: 'chatbot.prompt_contact',
+      icon: 'lucideMail',
+      query: 'How can I contact the store owner or customer support directly?',
+    },
+  ];
 
   private sessionId?: string;
   private initialGreeting = 'How can I help you today?';
@@ -162,27 +268,117 @@ export class Chatbot implements OnInit {
     });
   }
 
-  private scrollToElement(elementId?: string) {
+  toggleFocusMode(): void {
+    const next = !this.isFocusMode();
+    this.isFocusMode.set(next);
+    if (next) {
+      this.scrollToElement();
+    }
+  }
+
+  enterFocusMode(): void {
+    this.isFocusMode.set(true);
+    this.scrollToElement();
+  }
+
+  exitFocusMode(): void {
+    this.isFocusMode.set(false);
+    this.isFullScreen.set(false);
+  }
+
+  toggleFullScreen(): void {
+    this.isFullScreen.update((v) => !v);
+  }
+
+  onFocusDialogStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') {
+      this.isFocusMode.set(false);
+      this.isFullScreen.set(false);
+    }
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscapePressed(): void {
+    if (this.isFullScreen()) {
+      this.isFullScreen.set(false);
+      return;
+    }
+    if (this.isFocusMode()) {
+      this.exitFocusMode();
+    }
+  }
+
+  applyPromptStarter(query: string): void {
+    this.inputMessage = query;
+    this.sendMessage();
+  }
+
+  copyMessageText(msg: ChatMessage): void {
+    if (!msg.text || typeof navigator === 'undefined' || !navigator.clipboard) {
+      return;
+    }
+    navigator.clipboard
+      .writeText(msg.text)
+      .then(() => {
+        this.copiedMessageId.set(msg.id);
+        toast.success(this.locale.translate('chatbot.message_copied'));
+        setTimeout(() => {
+          if (this.copiedMessageId() === msg.id) {
+            this.copiedMessageId.set(null);
+          }
+        }, 2000);
+      })
+      .catch((err) => {
+        console.warn('Failed to copy chat message text', err);
+      });
+  }
+
+  voteMessage(msgId: string, vote: 'yes' | 'no'): void {
+    this.messageFeedback.update((prev) => {
+      const next = { ...prev };
+      if (next[msgId] === vote) {
+        delete next[msgId];
+      } else {
+        next[msgId] = vote;
+      }
+      return next;
+    });
+  }
+
+  closeFocusModeOnNav(): void {
+    this.isFocusMode.set(false);
+    this.isFullScreen.set(false);
+  }
+
+  onInputKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.sendMessage();
+    }
+  }
+
+  private scrollToElement(elementId?: string): void {
     setTimeout(() => {
       try {
         if (elementId) {
           const el = document.getElementById(elementId);
           if (el) {
-            // Scroll so the top of the element is visible
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             return;
           }
         }
 
-        // Fallback: scroll to bottom
-        const container = document.getElementById('chat-scroll-container');
+        const containerId = this.isFocusMode()
+          ? 'focus-chat-scroll-container'
+          : 'chat-scroll-container';
+        const container = document.getElementById(containerId);
         if (container) {
           container.scrollTop = container.scrollHeight;
         }
       } catch (err) {
         console.warn('scrollToElement failed', err);
       }
-    }, 50);
+    }, 60);
   }
 
   sendMessage() {

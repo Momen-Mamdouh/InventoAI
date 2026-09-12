@@ -1,27 +1,34 @@
 @if (showWidget()) {
   <hlm-popover align="end" sideOffset="8">
-    <button hlmPopoverTrigger hlmBtn class="size-12" id="storefront-chatbot-trigger">
-      <ng-icon name="lucideBotMessageSquare" size="25" />
+    <button
+      hlmPopoverTrigger
+      hlmBtn
+      class="size-12 rounded-2xl shadow-lg border border-border/80 hover:scale-105 active:scale-95 transition-all duration-200"
+      id="storefront-chatbot-trigger"
+      [attr.aria-label]="'chatbot.interface_title' | translate"
+    >
+      <ng-icon name="lucideBotMessageSquare" size="24" />
     </button>
     <hlm-popover-content
       *hlmPopoverPortal="let ctx"
-      class="relative bg-popover/40 backdrop-blur-xl p-0 border border-border rounded-4xl w-sm h-88 overflow-hidden"
+      class="relative bg-popover/90 backdrop-blur-xl p-0 border border-border/80 rounded-3xl w-sm sm:w-[400px] h-[520px] overflow-hidden shadow-2xl flex flex-col"
     >
       <div
-        class="top-20 right-20 z-0 absolute bg-primary/25 blur-3xl rounded-full size-48 pointer-events-none"
+        class="top-12 right-12 z-0 absolute bg-primary/20 blur-3xl rounded-full size-48 pointer-events-none"
       ></div>
 
-      <hlm-popover-header class="z-20 relative flex flex-col gap-2 bg-popover/60 px-4 py-3">
+      <hlm-popover-header class="z-20 relative flex flex-col gap-2 bg-popover/80 backdrop-blur-md px-4 py-3 border-b border-border/60 shrink-0">
         <div class="flex justify-between items-start w-full">
-          <div class="flex items-center gap-2">
-            <div class="flex justify-center items-center bg-muted rounded-full size-10 shrink-0">
-              <ng-icon name="lucideBotMessageSquare" size="20" class="text-primary" />
+          <div class="flex items-center gap-2.5">
+            <div class="relative flex justify-center items-center bg-primary/10 text-primary border border-primary/20 rounded-xl size-9 shrink-0 shadow-2xs">
+              <ng-icon name="lucideBotMessageSquare" size="18" />
+              <span class="absolute -bottom-0.5 -end-0.5 size-2 rounded-full bg-emerald-500 ring-2 ring-popover"></span>
             </div>
             <div class="flex flex-col">
-              <span class="font-bold text-sm">{{ storeName() }}</span>
-              <span class="text-muted-foreground text-xs line-clamp-1"
-                >Digital chatbot interface</span
-              >
+              <span class="font-bold text-sm leading-tight text-foreground">{{ storeName() }}</span>
+              <span class="text-muted-foreground text-[11px] line-clamp-1 font-medium">
+                {{ 'chatbot.online_status' | translate }}
+              </span>
             </div>
           </div>
 
@@ -31,51 +38,64 @@
               size="sm"
               variant="ghost"
               (click)="startNewChat()"
-              class="text-[10px] h-7 px-2 rounded-lg text-primary font-medium hover:bg-primary/10"
+              class="text-xs h-7 px-2 rounded-lg text-primary font-semibold hover:bg-primary/10 gap-1 cursor-pointer"
               [hlmTooltip]="'chatbot.new_chat' | translate"
             >
-              <ng-icon name="lucidePlus" size="14" class="mr-1" /> New
+              <ng-icon name="lucidePlus" size="13" />
+              <span>{{ 'chatbot.new_chat' | translate }}</span>
+            </button>
+            <button
+              hlmBtn
+              size="sm"
+              variant="ghost"
+              (click)="enterFocusMode()"
+              class="h-7 w-7 rounded-lg p-0 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+              [hlmTooltip]="'chatbot.focus_mode' | translate"
+            >
+              <ng-icon name="lucideMaximize2" size="14" />
             </button>
             <button
               hlmBtn
               (click)="ctx.close()"
               variant="ghost"
-              class="rounded-full size-7 p-0 text-muted-foreground hover:bg-muted"
+              class="rounded-full size-7 p-0 text-muted-foreground hover:bg-muted cursor-pointer"
+              [attr.aria-label]="'chatbot.close' | translate"
             >
-              <ng-icon name="lucideX" size="16" />
+              <ng-icon name="lucideX" size="15" />
             </button>
           </div>
         </div>
 
         @if (chatHistory().length > 0) {
-          <div class="flex justify-between items-center w-full bg-muted/30 rounded-lg px-2 py-1 mt-1">
-            <span class="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
-              <ng-icon name="lucideHistory" size="12" /> Past Chats
+          <div class="flex justify-between items-center w-full bg-muted/40 rounded-xl px-2.5 py-1 mt-0.5 border border-border/40">
+            <span class="text-[10px] text-muted-foreground font-semibold flex items-center gap-1">
+              <ng-icon name="lucideHistory" size="12" /> {{ 'chatbot.past_chats' | translate }}
             </span>
             <button
               [hlmDropdownMenuTrigger]="historyMenu"
-              class="group flex items-center justify-between text-[10px] h-6 pl-2 pr-1.5 rounded-md bg-background hover:bg-muted border border-border/60 text-foreground cursor-pointer outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all w-[130px] shadow-sm"
+              class="group flex items-center justify-between text-[11px] h-6 pl-2 pr-1.5 rounded-lg bg-background hover:bg-muted border border-border/60 text-foreground cursor-pointer outline-none focus:ring-1 focus:ring-primary w-[140px] shadow-2xs transition-all"
             >
-              <span class="truncate">Select a session...</span>
+              <span class="truncate">{{ 'chatbot.select_session' | translate }}</span>
               <ng-icon
                 name="lucideChevronDown"
-                size="12"
+                size="11"
                 class="text-muted-foreground transition-transform duration-200 group-aria-expanded:rotate-180"
               />
             </button>
 
             <ng-template #historyMenu>
-              <hlm-dropdown-menu class="w-44" align="end" sideOffset="4">
+              <hlm-dropdown-menu class="w-48" align="end" sideOffset="4">
                 <hlm-dropdown-menu-label
                   class="text-[9px] font-bold text-muted-foreground uppercase tracking-wider"
-                  >Your History</hlm-dropdown-menu-label
                 >
-                <hlm-dropdown-menu-group class="max-h-[160px] overflow-y-auto overflow-x-hidden custom-scrollbar">
+                  {{ 'chatbot.your_history' | translate }}
+                </hlm-dropdown-menu-label>
+                <hlm-dropdown-menu-group class="max-h-[160px] overflow-y-auto custom-scrollbar">
                   @for (session of chatHistory(); track session.sessionId) {
                     <button
                       hlmDropdownMenuItem
                       (click)="selectSession(session.sessionId)"
-                      class="text-[11px] gap-2"
+                      class="text-[11px] gap-2 py-1.5"
                     >
                       <ng-icon name="lucideMessageSquare" size="12" class="opacity-70 shrink-0" />
                       <span class="truncate">{{ session.updatedAt | date: 'MMM d, h:mm a' }}</span>
@@ -90,11 +110,11 @@
 
       <div
         id="chat-scroll-container"
-        class="z-10 relative space-y-3 px-4 py-4 h-[calc(100%-4rem)] overflow-y-auto"
+        class="z-10 relative space-y-3 px-4 py-4 flex-1 overflow-y-auto custom-scrollbar"
       >
         <div class="flex justify-center mb-4">
-          <span class="text-[10px] text-muted-foreground/60 px-3 py-1 bg-muted/30 rounded-full"
-            >Conversations are kept for 180 days and then deleted</span
+          <span class="text-[10px] text-muted-foreground/70 px-3 py-1 bg-muted/30 rounded-full border border-border/40 text-center"
+            >{{ 'chatbot.retention_notice' | translate }}</span
           >
         </div>
 
@@ -241,30 +261,452 @@
           </div>
         }
       </div>
-      <div class="z-20 relative flex items-center px-4 py-3">
-        <div
-          class="flex items-center gap-1 bg-popover/50 shadow-sm backdrop-blur-md p-1 rounded-full focus-within:ring-2 focus-within:ring-ring w-full transition-shadow"
-        >
+      <div class="z-20 relative flex items-center px-3.5 py-2.5 border-t border-border/60 bg-popover/90 backdrop-blur-md shrink-0">
+        <div class="flex items-center gap-1.5 bg-background border border-border/80 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 rounded-full px-2 py-1 w-full transition-all shadow-2xs">
           <input
             hlmInput
             [(ngModel)]="inputMessage"
             (keyup.enter)="sendMessage()"
             [disabled]="isSending()"
             type="text"
-            placeholder="Chat here..."
-            class="flex-1 bg-transparent shadow-none px-2 border-none rounded-full outline-none focus-visible:ring-0 disabled:opacity-50"
+            [placeholder]="'chatbot.placeholder' | translate"
+            class="flex-1 bg-transparent shadow-none px-2 border-none rounded-full outline-none focus-visible:ring-0 text-xs sm:text-sm text-foreground disabled:opacity-50"
           />
           <button
             hlmBtn
             size="icon"
-            class="rounded-full shrink-0"
+            class="rounded-full size-8 shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer shadow-2xs"
             (click)="sendMessage()"
-            [disabled]="isSending()"
+            [disabled]="isSending() || !inputMessage.trim()"
+            [attr.aria-label]="'chatbot.send' | translate"
           >
-            <ng-icon name="lucideSendHorizonal" size="18" />
+            <ng-icon name="lucideSendHorizonal" size="15" />
           </button>
         </div>
       </div>
     </hlm-popover-content>
   </hlm-popover>
+
+  <!-- Focus Mode Dialog (Immersive Zen AI Workspace) -->
+  @if (isFocusMode()) {
+    <hlm-dialog [state]="'open'" (stateChanged)="onFocusDialogStateChanged($event)">
+      <hlm-dialog-content
+        *brnDialogContent="let ctx"
+        [showCloseButton]="false"
+        [style.max-width]="isFullScreen() ? '100vw' : 'min(1440px, 96vw)'"
+        [style.width]="isFullScreen() ? '100vw' : '96vw'"
+        [style.height]="isFullScreen() ? '100dvh' : '94vh'"
+        [style.max-height]="isFullScreen() ? '100dvh' : '94vh'"
+        [style.border-radius]="isFullScreen() ? '0px' : '1.5rem'"
+        [style.border]="isFullScreen() ? 'none' : ''"
+        class="!max-w-none sm:!max-w-none md:!max-w-none lg:!max-w-none xl:!max-w-none 2xl:!max-w-none p-0 gap-0 overflow-hidden border border-border/80 bg-card shadow-2xl flex flex-col focus:outline-none transition-all duration-200"
+      >
+        <!-- Focus Mode Elevated Header -->
+        <div class="px-5 sm:px-6 py-3.5 border-b border-border/70 bg-card/80 backdrop-blur-md flex items-center justify-between shrink-0 z-20">
+          <div class="flex items-center gap-3">
+            <div class="relative flex items-center justify-center size-10 rounded-2xl bg-primary/10 text-primary border border-primary/20 shadow-xs">
+              <ng-icon name="lucideBotMessageSquare" size="20" />
+              <span class="absolute -bottom-0.5 -end-0.5 size-2.5 rounded-full bg-emerald-500 ring-2 ring-card"></span>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm sm:text-base text-foreground leading-none">{{ storeName() }}</span>
+                <span hlmBadge variant="secondary" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 uppercase tracking-wider">
+                  {{ 'chatbot.focus_mode' | translate }}
+                </span>
+              </div>
+              <span class="text-xs text-muted-foreground mt-1 flex items-center gap-1.5 font-medium">
+                <span class="inline-block size-1.5 rounded-full bg-emerald-500"></span>
+                {{ 'chatbot.online_status' | translate }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+            <!-- Past Chats Dropdown in Focus Mode -->
+            @if (chatHistory().length > 0) {
+              <button
+                [hlmDropdownMenuTrigger]="focusHistoryMenu"
+                class="inline-flex items-center gap-1.5 text-xs h-8 px-2.5 rounded-xl bg-muted/50 hover:bg-muted text-foreground border border-border/60 transition-colors cursor-pointer"
+                [title]="'chatbot.history' | translate"
+              >
+                <ng-icon name="lucideHistory" size="14" />
+                <span class="hidden sm:inline font-medium">{{ 'chatbot.history' | translate }}</span>
+                <ng-icon name="lucideChevronDown" size="12" class="opacity-70" />
+              </button>
+
+              <ng-template #focusHistoryMenu>
+                <hlm-dropdown-menu class="w-52" align="end" sideOffset="6">
+                  <hlm-dropdown-menu-label class="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                    {{ 'chatbot.your_history' | translate }}
+                  </hlm-dropdown-menu-label>
+                  <hlm-dropdown-menu-group class="max-h-[220px] overflow-y-auto custom-scrollbar">
+                    @for (session of chatHistory(); track session.sessionId) {
+                      <button
+                        hlmDropdownMenuItem
+                        (click)="selectSession(session.sessionId)"
+                        class="text-xs gap-2 py-2"
+                      >
+                        <ng-icon name="lucideMessageSquare" size="13" class="opacity-70 shrink-0" />
+                        <span class="truncate">{{ session.updatedAt | date: 'MMM d, h:mm a' }}</span>
+                      </button>
+                    }
+                  </hlm-dropdown-menu-group>
+                </hlm-dropdown-menu>
+              </ng-template>
+            }
+
+            <!-- Restart / New Chat -->
+            <button
+              hlmBtn
+              size="sm"
+              variant="outline"
+              (click)="startNewChat()"
+              class="h-8 px-2.5 rounded-xl gap-1.5 text-xs font-semibold hover:bg-primary/10 hover:text-primary hover:border-primary/40 border-border/70 cursor-pointer"
+              [hlmTooltip]="'chatbot.restart' | translate"
+            >
+              <ng-icon name="lucidePlus" size="14" />
+              <span class="hidden sm:inline">{{ 'chatbot.new_chat' | translate }}</span>
+            </button>
+
+            <!-- Fullscreen / Windowed Toggle Button -->
+            <button
+              hlmBtn
+              size="sm"
+              variant="ghost"
+              (click)="toggleFullScreen()"
+              class="h-8 w-8 rounded-xl p-0 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+              [attr.aria-label]="(isFullScreen() ? 'chatbot.exit_fullscreen' : 'chatbot.fullscreen') | translate"
+              [title]="(isFullScreen() ? 'chatbot.exit_fullscreen' : 'chatbot.fullscreen') | translate"
+            >
+              @if (isFullScreen()) {
+                <ng-icon name="lucideShrink" size="15" />
+              } @else {
+                <ng-icon name="lucideExpand" size="15" />
+              }
+            </button>
+
+            <!-- Minimize Button (Restores Popover) -->
+            <button
+              hlmBtn
+              size="sm"
+              variant="ghost"
+              (click)="exitFocusMode()"
+              class="h-8 w-8 rounded-xl p-0 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+              [attr.aria-label]="'chatbot.minimize' | translate"
+              [title]="'chatbot.minimize' | translate"
+            >
+              <ng-icon name="lucideMinus" size="15" />
+            </button>
+
+            <!-- Close Button -->
+            <button
+              hlmBtn
+              size="sm"
+              variant="ghost"
+              (click)="exitFocusMode()"
+              class="h-8 w-8 rounded-xl p-0 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+              [attr.aria-label]="'chatbot.close' | translate"
+              [title]="'chatbot.close' | translate"
+            >
+              <ng-icon name="lucideX" size="16" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Prompt Starters Bar (Visible on initial load) -->
+        @if (messages().length <= 1) {
+          <div class="px-5 sm:px-8 py-2.5 border-b border-border/40 bg-muted/20 flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden shrink-0">
+            <div class="max-w-4xl xl:max-w-5xl mx-auto w-full flex items-center gap-2">
+              <span class="text-[11px] font-semibold text-muted-foreground flex items-center gap-1 shrink-0 me-1">
+                <ng-icon name="lucideSparkles" size="12" class="text-primary" />
+                {{ 'chatbot.quick_suggestions' | translate }}:
+              </span>
+              @for (starter of promptStarters; track starter.id) {
+                <button
+                  type="button"
+                  (click)="applyPromptStarter(starter.query)"
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all bg-card hover:bg-primary/10 hover:text-primary text-foreground border border-border/70 hover:border-primary/40 shrink-0 cursor-pointer shadow-2xs"
+                >
+                  <ng-icon [name]="starter.icon" size="12" class="text-primary" />
+                  <span>{{ starter.labelKey | translate }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Centered Conversation Feed in Focus Mode -->
+        <div
+          id="focus-chat-scroll-container"
+          class="flex-1 overflow-y-auto px-4 sm:px-8 py-6 space-y-6 custom-scrollbar bg-gradient-to-b from-card via-background/40 to-card"
+        >
+          <div class="max-w-4xl xl:max-w-5xl mx-auto w-full space-y-6">
+            <div class="flex justify-center mb-2">
+              <span class="text-[11px] text-muted-foreground/70 px-3.5 py-1 bg-muted/40 rounded-full border border-border/40 font-medium">
+                {{ 'chatbot.retention_notice' | translate }}
+              </span>
+            </div>
+
+            @if (isLoading()) {
+              <div class="flex justify-center p-8">
+                <span hlmMuted class="text-sm font-medium animate-pulse">Loading conversation...</span>
+              </div>
+            }
+
+            @for (message of messages(); track message.id) {
+              <div
+                [id]="'focus-msg-' + message.id"
+                class="flex flex-col"
+                [class.items-end]="message.role === 'user'"
+                [class.items-start]="message.role === 'assistant'"
+              >
+                <!-- Message Bubble -->
+                <div class="flex gap-3 max-w-[92%] sm:max-w-[85%]" [class.flex-row-reverse]="message.role === 'user'">
+                  <!-- Assistant Avatar -->
+                  @if (message.role === 'assistant') {
+                    <div class="size-8 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <ng-icon name="lucideBot" size="16" />
+                    </div>
+                  }
+
+                  <div class="flex flex-col gap-1.5">
+                    <div
+                      class="px-4.5 py-3 rounded-2xl shadow-2xs"
+                      [class.bg-primary]="message.role === 'user'"
+                      [class.text-primary-foreground]="message.role === 'user'"
+                      [class.rounded-tr-xs]="message.role === 'user'"
+                      [class.bg-muted/60]="message.role === 'assistant'"
+                      [class.border]="message.role === 'assistant'"
+                      [class.border-border/70]="message.role === 'assistant'"
+                      [class.text-foreground]="message.role === 'assistant'"
+                      [class.rounded-tl-xs]="message.role === 'assistant'"
+                    >
+                      <p class="whitespace-pre-line text-sm sm:text-[15px] leading-relaxed select-text">
+                        {{ message.text }}
+                      </p>
+
+                      <!-- Rich Product Grid in Focus Mode -->
+                      @if (message.products?.length) {
+                        <div class="mt-4 pt-3 border-t border-border/40">
+                          <span class="text-xs font-semibold text-muted-foreground mb-2.5 block">
+                            {{ 'chatbot.recommended_products' | translate }}
+                          </span>
+                          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+                            @for (product of message.products; track product.slug) {
+                              <a
+                                [routerLink]="['/', storeSlug(), 'product-details', product.slug]"
+                                (click)="closeFocusModeOnNav()"
+                                class="group flex flex-col bg-card hover:bg-muted/40 border border-border/70 hover:border-primary/50 rounded-2xl overflow-hidden transition-all duration-200 shadow-xs hover:shadow-md"
+                              >
+                                <div class="aspect-square bg-muted/20 w-full relative overflow-hidden">
+                                  @if (product.imageUrl) {
+                                    <img
+                                      [src]="product.imageUrl"
+                                      [alt]="product.title"
+                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                  } @else {
+                                    <div class="w-full h-full flex items-center justify-center text-muted-foreground/40">
+                                      <ng-icon name="lucidePackage" size="32" />
+                                    </div>
+                                  }
+                                </div>
+                                <div class="p-3 flex flex-col justify-between flex-1 gap-1.5">
+                                  <h4 class="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                                    {{ product.title }}
+                                  </h4>
+                                  <div class="flex items-center justify-between pt-2 border-t border-border/40 mt-auto">
+                                    <span class="text-xs font-bold text-foreground">
+                                      {{ product.minPriceAmount / 100 | currency: (storeCurrency() || 'USD') : 'symbol' : '1.0-0' }}
+                                    </span>
+                                    <span class="inline-flex items-center gap-0.5 text-[11px] font-semibold text-primary">
+                                      {{ 'chatbot.view_product' | translate }}
+                                      <ng-icon name="lucideArrowUpRight" size="12" />
+                                    </span>
+                                  </div>
+                                </div>
+                              </a>
+                            }
+                          </div>
+                        </div>
+                      }
+
+                      <!-- Rich FAQ Link Cards in Focus Mode -->
+                      @if (message.faqs?.length) {
+                        <div class="mt-4 border-t border-border/50 pt-3">
+                          <p class="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                            {{ 'chatbot.from_faq' | translate }}
+                          </p>
+                          <div class="flex flex-col gap-2">
+                            @for (faq of message.faqs; track faq.id) {
+                              <a
+                                [routerLink]="['/', storeSlug(), 'faq']"
+                                [queryParams]="{ q: faq.question }"
+                                (click)="closeFocusModeOnNav()"
+                                class="inline-flex items-center justify-between p-2.5 rounded-xl bg-background hover:bg-muted border border-border/60 text-xs text-foreground font-medium transition-colors"
+                              >
+                                <span class="line-clamp-1 me-2">{{ faq.question }}</span>
+                                <span class="inline-flex items-center gap-1 text-primary shrink-0 font-semibold">
+                                  {{ 'chatbot.read_more_faq' | translate }}
+                                  <ng-icon name="lucideExternalLink" size="11" />
+                                </span>
+                              </a>
+                            }
+                          </div>
+                        </div>
+                      }
+
+                      <!-- Rich Order Card in Focus Mode -->
+                      @if (message.order) {
+                        <div class="mt-4 border border-border/70 rounded-2xl p-4 bg-background shadow-xs">
+                          <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-sm text-foreground">
+                              {{ 'chatbot.order' | translate }} #{{ message.order.orderNumber }}
+                            </span>
+                            <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary uppercase font-bold border border-primary/20">
+                              {{ message.order.status }}
+                            </span>
+                          </div>
+                          <div class="text-xs text-muted-foreground mb-3 flex flex-wrap gap-x-2 gap-y-0.5">
+                            <span>
+                              {{ message.order.itemCount }} {{ (message.order.itemCount === 1 ? 'chatbot.item' : 'chatbot.items') | translate }}
+                            </span>
+                            <span>&bull;</span>
+                            <span class="font-semibold text-foreground">
+                              {{ message.order.totalAmount / 100 | currency: message.order.currency }}
+                            </span>
+                            <span>&bull;</span>
+                            <span>{{ message.order.createdAt | date: 'mediumDate' }}</span>
+                          </div>
+                          <a
+                            [routerLink]="['/', storeSlug(), 'orders']"
+                            [queryParams]="{ search: message.order.orderNumber }"
+                            (click)="closeFocusModeOnNav()"
+                            hlmBtn
+                            variant="secondary"
+                            size="sm"
+                            class="w-full text-xs h-8 rounded-xl font-semibold cursor-pointer"
+                          >
+                            {{ 'chatbot.view_product' | translate }}
+                          </a>
+                        </div>
+                      }
+
+                      <!-- Sign-in Required in Focus Mode -->
+                      @if (message.requiresLogin) {
+                        <div class="mt-4">
+                          <a
+                            routerLink="/auth/login"
+                            (click)="closeFocusModeOnNav()"
+                            hlmBtn
+                            size="sm"
+                            class="w-full text-xs h-8 rounded-xl font-semibold cursor-pointer"
+                          >
+                            {{ 'chatbot.sign_in' | translate }}
+                          </a>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Assistant Message Action Toolbar -->
+                    @if (message.role === 'assistant' && message.id !== 'greeting') {
+                      <div class="flex items-center gap-1 text-muted-foreground px-1">
+                        <span class="text-[10px] me-1">
+                          {{ message.createdAt | date: 'shortTime' }}
+                        </span>
+                        <button
+                          type="button"
+                          (click)="copyMessageText(message)"
+                          class="p-1 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                          [title]="'chatbot.copy_message' | translate"
+                        >
+                          @if (copiedMessageId() === message.id) {
+                            <ng-icon name="lucideCheck" size="12" class="text-emerald-500" />
+                          } @else {
+                            <ng-icon name="lucideCopy" size="12" />
+                          }
+                        </button>
+                        <button
+                          type="button"
+                          (click)="voteMessage(message.id, 'yes')"
+                          class="p-1 rounded-md hover:bg-muted transition-colors cursor-pointer"
+                          [class.text-emerald-500]="messageFeedback()[message.id] === 'yes'"
+                          [class.text-muted-foreground]="messageFeedback()[message.id] !== 'yes'"
+                          [title]="'chatbot.helpful_yes' | translate"
+                        >
+                          <ng-icon name="lucideThumbsUp" size="12" />
+                        </button>
+                        <button
+                          type="button"
+                          (click)="voteMessage(message.id, 'no')"
+                          class="p-1 rounded-md hover:bg-muted transition-colors cursor-pointer"
+                          [class.text-destructive]="messageFeedback()[message.id] === 'no'"
+                          [class.text-muted-foreground]="messageFeedback()[message.id] !== 'no'"
+                          [title]="'chatbot.helpful_no' | translate"
+                        >
+                          <ng-icon name="lucideThumbsDown" size="12" />
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (isSending()) {
+              <div id="focus-typing-indicator" class="flex items-center gap-3">
+                <div class="size-8 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shrink-0">
+                  <ng-icon name="lucideBot" size="16" />
+                </div>
+                <div class="px-4 py-3 rounded-2xl bg-muted/60 border border-border/70 text-foreground rounded-tl-xs">
+                  <div class="flex gap-1.5 items-center h-4 px-1">
+                    <div class="w-1.5 h-1.5 bg-foreground/50 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+                    <div class="w-1.5 h-1.5 bg-foreground/50 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+                    <div class="w-1.5 h-1.5 bg-foreground/50 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Focus Mode Floating Bottom Composer -->
+        <div class="px-4 sm:px-8 py-3.5 border-t border-border/70 bg-card/95 backdrop-blur-md shrink-0">
+          <div class="max-w-4xl xl:max-w-5xl mx-auto w-full flex flex-col gap-2">
+            <div class="flex items-center gap-2 bg-background border border-border/80 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 rounded-2xl px-3 py-2 transition-all shadow-xs">
+              <input
+                hlmInput
+                [(ngModel)]="inputMessage"
+                (keydown)="onInputKeyDown($event)"
+                [disabled]="isSending()"
+                type="text"
+                [placeholder]="'chatbot.placeholder' | translate"
+                class="flex-1 bg-transparent border-none shadow-none text-sm outline-none focus-visible:ring-0 text-foreground disabled:opacity-50"
+              />
+              <button
+                hlmBtn
+                size="sm"
+                class="rounded-xl px-3 h-8 shrink-0 bg-primary text-primary-foreground font-semibold gap-1.5 cursor-pointer hover:bg-primary/90 transition-all shadow-xs"
+                (click)="sendMessage()"
+                [disabled]="isSending() || !inputMessage.trim()"
+                [attr.aria-label]="'chatbot.send' | translate"
+              >
+                <ng-icon name="lucideSendHorizonal" size="15" />
+                <span class="text-xs hidden sm:inline">{{ 'chatbot.send' | translate }}</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-muted-foreground px-1 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span>{{ 'chatbot.enter_hint' | translate }}</span>
+                <span class="text-muted-foreground/40">•</span>
+                <span>{{ 'chatbot.esc_hint' | translate }}</span>
+              </div>
+              <span>{{ 'chatbot.disclaimer' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </hlm-dialog-content>
+    </hlm-dialog>
+  }
 }
