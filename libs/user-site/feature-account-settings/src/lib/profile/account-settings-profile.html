@@ -1,65 +1,471 @@
 <div class="flex flex-col gap-6">
   @if (currentUser(); as user) {
-    <!-- Profile Photo -->
-    <section hlmCard>
-      <div hlmCardHeader>
-        <h3 hlmCardTitle>{{ 'account_settings.profile.photo_title' | translate }}</h3>
-        <p hlmCardDescription>
-          {{ 'account_settings.profile.photo_description' | translate }}
-        </p>
+    <!-- Profile Identity Card -->
+    <section hlmCard class="overflow-hidden border border-border/70 shadow-xs">
+      <div hlmCardHeader class="flex flex-row items-center justify-between gap-4 pb-4">
+        <div>
+          <h3 hlmCardTitle>{{ 'account_settings.profile.photo_title' | translate }}</h3>
+          <p hlmCardDescription>
+            {{ 'account_settings.profile.photo_description' | translate }}
+          </p>
+        </div>
+        <button
+          hlmBtn
+          variant="outline"
+          size="sm"
+          type="button"
+          (click)="openPasswordModal()"
+          class="hidden sm:flex items-center gap-2 rounded-xl text-xs font-semibold shrink-0"
+        >
+          <ng-icon name="lucideKeyRound" size="14" />
+          <span>{{ 'account_settings.security.title' | translate }}</span>
+        </button>
       </div>
 
-      <div hlmCardContent class="flex items-center gap-4">
-        <div
-          class="flex justify-center items-center bg-primary rounded-2xl w-20 h-20 font-semibold text-primary-foreground text-xl shrink-0"
-        >
-          {{ initials() }}
+      <div hlmCardContent class="flex flex-col sm:flex-row items-start sm:items-center gap-5 pt-0">
+        @if (user.image) {
+          <img
+            [src]="user.image"
+            [alt]="user.firstName"
+            class="w-20 h-20 rounded-2xl object-cover ring-2 ring-primary/20 shadow-md shrink-0"
+          />
+        } @else {
+          <div
+            class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground flex items-center justify-center font-bold text-2xl shadow-md ring-2 ring-primary/20 shrink-0"
+          >
+            {{ initials() }}
+          </div>
+        }
+
+        <div class="flex flex-col gap-2 min-w-0 flex-1">
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-foreground truncate">
+            {{ user.firstName }} {{ user.lastName }}
+          </h2>
+
+          <div class="flex flex-wrap items-center gap-2">
+            @if (user.isEmailVerified) {
+              <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+              >
+                <ng-icon name="lucideCheckCircle2" size="14" />
+                {{ 'account_settings.profile.verified' | translate }}
+              </span>
+            } @else {
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                >
+                  <ng-icon name="lucideAlertCircle" size="14" />
+                  {{ 'account_settings.profile.unverified' | translate }}
+                </span>
+                <button
+                  hlmBtn
+                  variant="outline"
+                  size="sm"
+                  type="button"
+                  (click)="resendVerification()"
+                  [disabled]="isResending()"
+                  class="h-7 text-xs gap-1.5 rounded-lg px-2.5"
+                >
+                  <ng-icon
+                    [name]="isResending() ? 'lucideLoader2' : 'lucideMail'"
+                    size="13"
+                    [class.animate-spin]="isResending()"
+                  />
+                  {{
+                    (isResending()
+                      ? 'account_settings.profile.resending'
+                      : 'account_settings.profile.resend_code'
+                    ) | translate
+                  }}
+                </button>
+              </div>
+            }
+
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground border border-border"
+            >
+              <ng-icon name="lucideShield" size="13" />
+              {{ 'account_settings.profile.customer_role' | translate }}
+            </span>
+          </div>
+
+          @if (formattedMemberSince(); as memberDate) {
+            <div class="flex items-center gap-1.5 text-xs text-muted-foreground pt-0.5">
+              <ng-icon name="lucideCalendar" size="13" />
+              <span>{{ 'account_settings.profile.member_since' | translate: { date: memberDate } }}</span>
+            </div>
+          }
         </div>
-        <!--
-          The upload button and its "drag and drop" copy were removed with the rest of this tab's
-          save actions: there is no avatar upload endpoint for shoppers, so the control did nothing
-          and the instructions described a capability that does not exist.
-        -->
       </div>
     </section>
 
-    <!-- Personal Information -->
-    <section hlmCard>
-      <div hlmCardHeader>
+    <!-- Personal Information Hub -->
+    <section hlmCard class="overflow-hidden border border-border/70 shadow-xs">
+      <div hlmCardHeader class="pb-4">
         <h3 hlmCardTitle>{{ 'account_settings.profile.info_title' | translate }}</h3>
         <p hlmCardDescription>
           {{ 'account_settings.profile.info_description' | translate }}
         </p>
       </div>
 
-      <div hlmCardContent class="flex flex-col gap-5">
-        <!-- First / Last name -->
-        <div class="gap-5 grid grid-cols-1 sm:grid-cols-2">
-          <div class="flex flex-col gap-1.5">
-            <label hlmLabel for="firstName">{{
-              'account_settings.profile.first_name' | translate
-            }}</label>
-            <input hlmInput id="firstName" [value]="user.firstName" readonly disabled />
+      <div hlmCardContent class="flex flex-col gap-5 pt-0">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- First Name -->
+          <div class="p-4 rounded-2xl bg-muted/40 border border-border/60 flex flex-col gap-1.5">
+            <span class="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+              <ng-icon name="lucideUser" size="14" />
+              {{ 'account_settings.profile.first_name' | translate }}
+            </span>
+            <span class="text-base font-semibold text-foreground tracking-tight">
+              {{ user.firstName || '—' }}
+            </span>
           </div>
-          <div class="flex flex-col gap-1.5">
-            <label hlmLabel for="lastName">{{
-              'account_settings.profile.last_name' | translate
-            }}</label>
-            <input hlmInput id="lastName" [value]="user.lastName" readonly disabled />
+
+          <!-- Last Name -->
+          <div class="p-4 rounded-2xl bg-muted/40 border border-border/60 flex flex-col gap-1.5">
+            <span class="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+              <ng-icon name="lucideUser" size="14" />
+              {{ 'account_settings.profile.last_name' | translate }}
+            </span>
+            <span class="text-base font-semibold text-foreground tracking-tight">
+              {{ user.lastName || '—' }}
+            </span>
+          </div>
+
+          <!-- Email Address (Spans full width on sm+) -->
+          <div
+            class="sm:col-span-2 p-4 rounded-2xl bg-muted/40 border border-border/60 flex items-center justify-between gap-3"
+          >
+            <div class="flex flex-col gap-1.5 min-w-0 flex-1">
+              <span class="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                <ng-icon name="lucideMail" size="14" />
+                {{ 'account_settings.profile.email' | translate }}
+              </span>
+              <span class="text-sm font-semibold text-foreground tracking-tight font-mono truncate">
+                {{ user.email }}
+              </span>
+            </div>
+            <button
+              hlmBtn
+              variant="ghost"
+              size="icon-sm"
+              type="button"
+              (click)="copyToClipboard(user.email, 'email')"
+              [attr.aria-label]="'account_settings.profile.copy' | translate"
+              class="shrink-0 text-muted-foreground hover:text-foreground rounded-xl"
+            >
+              <ng-icon
+                [name]="copiedField() === 'email' ? 'lucideCheck' : 'lucideCopy'"
+                size="16"
+                [class.text-emerald-500]="copiedField() === 'email'"
+              />
+            </button>
           </div>
         </div>
 
-        <!-- Email -->
-        <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="email">{{ 'account_settings.profile.email' | translate }}</label>
-          <input hlmInput id="email" type="email" [value]="user.email" readonly disabled />
-        </div>
-
-        <div class="pt-2 border-t text-muted-foreground text-xs">
-          {{ 'account_settings.profile.edit_notice' | translate }}
+        <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-muted/30 border border-border/60 text-xs text-muted-foreground">
+          <ng-icon name="lucideInfo" size="16" class="shrink-0 text-primary mt-0.5" />
+          <span class="leading-relaxed">{{ 'account_settings.profile.edit_notice' | translate }}</span>
         </div>
       </div>
     </section>
+
+    <!-- Quick Navigation Shortcuts (3 Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <!-- My Orders -->
+      <a
+        [routerLink]="['/', storeSlug(), 'orders']"
+        class="group flex items-center justify-between p-4 rounded-2xl border border-border/70 bg-card hover:bg-muted/40 transition-all duration-200 shadow-xs hover:shadow-sm"
+      >
+        <div class="flex items-center gap-3.5 min-w-0">
+          <div
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:scale-105 transition-transform"
+          >
+            <ng-icon name="lucidePackage" size="20" />
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
+              {{ 'account_settings.profile.my_orders_title' | translate }}
+            </span>
+            <span class="text-xs text-muted-foreground truncate">
+              {{ 'account_settings.profile.my_orders_desc' | translate }}
+            </span>
+          </div>
+        </div>
+        <ng-icon
+          name="lucideArrowRight"
+          size="16"
+          class="shrink-0 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180 transition-all"
+        />
+      </a>
+
+      <!-- Change Password Quick Action -->
+      <button
+        type="button"
+        (click)="openPasswordModal()"
+        class="group flex items-center justify-between p-4 rounded-2xl border border-border/70 bg-card hover:bg-muted/40 transition-all duration-200 shadow-xs hover:shadow-sm text-start"
+      >
+        <div class="flex items-center gap-3.5 min-w-0">
+          <div
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:scale-105 transition-transform"
+          >
+            <ng-icon name="lucideKeyRound" size="20" />
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
+              {{ 'account_settings.profile.change_password_title' | translate }}
+            </span>
+            <span class="text-xs text-muted-foreground truncate">
+              {{ 'account_settings.profile.change_password_desc' | translate }}
+            </span>
+          </div>
+        </div>
+        <ng-icon
+          name="lucideArrowRight"
+          size="16"
+          class="shrink-0 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180 transition-all"
+        />
+      </button>
+
+      <!-- FAQ & Support -->
+      <a
+        [routerLink]="['/', storeSlug(), 'faq']"
+        class="group flex items-center justify-between p-4 rounded-2xl border border-border/70 bg-card hover:bg-muted/40 transition-all duration-200 shadow-xs hover:shadow-sm"
+      >
+        <div class="flex items-center gap-3.5 min-w-0">
+          <div
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:scale-105 transition-transform"
+          >
+            <ng-icon name="lucideHelpCircle" size="20" />
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
+              {{ 'account_settings.profile.faq_title' | translate }}
+            </span>
+            <span class="text-xs text-muted-foreground truncate">
+              {{ 'account_settings.profile.faq_desc' | translate }}
+            </span>
+          </div>
+        </div>
+        <ng-icon
+          name="lucideArrowRight"
+          size="16"
+          class="shrink-0 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180 transition-all"
+        />
+      </a>
+    </div>
+
+    <!-- Change Password Spartan Dialog -->
+    @if (isPasswordModalOpen()) {
+      <hlm-dialog [state]="'open'" (stateChanged)="onPasswordModalState($event)">
+        <hlm-dialog-content
+          *brnDialogContent="let ctx"
+          class="animate-in fade-in zoom-in-95 w-full max-w-lg space-y-5 rounded-3xl p-6 shadow-2xl duration-200"
+        >
+          <div class="flex items-start gap-3.5">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary"
+            >
+              <ng-icon name="lucideKeyRound" size="24" />
+            </div>
+            <div class="space-y-1">
+              <h3 hlmDialogTitle class="text-lg font-bold text-foreground">
+                {{ 'account_settings.security.title' | translate }}
+              </h3>
+              <p hlmDialogDescription class="text-xs text-muted-foreground leading-relaxed">
+                {{ 'account_settings.security.description' | translate }}
+              </p>
+            </div>
+          </div>
+
+          <form [formGroup]="passwordForm" (ngSubmit)="savePassword()" class="flex flex-col gap-4">
+            <!-- Current Password -->
+            <div class="flex flex-col gap-1.5">
+              <label hlmLabel for="modalCurrentPassword">
+                {{ 'account_settings.security.current_password' | translate }}
+              </label>
+              <div class="relative">
+                <input
+                  hlmInput
+                  id="modalCurrentPassword"
+                  class="pe-10 w-full rounded-xl min-h-[42px]"
+                  [type]="showCurrent() ? 'text' : 'password'"
+                  formControlName="currentPassword"
+                  autocomplete="current-password"
+                  [placeholder]="'account_settings.security.current_password_placeholder' | translate"
+                  [attr.disabled]="isPasswordLoading() ? true : null"
+                />
+                <button
+                  hlmBtn
+                  variant="ghost"
+                  size="icon-sm"
+                  type="button"
+                  (click)="showCurrent.set(!showCurrent())"
+                  class="top-1/2 end-2.5 absolute text-muted-foreground hover:text-foreground -translate-y-1/2 rounded-lg"
+                  [attr.aria-label]="
+                    (showCurrent()
+                      ? 'account_settings.security.hide_password'
+                      : 'account_settings.security.show_password'
+                    ) | translate
+                  "
+                >
+                  <ng-icon [name]="showCurrent() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+                </button>
+              </div>
+            </div>
+
+            <!-- New Password -->
+            <div class="flex flex-col gap-1.5">
+              <label hlmLabel for="modalNewPassword">
+                {{ 'account_settings.security.new_password' | translate }}
+              </label>
+              <div class="relative">
+                <input
+                  hlmInput
+                  id="modalNewPassword"
+                  class="pe-10 w-full rounded-xl min-h-[42px]"
+                  [type]="showNew() ? 'text' : 'password'"
+                  formControlName="newPassword"
+                  autocomplete="new-password"
+                  [placeholder]="'account_settings.security.new_password_placeholder' | translate"
+                  [attr.disabled]="isPasswordLoading() ? true : null"
+                />
+                <button
+                  hlmBtn
+                  variant="ghost"
+                  size="icon-sm"
+                  type="button"
+                  (click)="showNew.set(!showNew())"
+                  class="top-1/2 end-2.5 absolute text-muted-foreground hover:text-foreground -translate-y-1/2 rounded-lg"
+                  [attr.aria-label]="
+                    (showNew()
+                      ? 'account_settings.security.hide_password'
+                      : 'account_settings.security.show_password'
+                    ) | translate
+                  "
+                >
+                  <ng-icon [name]="showNew() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="flex flex-col gap-1.5">
+              <label hlmLabel for="modalConfirmPassword">
+                {{ 'account_settings.security.confirm_password' | translate }}
+              </label>
+              <div class="relative">
+                <input
+                  hlmInput
+                  id="modalConfirmPassword"
+                  class="pe-10 w-full rounded-xl min-h-[42px]"
+                  [type]="showConfirm() ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  autocomplete="new-password"
+                  [placeholder]="'account_settings.security.confirm_password_placeholder' | translate"
+                  [attr.disabled]="isPasswordLoading() ? true : null"
+                />
+                <button
+                  hlmBtn
+                  variant="ghost"
+                  size="icon-sm"
+                  type="button"
+                  (click)="showConfirm.set(!showConfirm())"
+                  class="top-1/2 end-2.5 absolute text-muted-foreground hover:text-foreground -translate-y-1/2 rounded-lg"
+                  [attr.aria-label]="
+                    (showConfirm()
+                      ? 'account_settings.security.hide_password'
+                      : 'account_settings.security.show_password'
+                    ) | translate
+                  "
+                >
+                  <ng-icon [name]="showConfirm() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Password Requirements Checklist -->
+            <div class="p-3.5 rounded-2xl bg-muted/40 border border-border/60 flex flex-col gap-2">
+              <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                {{ 'account_settings.security.description' | translate }}
+              </span>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div
+                  class="flex items-center gap-1.5 p-1.5 rounded-xl transition-colors"
+                  [class.bg-emerald-500/10]="hasMinLength()"
+                  [class.text-emerald-600]="hasMinLength()"
+                  [class.dark:text-emerald-400]="hasMinLength()"
+                  [class.text-muted-foreground]="!hasMinLength()"
+                >
+                  <ng-icon
+                    [name]="hasMinLength() ? 'lucideCheck' : 'lucideCircle'"
+                    size="13"
+                    [class.text-emerald-500]="hasMinLength()"
+                  />
+                  <span>{{ 'account_settings.security.req_min_chars' | translate }}</span>
+                </div>
+                <div
+                  class="flex items-center gap-1.5 p-1.5 rounded-xl transition-colors"
+                  [class.bg-emerald-500/10]="hasLetterAndNumber()"
+                  [class.text-emerald-600]="hasLetterAndNumber()"
+                  [class.dark:text-emerald-400]="hasLetterAndNumber()"
+                  [class.text-muted-foreground]="!hasLetterAndNumber()"
+                >
+                  <ng-icon
+                    [name]="hasLetterAndNumber() ? 'lucideCheck' : 'lucideCircle'"
+                    size="13"
+                    [class.text-emerald-500]="hasLetterAndNumber()"
+                  />
+                  <span>{{ 'account_settings.security.req_letters_digits' | translate }}</span>
+                </div>
+                <div
+                  class="flex items-center gap-1.5 p-1.5 rounded-xl transition-colors"
+                  [class.bg-emerald-500/10]="passwordsMatch()"
+                  [class.text-emerald-600]="passwordsMatch()"
+                  [class.dark:text-emerald-400]="passwordsMatch()"
+                  [class.text-muted-foreground]="!passwordsMatch()"
+                >
+                  <ng-icon
+                    [name]="passwordsMatch() ? 'lucideCheck' : 'lucideCircle'"
+                    size="13"
+                    [class.text-emerald-500]="passwordsMatch()"
+                  />
+                  <span>{{ 'account_settings.security.req_match' | translate }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dialog Footer -->
+            <hlm-dialog-footer class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
+              <button
+                hlmBtn
+                variant="outline"
+                type="button"
+                class="rounded-xl"
+                (click)="closePasswordModal()"
+              >
+                {{ 'account_settings.delete_modal.close' | translate }}
+              </button>
+              <button
+                hlmBtn
+                type="submit"
+                [disabled]="passwordForm.invalid || isPasswordLoading()"
+                class="gap-2 rounded-xl"
+              >
+                @if (isPasswordLoading()) {
+                  <ng-icon name="lucideLoader2" size="16" class="animate-spin" />
+                  <span>{{ 'account_settings.security.submitting' | translate }}</span>
+                } @else {
+                  <ng-icon name="lucideLock" size="16" />
+                  <span>{{ 'account_settings.security.submit' | translate }}</span>
+                }
+              </button>
+            </hlm-dialog-footer>
+          </form>
+        </hlm-dialog-content>
+      </hlm-dialog>
+    }
   } @else {
     <section hlmCard>
       <div hlmCardContent class="py-10 text-muted-foreground text-sm text-center">
@@ -68,3 +474,4 @@
     </section>
   }
 </div>
+

@@ -1,144 +1,236 @@
 <div class="flex flex-col gap-6">
-  <section hlmCard>
-    <div hlmCardHeader>
-      <h3 hlmCardTitle>{{ 'account_settings.security.title' | translate }}</h3>
-      <p hlmCardDescription>{{ 'account_settings.security.description' | translate }}</p>
-    </div>
+  @if (isGoogleAccount()) {
+    <!-- Google OAuth Account Security Card -->
+    <section hlmCard class="overflow-hidden border border-border/70 shadow-xs">
+      <div hlmCardHeader class="pb-4">
+        <div class="flex items-center gap-2">
+          <span
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20"
+          >
+            <ng-icon name="lucideShieldCheck" size="14" />
+            {{ 'account_settings.security.google_badge' | translate }}
+          </span>
+        </div>
+        <h3 hlmCardTitle class="mt-2 text-xl font-bold tracking-tight text-foreground">
+          {{ 'account_settings.security.google_oauth_title' | translate }}
+        </h3>
+        <p hlmCardDescription class="text-sm leading-relaxed text-muted-foreground max-w-2xl">
+          {{ 'account_settings.security.google_oauth_desc' | translate }}
+        </p>
+      </div>
 
-    <form hlmCardContent [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-5">
-      <!-- Current Password -->
-      <div class="flex flex-col gap-1.5">
-        <label hlmLabel for="currentPassword">{{
-          'account_settings.security.current_password' | translate
-        }}</label>
-        <div class="relative">
-          <input
-            hlmInput
-            id="currentPassword"
-            class="pe-10 w-full"
-            [type]="showCurrent() ? 'text' : 'password'"
-            formControlName="currentPassword"
-            autocomplete="current-password"
-            [placeholder]="'account_settings.security.current_password_placeholder' | translate"
-            [attr.disabled]="isLoading() ? true : null"
-          />
+      <div hlmCardContent class="pt-0">
+        <div class="p-4 rounded-2xl bg-muted/40 border border-border/60 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3 min-w-0">
+            <div
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
+            >
+              <ng-icon name="lucideKeyRound" size="20" />
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-xs text-muted-foreground">
+                {{ 'account_settings.profile.email' | translate }}
+              </span>
+              <span class="text-sm font-semibold text-foreground font-mono truncate">
+                {{ currentUser()?.email }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  } @else {
+    <!-- Local Password Account Security Card -->
+    <section hlmCard class="overflow-hidden border border-border/70 shadow-xs">
+      <div hlmCardHeader class="pb-4">
+        <h3 hlmCardTitle>{{ 'account_settings.security.title' | translate }}</h3>
+        <p hlmCardDescription>{{ 'account_settings.security.description' | translate }}</p>
+      </div>
+
+      <form hlmCardContent [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-5 pt-0">
+        <!-- Current Password -->
+        <div class="flex flex-col gap-1.5">
+          <label hlmLabel for="currentPassword">
+            {{ 'account_settings.security.current_password' | translate }}
+          </label>
+          <div class="relative">
+            <input
+              hlmInput
+              id="currentPassword"
+              class="pe-10 w-full rounded-xl min-h-[42px]"
+              [type]="showCurrent() ? 'text' : 'password'"
+              formControlName="currentPassword"
+              autocomplete="current-password"
+              [placeholder]="'account_settings.security.current_password_placeholder' | translate"
+              [attr.disabled]="isLoading() ? true : null"
+            />
+            <button
+              hlmBtn
+              variant="ghost"
+              size="icon-sm"
+              type="button"
+              (click)="showCurrent.set(!showCurrent())"
+              class="top-1/2 end-2.5 absolute text-muted-foreground hover:text-foreground -translate-y-1/2 rounded-lg"
+              [attr.aria-label]="
+                (showCurrent()
+                  ? 'account_settings.security.hide_password'
+                  : 'account_settings.security.show_password'
+                ) | translate
+              "
+            >
+              <ng-icon [name]="showCurrent() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+            </button>
+          </div>
+        </div>
+
+        <!-- New Password & Confirm Password Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <!-- New Password -->
+          <div class="flex flex-col gap-1.5">
+            <label hlmLabel for="newPassword">
+              {{ 'account_settings.security.new_password' | translate }}
+            </label>
+            <div class="relative">
+              <input
+                hlmInput
+                id="newPassword"
+                class="pe-10 w-full rounded-xl min-h-[42px]"
+                [type]="showNew() ? 'text' : 'password'"
+                formControlName="newPassword"
+                autocomplete="new-password"
+                [placeholder]="'account_settings.security.new_password_placeholder' | translate"
+                [attr.disabled]="isLoading() ? true : null"
+              />
+              <button
+                hlmBtn
+                variant="ghost"
+                size="icon-sm"
+                type="button"
+                (click)="showNew.set(!showNew())"
+                class="top-1/2 end-2.5 absolute text-muted-foreground hover:text-foreground -translate-y-1/2 rounded-lg"
+                [attr.aria-label]="
+                  (showNew()
+                    ? 'account_settings.security.hide_password'
+                    : 'account_settings.security.show_password'
+                  ) | translate
+                "
+              >
+                <ng-icon [name]="showNew() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="flex flex-col gap-1.5">
+            <label hlmLabel for="confirmPassword">
+              {{ 'account_settings.security.confirm_password' | translate }}
+            </label>
+            <div class="relative">
+              <input
+                hlmInput
+                id="confirmPassword"
+                class="pe-10 w-full rounded-xl min-h-[42px]"
+                [type]="showConfirm() ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                autocomplete="new-password"
+                [placeholder]="'account_settings.security.confirm_password_placeholder' | translate"
+                [attr.disabled]="isLoading() ? true : null"
+              />
+              <button
+                hlmBtn
+                variant="ghost"
+                size="icon-sm"
+                type="button"
+                (click)="showConfirm.set(!showConfirm())"
+                class="top-1/2 end-2.5 absolute text-muted-foreground hover:text-foreground -translate-y-1/2 rounded-lg"
+                [attr.aria-label]="
+                  (showConfirm()
+                    ? 'account_settings.security.hide_password'
+                    : 'account_settings.security.show_password'
+                  ) | translate
+                "
+              >
+                <ng-icon [name]="showConfirm() ? 'lucideEyeOff' : 'lucideEye'" size="16" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Password Requirements Checklist -->
+        <div class="p-4 rounded-2xl bg-muted/40 border border-border/60 flex flex-col gap-2.5">
+          <span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            {{ 'account_settings.security.description' | translate }}
+          </span>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <!-- Req 1: Min 8 chars -->
+            <div
+              class="flex items-center gap-2 p-2 rounded-xl transition-colors duration-200"
+              [class.bg-emerald-500/10]="hasMinLength()"
+              [class.text-emerald-600]="hasMinLength()"
+              [class.dark:text-emerald-400]="hasMinLength()"
+              [class.text-muted-foreground]="!hasMinLength()"
+            >
+              <ng-icon
+                [name]="hasMinLength() ? 'lucideCheck' : 'lucideCircle'"
+                size="14"
+                [class.text-emerald-500]="hasMinLength()"
+              />
+              <span>{{ 'account_settings.security.req_min_chars' | translate }}</span>
+            </div>
+
+            <!-- Req 2: Letters and digits -->
+            <div
+              class="flex items-center gap-2 p-2 rounded-xl transition-colors duration-200"
+              [class.bg-emerald-500/10]="hasLetterAndNumber()"
+              [class.text-emerald-600]="hasLetterAndNumber()"
+              [class.dark:text-emerald-400]="hasLetterAndNumber()"
+              [class.text-muted-foreground]="!hasLetterAndNumber()"
+            >
+              <ng-icon
+                [name]="hasLetterAndNumber() ? 'lucideCheck' : 'lucideCircle'"
+                size="14"
+                [class.text-emerald-500]="hasLetterAndNumber()"
+              />
+              <span>{{ 'account_settings.security.req_letters_digits' | translate }}</span>
+            </div>
+
+            <!-- Req 3: Passwords match -->
+            <div
+              class="flex items-center gap-2 p-2 rounded-xl transition-colors duration-200"
+              [class.bg-emerald-500/10]="passwordsMatch()"
+              [class.text-emerald-600]="passwordsMatch()"
+              [class.dark:text-emerald-400]="passwordsMatch()"
+              [class.text-muted-foreground]="!passwordsMatch()"
+            >
+              <ng-icon
+                [name]="passwordsMatch() ? 'lucideCheck' : 'lucideCircle'"
+                size="14"
+                [class.text-emerald-500]="passwordsMatch()"
+              />
+              <span>{{ 'account_settings.security.req_match' | translate }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end pt-2">
           <button
             hlmBtn
-            variant="ghost"
-            size="icon-sm"
-            type="button"
-            (click)="showCurrent.set(!showCurrent())"
-            class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
-            [attr.aria-label]="
-              (showCurrent()
-                ? 'account_settings.security.hide_password'
-                : 'account_settings.security.show_password'
-              ) | translate
-            "
+            type="submit"
+            [disabled]="form.invalid || isLoading()"
+            class="gap-2 rounded-xl min-h-[44px] px-6 font-semibold"
           >
-            <ng-icon [name]="showCurrent() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
+            @if (isLoading()) {
+              <ng-icon name="lucideLoader2" size="16" class="animate-spin" />
+              <span>{{ 'account_settings.security.submitting' | translate }}</span>
+            } @else {
+              <ng-icon name="lucideLock" size="16" />
+              <span>{{ 'account_settings.security.submit' | translate }}</span>
+            }
           </button>
         </div>
-      </div>
-
-      <!-- New Password / Confirm New Password -->
-      <div class="gap-5 grid grid-cols-1 sm:grid-cols-2">
-        <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="newPassword">{{
-            'account_settings.security.new_password' | translate
-          }}</label>
-          <div class="relative">
-            <input
-              hlmInput
-              id="newPassword"
-              class="pe-10 w-full"
-              [type]="showNew() ? 'text' : 'password'"
-              formControlName="newPassword"
-              autocomplete="new-password"
-              [placeholder]="'account_settings.security.new_password_placeholder' | translate"
-              [attr.disabled]="isLoading() ? true : null"
-            />
-            <button
-              hlmBtn
-              variant="ghost"
-              size="icon-sm"
-              type="button"
-              (click)="showNew.set(!showNew())"
-              class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
-              [attr.aria-label]="
-                (showNew()
-                  ? 'account_settings.security.hide_password'
-                  : 'account_settings.security.show_password'
-                ) | translate
-              "
-            >
-              <ng-icon [name]="showNew() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
-            </button>
-          </div>
-          @if (
-            form.controls.newPassword.touched && form.controls.newPassword.hasError('minlength')
-          ) {
-            <p hlmSmall class="text-destructive text-xs">
-              {{ 'account_settings.security.error_min_length' | translate }}
-            </p>
-          } @else if (
-            form.controls.newPassword.touched && form.controls.newPassword.hasError('pattern')
-          ) {
-            <p hlmSmall class="text-destructive text-xs">
-              {{ 'account_settings.security.error_pattern' | translate }}
-            </p>
-          }
-        </div>
-
-        <div class="flex flex-col gap-1.5">
-          <label hlmLabel for="confirmPassword">{{
-            'account_settings.security.confirm_password' | translate
-          }}</label>
-          <div class="relative">
-            <input
-              hlmInput
-              id="confirmPassword"
-              class="pe-10 w-full"
-              [type]="showConfirm() ? 'text' : 'password'"
-              formControlName="confirmPassword"
-              autocomplete="new-password"
-              [placeholder]="'account_settings.security.confirm_password_placeholder' | translate"
-              [attr.disabled]="isLoading() ? true : null"
-            />
-            <button
-              hlmBtn
-              variant="ghost"
-              size="icon-sm"
-              type="button"
-              (click)="showConfirm.set(!showConfirm())"
-              class="top-1/2 end-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
-              [attr.aria-label]="
-                (showConfirm()
-                  ? 'account_settings.security.hide_password'
-                  : 'account_settings.security.show_password'
-                ) | translate
-              "
-            >
-              <ng-icon [name]="showConfirm() ? 'lucideEyeOff' : 'lucideEye'" size="18" />
-            </button>
-          </div>
-          @if (form.controls.confirmPassword.touched && form.hasError('passwordMismatch')) {
-            <p hlmSmall class="text-destructive text-xs">
-              {{ 'account_settings.security.error_mismatch' | translate }}
-            </p>
-          }
-        </div>
-      </div>
-
-      <button hlmBtn type="submit" [disabled]="form.invalid || isLoading()" class="gap-2 w-fit">
-        <ng-icon name="lucideLock" size="16" />
-        {{
-          (isLoading()
-            ? 'account_settings.security.submitting'
-            : 'account_settings.security.submit'
-          ) | translate
-        }}
-      </button>
-    </form>
-  </section>
+      </form>
+    </section>
+  }
 </div>
+

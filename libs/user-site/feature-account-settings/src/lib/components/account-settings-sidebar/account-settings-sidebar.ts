@@ -1,45 +1,73 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideUser, lucideShield, lucideBell, lucideTrash2 } from '@ng-icons/lucide';
-import { HlmButtonImports } from '@spartan/helm/button';
+import {
+  lucideUser,
+  lucideShield,
+  lucideHelpCircle,
+  lucideChevronRight,
+} from '@ng-icons/lucide';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
+import { StoreSlugService } from '@invento/user-site-data-access-store';
 
 interface NavItem {
+  id: 'profile' | 'security';
   label: string;
   icon: string;
-  route: string;
+  path: (string | undefined)[];
 }
 
 @Component({
   selector: 'app-account-settings-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, NgIcon, HlmButtonImports, TranslatePipe],
-  providers: [provideIcons({ lucideUser, lucideShield, lucideBell, lucideTrash2 })],
+  imports: [RouterLink, RouterLinkActive, NgIcon, TranslatePipe],
+  providers: [
+    provideIcons({
+      lucideUser,
+      lucideShield,
+      lucideHelpCircle,
+      lucideChevronRight,
+    }),
+  ],
   templateUrl: './account-settings-sidebar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsSidebar {
-  // Tab labels are data, not template text, so they are translated here rather than by the pipe
-  // (same pattern as OrdersFilterBar).
+  private readonly router = inject(Router);
   private readonly locale = inject(LocaleService);
+  protected readonly storeSlug = inject(StoreSlugService).slug;
 
-  // "My Stores" removed for the e-commerce customer-facing profile.
-  // "Billing" removed: no payment-method endpoint exists on the backend yet, so the route is
-  // unrouted (see account-settings.routes.ts) and has no entry point here.
   protected readonly navItems = computed<NavItem[]>(() => {
-    this.locale.locale(); // re-compute labels when the language changes
+    this.locale.locale();
+    const slug = this.storeSlug();
     return [
       {
+        id: 'profile',
         label: this.locale.translate('account_settings.sidebar.profile'),
         icon: 'lucideUser',
-        route: 'profile',
+        path: ['/', slug, 'account-settings', 'profile'],
       },
       {
+        id: 'security',
         label: this.locale.translate('account_settings.sidebar.security'),
         icon: 'lucideShield',
-        route: 'security',
+        path: ['/', slug, 'account-settings', 'security'],
       },
     ];
   });
+
+  protected isCurrentRoute(path: (string | undefined)[]): boolean {
+    const targetUrl = path.filter(Boolean).join('/').replace(/\/+/g, '/');
+    const currentUrl = this.router.url.split('?')[0].replace(/\/+$/, '');
+    const cleanTarget = (targetUrl.startsWith('/') ? targetUrl : '/' + targetUrl).replace(/\/+$/, '');
+    return currentUrl === cleanTarget;
+  }
+
+  protected onNavClick(path: (string | undefined)[], event: MouseEvent): void {
+    if (!event.ctrlKey && !event.metaKey && !event.shiftKey && event.button === 0) {
+      event.preventDefault();
+      void this.router.navigate(path);
+    }
+  }
 }
+

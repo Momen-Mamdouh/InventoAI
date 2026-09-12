@@ -1,23 +1,29 @@
-<div class="flex flex-col gap-8 mx-auto p-8 max-w-6xl">
-  <header>
-    <h1 hlmH1 class="text-2xl font-semibold">{{ 'account_settings.title' | translate }}</h1>
-    <p hlmMuted>{{ 'account_settings.subtitle' | translate }}</p>
+<div class="mx-auto flex max-w-6xl flex-col gap-8 p-4 sm:p-6 lg:p-8">
+  <!-- Account Hero Banner -->
+  <header
+    class="relative overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-primary/10 via-primary/5 to-card/60 p-6 sm:p-8 backdrop-blur-xs shadow-xs"
+  >
+    <div
+      class="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary"
+    >
+      <ng-icon name="lucideSparkles" size="14" />
+      <span>{{ 'account_settings.badge' | translate }}</span>
+    </div>
+
+    <h1 class="mt-3 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+      {{ 'account_settings.title' | translate }}
+    </h1>
+    <p class="mt-1 text-sm sm:text-base text-muted-foreground max-w-2xl">
+      {{ 'account_settings.subtitle' | translate }}
+    </p>
   </header>
 
-  <div class="flex md:flex-row flex-col items-stretch md:items-start gap-6 md:gap-8">
+  <!-- Main Content Grid with Sidebar -->
+  <div class="flex flex-col items-stretch md:flex-row md:items-start gap-6 lg:gap-8">
     <app-account-settings-sidebar />
-    <div class="flex-1 min-w-0">
+    <main class="flex-1 min-w-0">
       <router-outlet />
-    </div>
+    </main>
   </div>
-
-  <button
-    hlmBtn
-    variant="ghost"
-    type="button"
-    class="md:hidden flex justify-center gap-2 hover:bg-destructive/10 border border-destructive/20 w-full text-destructive hover:text-destructive"
-  >
-    <ng-icon name="lucideTrash2" size="18" />
-    {{ 'account_settings.delete_account' | translate }}
-  </button>
 </div>
+
