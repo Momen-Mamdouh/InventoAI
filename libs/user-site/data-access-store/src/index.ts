@@ -4,6 +4,7 @@ export { StoreSeoService } from './lib/store-seo.service';
 export { StoreThemeService } from './lib/store-theme.service';
 export { StoreSlugService } from './lib/store-slug.service';
 export { storeGuard } from './lib/store.guard';
+export { resolveStoreSlug } from './lib/resolve-store-slug';
 export { normalizeSlug } from './lib/normalize-slug';
 export type {
   LogoSource,

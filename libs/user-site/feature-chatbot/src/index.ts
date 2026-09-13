@@ -5,3 +5,5 @@
  * Same shape as invento's `feature-chatbot` decision at T118/R10.
  */
 export { Chatbot } from './lib/chatbot';
+export { ChatService } from './lib/service/chat.service';
+export type { ChatMessage, ChatSettings, ChatOrderSummary } from './lib/service/chat.service';
