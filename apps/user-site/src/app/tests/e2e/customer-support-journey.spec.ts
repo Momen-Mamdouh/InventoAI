@@ -33,6 +33,7 @@ describe('E2E Simulated Customer Journey: FAQ to AI Concierge Support', () => {
   let mockLocaleService: Partial<LocaleService>;
 
   beforeEach(() => {
+    localStorage.clear();
     mockStoreSlugService = {
       slug: signal('layali'),
     };

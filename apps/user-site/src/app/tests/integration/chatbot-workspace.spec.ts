@@ -16,6 +16,7 @@ describe('Chatbot Workspace Integration Tests', () => {
   let mockLocaleService: Partial<LocaleService>;
 
   beforeEach(async () => {
+    localStorage.clear();
     mockChatService = {
       getChatSettings: vi.fn().mockReturnValue(
         of({
