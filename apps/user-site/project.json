@@ -92,6 +92,13 @@
         "spa": true
       }
     },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "tsConfig": "apps/user-site/tsconfig.spec.json",
+        "runnerConfig": "apps/user-site/vitest.config.ts"
+      }
+    },
     "lint": {
       "executor": "@angular-eslint/builder:lint",
       "outputs": ["{options.outputFile}"],

@@ -12,6 +12,7 @@
     "build": "npm run generate:env && nx build site-builder",
     "build:all": "npm run generate:env && nx run-many -t build",
     "test": "nx test site-builder",
+    "test:user-site": "nx test user-site",
     "test:all": "nx run-many -t test",
     "lint": "nx run-many -t lint",
     "lint:fix": "nx run-many -t lint --fix",

@@ -439,7 +439,7 @@ export class Checkout implements OnInit {
     const ln = this.checkoutForm.get('lastName');
     const em = this.checkoutForm.get('email');
     const ph = this.checkoutForm.get('contactPhone');
-    return Boolean(fn?.valid && ln?.valid && em?.valid && ph?.valid);
+    return Boolean(fn?.valid && ln?.valid && (em?.valid || em?.disabled) && ph?.valid);
   }
 
   isStep2Valid(): boolean {

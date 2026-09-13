@@ -7,3 +7,6 @@ export { productsListRoutes, productDetailsRoutes } from './lib/product.routes';
  * the other 11 stay internal to this library's own pages.
  */
 export { ProductCard } from './lib/components';
+export { Products } from './lib/pages/products/product';
+export { ProductDetails } from './lib/pages/product-details/product-details';
+export { flyToCart, updateCartBadge } from './lib/utils/cart-utils';
