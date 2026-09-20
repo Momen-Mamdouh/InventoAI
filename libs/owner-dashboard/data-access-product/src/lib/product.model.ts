@@ -13,6 +13,8 @@ export interface ApiProductListItem {
   position: number;
   minPriceAmount: number;
   maxPriceAmount: number;
+  minCompareAtAmount: number | null;
+  compareAtAmount: number | null;
   totalStock: number;
   variantCount: number;
   imageUrl: string | null;

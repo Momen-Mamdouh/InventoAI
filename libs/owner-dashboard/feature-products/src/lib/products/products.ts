@@ -6,7 +6,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -21,23 +21,46 @@ import {
   lucideCheck,
   lucideFolderOpen,
   lucideImage,
+  lucideRefreshCw,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan/helm/button';
-import { HlmCheckboxImports } from '@spartan/helm/checkbox';
-import { HlmCardImports } from '@spartan/helm/card';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmBadgeImports } from '@spartan/helm/badge';
+import { HlmCheckbox } from '@spartan/helm/checkbox';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmInput } from '@spartan/helm/input';
+import {
+  HlmSelect,
+  HlmSelectContent,
+  HlmSelectItem,
+  HlmSelectPortal,
+  HlmSelectTrigger,
+  HlmSelectValue,
+} from '@spartan/helm/select';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { HlmSpinner } from '@spartan/helm/spinner';
-import { HlmTableImports } from '@spartan/helm/table';
-import { HlmSheetImports } from '@spartan/helm/sheet';
-import { HlmLabelImports } from '@spartan/helm/label';
-import { HlmTextareaImports } from '@spartan/helm/textarea';
+import {
+  HlmTable,
+  HlmTBody,
+  HlmTd,
+  HlmTh,
+  HlmTHead,
+  HlmTr,
+} from '@spartan/helm/table';
+import {
+  HlmSheet,
+  HlmSheetContent,
+  HlmSheetFooter,
+  HlmSheetHeader,
+  HlmSheetPortal,
+  HlmSheetTitle,
+} from '@spartan/helm/sheet';
+import { HlmLabel } from '@spartan/helm/label';
+import { HlmTextarea } from '@spartan/helm/textarea';
 import { HlmH1, HlmH3, HlmMuted } from '@spartan/helm/typography';
-import { HlmTooltipImports } from '@spartan/helm/tooltip';
-import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
-import { TranslatePipe } from '@invento/shared-util-i18n';
+import { HlmTooltip } from '@spartan/helm/tooltip';
+import { HlmToggleGroup, HlmToggleGroupItem } from '@spartan/helm/toggle-group';
+import { HlmAlert, HlmAlertDescription } from '@spartan/helm/alert';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { forkJoin } from 'rxjs';
@@ -51,7 +74,7 @@ import {
 import { AttributeService } from '@invento/owner-dashboard-data-access-attribute';
 import { ProductAttribute } from '@invento/owner-dashboard-data-access-attribute';
 import { CategoriesService, Category } from '@invento/owner-dashboard-data-access-category';
-import { toast } from '@spartan-ng/brain/sonner';
+import { toast } from '@spartan/helm/sonner';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { SearchPipe } from '@invento/shared-util-pipes';
 import { EmptyState } from '@invento/shared-ui-empty-state';
@@ -71,33 +94,50 @@ interface FormVariant {
   imports: [
     CurrencyPipe,
     DatePipe,
-    NgClass,
     FormsModule,
     NgIcon,
     HlmButton,
-    HlmCardImports,
-    HlmInputImports,
-    HlmSelectImports,
-    HlmBadgeImports,
+    HlmCard,
+    HlmInput,
+    HlmSelect,
+    HlmSelectContent,
+    HlmSelectItem,
+    HlmSelectPortal,
+    HlmSelectTrigger,
+    HlmSelectValue,
+    HlmBadge,
     CdkDropList,
     CdkDrag,
     DeleteConfirmDialog,
     SearchPipe,
     HlmSkeleton,
     HlmSpinner,
-    HlmTableImports,
+    HlmTable,
+    HlmTBody,
+    HlmTd,
+    HlmTh,
+    HlmTHead,
+    HlmTr,
     RouterLink,
-    HlmSheetImports,
-    HlmLabelImports,
-    HlmTextareaImports,
+    HlmSheet,
+    HlmSheetContent,
+    HlmSheetFooter,
+    HlmSheetHeader,
+    HlmSheetPortal,
+    HlmSheetTitle,
+    HlmLabel,
+    HlmTextarea,
     HlmH1,
     HlmH3,
     HlmMuted,
-    HlmTooltipImports,
+    HlmTooltip,
     TranslatePipe,
-    HlmCheckboxImports,
+    HlmCheckbox,
     EmptyState,
-    HlmToggleGroupImports,
+    HlmToggleGroup,
+    HlmToggleGroupItem,
+    HlmAlert,
+    HlmAlertDescription,
   ],
   providers: [
     provideIcons({
@@ -111,6 +151,7 @@ interface FormVariant {
       lucideCheck,
       lucideFolderOpen,
       lucideImage,
+      lucideRefreshCw,
     }),
   ],
   templateUrl: './products.html',
@@ -121,6 +162,7 @@ export class Products implements OnInit {
   private readonly attributeService = inject(AttributeService);
   private readonly categoriesService = inject(CategoriesService);
   private readonly router = inject(Router);
+  private readonly localeService = inject(LocaleService);
 
   readonly isDrawerOpen = signal(false);
   readonly isBulkDeleteModalOpen = signal(false);
@@ -137,6 +179,7 @@ export class Products implements OnInit {
   readonly products = signal<ApiProductListItem[]>([]);
   readonly isLoading = signal<boolean>(true);
   readonly totalProducts = signal<number>(0);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly attributes = signal<ProductAttribute[]>([]);
   readonly variantAttributes = computed(() => this.attributes().filter((a) => a.isVariantAxis));
@@ -160,20 +203,15 @@ export class Products implements OnInit {
   };
   isSubmitting = signal(false);
 
-  private readonly statusLabels: Record<string, string> = {
-    draft: 'Draft',
-    active: 'Active',
-    archived: 'Archived',
-  };
-
   readonly statusItemToString = (value: unknown): string => {
-    return this.statusLabels[String(value).toLowerCase()] ?? 'Draft';
+    const val = String(value).toLowerCase();
+    return this.localeService.translate(`products.status_${val}`);
   };
 
   readonly getAttributeValueLabel = (attrId: string, valId: unknown): string => {
-    if (!valId) return '';
+    if (!valId) { return ''; }
     const attr = this.attributes().find((a) => a.id === attrId);
-    if (!attr) return '';
+    if (!attr) { return ''; }
     const val = attr.values.find((v) => v.id === valId);
     return val ? val.value : '';
   };
@@ -222,7 +260,7 @@ export class Products implements OnInit {
   fetchCategories(): void {
     this.categoriesService.list({ limit: 100 }).subscribe({
       next: (res) => this.categories.set(res.items),
-      error: (err) => console.error('Failed to load categories', err),
+      error: (err: unknown) => console.error('Failed to load categories', err),
     });
   }
 
@@ -249,12 +287,13 @@ export class Products implements OnInit {
           });
         });
       },
-      error: (err) => console.error('Failed to load attributes', err),
+      error: (err: unknown) => console.error('Failed to load attributes', err),
     });
   }
 
   fetchProducts(): void {
     this.isLoading.set(true);
+    this.errorMessage.set(null);
 
     this.productService.getProducts().subscribe({
       next: (response: PaginatedResponse<ApiProductListItem>) => {
@@ -263,7 +302,10 @@ export class Products implements OnInit {
         this.isLoading.set(false);
       },
       error: (err: unknown) => {
-        console.error('Failed to load products', err);
+        const msg =
+          (err as { error?: { message?: string } })?.error?.message ??
+          'products.error_load';
+        this.errorMessage.set(msg);
         this.isLoading.set(false);
       },
     });
@@ -275,9 +317,9 @@ export class Products implements OnInit {
 
   toggleDrawer(): void {
     if (!this.isDrawerOpen() && this.attributes().length === 0) {
-      toast.warning('Please define at least one product attribute before creating products.', {
+      toast.warning(this.localeService.translate('products.toast_no_attrs'), {
         action: {
-          label: 'Go to Attributes',
+          label: this.localeService.translate('products.toast_go_attrs'),
           onClick: () => this.router.navigate(['/attributes']),
         },
       });
@@ -293,7 +335,7 @@ export class Products implements OnInit {
   }
 
   onDrawerStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed' && this.isDrawerOpen()) this.toggleDrawer();
+    if (state === 'closed' && this.isDrawerOpen()) { this.toggleDrawer(); }
   }
 
   resetNewProduct(): void {
@@ -332,28 +374,28 @@ export class Products implements OnInit {
 
   submitProduct(): void {
     if (this.attributes().length === 0) {
-      toast.error('You must define at least one attribute before creating products.');
+      toast.error(this.localeService.translate('products.toast_no_attrs'));
       return;
     }
 
     if (!this.newProduct.title.trim()) {
-      toast.error('Product title is required.');
+      toast.error(this.localeService.translate('products.toast_title_required'));
       return;
     }
 
     if (!this.newProduct.status) {
-      toast.error('Product status is required.');
+      toast.error(this.localeService.translate('products.toast_status_required'));
       return;
     }
 
     if (this.newProduct.variants.length === 0) {
-      toast.error('At least one variant is required.');
+      toast.error(this.localeService.translate('products.toast_variants_required'));
       return;
     }
 
     const isValid = this.newProduct.variants.every((v) => v.price != null && v.price >= 0);
     if (!isValid) {
-      toast.error('All variants must have a valid non-negative price.');
+      toast.error(this.localeService.translate('products.toast_price_invalid'));
       return;
     }
 
@@ -392,14 +434,14 @@ export class Products implements OnInit {
 
     this.productService.createProduct(payload).subscribe({
       next: () => {
-        toast.success('Product created successfully');
+        toast.success(this.localeService.translate('products.toast_created'));
         this.isSubmitting.set(false);
         this.toggleDrawer();
-        this.fetchProducts(); // refresh the list
+        this.fetchProducts();
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Failed to create product', err);
-        toast.error('Failed to create product');
+        toast.error(this.localeService.translate('products.toast_create_error'));
         this.isSubmitting.set(false);
       },
     });
@@ -413,7 +455,7 @@ export class Products implements OnInit {
     // Save reorder
     const items = currentProducts.map((p, i) => ({ id: p.id, position: i }));
     this.productService.reorderProducts(items).subscribe({
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Failed to save order', err);
         this.fetchProducts(); // revert on error
       },
@@ -449,22 +491,24 @@ export class Products implements OnInit {
 
   bulkDelete(): void {
     const selected = this.selectedProductIds();
-    if (selected.length === 0) return;
+    if (selected.length === 0) { return; }
 
     this.isBulkActing.set(true);
     const requests = selected.map((id) => this.productService.deleteProduct(id));
 
     forkJoin(requests).subscribe({
       next: () => {
-        toast.success(`Deleted ${selected.length} products successfully.`);
+        toast.success(
+          this.localeService.translate('products.toast_deleted', { count: selected.length }),
+        );
         this.selectedProductIds.set([]);
         this.fetchProducts();
         this.isBulkActing.set(false);
         this.isBulkDeleteModalOpen.set(false);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Failed to bulk delete products', err);
-        toast.error('Failed to delete some or all products.');
+        toast.error(this.localeService.translate('products.toast_delete_error'));
         this.isBulkActing.set(false);
         this.isBulkDeleteModalOpen.set(false);
         this.fetchProducts();
@@ -474,21 +518,28 @@ export class Products implements OnInit {
 
   bulkUpdateStatus(status: 'draft' | 'active' | 'archived'): void {
     const selected = this.selectedProductIds();
-    if (selected.length === 0) return;
+    if (selected.length === 0) { return; }
 
     this.isBulkActing.set(true);
     const requests = selected.map((id) => this.productService.updateProduct(id, { status }));
 
+    const statusLabel = this.localeService.translate(`products.status_${status}`);
+
     forkJoin(requests).subscribe({
       next: () => {
-        toast.success(`Updated status of ${selected.length} products to ${status}.`);
+        toast.success(
+          this.localeService.translate('products.toast_status_updated', {
+            count: selected.length,
+            status: statusLabel,
+          }),
+        );
         this.selectedProductIds.set([]);
         this.fetchProducts();
         this.isBulkActing.set(false);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Failed to bulk update products', err);
-        toast.error('Failed to update status for some or all products.');
+        toast.error(this.localeService.translate('products.toast_status_error'));
         this.isBulkActing.set(false);
         this.fetchProducts();
       },
