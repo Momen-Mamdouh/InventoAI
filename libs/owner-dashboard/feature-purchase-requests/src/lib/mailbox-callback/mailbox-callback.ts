@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmCard } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
@@ -10,31 +11,33 @@ import { HlmH1 } from '@spartan/helm/typography';
 
 @Component({
   selector: 'app-mailbox-callback',
-  imports: [HlmSpinner, NgIcon, HlmCard, HlmButton, HlmH1],
+  imports: [HlmSpinner, NgIcon, HlmCard, HlmButton, HlmH1, TranslatePipe],
   providers: [provideIcons({ lucideAlertCircle, lucideCheckCircle2, lucideLoader2 })],
   template: `
     <div class="min-h-screen flex items-center justify-center p-6 bg-background">
       <div hlmCard class="w-full max-w-md p-8 text-center shadow-sm">
         @if (loading()) {
           <hlm-spinner class="text-[30px] text-primary mx-auto" />
-          <h1 hlmH1 class="mt-4">Connecting mailbox…</h1>
+          <h1 hlmH1 class="mt-4">{{ 'purchase_requests.mailbox_connecting_title' | translate }}</h1>
           <p class="text-sm text-muted-foreground mt-2">
-            Finishing the Google connection securely.
+            {{ 'purchase_requests.mailbox_connecting_desc' | translate }}
           </p>
         } @else if (success()) {
-          <ng-icon name="lucideCheckCircle2" size="30" class="text-emerald-600 mx-auto" />
-          <h1 hlmH1 class="mt-4">Mailbox connected</h1>
-          <p class="text-sm text-muted-foreground mt-2">Automatic supplier replies are ready.</p>
+          <ng-icon name="lucideCheckCircle2" size="28" class="text-emerald-600 mx-auto" />
+          <h1 hlmH1 class="mt-4">{{ 'purchase_requests.mailbox_connected_title' | translate }}</h1>
+          <p class="text-sm text-muted-foreground mt-2">
+            {{ 'purchase_requests.mailbox_connected_desc' | translate }}
+          </p>
         } @else {
-          <ng-icon name="lucideAlertCircle" size="30" class="text-destructive mx-auto" />
-          <h1 hlmH1 class="mt-4">Could not connect mailbox</h1>
+          <ng-icon name="lucideAlertCircle" size="28" class="text-destructive mx-auto" />
+          <h1 hlmH1 class="mt-4">{{ 'purchase_requests.mailbox_error_title' | translate }}</h1>
           <p class="text-sm text-muted-foreground mt-2">{{ error() }}</p>
           <button
             hlmBtn
             class="mt-5 min-h-11 px-4"
             (click)="router.navigate(['/purchase-requests'])"
           >
-            Back to purchase requests
+            {{ 'purchase_requests.mailbox_btn_back' | translate }}
           </button>
         }
       </div>
@@ -45,9 +48,11 @@ import { HlmH1 } from '@spartan/helm/typography';
 export class MailboxCallback implements OnInit {
   readonly router = inject(Router);
   private readonly api = inject(PurchaseRequestService);
+  private readonly localeService = inject(LocaleService);
+
   readonly loading = signal(true);
   readonly success = signal(false);
-  readonly error = signal('The authorization response was incomplete.');
+  readonly error = signal(this.localeService.translate('purchase_requests.mailbox_err_incomplete'));
 
   ngOnInit(): void {
     const params = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
@@ -58,7 +63,7 @@ export class MailboxCallback implements OnInit {
 
     if (!code || !state || (storedState && storedState !== state)) {
       this.loading.set(false);
-      this.error.set('The connection attempt expired or does not match. Please start again.');
+      this.error.set(this.localeService.translate('purchase_requests.mailbox_err_expired'));
       return;
     }
 
@@ -69,13 +74,13 @@ export class MailboxCallback implements OnInit {
         this.success.set(true);
         setTimeout(() => this.router.navigate(['/purchase-requests']), 900);
       },
-      error: (err) => {
+      error: (err: { error?: { message?: string | string[] } }) => {
         this.loading.set(false);
         this.error.set(
           Array.isArray(err?.error?.message)
             ? err.error.message.join(', ')
             : err?.error?.message ||
-                'Google did not accept this authorization. Please try connecting again.',
+                this.localeService.translate('purchase_requests.mailbox_err_rejected'),
         );
       },
     });

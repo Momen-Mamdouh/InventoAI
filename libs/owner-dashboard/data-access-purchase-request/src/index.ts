@@ -1,4 +1,5 @@
 export { PurchaseRequestService } from './lib/purchase-request.service';
+export { PurchaseRequestsState } from './lib/purchase-requests-state';
 export type {
   PurchaseRequestStatus,
   OfferStatus,
