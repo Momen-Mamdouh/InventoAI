@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   OnInit,
   signal,
@@ -53,6 +54,11 @@ import { Pagination } from '@invento/shared-ui-pagination';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import {
+  TableHeaderCell,
+  TableColumnSortDirection,
+  TableColumnFilterOption,
+} from '@invento/shared-ui-table-header';
+import {
   MailboxStatus,
   PurchaseRequestDetail,
   PurchaseRequestsState,
@@ -102,6 +108,7 @@ import {
     PurchaseRequestDetails,
     PurchaseRequestCreate,
     TranslatePipe,
+    TableHeaderCell,
   ],
   providers: [
     provideIcons({
@@ -157,6 +164,73 @@ export class PurchaseRequests implements OnInit {
     { value: 'confirmed', key: 'purchase_requests.tab_confirmed' },
     { value: 'cancelled', key: 'purchase_requests.tab_cancelled' },
   ];
+
+  readonly colRequestSearch = signal('');
+  readonly colSuppliersSearch = signal('');
+  readonly colStatusFilter = signal('');
+  readonly colQuantitySort = signal<TableColumnSortDirection>('none');
+  readonly colCreatedSort = signal<TableColumnSortDirection>('none');
+
+  readonly statusFilterOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    {
+      label: this.localeService.translate('purchase_requests.tab_draft') || 'Draft',
+      value: 'draft',
+    },
+    {
+      label: this.localeService.translate('purchase_requests.tab_sent') || 'Sent',
+      value: 'sent',
+    },
+    {
+      label: this.localeService.translate('purchase_requests.tab_replied') || 'Replied',
+      value: 'replied',
+    },
+    {
+      label: this.localeService.translate('purchase_requests.tab_confirmed') || 'Confirmed',
+      value: 'confirmed',
+    },
+    {
+      label: this.localeService.translate('purchase_requests.tab_cancelled') || 'Cancelled',
+      value: 'cancelled',
+    },
+  ]);
+
+  readonly displayedRequests = computed(() => {
+    let list = [...this.requests()];
+    const reqSearch = this.colRequestSearch().trim().toLowerCase();
+    if (reqSearch) {
+      list = list.filter(
+        (r) =>
+          r.productTitle?.toLowerCase().includes(reqSearch) ||
+          r.variantLabel?.toLowerCase().includes(reqSearch) ||
+          r.subject?.toLowerCase().includes(reqSearch) ||
+          r.note?.toLowerCase().includes(reqSearch),
+      );
+    }
+    const supSearch = this.colSuppliersSearch().trim().toLowerCase();
+    if (supSearch) {
+      list = list.filter((r) =>
+        r.offers?.some((o) => o.supplierName?.toLowerCase().includes(supSearch)),
+      );
+    }
+    const status = this.colStatusFilter();
+    if (status && status !== 'all') {
+      list = list.filter((r) => r.status === status);
+    }
+    const qSort = this.colQuantitySort();
+    if (qSort === 'asc') {
+      list.sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0));
+    } else if (qSort === 'desc') {
+      list.sort((a, b) => (b.quantity ?? 0) - (a.quantity ?? 0));
+    }
+    const cSort = this.colCreatedSort();
+    if (cSort === 'asc') {
+      list.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    } else if (cSort === 'desc') {
+      list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return list;
+  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('request');

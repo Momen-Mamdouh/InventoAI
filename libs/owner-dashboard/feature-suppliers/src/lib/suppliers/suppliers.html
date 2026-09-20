@@ -171,7 +171,7 @@
        SUPPLIER TABLE
   ══════════════════════════════════════════════════════════ -->
   <div hlmCard class="bg-card shadow-sm border-border rounded-xl overflow-hidden">
-    <div class="overflow-x-auto">
+    <div hlmTableContainer class="overflow-x-auto">
       <table hlmTable class="w-full min-w-[840px] text-start border-collapse">
         <thead hlmTHead>
           <tr
@@ -179,22 +179,52 @@
             class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
           >
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'suppliers.col_supplier' | translate }}
+              <app-table-header-cell
+                type="search"
+                [label]="'suppliers.col_supplier' | translate"
+                [searchValue]="colSearchName()"
+                (searchChange)="onNameSearchChange($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'suppliers.col_phone' | translate }}
+              <app-table-header-cell
+                type="search"
+                [label]="'suppliers.col_phone' | translate"
+                [searchValue]="colSearchPhone()"
+                (searchChange)="onPhoneSearchChange($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-32 text-start whitespace-nowrap">
-              {{ 'suppliers.col_lead_time' | translate }}
+              <app-table-header-cell
+                type="sort"
+                [label]="'suppliers.col_lead_time' | translate"
+                [sortDirection]="sortColumn() === 'leadTime' ? sortDirection() : null"
+                (sortChange)="onSortChange('leadTime', $event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-28 text-start whitespace-nowrap">
-              {{ 'suppliers.col_status' | translate }}
+              <app-table-header-cell
+                type="filter"
+                [label]="'suppliers.col_status' | translate"
+                [filterOptions]="statusFilterOptions"
+                [selectedFilterValue]="colFilterStatus()"
+                (filterChange)="onStatusFilterChange($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-32 text-start whitespace-nowrap">
-              {{ 'suppliers.col_added' | translate }}
+              <app-table-header-cell
+                type="sort"
+                [label]="'suppliers.col_added' | translate"
+                [sortDirection]="sortColumn() === 'date' ? sortDirection() : null"
+                (sortChange)="onSortChange('date', $event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 w-28 text-end whitespace-nowrap">
-              {{ 'suppliers.col_actions' | translate }}
+              <app-table-header-cell
+                type="none"
+                align="end"
+                [label]="'suppliers.col_actions' | translate"
+              />
             </th>
           </tr>
         </thead>
@@ -260,7 +290,7 @@
               </td>
             </tr>
           } @else {
-            @for (supplier of suppliers(); track supplier.id) {
+            @for (supplier of displayedSuppliers(); track supplier.id) {
               <tr hlmTr class="group hover:bg-muted/40 transition-colors">
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
                   <div class="flex items-center gap-3">

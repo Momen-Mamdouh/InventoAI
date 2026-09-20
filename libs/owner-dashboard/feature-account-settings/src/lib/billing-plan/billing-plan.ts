@@ -24,12 +24,25 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabelImports } from '@spartan/helm/label';
-import { HlmTableImports } from '@spartan/helm/table';
+import {
+  HlmTable,
+  HlmTHead,
+  HlmTBody,
+  HlmTr,
+  HlmTh,
+  HlmTd,
+  HlmTableContainer,
+} from '@spartan/helm/table';
 import { HlmDialogImports } from '@spartan/helm/dialog';
 // Brain primitives are the plain npm package — not re-exported through the
 // project's `@spartan/helm` alias, so import them directly (see category-form-dialog.ts).
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { HlmH1, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
+import { TableHeaderCell, SortDirection, FilterOption } from '@invento/shared-ui-table-header';
+import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
+import { TranslatePipe } from '@invento/shared-util-i18n';
+import { computed } from '@angular/core';
 
 export interface InvoiceRecord {
   id: string;
@@ -70,7 +83,17 @@ export interface PlanInfo {
     HlmButton,
     HlmInput,
     HlmLabelImports,
-    HlmTableImports,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmTableContainer,
+    TableHeaderCell,
+    Pagination,
+    EmptyState,
+    TranslatePipe,
     HlmDialogImports,
     BrnDialogImports,
     HlmH1,
@@ -166,6 +189,84 @@ export class BillingPlan {
       status: 'Paid',
     },
   ]);
+
+  // Invoice Table Signals & State
+  invoicePage = signal<number>(1);
+  invoicePageSize = signal<number>(5);
+  invoiceSortCol = signal<'date' | 'amount' | null>(null);
+  invoiceSortDir = signal<SortDirection>(null);
+  invoiceSearchDesc = signal<string>('');
+  invoiceStatusFilter = signal<string>('');
+
+  readonly invoiceStatusOptions: FilterOption[] = [
+    { label: 'Paid', value: 'Paid' },
+    { label: 'Failed', value: 'Failed' },
+    { label: 'Pending', value: 'Pending' },
+  ];
+
+  readonly processedInvoices = computed(() => {
+    let list = [...this.invoices()];
+
+    // Search by description
+    const query = this.invoiceSearchDesc().trim().toLowerCase();
+    if (query) {
+      list = list.filter((inv) => inv.description.toLowerCase().includes(query));
+    }
+
+    // Filter by status
+    const status = this.invoiceStatusFilter();
+    if (status) {
+      list = list.filter((inv) => inv.status === status);
+    }
+
+    // Sort
+    const col = this.invoiceSortCol();
+    const dir = this.invoiceSortDir();
+    if (col && dir) {
+      list.sort((a, b) => {
+        let diff = 0;
+        if (col === 'date') {
+          diff = new Date(a.date).getTime() - new Date(b.date).getTime();
+        } else if (col === 'amount') {
+          const numA = parseFloat(a.amount.replace(/[^0-9.-]+/g, '')) || 0;
+          const numB = parseFloat(b.amount.replace(/[^0-9.-]+/g, '')) || 0;
+          diff = numA - numB;
+        }
+        return dir === 'asc' ? diff : -diff;
+      });
+    }
+
+    return list;
+  });
+
+  readonly totalInvoicePages = computed(() => {
+    const total = this.processedInvoices().length;
+    return Math.max(1, Math.ceil(total / this.invoicePageSize()));
+  });
+
+  readonly paginatedInvoices = computed(() => {
+    const start = (this.invoicePage() - 1) * this.invoicePageSize();
+    return this.processedInvoices().slice(start, start + this.invoicePageSize());
+  });
+
+  onInvoiceSortChange(col: 'date' | 'amount', dir: SortDirection): void {
+    this.invoiceSortCol.set(dir ? col : null);
+    this.invoiceSortDir.set(dir);
+  }
+
+  onInvoiceSearchChange(q: string): void {
+    this.invoiceSearchDesc.set(q);
+    this.invoicePage.set(1);
+  }
+
+  onInvoiceStatusFilterChange(val: string): void {
+    this.invoiceStatusFilter.set(val);
+    this.invoicePage.set(1);
+  }
+
+  onInvoicePageChange(p: number): void {
+    this.invoicePage.set(p);
+  }
 
   // Modal State Signals
   isUpgradeModalOpen = signal<boolean>(false);

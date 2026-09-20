@@ -32,7 +32,18 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmBadgeImports } from '@spartan/helm/badge';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmTableImports } from '@spartan/helm/table';
+import {
+  HlmTable,
+  HlmTBody,
+  HlmTd,
+  HlmTh,
+  HlmTHead,
+  HlmTr,
+  HlmTableContainer,
+} from '@spartan/helm/table';
+import { TableHeaderCell, SortDirection } from '@invento/shared-ui-table-header';
+import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
@@ -70,7 +81,16 @@ import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
     HlmBadgeImports,
     HlmInputImports,
     HlmSelectImports,
-    HlmTableImports,
+    HlmTable,
+    HlmTBody,
+    HlmTd,
+    HlmTh,
+    HlmTHead,
+    HlmTr,
+    HlmTableContainer,
+    TableHeaderCell,
+    Pagination,
+    EmptyState,
     CdkDropList,
     CdkDrag,
     DeleteConfirmDialog,
@@ -125,6 +145,91 @@ export class ProductDetails implements OnInit {
   readonly toDeleteVariantId = signal<string | null>(null);
   readonly isDeleteImageOpen = signal(false);
   readonly toDeleteImageId = signal<string | null>(null);
+
+  // Variant Table Signals & Pagination
+  readonly variantPage = signal<number>(1);
+  readonly variantPageSize = signal<number>(5);
+  readonly variantSortCol = signal<'price' | 'stock' | null>(null);
+  readonly variantSortDir = signal<SortDirection>(null);
+  readonly variantSearchSku = signal<string>('');
+  readonly variantSearchAttr = signal<string>('');
+
+  readonly processedVariants = computed(() => {
+    const raw = this.product()?.variants ?? [];
+    let list = [...raw];
+
+    // Search SKU
+    const skuQuery = this.variantSearchSku().trim().toLowerCase();
+    if (skuQuery) {
+      list = list.filter((v) => v.sku && v.sku.toLowerCase().includes(skuQuery));
+    }
+
+    // Search Attributes
+    const attrQuery = this.variantSearchAttr().trim().toLowerCase();
+    if (attrQuery) {
+      list = list.filter((v) =>
+        v.attributeValues?.some(
+          (a) =>
+            (a.attributeName && a.attributeName.toLowerCase().includes(attrQuery)) ||
+            (a.value && a.value.toLowerCase().includes(attrQuery)),
+        ),
+      );
+    }
+
+    // Sort
+    const col = this.variantSortCol();
+    const dir = this.variantSortDir();
+    if (col && dir) {
+      list.sort((a, b) => {
+        let diff = 0;
+        if (col === 'price') {
+          diff = (a.priceAmount ?? 0) - (b.priceAmount ?? 0);
+        } else if (col === 'stock') {
+          diff = (a.stockQuantity ?? 0) - (b.stockQuantity ?? 0);
+        }
+        return dir === 'asc' ? diff : -diff;
+      });
+    }
+
+    return list;
+  });
+
+  readonly totalVariantPages = computed(() => {
+    const total = this.processedVariants().length;
+    return Math.max(1, Math.ceil(total / this.variantPageSize()));
+  });
+
+  readonly paginatedVariants = computed(() => {
+    const start = (this.variantPage() - 1) * this.variantPageSize();
+    return this.processedVariants().slice(start, start + this.variantPageSize());
+  });
+
+  onVariantSortChange(col: 'price' | 'stock', dir: SortDirection): void {
+    this.variantSortCol.set(dir ? col : null);
+    this.variantSortDir.set(dir);
+  }
+
+  onVariantSearchSkuChange(q: string): void {
+    this.variantSearchSku.set(q);
+    this.variantPage.set(1);
+  }
+
+  onVariantSearchAttrChange(q: string): void {
+    this.variantSearchAttr.set(q);
+    this.variantPage.set(1);
+  }
+
+  onVariantPageChange(p: number): void {
+    this.variantPage.set(p);
+  }
+
+  resetVariantFilters(): void {
+    this.variantSearchSku.set('');
+    this.variantSearchAttr.set('');
+    this.variantSortCol.set(null);
+    this.variantSortDir.set(null);
+    this.variantPage.set(1);
+  }
 
   readonly isEditDrawerOpen = signal(false);
   readonly isSaving = signal(false);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { toast } from '@spartan/helm/sonner';
 import { extractErrorMessage } from '@invento/shared-util-error';
@@ -67,9 +67,14 @@ import {
   ProductAttribute,
   ProductAttributeValue,
 } from '@invento/owner-dashboard-data-access-attribute';
-import { AttributeSearchPipe } from './attribute-search.pipe';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { EmptyState } from '@invento/shared-ui-empty-state';
+import { Pagination } from '@invento/shared-ui-pagination';
+import {
+  TableHeaderCell,
+  TableColumnSortDirection,
+  TableColumnFilterOption,
+} from '@invento/shared-ui-table-header';
 
 @Component({
   selector: 'app-attributes',
@@ -89,7 +94,6 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
-    AttributeSearchPipe,
     DeleteConfirmDialog,
     HlmSkeleton,
     HlmTable,
@@ -114,6 +118,8 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
     TranslatePipe,
     HlmCheckbox,
     EmptyState,
+    Pagination,
+    TableHeaderCell,
   ],
   providers: [
     provideIcons({
@@ -143,6 +149,109 @@ export class Attributes implements OnInit {
   readonly isLoading = signal<boolean>(true);
   readonly errorMessage = signal<string | null>(null);
   readonly searchQuery = signal('');
+
+  readonly page = signal(1);
+  readonly pageSize = signal(10);
+  readonly colNameSearch = signal('');
+  readonly colKeySearch = signal('');
+  readonly colFilterableFilter = signal('');
+  readonly colShowOnPageFilter = signal('');
+  readonly colDisplayStyleFilter = signal('');
+  readonly colValuesCountSort = signal<TableColumnSortDirection>('none');
+
+  readonly booleanFilterOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    { label: this.localeService.translate('attributes.yes') || 'Yes', value: 'true' },
+    { label: this.localeService.translate('attributes.no') || 'No', value: 'false' },
+  ]);
+
+  readonly displayStyleOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    {
+      label: this.localeService.translate('attributes.style_list') || 'List',
+      value: AttributeDisplayStyle.List,
+    },
+    {
+      label: this.localeService.translate('attributes.style_dropdown') || 'Dropdown',
+      value: AttributeDisplayStyle.Dropdown,
+    },
+    {
+      label: this.localeService.translate('attributes.style_swatch') || 'Swatch',
+      value: AttributeDisplayStyle.Swatch,
+    },
+  ]);
+
+  readonly isColumnFilteredOrSorted = computed(
+    () =>
+      Boolean(this.colNameSearch().trim()) ||
+      Boolean(this.colKeySearch().trim()) ||
+      Boolean(this.colFilterableFilter()) ||
+      Boolean(this.colShowOnPageFilter()) ||
+      Boolean(this.colDisplayStyleFilter()) ||
+      this.colValuesCountSort() !== 'none',
+  );
+
+  readonly filteredAttributes = computed(() => {
+    let list = [...this.attributes()];
+    const query = this.searchQuery().trim().toLowerCase();
+    if (query) {
+      list = list.filter(
+        (a) =>
+          a.name.toLowerCase().includes(query) ||
+          a.key.toLowerCase().includes(query),
+      );
+    }
+    const nameSearch = this.colNameSearch().trim().toLowerCase();
+    if (nameSearch) {
+      list = list.filter((a) => a.name.toLowerCase().includes(nameSearch));
+    }
+    const keySearch = this.colKeySearch().trim().toLowerCase();
+    if (keySearch) {
+      list = list.filter((a) => a.key.toLowerCase().includes(keySearch));
+    }
+    const filterable = this.colFilterableFilter();
+    if (filterable && filterable !== 'all') {
+      const boolVal = filterable === 'true';
+      list = list.filter((a) => Boolean(a.isFilterable) === boolVal);
+    }
+    const showOnPage = this.colShowOnPageFilter();
+    if (showOnPage && showOnPage !== 'all') {
+      const boolVal = showOnPage === 'true';
+      list = list.filter((a) => Boolean(a.showOnProductPage) === boolVal);
+    }
+    const style = this.colDisplayStyleFilter();
+    if (style && style !== 'all') {
+      list = list.filter((a) => a.displayStyle === style);
+    }
+    const sort = this.colValuesCountSort();
+    if (sort === 'asc') {
+      list.sort((a, b) => (a.values?.length ?? 0) - (b.values?.length ?? 0));
+    } else if (sort === 'desc') {
+      list.sort((a, b) => (b.values?.length ?? 0) - (a.values?.length ?? 0));
+    }
+    return list;
+  });
+
+  readonly totalPages = computed(() => {
+    return Math.max(1, Math.ceil(this.filteredAttributes().length / this.pageSize()));
+  });
+
+  readonly paginatedAttributes = computed(() => {
+    const p = Math.min(this.page(), this.totalPages());
+    const start = (p - 1) * this.pageSize();
+    return this.filteredAttributes().slice(start, start + this.pageSize());
+  });
+
+  readonly pageRangeStart = computed(() => {
+    if (this.filteredAttributes().length === 0) {
+      return 0;
+    }
+    return (this.page() - 1) * this.pageSize() + 1;
+  });
+
+  readonly pageRangeEnd = computed(() => {
+    return Math.min(this.page() * this.pageSize(), this.filteredAttributes().length);
+  });
 
   // Loading states for actions
   readonly isSaving = signal<boolean>(false);
@@ -452,6 +561,9 @@ export class Attributes implements OnInit {
   }
 
   dropAttribute(event: CdkDragDrop<ProductAttribute[]>): void {
+    if (this.isColumnFilteredOrSorted() || this.page() !== 1) {
+      return;
+    }
     const previousList = [...this.attributes()];
     const currentList = [...this.attributes()];
     moveItemInArray(currentList, event.previousIndex, event.currentIndex);

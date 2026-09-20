@@ -85,88 +85,160 @@
           </div>
           <div hlmCardContent class="p-0">
             <div hlmTableContainer class="overflow-x-auto">
-              <table hlmTable class="w-full text-sm text-left border-collapse">
+              <table hlmTable class="w-full text-sm text-start border-collapse">
                 <thead hlmTHead class="bg-muted/30 border-b border-border/60">
                   <tr hlmTr>
-                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">{{ 'product_details.col_sku' | translate }}</th>
-                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">{{ 'product_details.col_attributes' | translate }}</th>
-                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">{{ 'product_details.col_price' | translate }}</th>
-                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground">{{ 'product_details.col_stock' | translate }}</th>
-                    <th hlmTh class="px-4 py-3 font-semibold text-muted-foreground text-right">
-                      {{ 'product_details.col_actions' | translate }}
+                    <th hlmTh class="px-4 py-3.5 font-semibold text-muted-foreground">
+                      <app-table-header-cell
+                        type="search"
+                        [label]="'product_details.col_sku' | translate"
+                        [searchValue]="variantSearchSku()"
+                        (searchChange)="onVariantSearchSkuChange($event)"
+                      />
+                    </th>
+                    <th hlmTh class="px-4 py-3.5 font-semibold text-muted-foreground">
+                      <app-table-header-cell
+                        type="search"
+                        [label]="'product_details.col_attributes' | translate"
+                        [searchValue]="variantSearchAttr()"
+                        (searchChange)="onVariantSearchAttrChange($event)"
+                      />
+                    </th>
+                    <th hlmTh class="px-4 py-3.5 font-semibold text-muted-foreground text-end">
+                      <app-table-header-cell
+                        type="sort"
+                        align="end"
+                        [label]="'product_details.col_price' | translate"
+                        [sortDirection]="variantSortCol() === 'price' ? variantSortDir() : null"
+                        (sortChange)="onVariantSortChange('price', $event)"
+                      />
+                    </th>
+                    <th hlmTh class="px-4 py-3.5 font-semibold text-muted-foreground text-end">
+                      <app-table-header-cell
+                        type="sort"
+                        align="end"
+                        [label]="'product_details.col_stock' | translate"
+                        [sortDirection]="variantSortCol() === 'stock' ? variantSortDir() : null"
+                        (sortChange)="onVariantSortChange('stock', $event)"
+                      />
+                    </th>
+                    <th hlmTh class="px-4 py-3.5 font-semibold text-muted-foreground text-end">
+                      <app-table-header-cell
+                        type="none"
+                        align="end"
+                        [label]="'product_details.col_actions' | translate"
+                      />
                     </th>
                   </tr>
                 </thead>
                 <tbody hlmTBody class="divide-y divide-border/60">
-                  @for (variant of product()!.variants; track variant.id) {
-                    <tr hlmTr class="hover:bg-muted/20">
-                      <td hlmTd class="px-4 py-3 font-medium">
-                        @if (variant.sku) {
-                          {{ variant.sku }}
-                        } @else {
-                          <span class="text-muted-foreground italic text-xs">{{ 'product_details.sku_not_set' | translate }}</span>
-                        }
-                      </td>
-                      <td hlmTd class="px-4 py-3 text-muted-foreground">
-                        @if (variant.attributeValues.length) {
-                          <div class="flex gap-1 flex-wrap">
-                            @for (attr of variant.attributeValues; track attr.id) {
-                              <span hlmBadge variant="secondary" class="text-xs"
-                                >{{ attr.attributeName }}: {{ attr.value }}</span
-                              >
-                            }
-                          </div>
-                        } @else {
-                          <span class="text-xs italic">{{ 'product_details.attr_default' | translate }}</span>
-                        }
-                      </td>
-                      <td hlmTd class="px-4 py-3">
-                        ${{ variant.priceAmount / 100 | number: '1.2-2' }}
-                        @if (variant.compareAtAmount) {
-                          <span class="text-xs line-through text-muted-foreground ml-1"
-                            >${{ variant.compareAtAmount / 100 | number: '1.2-2' }}</span
-                          >
-                        }
-                      </td>
-                      <td hlmTd class="px-4 py-3">
-                        <span
-                          [ngClass]="{
-                            'text-rose-500 font-medium':
-                              variant.stockQuantity <= variant.lowStockThreshold,
-                          }"
+                  @if (processedVariants().length === 0) {
+                    <tr hlmTr>
+                      <td hlmTd colspan="5" class="p-10 text-center">
+                        <app-empty-state
+                          icon="lucidePackage"
+                          [title]="'product_details.empty_variants_title' | translate"
+                          [description]="'product_details.empty_variants_desc' | translate"
                         >
-                          {{ variant.stockQuantity }}
-                        </span>
-                      </td>
-                      <td hlmTd class="px-4 py-3 text-right">
-                        <div class="flex items-center justify-end gap-2">
-                          <button
-                            hlmBtn
-                            variant="ghost"
-                            size="icon"
-                            class="h-8 w-8 text-muted-foreground hover:text-primary"
-                            (click)="openEditVariantDrawer(variant)"
-                            [attr.aria-label]="'product_details.btn_edit_details' | translate"
-                          >
-                            <ng-icon name="lucideEdit" size="14"></ng-icon>
-                          </button>
-                          <button
-                            hlmBtn
-                            variant="ghost"
-                            size="icon"
-                            class="h-8 w-8 text-muted-foreground hover:text-rose-500"
-                            (click)="deleteVariant(variant.id)"
-                            [attr.aria-label]="'product_details.btn_delete' | translate"
-                          >
-                            <ng-icon name="lucideTrash2" size="14"></ng-icon>
-                          </button>
-                        </div>
+                          @if (variantSearchSku() || variantSearchAttr() || variantSortCol()) {
+                            <button
+                              hlmBtn
+                              variant="outline"
+                              size="sm"
+                              class="gap-1.5 mt-2"
+                              (click)="resetVariantFilters()"
+                            >
+                              <ng-icon name="lucideX" size="14" />
+                              <span>{{ 'common.reset' | translate }}</span>
+                            </button>
+                          }
+                        </app-empty-state>
                       </td>
                     </tr>
+                  } @else {
+                    @for (variant of paginatedVariants(); track variant.id) {
+                      <tr hlmTr class="hover:bg-muted/20">
+                        <td hlmTd class="px-4 py-3 font-medium">
+                          @if (variant.sku) {
+                            {{ variant.sku }}
+                          } @else {
+                            <span class="text-muted-foreground italic text-xs">{{ 'product_details.sku_not_set' | translate }}</span>
+                          }
+                        </td>
+                        <td hlmTd class="px-4 py-3 text-muted-foreground">
+                          @if (variant.attributeValues.length) {
+                            <div class="flex gap-1 flex-wrap">
+                              @for (attr of variant.attributeValues; track attr.id) {
+                                <span hlmBadge variant="secondary" class="text-xs"
+                                  >{{ attr.attributeName }}: {{ attr.value }}</span
+                                >
+                              }
+                            </div>
+                          } @else {
+                            <span class="text-xs italic">{{ 'product_details.attr_default' | translate }}</span>
+                          }
+                        </td>
+                        <td hlmTd class="px-4 py-3 text-end">
+                          ${{ variant.priceAmount / 100 | number: '1.2-2' }}
+                          @if (variant.compareAtAmount) {
+                            <span class="text-xs line-through text-muted-foreground ms-1"
+                              >${{ variant.compareAtAmount / 100 | number: '1.2-2' }}</span
+                            >
+                          }
+                        </td>
+                        <td hlmTd class="px-4 py-3 text-end">
+                          <span
+                            [ngClass]="{
+                              'text-rose-500 font-medium':
+                                variant.stockQuantity <= variant.lowStockThreshold,
+                            }"
+                          >
+                            {{ variant.stockQuantity }}
+                          </span>
+                        </td>
+                        <td hlmTd class="px-4 py-3 text-end">
+                          <div class="flex items-center justify-end gap-1">
+                            <button
+                              hlmBtn
+                              variant="ghost"
+                              size="icon"
+                              class="h-9 w-9 text-muted-foreground hover:text-primary"
+                              (click)="openEditVariantDrawer(variant)"
+                              [attr.aria-label]="'product_details.btn_edit_details' | translate"
+                            >
+                              <ng-icon name="lucideEdit" size="14"></ng-icon>
+                            </button>
+                            <button
+                              hlmBtn
+                              variant="ghost"
+                              size="icon"
+                              class="h-9 w-9 text-muted-foreground hover:text-rose-500"
+                              (click)="deleteVariant(variant.id)"
+                              [attr.aria-label]="'product_details.btn_delete' | translate"
+                            >
+                              <ng-icon name="lucideTrash2" size="14"></ng-icon>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    }
                   }
                 </tbody>
               </table>
             </div>
+
+            <!-- Variants Pagination -->
+            @if (totalVariantPages() > 1 || processedVariants().length > variantPageSize()) {
+              <div class="p-4 border-t border-border/60 bg-card">
+                <app-pagination
+                  [currentPage]="variantPage()"
+                  [totalPages]="totalVariantPages()"
+                  [totalItems]="processedVariants().length"
+                  [pageSize]="variantPageSize()"
+                  (pageChange)="onVariantPageChange($event)"
+                />
+              </div>
+            }
           </div>
         </div>
         <div hlmCard class="bg-card shadow-sm border-border">

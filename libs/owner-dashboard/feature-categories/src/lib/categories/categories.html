@@ -112,26 +112,48 @@
           >
             <th hlmTh class="w-10"></th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'categories.th_category' | translate }}
+              <app-table-header-cell
+                [label]="'categories.th_category' | translate"
+                type="search"
+                [searchValue]="colNameSearch()"
+                (searchChange)="colNameSearch.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'categories.th_status' | translate }}
+              <app-table-header-cell
+                [label]="'categories.th_status' | translate"
+                type="filter"
+                [filterOptions]="statusOptions()"
+                [selectedFilter]="colStatusFilter()"
+                (filterChange)="colStatusFilter.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-28">
-              {{ 'categories.th_position' | translate }}
+              <app-table-header-cell
+                [label]="'categories.th_position' | translate"
+                type="sort"
+                align="end"
+                [sortDirection]="colPositionSort()"
+                (sortChange)="colPositionSort.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-40">
-              {{ 'categories.th_actions' | translate }}
+              <app-table-header-cell
+                [label]="'categories.th_actions' | translate"
+                type="none"
+                align="end"
+              />
             </th>
           </tr>
         </thead>
         <tbody
           hlmTBody
           cdkDropList
+          [cdkDropListDisabled]="isColumnFilteredOrSorted()"
           (cdkDropListDropped)="onDrop($event)"
           class="divide-y divide-border/60 text-sm"
         >
-          @if (loading() && categories().length === 0) {
+          @if (loading() && displayedCategories().length === 0) {
             @for (item of [1, 2, 3, 4, 5]; track item) {
               <tr hlmTr>
                 <td hlmTd class="px-2 md:px-3 align-middle w-10 text-center">
@@ -157,7 +179,7 @@
                 </td>
               </tr>
             }
-          } @else if (categories().length === 0) {
+          } @else if (displayedCategories().length === 0) {
             <tr hlmTr>
               <td hlmTd colspan="5" class="p-16 text-center">
                 <app-empty-state
@@ -173,7 +195,7 @@
               </td>
             </tr>
           } @else {
-            @for (c of categories(); track c.id) {
+            @for (c of displayedCategories(); track c.id) {
               <tr hlmTr class="group hover:bg-muted/40 transition-colors cursor-move" cdkDrag>
                 <div
                   *cdkDragPreview

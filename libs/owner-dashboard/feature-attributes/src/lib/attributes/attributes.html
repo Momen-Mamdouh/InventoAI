@@ -70,25 +70,64 @@
           >
             <th hlmTh class="w-10"></th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'attributes.th_name' | translate }}
+              <app-table-header-cell
+                [label]="'attributes.th_name' | translate"
+                type="search"
+                [searchPlaceholder]="'attributes.search_name_placeholder' | translate"
+                [searchValue]="colNameSearch()"
+                (searchChange)="colNameSearch.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'attributes.th_key' | translate }}
+              <app-table-header-cell
+                [label]="'attributes.th_key' | translate"
+                type="search"
+                [searchPlaceholder]="'attributes.search_key_placeholder' | translate"
+                [searchValue]="colKeySearch()"
+                (searchChange)="colKeySearch.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'attributes.th_filterable' | translate }}
+              <app-table-header-cell
+                [label]="'attributes.th_filterable' | translate"
+                type="filter"
+                [filterOptions]="booleanFilterOptions()"
+                [selectedFilter]="colFilterableFilter()"
+                (filterChange)="colFilterableFilter.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'attributes.th_show_on_product_page' | translate }}
+              <app-table-header-cell
+                [label]="'attributes.th_show_on_product_page' | translate"
+                type="filter"
+                [filterOptions]="booleanFilterOptions()"
+                [selectedFilter]="colShowOnPageFilter()"
+                (filterChange)="colShowOnPageFilter.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'attributes.th_display_style' | translate }}
+              <app-table-header-cell
+                [label]="'attributes.th_display_style' | translate"
+                type="filter"
+                [filterOptions]="displayStyleOptions()"
+                [selectedFilter]="colDisplayStyleFilter()"
+                (filterChange)="colDisplayStyleFilter.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-              {{ 'attributes.th_values_count' | translate }}
+              <app-table-header-cell
+                [label]="'attributes.th_values_count' | translate"
+                type="sort"
+                [sortDirection]="colValuesCountSort()"
+                (sortChange)="colValuesCountSort.set($event)"
+              />
             </th>
             <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap">
-              {{ 'attributes.th_actions' | translate }}
+              <app-table-header-cell
+                [label]="'attributes.th_actions' | translate"
+                type="none"
+                align="end"
+              />
             </th>
           </tr>
         </thead>
@@ -96,6 +135,7 @@
           hlmTBody
           class="divide-y divide-border/60 text-sm"
           cdkDropList
+          [cdkDropListDisabled]="isColumnFilteredOrSorted() || page() !== 1"
           (cdkDropListDropped)="dropAttribute($event)"
         >
           @if (isLoading()) {
@@ -138,7 +178,7 @@
               </td>
             </tr>
           } @else {
-            @for (attr of attributes() | attributeSearch: searchQuery(); track attr.id) {
+            @for (attr of paginatedAttributes(); track attr.id) {
               <tr hlmTr class="group hover:bg-muted/40 transition-colors bg-card" cdkDrag>
                 <td hlmTd class="px-2 md:px-3 text-muted-foreground/40 align-middle w-10">
                   <div
@@ -233,6 +273,27 @@
         </tbody>
       </table>
     </div>
+
+    @if (filteredAttributes().length > 0) {
+      <div class="flex sm:flex-row flex-col justify-between items-center gap-3 p-4 border-t border-border">
+        <span hlmMuted class="text-xs">
+          {{
+            'attributes.pagination_summary'
+              | translate
+                : {
+                    start: pageRangeStart(),
+                    end: pageRangeEnd(),
+                    total: filteredAttributes().length
+                  }
+          }}
+        </span>
+        <app-pagination
+          [currentPage]="page()"
+          [totalPages]="totalPages()"
+          (pageChange)="page.set($event)"
+        />
+      </div>
+    }
   </div>
 </div>
 

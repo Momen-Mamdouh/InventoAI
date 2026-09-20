@@ -1,0 +1,223 @@
+@switch (type()) {
+  @case ('sort') {
+    <div class="inline-flex items-center w-full {{ alignClass() }}">
+      <button
+        type="button"
+        (click)="onSortToggle()"
+        class="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider transition-colors hover:text-foreground group focus:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded px-1 -mx-1 py-0.5 select-none"
+        [class.text-primary]="isSortActive()"
+        [class.font-bold]="isSortActive()"
+        [class.text-muted-foreground]="!isSortActive()"
+        [class.font-semibold]="!isSortActive()"
+      >
+        <span>{{ label() }}</span>
+        @if (sortDirection() === 'asc') {
+          <ng-icon name="lucideArrowUp" size="13" class="text-primary shrink-0" />
+        } @else if (sortDirection() === 'desc') {
+          <ng-icon name="lucideArrowDown" size="13" class="text-primary shrink-0" />
+        } @else {
+          <ng-icon
+            name="lucideArrowUpDown"
+            size="13"
+            class="text-muted-foreground/50 group-hover:text-foreground shrink-0 transition-colors"
+          />
+        }
+      </button>
+    </div>
+  }
+
+  @case ('search') {
+    <div class="inline-flex items-center w-full {{ alignClass() }}">
+      <hlm-popover>
+        <button
+          hlmBtn
+          hlmPopoverTrigger
+          variant="ghost"
+          type="button"
+          class="h-auto p-0 px-1 -mx-1 py-0.5 inline-flex items-center gap-1.5 text-xs uppercase tracking-wider transition-colors hover:text-foreground group focus:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded select-none hover:bg-transparent"
+          [class.text-primary]="isSearchActive()"
+          [class.font-bold]="isSearchActive()"
+          [class.text-muted-foreground]="!isSearchActive()"
+          [class.font-semibold]="!isSearchActive()"
+        >
+          <span>{{ label() }}</span>
+          <div class="relative inline-flex items-center">
+            <ng-icon
+              name="lucideSearch"
+              size="13"
+              [class.text-primary]="isSearchActive()"
+              [class.text-muted-foreground/60]="!isSearchActive()"
+              class="shrink-0 group-hover:text-foreground transition-colors"
+            />
+            @if (isSearchActive()) {
+              <span
+                class="absolute -top-1 -end-1 w-1.5 h-1.5 rounded-full bg-primary ring-2 ring-background"
+              ></span>
+            }
+          </div>
+        </button>
+
+        <div
+          hlmPopoverContent
+          *brnPopoverContent="let ctx"
+          class="w-64 p-3 rounded-xl border border-border bg-popover shadow-md space-y-2.5 z-50"
+        >
+          <div class="flex items-center justify-between gap-2 border-b border-border/50 pb-2">
+            <span class="text-xs font-semibold text-foreground truncate">
+              {{ label() }}
+            </span>
+            @if (isSearchActive()) {
+              <button
+                type="button"
+                (click)="onClearSearch(); ctx.close()"
+                class="text-[11px] text-muted-foreground hover:text-destructive flex items-center gap-1 transition-colors"
+              >
+                <ng-icon name="lucideX" size="11" />
+                <span>{{ 'common.clear' | translate }}</span>
+              </button>
+            }
+          </div>
+
+          <div class="relative">
+            <input
+              hlmInput
+              type="text"
+              [placeholder]="searchPlaceholder() || label()"
+              [ngModel]="localSearch()"
+              (ngModelChange)="localSearch.set($event)"
+              (keydown.enter)="onApplySearch(); ctx.close()"
+              class="w-full h-8 text-xs pe-7"
+            />
+            @if (localSearch()) {
+              <button
+                type="button"
+                (click)="localSearch.set('')"
+                class="absolute end-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <ng-icon name="lucideX" size="13" />
+              </button>
+            }
+          </div>
+
+          <div class="flex items-center justify-end gap-1.5 pt-1">
+            <button
+              hlmBtn
+              variant="outline"
+              size="sm"
+              type="button"
+              (click)="onClearSearch(); ctx.close()"
+              class="h-7 text-xs px-2.5"
+            >
+              {{ 'common.reset' | translate }}
+            </button>
+            <button
+              hlmBtn
+              size="sm"
+              type="button"
+              (click)="onApplySearch(); ctx.close()"
+              class="h-7 text-xs px-3"
+            >
+              {{ 'common.apply' | translate }}
+            </button>
+          </div>
+        </div>
+      </hlm-popover>
+    </div>
+  }
+
+  @case ('filter') {
+    <div class="inline-flex items-center w-full {{ alignClass() }}">
+      <hlm-popover>
+        <button
+          hlmBtn
+          hlmPopoverTrigger
+          variant="ghost"
+          type="button"
+          class="h-auto p-0 px-1 -mx-1 py-0.5 inline-flex items-center gap-1.5 text-xs uppercase tracking-wider transition-colors hover:text-foreground group focus:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded select-none hover:bg-transparent"
+          [class.text-primary]="isFilterActive()"
+          [class.font-bold]="isFilterActive()"
+          [class.text-muted-foreground]="!isFilterActive()"
+          [class.font-semibold]="!isFilterActive()"
+        >
+          <span>{{ label() }}</span>
+          <div class="relative inline-flex items-center">
+            <ng-icon
+              name="lucideFilter"
+              size="13"
+              [class.text-primary]="isFilterActive()"
+              [class.text-muted-foreground/60]="!isFilterActive()"
+              class="shrink-0 group-hover:text-foreground transition-colors"
+            />
+            @if (isFilterActive()) {
+              <span
+                class="absolute -top-1 -end-1 w-1.5 h-1.5 rounded-full bg-primary ring-2 ring-background"
+              ></span>
+            }
+          </div>
+        </button>
+
+        <div
+          hlmPopoverContent
+          *brnPopoverContent="let ctx"
+          class="w-52 p-1.5 rounded-xl border border-border bg-popover shadow-md space-y-1 z-50"
+        >
+          <div
+            class="flex items-center justify-between px-2 py-1.5 border-b border-border/50 text-xs font-semibold text-foreground"
+          >
+            <span>{{ label() }}</span>
+            @if (isFilterActive()) {
+              <button
+                type="button"
+                (click)="onClearFilter(); ctx.close()"
+                class="text-[11px] text-muted-foreground hover:text-destructive flex items-center gap-1 transition-colors"
+              >
+                <ng-icon name="lucideX" size="11" />
+                <span>{{ 'common.all' | translate }}</span>
+              </button>
+            }
+          </div>
+
+          <div class="max-h-56 overflow-y-auto py-1 space-y-0.5">
+            <button
+              type="button"
+              (click)="onClearFilter(); ctx.close()"
+              class="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs hover:bg-muted transition-colors text-start"
+              [class.bg-muted]="!activeFilterValue()"
+              [class.font-semibold]="!activeFilterValue()"
+            >
+              <span>{{ 'common.all' | translate }}</span>
+              @if (!activeFilterValue()) {
+                <ng-icon name="lucideCheck" size="13" class="text-primary" />
+              }
+            </button>
+
+            @for (opt of filterOptions(); track opt.value) {
+              <button
+                type="button"
+                (click)="onSelectFilter(opt.value); ctx.close()"
+                class="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs hover:bg-muted transition-colors text-start"
+                [class.bg-muted]="activeFilterValue() === opt.value"
+                [class.font-semibold]="activeFilterValue() === opt.value"
+              >
+                <span class="truncate">{{ opt.label }}</span>
+                @if (activeFilterValue() === opt.value) {
+                  <ng-icon name="lucideCheck" size="13" class="text-primary shrink-0 ms-1.5" />
+                }
+              </button>
+            }
+          </div>
+        </div>
+      </hlm-popover>
+    </div>
+  }
+
+  @default {
+    <div class="inline-flex items-center w-full {{ alignClass() }}">
+      <span
+        class="text-xs font-semibold uppercase tracking-wider text-muted-foreground select-none"
+      >
+        {{ label() }}
+      </span>
+    </div>
+  }
+}

@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   OnDestroy,
   OnInit,
@@ -57,6 +58,11 @@ import { Category, CategoriesState } from '@invento/owner-dashboard-data-access-
 import { Pagination } from '@invento/shared-ui-pagination';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
+import {
+  TableHeaderCell,
+  TableColumnSortDirection,
+  TableColumnFilterOption,
+} from '@invento/shared-ui-table-header';
 
 type PublishedFilter = 'all' | 'published' | 'unpublished';
 type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
@@ -100,6 +106,7 @@ type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
     Pagination,
     EmptyState,
     TranslatePipe,
+    TableHeaderCell,
   ],
   providers: [
     provideIcons({
@@ -149,6 +156,65 @@ export class Categories implements OnInit, OnDestroy {
     }
     return this.localeService.translate(`categories.filter_featured_${value}`);
   };
+
+  readonly colNameSearch = signal('');
+  readonly colStatusFilter = signal('');
+  readonly colPositionSort = signal<TableColumnSortDirection>('none');
+
+  readonly statusOptions = computed<TableColumnFilterOption[]>(() => [
+    {
+      label: this.localeService.translate('categories.filter_status_all') || 'All',
+      value: 'all',
+    },
+    {
+      label: this.localeService.translate('categories.filter_status_published') || 'Published',
+      value: 'published',
+    },
+    {
+      label: this.localeService.translate('categories.filter_status_unpublished') || 'Unpublished',
+      value: 'unpublished',
+    },
+    {
+      label: this.localeService.translate('categories.filter_featured_featured') || 'Featured',
+      value: 'featured',
+    },
+  ]);
+
+  readonly isColumnFilteredOrSorted = computed(
+    () =>
+      Boolean(this.colNameSearch().trim()) ||
+      Boolean(this.colStatusFilter()) ||
+      this.colPositionSort() !== 'none',
+  );
+
+  readonly displayedCategories = computed(() => {
+    let list = [...this.categories()];
+    const search = this.colNameSearch().trim().toLowerCase();
+    if (search) {
+      list = list.filter(
+        (c) =>
+          c.name.toLowerCase().includes(search) ||
+          c.slug.toLowerCase().includes(search),
+      );
+    }
+    const status = this.colStatusFilter();
+    if (status && status !== 'all') {
+      if (status === 'published') {
+        list = list.filter((c) => c.isPublished);
+      } else if (status === 'unpublished') {
+        list = list.filter((c) => !c.isPublished);
+      } else if (status === 'featured') {
+        list = list.filter((c) => c.isFeatured);
+      }
+    }
+    const sort = this.colPositionSort();
+    if (sort === 'asc') {
+      list.sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    } else if (sort === 'desc') {
+      list.sort((a, b) => (b.position ?? 0) - (a.position ?? 0));
+    }
+    return list;
+  });
 
   private searchDebounce?: ReturnType<typeof setTimeout>;
 
@@ -232,6 +298,9 @@ export class Categories implements OnInit, OnDestroy {
   }
 
   onDrop(event: CdkDragDrop<Category[]>): void {
+    if (this.isColumnFilteredOrSorted()) {
+      return;
+    }
     const arr = [...this.categories()];
     moveItemInArray(arr, event.previousIndex, event.currentIndex);
     this.state.optimisticReorder(arr);

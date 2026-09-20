@@ -26,11 +26,16 @@ import {
   HlmTr,
   HlmTh,
   HlmTd,
+  HlmTableContainer,
 } from '@spartan/helm/table';
+import { TableHeaderCell, SortDirection, FilterOption } from '@invento/shared-ui-table-header';
+import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 import { HlmAlert, HlmAlertDescription } from '@spartan/helm/alert';
 import { HlmH1, HlmH2, HlmLarge, HlmMuted, HlmSmall } from '@spartan/helm/typography';
 import { HlmTooltip } from '@spartan/helm/tooltip';
 import { TranslatePipe } from '@invento/shared-util-i18n';
+import { computed } from '@angular/core';
 import { SupplierService, Supplier } from '@invento/owner-dashboard-data-access-supplier';
 import {
   PurchaseRequestDetail,
@@ -63,6 +68,10 @@ interface SupplierRequestHistory {
     HlmTr,
     HlmTh,
     HlmTd,
+    HlmTableContainer,
+    TableHeaderCell,
+    Pagination,
+    EmptyState,
     HlmAlert,
     HlmAlertDescription,
     HlmH1,
@@ -99,6 +108,96 @@ export class SupplierDetails implements OnInit {
   readonly loading = signal(true);
   readonly historyLoading = signal(true);
   readonly error = signal<string | null>(null);
+
+  // History Table Signals & Pagination
+  readonly historyPage = signal<number>(1);
+  readonly historyPageSize = signal<number>(5);
+  readonly historySortCol = signal<'quantity' | 'amount' | 'delivery' | 'date' | null>(null);
+  readonly historySortDir = signal<SortDirection>(null);
+  readonly historySearchProduct = signal<string>('');
+  readonly historyFilterStatus = signal<string>('');
+
+  readonly historyStatusOptions: FilterOption[] = [
+    { label: 'Pending', value: 'pending' },
+    { label: 'Accepted', value: 'accepted' },
+    { label: 'Rejected', value: 'rejected' },
+  ];
+
+  readonly processedHistory = computed(() => {
+    let list = [...this.history()];
+
+    // Search Product
+    const prodQ = this.historySearchProduct().trim().toLowerCase();
+    if (prodQ) {
+      list = list.filter((item) =>
+        item.request.productTitle.toLowerCase().includes(prodQ),
+      );
+    }
+
+    // Filter Status
+    const statusF = this.historyFilterStatus();
+    if (statusF) {
+      list = list.filter((item) => item.offer.status.toLowerCase() === statusF.toLowerCase());
+    }
+
+    // Sort
+    const col = this.historySortCol();
+    const dir = this.historySortDir();
+    if (col && dir) {
+      list.sort((a, b) => {
+        let diff = 0;
+        if (col === 'quantity') {
+          diff = a.request.quantity - b.request.quantity;
+        } else if (col === 'amount') {
+          diff = (a.offer.unitAmount ?? 0) - (b.offer.unitAmount ?? 0);
+        } else if (col === 'delivery') {
+          diff = (a.offer.deliveryDays ?? 0) - (b.offer.deliveryDays ?? 0);
+        } else if (col === 'date') {
+          diff = new Date(a.request.createdAt).getTime() - new Date(b.request.createdAt).getTime();
+        }
+        return dir === 'asc' ? diff : -diff;
+      });
+    }
+
+    return list;
+  });
+
+  readonly totalHistoryPages = computed(() => {
+    const total = this.processedHistory().length;
+    return Math.max(1, Math.ceil(total / this.historyPageSize()));
+  });
+
+  readonly paginatedHistory = computed(() => {
+    const start = (this.historyPage() - 1) * this.historyPageSize();
+    return this.processedHistory().slice(start, start + this.historyPageSize());
+  });
+
+  onHistorySortChange(col: 'quantity' | 'amount' | 'delivery' | 'date', dir: SortDirection): void {
+    this.historySortCol.set(dir ? col : null);
+    this.historySortDir.set(dir);
+  }
+
+  onHistorySearchChange(q: string): void {
+    this.historySearchProduct.set(q);
+    this.historyPage.set(1);
+  }
+
+  onHistoryStatusFilterChange(val: string): void {
+    this.historyFilterStatus.set(val);
+    this.historyPage.set(1);
+  }
+
+  onHistoryPageChange(p: number): void {
+    this.historyPage.set(p);
+  }
+
+  resetHistoryFilters(): void {
+    this.historySearchProduct.set('');
+    this.historyFilterStatus.set('');
+    this.historySortCol.set(null);
+    this.historySortDir.set(null);
+    this.historyPage.set(1);
+  }
 
   ngOnInit(): void {
     this.load();

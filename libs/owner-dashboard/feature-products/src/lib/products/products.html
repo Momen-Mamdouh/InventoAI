@@ -114,47 +114,69 @@
 
   <!-- Products Data Table Card -->
   <div hlmCard class="bg-card shadow-sm border-border rounded-xl overflow-hidden">
-    <div class="overflow-x-auto">
-      <table hlmTable class="w-full text-sm text-left border-collapse">
+    <div hlmTableContainer class="overflow-x-auto">
+      <table hlmTable class="w-full text-sm text-start border-collapse">
         <thead hlmTHead class="bg-muted/30 border-b border-border/60">
           <tr hlmTr>
             <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-10 text-center">
               <hlm-checkbox [checked]="isAllSelected()" (checkedChange)="toggleSelectAll()" />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              {{ 'products.col_product' | translate }}
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap">
+              <app-table-header-cell
+                type="search"
+                [label]="'products.col_product' | translate"
+                [searchValue]="colSearchTitle()"
+                (searchChange)="onTitleSearchChange($event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              {{ 'products.col_variants' | translate }}
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap">
+              <app-table-header-cell
+                type="none"
+                [label]="'products.col_variants' | translate"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              {{ 'products.col_category' | translate }}
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap">
+              <app-table-header-cell
+                type="filter"
+                [label]="'products.col_category' | translate"
+                [filterOptions]="categoryFilterOptions()"
+                [selectedFilterValue]="colFilterCategory()"
+                (filterChange)="onCategoryFilterChange($event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-right"
-            >
-              {{ 'products.col_price' | translate }}
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-end">
+              <app-table-header-cell
+                type="sort"
+                align="end"
+                [label]="'products.col_price' | translate"
+                [sortDirection]="sortColumn() === 'price' ? sortDirection() : null"
+                (sortChange)="onSortChange('price', $event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-right"
-            >
-              {{ 'products.col_stock' | translate }}
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-end">
+              <app-table-header-cell
+                type="sort"
+                align="end"
+                [label]="'products.col_stock' | translate"
+                [sortDirection]="sortColumn() === 'stock' ? sortDirection() : null"
+                (sortChange)="onSortChange('stock', $event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              {{ 'products.col_status' | translate }}
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap">
+              <app-table-header-cell
+                type="filter"
+                [label]="'products.col_status' | translate"
+                [filterOptions]="statusFilterOptions"
+                [selectedFilterValue]="colFilterStatus()"
+                (filterChange)="onStatusFilterChange($event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              {{ 'products.col_date_added' | translate }}
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-end">
+              <app-table-header-cell
+                type="none"
+                align="end"
+                [label]="'products.col_date_added' | translate"
+              />
             </th>
           </tr>
         </thead>
@@ -221,7 +243,7 @@
             </tr>
           } @else {
             <!-- Products Iteration -->
-            @for (product of products() | search: searchTerm() : ['title']; track product.id) {
+            @for (product of paginatedProducts(); track product.id) {
               <tr hlmTr cdkDrag class="group hover:bg-muted/40 transition-colors cursor-move">
                 <td hlmTd class="px-2 sm:px-3 md:px-4 py-3 text-center">
                   <hlm-checkbox
@@ -252,7 +274,7 @@
                     <div>
                       <button
                         (click)="viewProductDetails(product.id)"
-                        class="font-semibold text-foreground line-clamp-1 text-left hover:underline hover:text-primary transition-colors"
+                        class="font-semibold text-foreground line-clamp-1 text-start hover:underline hover:text-primary transition-colors"
                       >
                         {{ product.title }}
                       </button>
@@ -280,7 +302,7 @@
                   </div>
                 </td>
 
-                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-right font-medium">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end font-medium">
                   @if (product.minPriceAmount === product.maxPriceAmount) {
                     {{ product.minPriceAmount / 100 | currency: 'USD' }}
                   } @else {
@@ -299,7 +321,7 @@
                   }
                 </td>
 
-                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-right text-muted-foreground">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end text-muted-foreground">
                   {{ product.totalStock }}
                 </td>
 
@@ -328,7 +350,7 @@
                   </span>
                 </td>
 
-                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap text-end">
                   {{ product.createdAt | date: 'MMM d, y' }}
                 </td>
               </tr>
@@ -338,9 +360,9 @@
                   <app-empty-state
                     icon="lucideSearch"
                     [title]="'products.search_empty_title' | translate"
-                    [description]="'products.search_empty_desc' | translate: { query: searchTerm() }"
+                    [description]="'products.search_empty_desc' | translate: { query: searchTerm() || colSearchTitle() }"
                   >
-                    <button hlmBtn (click)="searchTerm.set('')" class="gap-1.5 mt-2" variant="outline">
+                    <button hlmBtn (click)="resetAllFilters()" class="gap-1.5 mt-2" variant="outline">
                       <ng-icon name="lucideX" size="16" />
                       {{ 'products.search_empty_clear' | translate }}
                     </button>
@@ -352,6 +374,19 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Pagination -->
+    @if (totalProductPages() > 1 || processedProducts().length > pageSize()) {
+      <div class="p-4 border-t border-border/60 bg-card">
+        <app-pagination
+          [currentPage]="currentPage()"
+          [totalPages]="totalProductPages()"
+          [totalItems]="processedProducts().length"
+          [pageSize]="pageSize()"
+          (pageChange)="onPageChange($event)"
+        />
+      </div>
+    }
   </div>
 </div>
 

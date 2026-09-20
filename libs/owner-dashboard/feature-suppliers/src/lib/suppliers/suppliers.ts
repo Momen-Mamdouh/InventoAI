@@ -55,6 +55,7 @@ import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog'
 import { Supplier, SuppliersState } from '@invento/owner-dashboard-data-access-supplier';
 import { Pagination } from '@invento/shared-ui-pagination';
 import { EmptyState } from '@invento/shared-ui-empty-state';
+import { TableHeaderCell, SortDirection, FilterOption } from '@invento/shared-ui-table-header';
 import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 import { SupplierForm } from './supplier-form';
 
@@ -93,6 +94,7 @@ type ActiveFilter = 'all' | 'active' | 'inactive';
     HlmMuted,
     Pagination,
     EmptyState,
+    TableHeaderCell,
     DeleteConfirmDialog,
     SupplierForm,
     TranslatePipe,
@@ -137,6 +139,79 @@ export class Suppliers implements OnInit, OnDestroy {
 
   readonly searchTerm = signal('');
   readonly activeFilter = signal<ActiveFilter>('all');
+
+  // Column Header Sort, Search & Filter
+  readonly colSearchName = signal<string>('');
+  readonly colSearchPhone = signal<string>('');
+  readonly sortColumn = signal<'leadTime' | 'date' | null>(null);
+  readonly sortDirection = signal<SortDirection>(null);
+  readonly colFilterStatus = signal<string>('');
+
+  readonly statusFilterOptions: FilterOption[] = [
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' },
+  ];
+
+  readonly displayedSuppliers = computed(() => {
+    let list = [...this.suppliers()];
+
+    // Column search: Name
+    const nameQ = this.colSearchName().trim().toLowerCase();
+    if (nameQ) {
+      list = list.filter((s) => s.name.toLowerCase().includes(nameQ));
+    }
+
+    // Column search: Phone/Email
+    const phoneQ = this.colSearchPhone().trim().toLowerCase();
+    if (phoneQ) {
+      list = list.filter(
+        (s) =>
+          (s.phone && s.phone.toLowerCase().includes(phoneQ)) ||
+          (s.contactEmail && s.contactEmail.toLowerCase().includes(phoneQ)),
+      );
+    }
+
+    // Column filter: Status
+    const statusF = this.colFilterStatus();
+    if (statusF) {
+      const isActive = statusF === 'active';
+      list = list.filter((s) => s.isActive === isActive);
+    }
+
+    // Column sort
+    const col = this.sortColumn();
+    const dir = this.sortDirection();
+    if (col && dir) {
+      list.sort((a, b) => {
+        let diff = 0;
+        if (col === 'leadTime') {
+          diff = (a.leadTimeDays ?? 0) - (b.leadTimeDays ?? 0);
+        } else if (col === 'date') {
+          diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }
+        return dir === 'asc' ? diff : -diff;
+      });
+    }
+
+    return list;
+  });
+
+  onSortChange(col: 'leadTime' | 'date', dir: SortDirection): void {
+    this.sortColumn.set(dir ? col : null);
+    this.sortDirection.set(dir);
+  }
+
+  onNameSearchChange(q: string): void {
+    this.colSearchName.set(q);
+  }
+
+  onPhoneSearchChange(q: string): void {
+    this.colSearchPhone.set(q);
+  }
+
+  onStatusFilterChange(val: string): void {
+    this.colFilterStatus.set(val);
+  }
 
   protected readonly sheetSide = computed<'left' | 'right'>(() =>
     this.localeService.isRtl() ? 'left' : 'right',

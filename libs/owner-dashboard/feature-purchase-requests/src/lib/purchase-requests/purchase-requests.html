@@ -270,27 +270,59 @@
         >
           <tr hlmTr>
             <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
-              {{ 'purchase_requests.col_request' | translate }}
+              <app-table-header-cell
+                [label]="'purchase_requests.col_request' | translate"
+                type="search"
+                [searchPlaceholder]="'purchase_requests.search_request_placeholder' | translate"
+                [searchValue]="colRequestSearch()"
+                (searchChange)="colRequestSearch.set($event)"
+              />
             </th>
             <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
-              {{ 'purchase_requests.col_quantity' | translate }}
+              <app-table-header-cell
+                [label]="'purchase_requests.col_quantity' | translate"
+                type="sort"
+                [sortDirection]="colQuantitySort()"
+                (sortChange)="colQuantitySort.set($event)"
+              />
             </th>
             <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
-              {{ 'purchase_requests.col_suppliers' | translate }}
+              <app-table-header-cell
+                [label]="'purchase_requests.col_suppliers' | translate"
+                type="search"
+                [searchPlaceholder]="'purchase_requests.search_supplier_placeholder' | translate"
+                [searchValue]="colSuppliersSearch()"
+                (searchChange)="colSuppliersSearch.set($event)"
+              />
             </th>
             <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
-              {{ 'purchase_requests.col_status' | translate }}
+              <app-table-header-cell
+                [label]="'purchase_requests.col_status' | translate"
+                type="filter"
+                [filterOptions]="statusFilterOptions()"
+                [selectedFilter]="colStatusFilter()"
+                (filterChange)="colStatusFilter.set($event)"
+              />
             </th>
             <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
-              {{ 'purchase_requests.col_created' | translate }}
+              <app-table-header-cell
+                [label]="'purchase_requests.col_created' | translate"
+                type="sort"
+                [sortDirection]="colCreatedSort()"
+                (sortChange)="colCreatedSort.set($event)"
+              />
             </th>
             <th hlmTh class="px-4 py-3 text-end whitespace-nowrap">
-              {{ 'purchase_requests.col_actions' | translate }}
+              <app-table-header-cell
+                [label]="'purchase_requests.col_actions' | translate"
+                type="none"
+                align="end"
+              />
             </th>
           </tr>
         </thead>
         <tbody hlmTBody class="divide-y divide-border/60">
-          @if (loading() && requests().length === 0) {
+          @if (loading() && displayedRequests().length === 0) {
             @for (row of [1, 2, 3, 4, 5]; track row) {
               <tr hlmTr>
                 <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-36 h-4" /></td>
@@ -301,7 +333,7 @@
                 <td hlmTd class="px-4 py-4 text-end"><hlm-skeleton class="w-8 h-8 rounded-lg ms-auto" /></td>
               </tr>
             }
-          } @else if (requests().length === 0) {
+          } @else if (displayedRequests().length === 0) {
             <tr hlmTr>
               <td hlmTd colspan="6" class="p-16 text-center">
                 <app-empty-state
@@ -317,7 +349,7 @@
               </td>
             </tr>
           } @else {
-            @for (req of requests(); track req.id) {
+            @for (req of displayedRequests(); track req.id) {
               <tr
                 hlmTr
                 class="hover:bg-muted/30 transition-colors cursor-pointer group"

@@ -140,59 +140,105 @@
           </span>
         </div>
       </div>
-      <div class="overflow-x-auto">
-        <table hlmTable class="w-full min-w-[950px] text-sm">
+      <div hlmTableContainer class="overflow-x-auto">
+        <table hlmTable class="w-full min-w-[950px] text-sm text-start">
           <thead
             hlmTHead
             class="bg-muted/30 border-b border-border text-xs text-muted-foreground uppercase tracking-wider"
           >
             <tr hlmTr>
-              <th hlmTh class="px-4 py-3 text-start">
-                {{ 'suppliers.details_col_product' | translate }}
+              <th hlmTh class="px-4 py-3.5 text-start">
+                <app-table-header-cell
+                  type="search"
+                  [label]="'suppliers.details_col_product' | translate"
+                  [searchValue]="historySearchProduct()"
+                  (searchChange)="onHistorySearchChange($event)"
+                />
               </th>
-              <th hlmTh class="px-4 py-3 text-start">
-                {{ 'suppliers.details_col_request' | translate }}
+              <th hlmTh class="px-4 py-3.5 text-start">
+                <app-table-header-cell
+                  type="sort"
+                  [label]="'suppliers.details_col_request' | translate"
+                  [sortDirection]="historySortCol() === 'quantity' ? historySortDir() : null"
+                  (sortChange)="onHistorySortChange('quantity', $event)"
+                />
               </th>
-              <th hlmTh class="px-4 py-3 text-start">
-                {{ 'suppliers.details_col_offer' | translate }}
+              <th hlmTh class="px-4 py-3.5 text-start">
+                <app-table-header-cell
+                  type="sort"
+                  [label]="'suppliers.details_col_offer' | translate"
+                  [sortDirection]="historySortCol() === 'amount' ? historySortDir() : null"
+                  (sortChange)="onHistorySortChange('amount', $event)"
+                />
               </th>
-              <th hlmTh class="px-4 py-3 text-start">
-                {{ 'suppliers.details_col_delivery' | translate }}
+              <th hlmTh class="px-4 py-3.5 text-start">
+                <app-table-header-cell
+                  type="sort"
+                  [label]="'suppliers.details_col_delivery' | translate"
+                  [sortDirection]="historySortCol() === 'delivery' ? historySortDir() : null"
+                  (sortChange)="onHistorySortChange('delivery', $event)"
+                />
               </th>
-              <th hlmTh class="px-4 py-3 text-start">
-                {{ 'suppliers.details_col_result' | translate }}
+              <th hlmTh class="px-4 py-3.5 text-start">
+                <app-table-header-cell
+                  type="filter"
+                  [label]="'suppliers.details_col_result' | translate"
+                  [filterOptions]="historyStatusOptions"
+                  [selectedFilterValue]="historyFilterStatus()"
+                  (filterChange)="onHistoryStatusFilterChange($event)"
+                />
               </th>
-              <th hlmTh class="px-4 py-3 text-start">
-                {{ 'suppliers.details_col_date' | translate }}
+              <th hlmTh class="px-4 py-3.5 text-start">
+                <app-table-header-cell
+                  type="sort"
+                  [label]="'suppliers.details_col_date' | translate"
+                  [sortDirection]="historySortCol() === 'date' ? historySortDir() : null"
+                  (sortChange)="onHistorySortChange('date', $event)"
+                />
               </th>
-              <th hlmTh class="px-4 py-3"></th>
+              <th hlmTh class="px-4 py-3.5 text-end">
+                <app-table-header-cell type="none" align="end" label="" />
+              </th>
             </tr>
           </thead>
           <tbody hlmTBody class="divide-y divide-border/60">
             @if (historyLoading()) {
               @for (row of [1, 2, 3, 4]; track row) {
                 <tr hlmTr>
-                  @for (cell of [1, 2, 3, 4, 5, 6, 7]; track cell) {
-                    <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-20 h-4" /></td>
-                  }
+                  <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-36 h-4" /></td>
+                  <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-20 h-4" /></td>
+                  <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-24 h-4" /></td>
+                  <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-16 h-4" /></td>
+                  <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-20 h-5 rounded-full" /></td>
+                  <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-24 h-4" /></td>
+                  <td hlmTd class="px-4 py-4 text-end"><hlm-skeleton class="w-8 h-8 rounded-lg ms-auto" /></td>
                 </tr>
               }
-            } @else if (history().length === 0) {
+            } @else if (processedHistory().length === 0) {
               <tr hlmTr>
                 <td hlmTd colspan="7" class="p-14 text-center">
-                  <div class="flex flex-col items-center gap-3">
-                    <div class="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                      <ng-icon name="lucideTruck" size="20" class="text-muted-foreground" />
-                    </div>
-                    <p hlmSmall>{{ 'suppliers.details_history_empty' | translate }}</p>
-                    <p hlmMuted class="max-w-md">
-                      {{ 'suppliers.details_history_subtitle' | translate }}
-                    </p>
-                  </div>
+                  <app-empty-state
+                    icon="lucideTruck"
+                    [title]="'suppliers.details_history_empty' | translate"
+                    [description]="'suppliers.details_history_subtitle' | translate"
+                  >
+                    @if (historySearchProduct() || historyFilterStatus() || historySortCol()) {
+                      <button
+                        hlmBtn
+                        variant="outline"
+                        size="sm"
+                        class="gap-1.5 mt-2"
+                        (click)="resetHistoryFilters()"
+                      >
+                        <ng-icon name="lucideRefreshCw" size="14" />
+                        <span>{{ 'common.reset' | translate }}</span>
+                      </button>
+                    }
+                  </app-empty-state>
                 </td>
               </tr>
             } @else {
-              @for (item of history(); track item.request.id) {
+              @for (item of paginatedHistory(); track item.request.id) {
                 <tr hlmTr class="hover:bg-muted/30 transition-colors">
                   <td hlmTd class="px-4 py-4">
                     <p hlmSmall>{{ item.request.productTitle }}</p>
@@ -272,6 +318,19 @@
           </tbody>
         </table>
       </div>
+
+      <!-- History Pagination -->
+      @if (totalHistoryPages() > 1 || processedHistory().length > historyPageSize()) {
+        <div class="p-4 border-t border-border/60 bg-card">
+          <app-pagination
+            [currentPage]="historyPage()"
+            [totalPages]="totalHistoryPages()"
+            [totalItems]="processedHistory().length"
+            [pageSize]="historyPageSize()"
+            (pageChange)="onHistoryPageChange($event)"
+          />
+        </div>
+      }
     </div>
   }
 </div>

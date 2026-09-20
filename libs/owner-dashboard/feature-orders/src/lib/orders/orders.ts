@@ -85,6 +85,11 @@ import {
   type OrderStatus,
 } from '@invento/owner-dashboard-data-access-order';
 import { Pagination } from '@invento/shared-ui-pagination';
+import {
+  TableHeaderCell,
+  TableColumnSortDirection,
+  TableColumnFilterOption,
+} from '@invento/shared-ui-table-header';
 
 @Component({
   selector: 'app-orders',
@@ -127,6 +132,7 @@ import { Pagination } from '@invento/shared-ui-pagination';
     HlmH1,
     HlmMuted,
     Pagination,
+    TableHeaderCell,
   ],
   providers: [
     provideIcons({
@@ -189,6 +195,74 @@ export class Orders implements OnInit, OnDestroy {
     const translated = this.localeService.translate(key);
     return translated && translated !== key ? translated : str;
   };
+
+  readonly colIdSearch = signal('');
+  readonly colCustomerSearch = signal('');
+  readonly colPaymentFilter = signal('');
+  readonly colFulfillmentFilter = signal('');
+  readonly colItemsSort = signal<TableColumnSortDirection>('none');
+
+  readonly dateSortDirection = computed<TableColumnSortDirection>(() => {
+    if (this.store.sortBy() !== 'createdAt') {
+      return 'none';
+    }
+    return this.store.sortDirection() === 'ASC' ? 'asc' : 'desc';
+  });
+
+  readonly totalSortDirection = computed<TableColumnSortDirection>(() => {
+    if (this.store.sortBy() !== 'totalAmount') {
+      return 'none';
+    }
+    return this.store.sortDirection() === 'ASC' ? 'asc' : 'desc';
+  });
+
+  readonly paymentFilterOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    { label: this.localeService.translate('orders.filter_paid') || 'Paid', value: 'paid' },
+    { label: this.localeService.translate('orders.filter_pending') || 'Pending', value: 'pending' },
+    { label: this.localeService.translate('orders.filter_failed') || 'Failed', value: 'failed' },
+    { label: this.localeService.translate('orders.filter_refunded') || 'Refunded', value: 'refunded' },
+  ]);
+
+  readonly fulfillmentFilterOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    { label: this.localeService.translate('orders.filter_pending') || 'Pending', value: 'pending' },
+    { label: this.localeService.translate('orders.filter_confirmed') || 'Confirmed', value: 'confirmed' },
+    { label: this.localeService.translate('orders.filter_shipped') || 'Shipped', value: 'shipped' },
+    { label: this.localeService.translate('orders.filter_delivered') || 'Delivered', value: 'delivered' },
+    { label: this.localeService.translate('orders.filter_cancelled') || 'Cancelled', value: 'cancelled' },
+  ]);
+
+  readonly displayedOrders = computed(() => {
+    let list = [...this.store.orders()];
+    const id = this.colIdSearch().trim().toLowerCase();
+    if (id) {
+      list = list.filter((o) => o.id.toLowerCase().includes(id));
+    }
+    const customer = this.colCustomerSearch().trim().toLowerCase();
+    if (customer) {
+      list = list.filter(
+        (o) =>
+          o.contactName?.toLowerCase().includes(customer) ||
+          o.contactEmail?.toLowerCase().includes(customer),
+      );
+    }
+    const payment = this.colPaymentFilter();
+    if (payment && payment !== 'all') {
+      list = list.filter((o) => (o.paymentStatus || '').toLowerCase() === payment.toLowerCase());
+    }
+    const fulfillment = this.colFulfillmentFilter();
+    if (fulfillment && fulfillment !== 'all') {
+      list = list.filter((o) => (o.status || '').toLowerCase() === fulfillment.toLowerCase());
+    }
+    const itemsSort = this.colItemsSort();
+    if (itemsSort === 'asc') {
+      list.sort((a, b) => (a.itemCount ?? 0) - (b.itemCount ?? 0));
+    } else if (itemsSort === 'desc') {
+      list.sort((a, b) => (b.itemCount ?? 0) - (a.itemCount ?? 0));
+    }
+    return list;
+  });
 
   private readonly searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;

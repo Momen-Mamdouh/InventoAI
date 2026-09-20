@@ -248,73 +248,74 @@
                 />
               </th>
               <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-                {{ 'orders.col_id' | translate }}
+                <app-table-header-cell
+                  [label]="'orders.col_id' | translate"
+                  type="search"
+                  [searchValue]="colIdSearch()"
+                  (searchChange)="colIdSearch.set($event)"
+                />
               </th>
               <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-                {{ 'orders.col_customer' | translate }}
-              </th>
-              <!-- Clickable Sortable Date Column -->
-              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-                <button
-                  type="button"
-                  (click)="onSort('createdAt')"
-                  class="group/sort flex items-center gap-1.5 font-semibold text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
-                >
-                  <span>{{ 'orders.col_date' | translate }}</span>
-                  @if (store.sortBy() === 'createdAt') {
-                    <ng-icon
-                      [name]="store.sortDirection() === 'ASC' ? 'lucideArrowUp' : 'lucideArrowDown'"
-                      size="14"
-                      class="text-primary"
-                    />
-                  } @else {
-                    <ng-icon
-                      name="lucideArrowUpDown"
-                      size="14"
-                      class="opacity-40 group-hover/sort:opacity-80 transition-opacity"
-                    />
-                  }
-                </button>
+                <app-table-header-cell
+                  [label]="'orders.col_customer' | translate"
+                  type="search"
+                  [searchValue]="colCustomerSearch()"
+                  (searchChange)="colCustomerSearch.set($event)"
+                />
               </th>
               <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-                {{ 'orders.col_items' | translate }}
-              </th>
-              <!-- Clickable Sortable Total Column -->
-              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-                <button
-                  type="button"
-                  (click)="onSort('totalAmount')"
-                  class="group/sort flex items-center gap-1.5 font-semibold text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
-                >
-                  <span>{{ 'orders.col_total' | translate }}</span>
-                  @if (store.sortBy() === 'totalAmount') {
-                    <ng-icon
-                      [name]="store.sortDirection() === 'ASC' ? 'lucideArrowUp' : 'lucideArrowDown'"
-                      size="14"
-                      class="text-primary"
-                    />
-                  } @else {
-                    <ng-icon
-                      name="lucideArrowUpDown"
-                      size="14"
-                      class="opacity-40 group-hover/sort:opacity-80 transition-opacity"
-                    />
-                  }
-                </button>
+                <app-table-header-cell
+                  [label]="'orders.col_date' | translate"
+                  type="sort"
+                  [sortDirection]="dateSortDirection()"
+                  (sortChange)="onSort('createdAt')"
+                />
               </th>
               <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-                {{ 'orders.col_payment' | translate }}
+                <app-table-header-cell
+                  [label]="'orders.col_items' | translate"
+                  type="sort"
+                  [sortDirection]="colItemsSort()"
+                  (sortChange)="colItemsSort.set($event)"
+                />
               </th>
               <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
-                {{ 'orders.col_fulfillment' | translate }}
+                <app-table-header-cell
+                  [label]="'orders.col_total' | translate"
+                  type="sort"
+                  [sortDirection]="totalSortDirection()"
+                  (sortChange)="onSort('totalAmount')"
+                />
+              </th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+                <app-table-header-cell
+                  [label]="'orders.col_payment' | translate"
+                  type="filter"
+                  [filterOptions]="paymentFilterOptions()"
+                  [selectedFilter]="colPaymentFilter()"
+                  (filterChange)="colPaymentFilter.set($event)"
+                />
+              </th>
+              <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+                <app-table-header-cell
+                  [label]="'orders.col_fulfillment' | translate"
+                  type="filter"
+                  [filterOptions]="fulfillmentFilterOptions()"
+                  [selectedFilter]="colFulfillmentFilter()"
+                  (filterChange)="colFulfillmentFilter.set($event)"
+                />
               </th>
               <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-14 text-center whitespace-nowrap">
-                {{ 'orders.col_actions' | translate }}
+                <app-table-header-cell
+                  [label]="'orders.col_actions' | translate"
+                  type="none"
+                  align="center"
+                />
               </th>
             </tr>
           </thead>
           <tbody hlmTBody class="divide-y divide-border/60 text-sm">
-            @for (order of store.orders(); track order.id) {
+            @for (order of displayedOrders(); track order.id) {
               <tr hlmTr
                 class="group hover:bg-muted/40 transition-colors cursor-pointer"
                 [class.bg-primary/5]="store.selectedOrderIds().has(order.id)"

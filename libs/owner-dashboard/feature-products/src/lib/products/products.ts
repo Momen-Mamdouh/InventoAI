@@ -45,7 +45,10 @@ import {
   HlmTh,
   HlmTHead,
   HlmTr,
+  HlmTableContainer,
 } from '@spartan/helm/table';
+import { TableHeaderCell, SortDirection, FilterOption } from '@invento/shared-ui-table-header';
+import { Pagination } from '@invento/shared-ui-pagination';
 import {
   HlmSheet,
   HlmSheetContent,
@@ -76,7 +79,6 @@ import { ProductAttribute } from '@invento/owner-dashboard-data-access-attribute
 import { CategoriesService, Category } from '@invento/owner-dashboard-data-access-category';
 import { toast } from '@spartan/helm/sonner';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
-import { SearchPipe } from '@invento/shared-util-pipes';
 import { EmptyState } from '@invento/shared-ui-empty-state';
 
 interface FormVariant {
@@ -109,7 +111,6 @@ interface FormVariant {
     CdkDropList,
     CdkDrag,
     DeleteConfirmDialog,
-    SearchPipe,
     HlmSkeleton,
     HlmSpinner,
     HlmTable,
@@ -118,6 +119,9 @@ interface FormVariant {
     HlmTh,
     HlmTHead,
     HlmTr,
+    HlmTableContainer,
+    TableHeaderCell,
+    Pagination,
     RouterLink,
     HlmSheet,
     HlmSheetContent,
@@ -167,6 +171,118 @@ export class Products implements OnInit {
   readonly isDrawerOpen = signal(false);
   readonly isBulkDeleteModalOpen = signal(false);
   readonly searchTerm = signal('');
+
+  // Column Header Sort, Search, Filter & Pagination
+  readonly currentPage = signal<number>(1);
+  readonly pageSize = signal<number>(10);
+  readonly sortColumn = signal<'price' | 'stock' | null>(null);
+  readonly sortDirection = signal<SortDirection>(null);
+  readonly colSearchTitle = signal<string>('');
+  readonly colFilterCategory = signal<string>('');
+  readonly colFilterStatus = signal<string>('');
+
+  readonly statusFilterOptions: FilterOption[] = [
+    { label: 'Active', value: 'active' },
+    { label: 'Draft', value: 'draft' },
+    { label: 'Archived', value: 'archived' },
+  ];
+
+  readonly categoryFilterOptions = computed<FilterOption[]>(() =>
+    this.categories().map((c) => ({ label: c.name, value: c.id })),
+  );
+
+  readonly processedProducts = computed(() => {
+    let list = [...this.products()];
+
+    // Top-level searchTerm()
+    const topQuery = this.searchTerm().trim().toLowerCase();
+    if (topQuery) {
+      list = list.filter((p) => p.title.toLowerCase().includes(topQuery));
+    }
+
+    // Column search: Title
+    const titleQuery = this.colSearchTitle().trim().toLowerCase();
+    if (titleQuery) {
+      list = list.filter((p) => p.title.toLowerCase().includes(titleQuery));
+    }
+
+    // Column filter: Category
+    const catFilter = this.colFilterCategory();
+    if (catFilter) {
+      list = list.filter((p) =>
+        p.categories?.some(
+          (c) => c.id === catFilter || c.name.toLowerCase() === catFilter.toLowerCase(),
+        ),
+      );
+    }
+
+    // Column filter: Status
+    const statusFilter = this.colFilterStatus();
+    if (statusFilter) {
+      list = list.filter((p) => p.status.toLowerCase() === statusFilter.toLowerCase());
+    }
+
+    // Column sort: Price or Stock
+    const col = this.sortColumn();
+    const dir = this.sortDirection();
+    if (col && dir) {
+      list.sort((a, b) => {
+        let diff = 0;
+        if (col === 'price') {
+          diff = (a.minPriceAmount ?? 0) - (b.minPriceAmount ?? 0);
+        } else if (col === 'stock') {
+          diff = (a.totalStock ?? 0) - (b.totalStock ?? 0);
+        }
+        return dir === 'asc' ? diff : -diff;
+      });
+    }
+
+    return list;
+  });
+
+  readonly totalProductPages = computed(() => {
+    const total = this.processedProducts().length;
+    return Math.max(1, Math.ceil(total / this.pageSize()));
+  });
+
+  readonly paginatedProducts = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return this.processedProducts().slice(start, start + this.pageSize());
+  });
+
+  onSortChange(col: 'price' | 'stock', dir: SortDirection): void {
+    this.sortColumn.set(dir ? col : null);
+    this.sortDirection.set(dir);
+  }
+
+  onTitleSearchChange(q: string): void {
+    this.colSearchTitle.set(q);
+    this.currentPage.set(1);
+  }
+
+  onCategoryFilterChange(val: string): void {
+    this.colFilterCategory.set(val);
+    this.currentPage.set(1);
+  }
+
+  onStatusFilterChange(val: string): void {
+    this.colFilterStatus.set(val);
+    this.currentPage.set(1);
+  }
+
+  onPageChange(p: number): void {
+    this.currentPage.set(p);
+  }
+
+  resetAllFilters(): void {
+    this.searchTerm.set('');
+    this.colSearchTitle.set('');
+    this.colFilterCategory.set('');
+    this.colFilterStatus.set('');
+    this.sortColumn.set(null);
+    this.sortDirection.set(null);
+    this.currentPage.set(1);
+  }
 
   readonly selectedProductIds = signal<string[]>([]);
   readonly isAllSelected = computed(() => {
