@@ -17,11 +17,19 @@ import {
 } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
-import { HlmCardImports } from '@spartan/helm/card';
+import { HlmCard } from '@spartan/helm/card';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
-import { HlmTableImports } from '@spartan/helm/table';
+import {
+  HlmTable,
+  HlmTHead,
+  HlmTBody,
+  HlmTr,
+  HlmTh,
+  HlmTd,
+} from '@spartan/helm/table';
+import { HlmAlert, HlmAlertDescription } from '@spartan/helm/alert';
 import { HlmH1, HlmH2, HlmLarge, HlmMuted, HlmSmall } from '@spartan/helm/typography';
-import { HlmTooltipImports } from '@spartan/helm/tooltip';
+import { HlmTooltip } from '@spartan/helm/tooltip';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { SupplierService, Supplier } from '@invento/owner-dashboard-data-access-supplier';
 import {
@@ -38,6 +46,7 @@ interface SupplierRequestHistory {
 
 @Component({
   selector: 'app-supplier-details',
+  standalone: true,
   imports: [
     CurrencyPipe,
     DatePipe,
@@ -46,15 +55,22 @@ interface SupplierRequestHistory {
     NgIcon,
     HlmBadge,
     HlmButton,
-    HlmCardImports,
+    HlmCard,
     HlmSkeleton,
-    HlmTableImports,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmAlert,
+    HlmAlertDescription,
     HlmH1,
     HlmH2,
     HlmLarge,
     HlmMuted,
     HlmSmall,
-    HlmTooltipImports,
+    HlmTooltip,
     TranslatePipe,
   ],
   providers: [

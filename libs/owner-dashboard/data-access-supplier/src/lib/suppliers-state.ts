@@ -1,23 +1,17 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { toast } from '@spartan-ng/brain/sonner';
+import { LocaleService } from '@invento/shared-util-i18n';
+import { extractErrorMessage } from '@invento/shared-util-error';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto, Supplier, UpdateSupplierDto } from './supplier.model';
 
 const MAX_SUPPLIERS_PER_STORE = 100;
 
-function extractErrorMessage(err: unknown, fallback: string): string {
-  if (err instanceof HttpErrorResponse) {
-    const body = err.error as { message?: string | string[] } | undefined;
-    if (Array.isArray(body?.message)) return body.message.join(', ');
-    if (body?.message) return body.message;
-  }
-  return fallback;
-}
-
 @Injectable({ providedIn: 'root' })
 export class SuppliersState {
   private readonly svc = inject(SupplierService);
+  private readonly localeService = inject(LocaleService);
 
   private readonly _suppliers = signal<Supplier[]>([]);
   private readonly _total = signal(0);
@@ -79,7 +73,10 @@ export class SuppliersState {
           this._loading.set(false);
         },
         error: (err) => {
-          const message = extractErrorMessage(err, 'Failed to load suppliers');
+          const message = extractErrorMessage(
+            err,
+            this.localeService.translate('suppliers.toast_load_error'),
+          );
           console.error('Failed to load suppliers', err);
           this._error.set(message);
           this._loading.set(false);
@@ -133,11 +130,14 @@ export class SuppliersState {
     this.svc.create(payload).subscribe({
       next: (supplier) => {
         this.refreshAll();
-        toast.success('Supplier added');
+        toast.success(this.localeService.translate('suppliers.toast_created'));
         onSuccess?.(supplier);
       },
       error: (err) => {
-        const message = extractErrorMessage(err, 'Failed to add supplier');
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('suppliers.toast_load_error'),
+        );
         console.error('Create supplier failed', err);
         toast.error(message);
         onError?.(message);
@@ -154,11 +154,14 @@ export class SuppliersState {
     this.svc.update(id, payload).subscribe({
       next: (supplier) => {
         this.refreshAll();
-        toast.success('Supplier updated');
+        toast.success(this.localeService.translate('suppliers.toast_updated'));
         onSuccess?.(supplier);
       },
       error: (err) => {
-        const message = extractErrorMessage(err, 'Failed to update supplier');
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('suppliers.toast_load_error'),
+        );
         console.error('Update supplier failed', err);
         toast.error(message);
         onError?.(message);
@@ -174,14 +177,21 @@ export class SuppliersState {
     );
     this.svc.update(supplier.id, { isActive: next }).subscribe({
       next: () => {
-        toast.success(next ? 'Supplier activated' : 'Supplier deactivated');
+        toast.success(
+          this.localeService.translate(
+            next ? 'suppliers.toast_activated' : 'suppliers.toast_deactivated',
+          ),
+        );
         this.loadKpis();
       },
       error: (err) => {
         this._suppliers.update((items) =>
           items.map((s) => (s.id === supplier.id ? { ...s, isActive: !next } : s)),
         );
-        const message = extractErrorMessage(err, 'Failed to update supplier');
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('suppliers.toast_load_error'),
+        );
         console.error('Toggle active failed', err);
         toast.error(message);
       },
@@ -193,7 +203,7 @@ export class SuppliersState {
     this.svc.delete(id).subscribe({
       next: () => {
         this.refreshAll();
-        toast.success('Supplier deleted');
+        toast.success(this.localeService.translate('suppliers.toast_deleted'));
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 404) {
@@ -202,11 +212,14 @@ export class SuppliersState {
           this._suppliers.update((items) => items.filter((s) => s.id !== id));
           this._total.update((t) => Math.max(0, t - 1));
           this._loading.set(false);
-          toast.info('That supplier was already deleted');
+          toast.info(this.localeService.translate('suppliers.toast_already_deleted'));
           this.loadKpis();
           return;
         }
-        const message = extractErrorMessage(err, 'Failed to delete supplier');
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('suppliers.toast_load_error'),
+        );
         console.error('Delete supplier failed', err);
         this._loading.set(false);
         toast.error(message);

@@ -2,9 +2,10 @@ import { Router } from '@angular/router';
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   OnDestroy,
   OnInit,
+  computed,
+  inject,
   signal,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
@@ -27,19 +28,35 @@ import {
   lucideCircleX,
 } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan/helm/badge';
-import { HlmButtonImports } from '@spartan/helm/button';
-import { HlmCardImports } from '@spartan/helm/card';
-import { HlmSkeletonImports } from '@spartan/helm/skeleton';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmAlertImports } from '@spartan/helm/alert';
-import { HlmTableImports } from '@spartan/helm/table';
+import { HlmButton } from '@spartan/helm/button';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmInput } from '@spartan/helm/input';
+import {
+  HlmSelect,
+  HlmSelectContent,
+  HlmSelectItem,
+  HlmSelectPortal,
+  HlmSelectTrigger,
+  HlmSelectValue,
+} from '@spartan/helm/select';
+import { HlmAlert, HlmAlertDescription, HlmAlertTitle } from '@spartan/helm/alert';
+import {
+  HlmTable,
+  HlmTHead,
+  HlmTBody,
+  HlmTr,
+  HlmTh,
+  HlmTd,
+} from '@spartan/helm/table';
+import { HlmSheet, HlmSheetContent, HlmSheetPortal } from '@spartan/helm/sheet';
 import { HlmH1, HlmMuted } from '@spartan/helm/typography';
-import { SupplierFormDialog } from './supplier-form-dialog';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { Supplier, SuppliersState } from '@invento/owner-dashboard-data-access-supplier';
 import { Pagination } from '@invento/shared-ui-pagination';
 import { EmptyState } from '@invento/shared-ui-empty-state';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
+import { SupplierForm } from './supplier-form';
 
 type ActiveFilter = 'all' | 'active' | 'inactive';
 
@@ -50,19 +67,35 @@ type ActiveFilter = 'all' | 'active' | 'inactive';
     DatePipe,
     NgIcon,
     HlmBadge,
-    HlmButtonImports,
-    HlmCardImports,
-    HlmSkeletonImports,
-    HlmInputImports,
-    HlmSelectImports,
-    HlmAlertImports,
-    SupplierFormDialog,
-    DeleteConfirmDialog,
-    HlmTableImports,
+    HlmButton,
+    HlmCard,
+    HlmSkeleton,
+    HlmInput,
+    HlmSelect,
+    HlmSelectTrigger,
+    HlmSelectValue,
+    HlmSelectContent,
+    HlmSelectItem,
+    HlmSelectPortal,
+    HlmAlert,
+    HlmAlertTitle,
+    HlmAlertDescription,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmSheet,
+    HlmSheetContent,
+    HlmSheetPortal,
     HlmH1,
     HlmMuted,
     Pagination,
     EmptyState,
+    DeleteConfirmDialog,
+    SupplierForm,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({
@@ -90,6 +123,7 @@ type ActiveFilter = 'all' | 'active' | 'inactive';
 export class Suppliers implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly state = inject(SuppliersState);
+  private readonly localeService = inject(LocaleService);
 
   readonly suppliers = this.state.suppliers;
   readonly loading = this.state.loading;
@@ -104,16 +138,16 @@ export class Suppliers implements OnInit, OnDestroy {
   readonly searchTerm = signal('');
   readonly activeFilter = signal<ActiveFilter>('all');
 
-  private readonly activeFilterLabels: Record<ActiveFilter, string> = {
-    all: 'All suppliers',
-    active: 'Active only',
-    inactive: 'Inactive only',
-  };
+  protected readonly sheetSide = computed<'left' | 'right'>(() =>
+    this.localeService.isRtl() ? 'left' : 'right',
+  );
 
-  // hlm-select-value shows the raw bound value unless the select is given an
-  // itemToString mapper — without this it would literally render "all"/"active"/etc.
-  readonly activeItemToString = (value: ActiveFilter): string =>
-    this.activeFilterLabels[value] ?? '';
+  readonly activeItemToString = (value: unknown): string => {
+    const str = String(value);
+    const key = `suppliers.filter_${str.toLowerCase()}`;
+    const translated = this.localeService.translate(key);
+    return translated && translated !== key ? translated : str;
+  };
 
   private searchDebounce?: ReturnType<typeof setTimeout>;
 
@@ -134,11 +168,17 @@ export class Suppliers implements OnInit, OnDestroy {
   onSearchInput(value: string): void {
     this.searchTerm.set(value);
     clearTimeout(this.searchDebounce);
-    this.searchDebounce = setTimeout(() => this.state.setFilters({ search: value }), 300);
+    this.searchDebounce = setTimeout(() => {
+      this.state.setFilters({ search: value });
+    }, 300);
   }
 
-  // hlm-select's valueChange emits `T | null | undefined` since a selection can be
-  // cleared, so this accepts the wider type and normalizes to a safe default.
+  onResetFilters(): void {
+    this.searchTerm.set('');
+    this.activeFilter.set('all');
+    this.state.setFilters({ search: '', isActive: undefined });
+  }
+
   onActiveFilterChange(value: ActiveFilter | null | undefined): void {
     const next = value ?? 'all';
     this.activeFilter.set(next);
@@ -168,6 +208,16 @@ export class Suppliers implements OnInit, OnDestroy {
     this.isFormOpen.set(true);
   }
 
+  onDrawerStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') {
+      this.onCloseForm();
+    }
+  }
+
+  onFormSaved(): void {
+    this.onCloseForm();
+  }
+
   onCloseForm(): void {
     this.isFormOpen.set(false);
     this.editing.set(null);
@@ -188,8 +238,10 @@ export class Suppliers implements OnInit, OnDestroy {
   }
 
   confirmDelete(): void {
-    const id = this.toDelete()?.id;
-    if (id) this.state.deleteSupplier(id);
+    const item = this.toDelete();
+    if (item) {
+      this.state.deleteSupplier(item.id);
+    }
     this.cancelDelete();
   }
 
