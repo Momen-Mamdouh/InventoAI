@@ -1,101 +1,254 @@
-@if (store.loading()) {
-  <div class="flex flex-col gap-2">
+@if (store.loading() && store.entries().length === 0) {
+  <!-- Initial Loading Skeletons -->
+  <div class="flex flex-col gap-3">
     @for (i of [1, 2, 3, 4]; track i) {
-      <div hlmSkeleton class="rounded-lg w-full h-20"></div>
+      <div class="p-4 bg-card border border-border rounded-xl space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 w-3/5">
+            <hlm-skeleton class="h-4 w-4 rounded" />
+            <hlm-skeleton class="h-5 w-48 rounded" />
+            <hlm-skeleton class="h-5 w-16 rounded-full" />
+          </div>
+          <div class="flex items-center gap-2">
+            <hlm-skeleton class="h-5 w-10 rounded-full" />
+            <hlm-skeleton class="h-8 w-8 rounded-md" />
+            <hlm-skeleton class="h-8 w-8 rounded-md" />
+          </div>
+        </div>
+        <hlm-skeleton class="h-4 w-full rounded" />
+      </div>
     }
   </div>
 } @else if (store.entries().length === 0) {
-  <div
-    class="flex flex-col justify-center items-center gap-1 py-16 border border-dashed rounded-lg text-center"
+  <!-- Empty State (No FAQs in Store) -->
+  <app-empty-state
+    icon="lucideMessageCircleQuestionMark"
+    [title]="'faq.empty_title' | translate"
+    [description]="'faq.empty_desc' | translate"
   >
-    <p hlmSmall class="text-foreground">No FAQ entries yet</p>
-    <p hlmMuted>Add your first question and answer to get started.</p>
-  </div>
+    <button
+      hlmBtn
+      size="sm"
+      class="gap-2 shadow-sm"
+      (click)="createNew.emit()"
+    >
+      <ng-icon name="lucidePencil" size="14" />
+      <span>{{ 'faq.btn_add' | translate }}</span>
+    </button>
+  </app-empty-state>
+} @else if (store.filteredEntries().length === 0) {
+  <!-- Empty State (No Search Results) -->
+  <app-empty-state
+    icon="lucideMessageCircleQuestionMark"
+    [title]="'faq.empty_search_title' | translate"
+    [description]="'faq.empty_search_desc' | translate"
+  >
+    <button
+      hlmBtn
+      variant="outline"
+      size="sm"
+      class="shadow-sm"
+      (click)="store.resetFilters()"
+    >
+      {{ 'faq.empty_action_reset' | translate }}
+    </button>
+  </app-empty-state>
 } @else {
-  <div cdkDropList class="flex flex-col gap-2" (cdkDropListDropped)="onDrop($event)">
-    @for (entry of store.entries(); track entry.id) {
+  <!-- Hint banner when filtering is active (drag disabled) -->
+  @if (store.isFiltering()) {
+    <div class="p-3 bg-muted/40 border border-border/70 rounded-xl text-xs text-muted-foreground flex items-center gap-2">
+      <ng-icon name="lucideInfo" size="15" class="text-primary shrink-0" />
+      <span>{{ 'faq.drag_disabled_hint' | translate }}</span>
+    </div>
+  }
+
+  <!-- FAQ Drag-and-Drop List -->
+  <div
+    cdkDropList
+    [cdkDropListDisabled]="store.isFiltering()"
+    class="flex flex-col gap-2.5"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    @for (entry of store.filteredEntries(); track entry.id) {
       <div
         cdkDrag
-        class="flex items-start gap-3 bg-card shadow-sm p-4 border rounded-lg"
-        [class.opacity-60]="!entry.isPublished"
+        class="group flex items-start gap-3 bg-card shadow-sm hover:shadow border border-border rounded-xl p-3.5 sm:p-4 transition-all"
+        [class.opacity-70]="!entry.isPublished"
       >
+        <!-- Drag Handle (disabled during filter) -->
         <button
           cdkDragHandle
           hlmBtn
           variant="ghost"
           size="icon"
           type="button"
-          class="mt-1 text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing"
-          aria-label="Drag to reorder"
+          class="mt-0.5 w-8 h-8 text-muted-foreground/60 group-hover:text-foreground transition-colors shrink-0"
+          [class.cursor-grab]="!store.isFiltering()"
+          [class.active:cursor-grabbing]="!store.isFiltering()"
+          [class.cursor-not-allowed]="store.isFiltering()"
+          [class.opacity-30]="store.isFiltering()"
+          [title]="store.isFiltering() ? ('faq.drag_disabled_hint' | translate) : ('faq.drag_reorder_hint' | translate)"
         >
-          <ng-icon hlm name="lucideGripVertical" class="size-4" />
+          <ng-icon name="lucideGripVertical" size="16" />
         </button>
 
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <p hlmSmall class="text-foreground truncate">{{ entry.question }}</p>
-            @if (!entry.isPublished) {
-              <span class="bg-muted px-1.5 py-0.5 rounded text-muted-foreground text-xs shrink-0"
-                >Draft</span
+        <!-- Question & Answer Center Content -->
+        <div class="flex-1 min-w-0 space-y-1">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                class="font-semibold text-sm sm:text-base text-foreground hover:text-primary transition-colors text-start cursor-pointer focus:outline-none flex items-center gap-1.5"
+                (click)="toggleExpand(entry.id)"
               >
-            }
+                <span>{{ entry.question }}</span>
+                <ng-icon
+                  [name]="isExpanded(entry.id) ? 'lucideChevronUp' : 'lucideChevronDown'"
+                  size="14"
+                  class="text-muted-foreground shrink-0"
+                />
+              </button>
+
+              <!-- Published Status Badge -->
+              <span
+                hlmBadge
+                variant="outline"
+                class="text-[11px] font-semibold px-2 py-0.5 border"
+                [class.bg-emerald-500/10]="entry.isPublished"
+                [class.text-emerald-700]="entry.isPublished"
+                [class.border-emerald-500/20]="entry.isPublished"
+                [class.bg-amber-500/10]="!entry.isPublished"
+                [class.text-amber-700]="!entry.isPublished"
+                [class.border-amber-500/20]="!entry.isPublished"
+              >
+                {{ (entry.isPublished ? 'faq.status_published' : 'faq.status_draft') | translate }}
+              </span>
+
+              <!-- Category Badge -->
+              <span
+                hlmBadge
+                variant="secondary"
+                class="text-[11px] font-medium px-2 py-0.5 rounded-md inline-flex items-center gap-1 bg-muted/70 text-muted-foreground border border-border/60"
+              >
+                <ng-icon [name]="getCategoryIcon(entry.category)" size="12" class="text-primary" />
+                <span>{{ getCategoryLabel(entry.category) }}</span>
+              </span>
+            </div>
           </div>
-          <!-- answer is plain text from the API, never sanitised server-side:
-               interpolation (not innerHTML) keeps this safe, pre-line keeps the line breaks -->
-          <p hlmMuted class="mt-1 whitespace-pre-line">{{ entry.answer }}</p>
+
+          <!-- Collapsible Answer Preview / Full Answer -->
+          @if (isExpanded(entry.id)) {
+            <div class="mt-2 p-3 bg-muted/20 border border-border/60 rounded-lg text-xs sm:text-sm text-foreground/90 whitespace-pre-line leading-relaxed">
+              {{ entry.answer }}
+            </div>
+          } @else {
+            <p
+              hlmMuted
+              class="text-xs sm:text-sm line-clamp-1"
+            >
+              {{ entry.answer }}
+            </p>
+          }
         </div>
 
-        <div class="flex items-center gap-2 shrink-0">
+        <!-- Action Controls (Switch, Edit, Delete) -->
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 self-center sm:self-start mt-0.5">
+          <!-- Published Switch -->
           <hlm-switch
             [checked]="entry.isPublished"
             (checkedChange)="onTogglePublished(entry)"
-            aria-label="Published"
+            [attr.aria-label]="'faq.status_toggle_label' | translate"
+            class="scale-90"
           />
 
-          <hlm-sheet side="right">
-            <button
-              hlmSheetTrigger
-              hlmBtn
-              variant="ghost"
-              size="icon"
-              type="button"
-              aria-label="Edit"
-            >
-              <ng-icon hlm name="lucidePencil" class="size-4" />
-            </button>
-            <hlm-sheet-content *hlmSheetPortal="let ctx" class="p-5 sm:max-w-lg">
-              <app-faq-form [entry]="entry" (saved)="ctx.close()" (canceled)="ctx.close()" />
-            </hlm-sheet-content>
-          </hlm-sheet>
+          <!-- Edit Button -->
+          <button
+            hlmBtn
+            variant="ghost"
+            size="icon"
+            type="button"
+            class="w-8 h-8 text-muted-foreground hover:text-foreground cursor-pointer"
+            [title]="'faq.action_edit' | translate"
+            (click)="onEdit(entry)"
+          >
+            <ng-icon name="lucidePencil" size="14" />
+          </button>
 
-          <hlm-alert-dialog>
-            <button
-              hlmAlertDialogTrigger
-              hlmBtn
-              variant="ghost"
-              size="icon"
-              type="button"
-              aria-label="Delete"
-            >
-              <ng-icon hlm name="lucideTrash2" class="size-4 text-destructive" />
-            </button>
-            <hlm-alert-dialog-content *hlmAlertDialogPortal="let ctx">
-              <hlm-alert-dialog-header>
-                <h3 hlmAlertDialogTitle>Delete this FAQ entry?</h3>
-                <p hlmAlertDialogDescription>
-                  This can't be undone - the entry is removed permanently, not archived.
-                </p>
-              </hlm-alert-dialog-header>
-              <hlm-alert-dialog-footer>
-                <button hlmAlertDialogCancel (click)="ctx.close()">Cancel</button>
-                <button hlmAlertDialogAction (click)="onConfirmDelete(entry.id); ctx.close()">
-                  Delete
-                </button>
-              </hlm-alert-dialog-footer>
-            </hlm-alert-dialog-content>
-          </hlm-alert-dialog>
+          <!-- Delete Button -->
+          <button
+            hlmBtn
+            variant="ghost"
+            size="icon"
+            type="button"
+            class="w-8 h-8 text-muted-foreground hover:text-destructive cursor-pointer"
+            [title]="'faq.action_delete' | translate"
+            (click)="openDeleteDialog(entry)"
+          >
+            <ng-icon name="lucideTrash2" size="14" />
+          </button>
         </div>
       </div>
     }
   </div>
+}
+
+<!-- Delete Confirmation Modal Dialog -->
+@if (isDeleteModalOpen()) {
+  <hlm-alert-dialog [state]="'open'" (stateChanged)="onDeleteModalStateChanged($event)">
+    <hlm-alert-dialog-content
+      *brnAlertDialogContent="let ctx"
+      class="data-[size=default]:sm:max-w-md space-y-4"
+    >
+      <div class="flex justify-between items-center pb-2 border-b border-border">
+        <div class="flex items-center gap-2 text-destructive font-bold text-base">
+          <ng-icon name="lucideBan" size="18" />
+          <span>{{ 'faq.delete_dialog_title' | translate }}</span>
+        </div>
+        <button
+          hlmBtn
+          variant="ghost"
+          size="icon"
+          class="w-7 h-7 text-muted-foreground hover:text-foreground"
+          (click)="closeDeleteDialog()"
+        >
+          <ng-icon name="lucideX" size="16" />
+        </button>
+      </div>
+
+      <p hlmMuted class="text-xs sm:text-sm">
+        {{ 'faq.delete_dialog_desc' | translate }}
+      </p>
+
+      @if (entryToDelete(); as item) {
+        <div class="p-3 bg-muted/40 border border-border/80 rounded-lg text-xs font-medium text-foreground">
+          "{{ item.question }}"
+        </div>
+      }
+
+      <div class="flex justify-end items-center gap-2 pt-2 border-t border-border">
+        <button
+          hlmBtn
+          variant="outline"
+          size="sm"
+          class="text-xs h-8"
+          (click)="closeDeleteDialog()"
+        >
+          {{ 'faq.btn_cancel' | translate }}
+        </button>
+        <button
+          hlmBtn
+          variant="destructive"
+          size="sm"
+          class="font-semibold text-xs h-8 disabled:opacity-50 disabled:cursor-not-allowed gap-1.5"
+          [disabled]="isDeleting()"
+          (click)="onConfirmDelete()"
+        >
+          @if (isDeleting()) {
+            <hlm-spinner class="text-[14px]" />
+          }
+          <span>{{ 'faq.action_delete' | translate }}</span>
+        </button>
+      </div>
+    </hlm-alert-dialog-content>
+  </hlm-alert-dialog>
 }
