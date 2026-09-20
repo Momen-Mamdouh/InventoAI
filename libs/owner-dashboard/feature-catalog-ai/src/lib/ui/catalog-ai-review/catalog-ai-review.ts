@@ -2,16 +2,26 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HlmButtonImports } from '@spartan/helm/button';
-import { HlmCheckboxImports } from '@spartan/helm/checkbox';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmButton } from '@spartan/helm/button';
+import { HlmCheckbox } from '@spartan/helm/checkbox';
+import { HlmInput } from '@spartan/helm/input';
+import {
+  HlmSelect,
+  HlmSelectContent,
+  HlmSelectItem,
+  HlmSelectPortal,
+  HlmSelectTrigger,
+  HlmSelectValue,
+} from '@spartan/helm/select';
 import { HlmSpinner } from '@spartan/helm/spinner';
-import { HlmLabelImports } from '@spartan/helm/label';
-import { HlmTextareaImports } from '@spartan/helm/textarea';
+import { HlmLabel } from '@spartan/helm/label';
+import { HlmTextarea } from '@spartan/helm/textarea';
 import { HlmH1, HlmH2, HlmH3, HlmMuted } from '@spartan/helm/typography';
+import { toast } from '@spartan/helm/sonner';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideWand2, lucideLoader2, lucideAlertCircle, lucideCheck } from '@ng-icons/lucide';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
+import { extractErrorMessage } from '@invento/shared-util-error';
 import { CatalogAiService } from '../../data-access/catalog-ai.service';
 import {
   CatalogApplyRequest,
@@ -34,46 +44,58 @@ interface SelectableAttribute extends GeneratedAttribute {
   imports: [
     CommonModule,
     FormsModule,
-    HlmButtonImports,
-    HlmInputImports,
-    HlmSelectImports,
+    HlmButton,
+    HlmInput,
+    HlmCheckbox,
+    HlmSelect,
+    HlmSelectContent,
+    HlmSelectItem,
+    HlmSelectPortal,
+    HlmSelectTrigger,
+    HlmSelectValue,
     HlmSpinner,
-    NgIcon,
-    HlmLabelImports,
-    HlmTextareaImports,
+    HlmLabel,
+    HlmTextarea,
     HlmH1,
     HlmH2,
     HlmH3,
     HlmMuted,
-    HlmCheckboxImports,
+    NgIcon,
+    TranslatePipe,
   ],
   providers: [provideIcons({ lucideWand2, lucideLoader2, lucideAlertCircle, lucideCheck })],
   templateUrl: './catalog-ai-review.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogAiReview {
-  private catalogAiService = inject(CatalogAiService);
-  private router = inject(Router);
+  private readonly catalogAiService = inject(CatalogAiService);
+  private readonly router = inject(Router);
+  private readonly localeService = inject(LocaleService);
 
-  status = signal<WizardStatus>('idle');
-  errorMessage = signal<string>('');
-  instructions = signal<string>('');
+  readonly status = signal<WizardStatus>('idle');
+  readonly errorMessage = signal<string>('');
+  readonly instructions = signal<string>('');
 
-  categories = signal<SelectableCategory[]>([]);
-  attributes = signal<SelectableAttribute[]>([]);
-
-  private readonly displayStyleLabels: Record<string, string> = {
-    list: 'List',
-    chip: 'Chip',
-    dropdown: 'Dropdown',
-    swatch: 'Swatch',
-  };
+  readonly categories = signal<SelectableCategory[]>([]);
+  readonly attributes = signal<SelectableAttribute[]>([]);
 
   readonly displayStyleItemToString = (value: unknown): string => {
-    return this.displayStyleLabels[String(value).toLowerCase()] ?? 'List';
+    const key = String(value).toLowerCase();
+    const translationKey = `catalog_ai.style_${key}`;
+    const translated = this.localeService.translate(translationKey);
+    if (translated && translated !== translationKey) {
+      return translated;
+    }
+    const defaultLabels: Record<string, string> = {
+      list: 'List',
+      chip: 'Chip',
+      dropdown: 'Dropdown',
+      swatch: 'Swatch',
+    };
+    return defaultLabels[key] ?? 'List';
   };
 
-  generateCatalog() {
+  generateCatalog(): void {
     this.status.set('generating');
     this.errorMessage.set('');
 
@@ -85,16 +107,19 @@ export class CatalogAiReview {
         this.attributes.set((response.attributes || []).map((a) => ({ ...a, selected: true })));
         this.status.set('review');
       },
-      error: (err) => {
-        this.errorMessage.set(
-          err.error?.message || 'Failed to generate catalog. Please try again.',
+      error: (err: unknown) => {
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('catalog_ai.error_generate_failed'),
         );
+        this.errorMessage.set(message);
+        toast.error(message);
         this.status.set('error');
       },
     });
   }
 
-  applyCatalog() {
+  applyCatalog(): void {
     this.status.set('applying');
     this.errorMessage.set('');
 
@@ -121,18 +146,22 @@ export class CatalogAiReview {
 
     this.catalogAiService.applyCatalog(request).subscribe({
       next: () => {
+        toast.success(this.localeService.translate('catalog_ai.toast_applied'));
         this.status.set('success');
       },
-      error: (err) => {
-        this.errorMessage.set(
-          err.error?.message || 'Failed to apply catalog. Please check your data.',
+      error: (err: unknown) => {
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('catalog_ai.error_apply_failed'),
         );
+        this.errorMessage.set(message);
+        toast.error(message);
         this.status.set('error');
       },
     });
   }
 
-  reset() {
+  reset(): void {
     this.status.set('idle');
     this.categories.set([]);
     this.attributes.set([]);
@@ -140,7 +169,7 @@ export class CatalogAiReview {
     this.errorMessage.set('');
   }
 
-  goToDashboard() {
+  goToDashboard(): void {
     this.router.navigate(['/']);
   }
 }
