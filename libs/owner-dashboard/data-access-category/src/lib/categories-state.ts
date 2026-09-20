@@ -3,19 +3,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CategoriesService } from './category.service';
 import { Category } from './category.model';
 import { toast } from '@spartan-ng/brain/sonner';
-
-function extractErrorMessage(err: unknown, fallback: string): string {
-  if (err instanceof HttpErrorResponse) {
-    const body = err.error as { message?: string | string[] } | undefined;
-    if (Array.isArray(body?.message)) return body.message.join(', ');
-    if (body?.message) return body.message;
-  }
-  return fallback;
-}
+import { LocaleService } from '@invento/shared-util-i18n';
+import { extractErrorMessage } from '@invento/shared-util-error';
 
 @Injectable({ providedIn: 'root' })
 export class CategoriesState {
   private readonly svc = inject(CategoriesService);
+  private readonly localeService = inject(LocaleService);
 
   private readonly _categories = signal<Category[]>([]);
   private readonly _total = signal(0);
@@ -65,8 +59,11 @@ export class CategoriesState {
           this._totalPages.set(res.totalPages || 1);
           this._loading.set(false);
         },
-        error: (err) => {
-          const message = extractErrorMessage(err, 'Failed to load categories');
+        error: (err: unknown) => {
+          const message = extractErrorMessage(
+            err,
+            this.localeService.translate('categories.error_load_failed'),
+          );
           console.error('Failed to load categories', err);
           this._error.set(message);
           this._loading.set(false);
@@ -91,7 +88,7 @@ export class CategoriesState {
       isPublished: boolean | undefined;
       isFeatured: boolean | undefined;
     }>,
-  ) {
+  ): void {
     this._filters.update((s) => ({ ...s, ...filters }));
     this._page.set(1);
     this.loadCategories();
@@ -109,11 +106,14 @@ export class CategoriesState {
     this.svc.create(payload).subscribe({
       next: (category) => {
         this.loadCategories();
-        toast.success('Category created');
+        toast.success(this.localeService.translate('categories.toast_created'));
         onSuccess?.(category);
       },
-      error: (err) => {
-        const message = extractErrorMessage(err, 'Create failed');
+      error: (err: unknown) => {
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('categories.toast_create_error'),
+        );
         console.error('Create failed', err);
         this._error.set(message);
         toast.error(message);
@@ -131,11 +131,14 @@ export class CategoriesState {
     this.svc.update(id, payload).subscribe({
       next: (category) => {
         this.loadCategories();
-        toast.success('Category updated');
+        toast.success(this.localeService.translate('categories.toast_updated'));
         onSuccess?.(category);
       },
-      error: (err) => {
-        const message = extractErrorMessage(err, 'Update failed');
+      error: (err: unknown) => {
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('categories.toast_update_error'),
+        );
         console.error('Update failed', err);
         this._error.set(message);
         toast.error(message);
@@ -149,7 +152,7 @@ export class CategoriesState {
     this.svc.delete(id).subscribe({
       next: () => {
         this.loadCategories();
-        toast.success('Category deleted');
+        toast.success(this.localeService.translate('categories.toast_deleted'));
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 404) {
@@ -158,10 +161,13 @@ export class CategoriesState {
           this._categories.update((items) => items.filter((c) => c.id !== id));
           this._total.update((t) => Math.max(0, t - 1));
           this._loading.set(false);
-          toast.info('That category was already deleted');
+          toast.info(this.localeService.translate('categories.toast_already_deleted'));
           return;
         }
-        const message = extractErrorMessage(err, 'Delete failed');
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('categories.toast_delete_error'),
+        );
         console.error('Delete failed', err);
         this._error.set(message);
         this._loading.set(false);
@@ -177,8 +183,11 @@ export class CategoriesState {
         this._categories.set(res || []);
         this._loading.set(false);
       },
-      error: (err) => {
-        const message = extractErrorMessage(err, 'Reorder failed');
+      error: (err: unknown) => {
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('categories.toast_reorder_error'),
+        );
         console.error('Reorder failed', err);
         this._error.set(message);
         this._loading.set(false);
@@ -199,12 +208,15 @@ export class CategoriesState {
     this.svc.reorder(payload).subscribe({
       next: (res) => {
         this._categories.set(res || newOrder);
-        toast.success('Categories reordered');
+        toast.success(this.localeService.translate('categories.toast_reordered'));
       },
-      error: (err) => {
+      error: (err: unknown) => {
         console.error('Optimistic reorder failed, rolling back', err);
         this._categories.set(prev);
-        const message = extractErrorMessage(err, 'Reorder failed');
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('categories.toast_reorder_error'),
+        );
         this._error.set(message);
         toast.error(message);
       },
@@ -225,11 +237,14 @@ export class CategoriesState {
     this.svc.uploadImage(id, file).subscribe({
       next: (category) => {
         this._categories.update((items) => items.map((c) => (c.id === id ? category : c)));
-        toast.success('Image updated');
+        toast.success(this.localeService.translate('categories.toast_image_updated'));
         onSuccess?.(category);
       },
-      error: (err) => {
-        const message = extractErrorMessage(err, 'Upload failed');
+      error: (err: unknown) => {
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('categories.toast_upload_error'),
+        );
         console.error('Upload failed', err);
         toast.error(message);
         onError?.(message);
@@ -245,11 +260,14 @@ export class CategoriesState {
     this.svc.deleteImage(id).subscribe({
       next: (category) => {
         this._categories.update((items) => items.map((c) => (c.id === id ? category : c)));
-        toast.success('Image removed');
+        toast.success(this.localeService.translate('categories.toast_image_removed'));
         onSuccess?.(category);
       },
-      error: (err) => {
-        const message = extractErrorMessage(err, 'Failed to remove image');
+      error: (err: unknown) => {
+        const message = extractErrorMessage(
+          err,
+          this.localeService.translate('categories.toast_remove_image_error'),
+        );
         console.error('Delete image failed', err);
         toast.error(message);
         onError?.(message);

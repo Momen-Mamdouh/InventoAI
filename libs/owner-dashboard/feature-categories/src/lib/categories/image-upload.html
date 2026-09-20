@@ -3,7 +3,11 @@
     class="group relative bg-muted border border-border border-dashed rounded-lg w-full h-40 overflow-hidden"
   >
     @if (imageUrl) {
-      <img [src]="imageUrl" alt="Category image preview" class="w-full h-full object-cover" />
+      <img
+        [src]="imageUrl"
+        [alt]="'categories.image_preview_alt' | translate"
+        class="w-full h-full object-cover"
+      />
       <div
         class="absolute inset-0 flex justify-center items-center gap-2 bg-black/50 transition-opacity"
         [class.opacity-0]="!busy"
@@ -14,12 +18,12 @@
         } @else {
           <label hlmBtn variant="secondary" size="sm" class="gap-1.5 cursor-pointer">
             <input type="file" accept="image/*" hidden (change)="onFile($event)" />
-            <ng-icon name="lucideUpload" size="0.9rem" />
-            Replace
+            <ng-icon name="lucideUpload" size="14" />
+            {{ 'categories.btn_replace_image' | translate }}
           </label>
           <button hlmBtn variant="destructive" size="sm" class="gap-1.5" (click)="remove.emit()">
-            <ng-icon name="lucideTrash2" size="0.9rem" />
-            Remove
+            <ng-icon name="lucideTrash2" size="14" />
+            {{ 'categories.btn_remove_image' | translate }}
           </button>
         }
       </div>
@@ -32,9 +36,9 @@
         class="flex flex-col justify-center items-center gap-2 w-full h-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
       >
         <input type="file" accept="image/*" hidden (change)="onFile($event)" />
-        <ng-icon name="lucideImage" size="1.5rem" />
-        <span class="text-sm">Click to upload an image</span>
-        <span class="text-xs">PNG, JPG up to 5MB</span>
+        <ng-icon name="lucideImage" size="24" />
+        <span class="text-sm">{{ 'categories.upload_hint_click' | translate }}</span>
+        <span class="text-xs">{{ 'categories.upload_hint_formats' | translate }}</span>
       </label>
     }
   </div>

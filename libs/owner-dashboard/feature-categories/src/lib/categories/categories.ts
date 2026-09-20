@@ -6,7 +6,14 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDragPreview,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucidePlus,
@@ -19,20 +26,37 @@ import {
   lucideSearch,
   lucideTriangleAlert,
 } from '@ng-icons/lucide';
-import { HlmButtonImports } from '@spartan/helm/button';
-import { HlmBadgeImports } from '@spartan/helm/badge';
-import { HlmCardImports } from '@spartan/helm/card';
-import { HlmSkeletonImports } from '@spartan/helm/skeleton';
-import { HlmTableImports } from '@spartan/helm/table';
-import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmAlertImports } from '@spartan/helm/alert';
+import { HlmButton } from '@spartan/helm/button';
+import { HlmBadge } from '@spartan/helm/badge';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
+import {
+  HlmTable,
+  HlmTableContainer,
+  HlmTBody,
+  HlmTd,
+  HlmTh,
+  HlmTHead,
+  HlmTr,
+} from '@spartan/helm/table';
+import {
+  HlmSelect,
+  HlmSelectContent,
+  HlmSelectItem,
+  HlmSelectPortal,
+  HlmSelectTrigger,
+  HlmSelectValue,
+} from '@spartan/helm/select';
+import { HlmInput } from '@spartan/helm/input';
+import { HlmAlert, HlmAlertDescription, HlmAlertTitle } from '@spartan/helm/alert';
 import { HlmH1, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { HlmTooltip } from '@spartan/helm/tooltip';
 import { CategoryFormDialog } from './category-form-dialog';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { Category, CategoriesState } from '@invento/owner-dashboard-data-access-category';
 import { Pagination } from '@invento/shared-ui-pagination';
 import { EmptyState } from '@invento/shared-ui-empty-state';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 
 type PublishedFilter = 'all' | 'published' | 'unpublished';
 type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
@@ -42,22 +66,40 @@ type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
   standalone: true,
   imports: [
     NgIcon,
-    HlmButtonImports,
-    HlmBadgeImports,
-    HlmCardImports,
-    HlmSkeletonImports,
-    HlmTableImports,
-    HlmSelectImports,
-    HlmInputImports,
-    HlmAlertImports,
-    DragDropModule,
+    HlmButton,
+    HlmBadge,
+    HlmCard,
+    HlmSkeleton,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmTableContainer,
+    HlmSelect,
+    HlmSelectTrigger,
+    HlmSelectValue,
+    HlmSelectContent,
+    HlmSelectItem,
+    HlmSelectPortal,
+    HlmInput,
+    HlmAlert,
+    HlmAlertTitle,
+    HlmAlertDescription,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
+    CdkDragPreview,
     CategoryFormDialog,
     DeleteConfirmDialog,
     HlmH1,
     HlmMuted,
     HlmSmall,
+    HlmTooltip,
     Pagination,
     EmptyState,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({
@@ -78,6 +120,7 @@ type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
 })
 export class Categories implements OnInit, OnDestroy {
   private readonly state = inject(CategoriesState);
+  private readonly localeService = inject(LocaleService);
 
   readonly categories = this.state.categories;
   readonly loading = this.state.loading;
@@ -93,25 +136,19 @@ export class Categories implements OnInit, OnDestroy {
   readonly publishedFilter = signal<PublishedFilter>('all');
   readonly featuredFilter = signal<FeaturedFilter>('all');
 
-  private readonly publishedFilterLabels: Record<PublishedFilter, string> = {
-    all: 'All statuses',
-    published: 'Published',
-    unpublished: 'Unpublished',
+  readonly publishedItemToString = (value: PublishedFilter): string => {
+    if (!value) {
+      return '';
+    }
+    return this.localeService.translate(`categories.filter_status_${value}`);
   };
 
-  private readonly featuredFilterLabels: Record<FeaturedFilter, string> = {
-    all: 'All categories',
-    featured: 'Featured',
-    unfeatured: 'Not featured',
+  readonly featuredItemToString = (value: FeaturedFilter): string => {
+    if (!value) {
+      return '';
+    }
+    return this.localeService.translate(`categories.filter_featured_${value}`);
   };
-
-  // hlm-select-value shows the raw bound value unless the select is given an
-  // itemToString mapper — without this it would literally render "all"/"published"/etc.
-  readonly publishedItemToString = (value: PublishedFilter): string =>
-    this.publishedFilterLabels[value] ?? '';
-
-  readonly featuredItemToString = (value: FeaturedFilter): string =>
-    this.featuredFilterLabels[value] ?? '';
 
   private searchDebounce?: ReturnType<typeof setTimeout>;
 
@@ -188,7 +225,9 @@ export class Categories implements OnInit, OnDestroy {
 
   confirmDelete(): void {
     const id = this.toDelete()?.id;
-    if (id) this.state.deleteCategory(id);
+    if (id) {
+      this.state.deleteCategory(id);
+    }
     this.cancelDelete();
   }
 
