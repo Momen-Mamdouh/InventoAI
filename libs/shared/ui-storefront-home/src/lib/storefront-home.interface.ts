@@ -4,6 +4,7 @@ export interface StorefrontHomeHero {
   imageUrl?: string | null;
   ctaLabel?: string | null;
   ctaHref?: string | null;
+  objectPosition?: string | null;
 }
 
 export interface StorefrontHomeCategory {

@@ -5,3 +5,25 @@
   width: 100%;
   overflow-x: hidden;
 }
+
+textarea[hlmTextarea] {
+  resize: vertical;
+}
+
+/* Preview Container — fills properly at all view modes */
+.preview-container {
+  container-type: inline-size;
+  container-name: preview;
+  width: 100%;
+}
+
+.preview-inner {
+  overflow: hidden;
+}
+
+/* Prevent text selection while dragging focal point */
+[data-focal-container] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
