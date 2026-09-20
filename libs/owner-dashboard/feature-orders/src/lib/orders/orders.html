@@ -18,7 +18,7 @@
           class="flex flex-wrap items-center gap-1.5 sm:gap-2 bg-muted/20 border border-border p-1 rounded-md"
         >
           <span class="text-xs font-semibold px-2 text-muted-foreground">
-            {{ store.selectedOrderIds().size }} selected
+            {{ 'orders.selected_count' | translate: { count: store.selectedOrderIds().size } }}
           </span>
           <button
             hlmBtn
@@ -54,7 +54,7 @@
             hlmBtn
             variant="destructive"
             size="sm"
-            class="h-8 px-2.5 text-xs font-medium text-white bg-rose-600 hover:bg-rose-700"
+            class="h-8 px-2.5 text-xs font-medium"
             [disabled]="store.isUpdatingStatus()"
             (click)="openBulkCancelModal()"
           >
@@ -128,7 +128,7 @@
     />
   </div>
 
-  <!-- Filter & Search Toolbar (Consistent with Categories page) -->
+  <!-- Filter & Search Toolbar -->
   <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
     <div class="relative w-full sm:w-72 md:w-96">
       <ng-icon
@@ -154,15 +154,15 @@
         class="w-[150px]"
       >
         <hlm-select-trigger class="bg-card shadow-sm border-border h-9">
-          <hlm-select-value placeholder="Status" />
+          <hlm-select-value [placeholder]="'orders.status_placeholder' | translate" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
-          <hlm-select-item value="all">All statuses</hlm-select-item>
-          <hlm-select-item value="pending">Pending</hlm-select-item>
-          <hlm-select-item value="confirmed">Confirmed</hlm-select-item>
-          <hlm-select-item value="shipped">Shipped</hlm-select-item>
-          <hlm-select-item value="delivered">Delivered</hlm-select-item>
-          <hlm-select-item value="cancelled">Cancelled</hlm-select-item>
+          <hlm-select-item value="all">{{ 'orders.filter_all' | translate }}</hlm-select-item>
+          <hlm-select-item value="pending">{{ 'orders.filter_pending' | translate }}</hlm-select-item>
+          <hlm-select-item value="confirmed">{{ 'orders.filter_confirmed' | translate }}</hlm-select-item>
+          <hlm-select-item value="shipped">{{ 'orders.filter_shipped' | translate }}</hlm-select-item>
+          <hlm-select-item value="delivered">{{ 'orders.filter_delivered' | translate }}</hlm-select-item>
+          <hlm-select-item value="cancelled">{{ 'orders.filter_cancelled' | translate }}</hlm-select-item>
         </hlm-select-content>
       </hlm-select>
 
@@ -174,13 +174,13 @@
         class="w-[150px]"
       >
         <hlm-select-trigger class="bg-card shadow-sm border-border h-9">
-          <hlm-select-value placeholder="Timeframe" />
+          <hlm-select-value [placeholder]="'orders.timeframe_placeholder' | translate" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
-          <hlm-select-item value="all_time">All time</hlm-select-item>
-          <hlm-select-item value="today">Today</hlm-select-item>
-          <hlm-select-item value="this_week">This week</hlm-select-item>
-          <hlm-select-item value="this_month">This month</hlm-select-item>
+          <hlm-select-item value="all_time">{{ 'orders.time_all' | translate }}</hlm-select-item>
+          <hlm-select-item value="today">{{ 'orders.time_today' | translate }}</hlm-select-item>
+          <hlm-select-item value="this_week">{{ 'orders.time_week' | translate }}</hlm-select-item>
+          <hlm-select-item value="this_month">{{ 'orders.time_month' | translate }}</hlm-select-item>
         </hlm-select-content>
       </hlm-select>
     </div>
@@ -316,8 +316,9 @@
           <tbody hlmTBody class="divide-y divide-border/60 text-sm">
             @for (order of store.orders(); track order.id) {
               <tr hlmTr
-                class="group hover:bg-muted/40 transition-colors"
+                class="group hover:bg-muted/40 transition-colors cursor-pointer"
                 [class.bg-primary/5]="store.selectedOrderIds().has(order.id)"
+                (click)="viewDetails(order)"
               >
                 <!-- Selection checkbox -->
                 <td hlmTd class="px-2 sm:px-3 md:px-4 py-3.5 text-center">
@@ -370,7 +371,7 @@
                   }}</span>
                 </td>
 
-                <!-- Total Price (Converted from minor units) -->
+                <!-- Total Price -->
                 <td hlmTd
                   class="px-2.5 sm:px-3 md:px-4 py-3.5 font-bold text-foreground whitespace-nowrap"
                 >
@@ -382,7 +383,7 @@
                   <span hlmBadge class="gap-1.5 capitalize" [class]="getPaymentBadgeClass(order.paymentStatus)">
                     <span
                       class="rounded-full w-1.5 h-1.5"
-                      [ngClass]="order.paymentStatus === 'paid' ? 'bg-emerald-500' : 'bg-amber-500'"
+                      [ngClass]="order.paymentStatus === 'paid' ? 'bg-success' : 'bg-warning'"
                     ></span>
                     {{
                       'orders.' + (order.paymentStatus ? order.paymentStatus.toLowerCase() : '')
@@ -408,6 +409,7 @@
                     variant="ghost"
                     size="icon"
                     class="w-8 h-8 text-muted-foreground hover:text-foreground cursor-pointer"
+                    (click)="$event.stopPropagation()"
                     [hlmDropdownMenuTrigger]="orderActionsMenu"
                   >
                     <ng-icon name="lucideMoreHorizontal" size="18" />
@@ -430,7 +432,7 @@
                       @if (canConfirm(order.status)) {
                         <hlm-dropdown-menu-item
                           (click)="confirmOrder(order.id)"
-                          class="text-indigo-600 dark:text-indigo-400 cursor-pointer"
+                          class="text-primary cursor-pointer"
                         >
                           <ng-icon name="lucidePackage" size="14" class="me-2 shrink-0" />
                           <span>{{ 'orders.action_confirm' | translate }}</span>
@@ -441,7 +443,7 @@
                       @if (canShip(order.status)) {
                         <hlm-dropdown-menu-item
                           (click)="shipOrder(order.id)"
-                          class="text-sky-600 dark:text-sky-400 cursor-pointer"
+                          class="cursor-pointer"
                         >
                           <ng-icon name="lucideTruck" size="14" class="me-2 shrink-0" />
                           <span>{{ 'orders.action_ship' | translate }}</span>
@@ -452,7 +454,7 @@
                       @if (canDeliver(order.status)) {
                         <hlm-dropdown-menu-item
                           (click)="deliverOrder(order.id)"
-                          class="text-emerald-600 dark:text-emerald-400 cursor-pointer"
+                          class="text-success cursor-pointer"
                         >
                           <ng-icon name="lucideCheckCircle2" size="14" class="me-2 shrink-0" />
                           <span>{{ 'orders.action_deliver' | translate }}</span>
@@ -464,7 +466,7 @@
                         <hlm-dropdown-menu-separator />
                         <hlm-dropdown-menu-item
                           (click)="openCancelModal(order)"
-                          class="text-rose-600 dark:text-rose-400 cursor-pointer"
+                          class="text-destructive cursor-pointer"
                         >
                           <ng-icon name="lucideXCircle" size="14" class="me-2 shrink-0" />
                           <span>{{ 'orders.action_cancel' | translate }}</span>
@@ -483,7 +485,7 @@
                             "
                             size="13"
                             [class]="
-                              order.status === 'delivered' ? 'text-emerald-500' : 'text-rose-500'
+                              order.status === 'delivered' ? 'text-success' : 'text-destructive'
                             "
                             class="shrink-0 mt-0.5"
                           />
@@ -558,376 +560,6 @@
     }
   </div>
 
-  <!-- Detailed Order Modal / Slide-over -->
-  @if (isDetailsOpen()) {
-    <hlm-dialog [state]="'open'" (stateChanged)="onDetailsStateChanged($event)">
-      <hlm-dialog-content
-        *brnDialogContent="let ctx"
-        [showCloseButton]="false"
-        class="flex flex-col gap-0 p-4 sm:p-6 sm:max-w-2xl max-h-[90vh] overflow-y-auto"
-      >
-        @if (store.isDetailLoading()) {
-          <div class="flex flex-col justify-center items-center py-20 text-muted-foreground gap-3">
-            <hlm-spinner class="text-[32px] text-primary" />
-            <p hlmSmall>{{ 'orders.loading' | translate }}</p>
-          </div>
-        } @else if (store.selectedOrder(); as detail) {
-          <!-- Modal Header -->
-          <div
-            class="flex sm:flex-row flex-col justify-between sm:items-center gap-3 pb-4 border-border border-b"
-          >
-            <div class="flex flex-wrap items-center gap-2.5">
-              <h2 hlmH2 class="text-foreground">
-                Order #{{ detail.orderNumber }}
-              </h2>
-              <span hlmBadge [class]="getFulfillmentBadgeClass(detail.status)">
-                {{
-                  'orders.filter_' + (detail.status ? detail.status.toLowerCase() : '') | translate
-                }}
-              </span>
-              <span hlmBadge class="gap-1.5 capitalize" [class]="getPaymentBadgeClass(detail.paymentStatus)">
-                <span
-                  class="rounded-full w-1.5 h-1.5"
-                  [ngClass]="detail.paymentStatus === 'paid' ? 'bg-emerald-500' : 'bg-amber-500'"
-                ></span>
-                {{
-                  'orders.' + (detail.paymentStatus ? detail.paymentStatus.toLowerCase() : '')
-                    | translate
-                }}
-              </span>
-            </div>
-
-            <button
-              hlmBtn
-              variant="ghost"
-              size="icon"
-              class="w-8 h-8 self-end sm:self-auto text-muted-foreground hover:text-foreground"
-              (click)="closeDetails()"
-            >
-              <ng-icon name="lucideX" size="18" />
-            </button>
-          </div>
-
-          <!-- Order Status Lifecycle Bar & Quick Actions -->
-          <div
-            class="my-4 p-3.5 bg-muted/40 rounded-xl border border-border/60 flex sm:flex-row flex-col justify-between sm:items-center gap-3"
-          >
-            <div class="space-y-0.5 text-xs text-muted-foreground">
-              <div class="font-medium text-foreground">
-                {{ 'orders.col_date' | translate }}: {{ getDatePart(detail.createdAt) }}
-                {{ getTimePart(detail.createdAt) }}
-              </div>
-              <div class="font-mono text-[11px] text-muted-foreground">ID: {{ detail.id }}</div>
-            </div>
-
-            <!-- Lifecycle State Machine Actions -->
-            <div class="flex flex-wrap items-center gap-2">
-              @if (canConfirm(detail.status)) {
-                <button
-                  hlmBtn
-                  size="sm"
-                  class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs h-8"
-                  [disabled]="store.isUpdatingStatus()"
-                  (click)="confirmOrder(detail.id)"
-                >
-                  <ng-icon name="lucidePackage" size="14" class="me-1" />
-                  {{ 'orders.action_confirm' | translate }}
-                </button>
-              }
-
-              @if (canShip(detail.status)) {
-                <button
-                  hlmBtn
-                  size="sm"
-                  class="bg-sky-600 hover:bg-sky-700 text-white font-medium text-xs h-8"
-                  [disabled]="store.isUpdatingStatus()"
-                  (click)="shipOrder(detail.id)"
-                >
-                  <ng-icon name="lucideTruck" size="14" class="me-1" />
-                  {{ 'orders.action_ship' | translate }}
-                </button>
-              }
-
-              @if (canDeliver(detail.status)) {
-                <button
-                  hlmBtn
-                  size="sm"
-                  class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs h-8"
-                  [disabled]="store.isUpdatingStatus()"
-                  (click)="deliverOrder(detail.id)"
-                >
-                  <ng-icon name="lucideCheckCircle2" size="14" class="me-1" />
-                  {{ 'orders.action_deliver' | translate }}
-                </button>
-              }
-
-              @if (canCancel(detail.status)) {
-                <button
-                  hlmBtn
-                  size="sm"
-                  variant="outline"
-                  class="text-rose-600 border-rose-200 dark:border-rose-900/60 hover:bg-rose-50 dark:hover:bg-rose-950/40 font-medium text-xs h-8"
-                  [disabled]="store.isUpdatingStatus()"
-                  (click)="openCancelModal(detail)"
-                >
-                  <ng-icon name="lucideXCircle" size="14" class="me-1" />
-                  {{ 'orders.action_cancel' | translate }}
-                </button>
-              }
-
-              @if (isTerminal(detail.status)) {
-                <div
-                  class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-lg text-xs text-muted-foreground font-medium border border-border/60"
-                >
-                  <ng-icon
-                    [name]="detail.status === 'delivered' ? 'lucideCheckCircle2' : 'lucideXCircle'"
-                    size="13"
-                    [class]="detail.status === 'delivered' ? 'text-emerald-500' : 'text-rose-500'"
-                    class="shrink-0"
-                  />
-                  <span>{{ 'orders.final_status_notice' | translate }}</span>
-                </div>
-              }
-            </div>
-          </div>
-
-          <!-- Cancellation Notice (if cancelled) -->
-          @if (detail.status === 'cancelled') {
-            <div hlmAlert variant="destructive" class="bg-destructive/10 my-3">
-              <ng-icon name="lucideAlertCircle" size="15" />
-              <div hlmAlertTitle class="flex items-center gap-2 text-xs">
-                <span>{{ 'orders.kpi_cancelled' | translate }}</span>
-                @if (detail.cancelledAt) {
-                  <span class="font-normal text-muted-foreground">
-                    ({{ 'orders.cancelled_at' | translate }}: {{ getDatePart(detail.cancelledAt) }}
-                    {{ getTimePart(detail.cancelledAt) }})
-                  </span>
-                }
-              </div>
-              @if (detail.cancelReason) {
-                <p hlmAlertDescription>
-                  <span class="font-medium">{{ 'orders.cancel_reason' | translate }}:</span>
-                  {{ detail.cancelReason }}
-                </p>
-              }
-            </div>
-          }
-
-          <!-- Customer & Shipping Information Grid -->
-          <div class="gap-3 sm:gap-4 grid grid-cols-1 md:grid-cols-2 my-4">
-            <!-- Customer Info -->
-            <div class="p-3.5 bg-muted/30 border border-border/60 rounded-xl space-y-2">
-              <div
-                class="flex items-center gap-2 font-semibold text-foreground text-xs uppercase tracking-wider text-muted-foreground"
-              >
-                <ng-icon name="lucideUser" size="14" />
-                <span>{{ 'orders.customer_info' | translate }}</span>
-              </div>
-              <div class="space-y-1 text-xs">
-                <div class="font-bold text-foreground text-sm">{{ detail.contactName }}</div>
-                <div class="text-muted-foreground flex items-center gap-1.5">
-                  <ng-icon name="lucideMail" size="13" />
-                  <span>{{ detail.contactEmail }}</span>
-                </div>
-                <div class="text-muted-foreground flex items-center gap-1.5">
-                  <ng-icon name="lucidePhone" size="13" />
-                  <span>{{ detail.contactPhone || '—' }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Shipping Address -->
-            <div class="p-3.5 bg-muted/30 border border-border/60 rounded-xl space-y-2">
-              <div
-                class="flex items-center gap-2 font-semibold text-foreground text-xs uppercase tracking-wider text-muted-foreground"
-              >
-                <ng-icon name="lucideMapPin" size="14" />
-                <span>{{ 'orders.shipping_address' | translate }}</span>
-              </div>
-              <div class="space-y-0.5 text-xs text-foreground">
-                <div>{{ detail.shippingAddress.line1 }}</div>
-                @if (detail.shippingAddress.line2) {
-                  <div>{{ detail.shippingAddress.line2 }}</div>
-                }
-                <div class="text-muted-foreground">
-                  {{ detail.shippingAddress.city }}
-                  @if (detail.shippingAddress.governorate) {
-                    , {{ detail.shippingAddress.governorate }}
-                  }
-                  @if (detail.shippingAddress.postalCode) {
-                    - {{ detail.shippingAddress.postalCode }}
-                  }
-                  , {{ detail.shippingAddress.country }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Customer Note (if present) -->
-          @if (detail.customerNote) {
-            <div hlmAlert class="bg-warning/10 text-warning text-xs my-3">
-              <ng-icon name="lucideFileText" size="14" />
-              <p hlmAlertTitle class="text-warning">{{ 'orders.customer_note' | translate }}</p>
-              <p hlmAlertDescription class="text-foreground italic">
-                {{ detail.customerNote }}
-              </p>
-            </div>
-          }
-
-          <!-- Order Items Snapshot Table -->
-          <div class="my-4 space-y-2">
-            <div
-              class="font-bold text-foreground text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-2"
-            >
-              <ng-icon name="lucidePackageCheck" size="15" />
-              <span>{{ 'orders.items_ordered' | translate }} ({{ detail.items.length }})</span>
-            </div>
-
-            <div class="border border-border rounded-xl overflow-hidden">
-              <table hlmTable class="w-full text-start text-xs border-collapse">
-                <thead hlmTHead
-                  class="bg-muted/40 border-b border-border text-muted-foreground font-semibold"
-                >
-                  <tr hlmTr>
-                    <th hlmTh class="p-2.5 text-start">Product</th>
-                    <th hlmTh class="p-2.5 text-center">Qty</th>
-                    <th hlmTh class="p-2.5 text-end">Price</th>
-                    <th hlmTh class="p-2.5 text-end">Total</th>
-                  </tr>
-                </thead>
-                <tbody hlmTBody class="divide-y divide-border/50">
-                  @for (item of detail.items; track item.id) {
-                    <tr hlmTr class="hover:bg-muted/20 transition-colors">
-                      <td hlmTd class="p-2.5">
-                        <div class="font-semibold text-foreground">{{ item.productTitle }}</div>
-                        <!-- Variant options badges -->
-                        @if (getObjectKeys(item.variantOptions).length > 0) {
-                          <div class="flex flex-wrap gap-1 mt-1">
-                            @for (k of getObjectKeys(item.variantOptions); track k) {
-                              <span
-                                class="px-1.5 py-0.5 bg-muted rounded text-[10px] text-muted-foreground border border-border"
-                              >
-                                {{ k }}:
-                                <strong class="text-foreground">{{
-                                  item.variantOptions[k]
-                                }}</strong>
-                              </span>
-                            }
-                          </div>
-                        }
-                        @if (item.sku) {
-                          <div class="text-[10px] text-muted-foreground font-mono mt-0.5">
-                            SKU: {{ item.sku }}
-                          </div>
-                        }
-                      </td>
-                      <td hlmTd class="p-2.5 text-center font-medium text-foreground">
-                        x{{ item.quantity }}
-                      </td>
-                      <td hlmTd class="p-2.5 text-end text-muted-foreground">
-                        {{ formatMinorUnits(item.unitAmount) | currency: detail.currency }}
-                      </td>
-                      <td hlmTd class="p-2.5 text-end font-bold text-foreground">
-                        {{ formatMinorUnits(item.lineTotalAmount) | currency: detail.currency }}
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Financial Breakdown & Payment -->
-          <div class="my-4 p-3.5 bg-muted/20 border border-border rounded-xl space-y-2 text-xs">
-            <div class="flex justify-between items-center text-muted-foreground">
-              <span>{{ 'orders.subtotal' | translate }}</span>
-              <span class="font-medium text-foreground">
-                {{ formatMinorUnits(detail.subtotalAmount) | currency: detail.currency }}
-              </span>
-            </div>
-            <div class="flex justify-between items-center text-muted-foreground">
-              <span>{{ 'orders.shipping_fee' | translate }}</span>
-              <span class="font-medium text-foreground">
-                {{ formatMinorUnits(detail.shippingFee) | currency: detail.currency }}
-              </span>
-            </div>
-            <div
-              class="flex justify-between items-center pt-2 border-t border-border font-bold text-sm text-foreground"
-            >
-              <span>{{ 'orders.total' | translate }}</span>
-              <span class="text-base text-primary">
-                {{ formatMinorUnits(detail.totalAmount) | currency: detail.currency }}
-              </span>
-            </div>
-            <div
-              class="flex justify-between items-center pt-2 border-t border-border/60 text-[11px] text-muted-foreground"
-            >
-              <span
-                >{{ 'orders.payment_method' | translate }}:
-                <strong class="uppercase text-foreground">{{ detail.paymentMethod }}</strong></span
-              >
-              <span
-                >{{ 'orders.payment_status' | translate }}:
-                <strong class="capitalize text-foreground">{{ detail.paymentStatus }}</strong></span
-              >
-            </div>
-          </div>
-
-          <!-- Private Internal Owner Note -->
-          <div class="my-4 p-3.5 bg-card border border-border/80 rounded-xl space-y-2">
-            <div class="flex justify-between items-center">
-              <label
-                hlmLabel
-                for="internalNote"
-                class="font-bold text-foreground text-xs flex items-center gap-1.5"
-              >
-                <ng-icon name="lucideFileText" size="14" class="text-primary" />
-                <span>{{ 'orders.internal_note' | translate }}</span>
-              </label>
-              <span class="text-[10px] text-muted-foreground">
-                {{ (internalNoteDraft() || '').length }}/2000
-              </span>
-            </div>
-            <textarea
-              hlmTextarea
-              id="internalNote"
-              rows="3"
-              maxlength="2000"
-              [placeholder]="'orders.internal_note_placeholder' | translate"
-              [(ngModel)]="internalNoteDraft"
-              class="w-full text-xs p-2.5 bg-muted/30 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-foreground resize-none"
-            ></textarea>
-            <div class="flex justify-end">
-              <button
-                hlmBtn
-                size="sm"
-                variant="outline"
-                class="text-xs h-7 gap-1.5 bg-card hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="store.isUpdatingNote() || !internalNoteDraft().trim()"
-                (click)="saveInternalNote()"
-              >
-                @if (store.isUpdatingNote()) {
-                  <hlm-spinner class="text-[13px] text-primary" />
-                  <span>{{ 'orders.saving_note' | translate }}</span>
-                } @else {
-                  <ng-icon name="lucideSave" size="13" />
-                  <span>{{ 'orders.save_note' | translate }}</span>
-                }
-              </button>
-            </div>
-          </div>
-
-          <!-- Modal Footer -->
-          <div class="flex justify-end items-center gap-2 pt-3 border-border border-t">
-            <button hlmBtn variant="outline" size="sm" (click)="closeDetails()">
-              {{ 'orders.close' | translate }}
-            </button>
-          </div>
-        }
-      </hlm-dialog-content>
-    </hlm-dialog>
-  }
-
   <!-- Cancel Order Reason Confirmation Dialog Modal (Single or Bulk) -->
   @if (isCancelModalOpen()) {
     <hlm-alert-dialog [state]="'open'" (stateChanged)="onCancelModalStateChanged($event)">
@@ -936,7 +568,7 @@
         class="data-[size=default]:sm:max-w-md space-y-4"
       >
         <div class="flex justify-between items-center pb-2 border-b border-border">
-          <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-base">
+          <div class="flex items-center gap-2 text-destructive font-bold text-base">
             <ng-icon name="lucideBan" size="18" />
             <span>
               @if (isBulkCancel()) {
@@ -974,7 +606,7 @@
           maxlength="200"
           [placeholder]="'orders.cancel_reason_placeholder' | translate"
           [(ngModel)]="cancelReason"
-          class="w-full text-xs p-2.5 bg-muted/30 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500/20 text-foreground resize-none"
+          class="w-full text-xs p-2.5 bg-muted/30 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-destructive/20 text-foreground resize-none"
         ></textarea>
 
         <div class="flex justify-end items-center gap-2 pt-2 border-t border-border">
@@ -989,8 +621,9 @@
           </button>
           <button
             hlmBtn
+            variant="destructive"
             size="sm"
-            class="bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs h-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="font-semibold text-xs h-8 disabled:opacity-50 disabled:cursor-not-allowed"
             [disabled]="store.isUpdatingStatus() || !cancelReason().trim()"
             (click)="submitCancelOrder()"
           >
