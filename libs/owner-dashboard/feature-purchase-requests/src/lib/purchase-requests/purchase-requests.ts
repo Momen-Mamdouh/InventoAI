@@ -27,6 +27,7 @@ import {
 import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmCard } from '@spartan/helm/card';
+import { HlmSheet, HlmSheetContent, HlmSheetPortal } from '@spartan/helm/sheet';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import {
@@ -66,11 +67,11 @@ import {
 } from '@invento/owner-dashboard-data-access-purchase-request';
 import { ProductService } from '@invento/owner-dashboard-data-access-product';
 import { SupplierService } from '@invento/owner-dashboard-data-access-supplier';
-import { PurchaseRequestDetails } from '../purchase-request-details';
+import { PurchaseRequestDetails } from '../purchase-request-details/purchase-request-details';
 import {
   PurchaseRequestCreate,
   preloadCreateDependencies,
-} from '../purchase-request-create';
+} from '../purchase-request-create/purchase-request-create';
 
 @Component({
   selector: 'app-purchase-requests',
@@ -81,6 +82,9 @@ import {
     HlmBadge,
     HlmButton,
     HlmCard,
+    HlmSheet,
+    HlmSheetContent,
+    HlmSheetPortal,
     HlmSkeleton,
     HlmSpinner,
     HlmTable,
@@ -155,6 +159,10 @@ export class PurchaseRequests implements OnInit {
   readonly showMailbox = signal(false);
   readonly showCreate = signal(false);
   readonly showDisconnectMailboxConfirm = signal(false);
+
+  protected readonly sheetSide = computed<'left' | 'right'>(() =>
+    this.localeService.isRtl() ? 'left' : 'right',
+  );
 
   readonly statusTabs: { value: 'all' | PurchaseRequestStatus; key: string }[] = [
     { value: 'all', key: 'purchase_requests.tab_all' },
@@ -279,6 +287,16 @@ export class PurchaseRequests implements OnInit {
     this.router.navigate([], { queryParams: {}, replaceUrl: true });
   }
 
+  onDetailDrawerStateChanged(state: 'open' | 'closed'): void {
+    // BrnDialog emits 'closed' once immediately on teardown/backdrop-click.
+    // We only close when the sheet signals 'closed' while a request is selected,
+    // which means the user explicitly dismissed it (backdrop or close button).
+    if (state === 'closed' && this.selected()) {
+      this.closeDetail();
+    }
+  }
+
+
   openCreate(): void {
     this.showCreate.set(true);
   }
@@ -286,6 +304,7 @@ export class PurchaseRequests implements OnInit {
   closeCreate(): void {
     this.showCreate.set(false);
   }
+
 
   onRequestCreated(detail: PurchaseRequestDetail): void {
     this.closeCreate();

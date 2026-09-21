@@ -1,9 +1,5 @@
 @if (request(); as req) {
-  <hlm-sheet [state]="'open'" [side]="sheetSide()" (stateChanged)="onSheetStateChanged($event)">
-    <hlm-sheet-content
-      *hlmSheetPortal="let ctx"
-      class="flex flex-col gap-0 p-0 w-full sm:max-w-5xl h-full overflow-y-auto"
-    >
+  <div class="flex flex-col w-full h-full bg-background overflow-y-auto">
       <!-- Top Sticky Header -->
       <div
         class="top-0 z-10 sticky flex justify-between items-center gap-3 bg-background/95 backdrop-blur px-6 py-4 border-b border-border shadow-sm"
@@ -13,6 +9,17 @@
             <span hlmBadge [class]="statusClass(req.status)">
               {{ ('purchase_requests.tab_' + req.status) | translate }}
             </span>
+            @if (req.status !== 'draft') {
+              <span
+                hlmBadge
+                variant="outline"
+                class="gap-1 text-[11px] font-normal border-border/80 text-muted-foreground"
+                [hlmTooltip]="'purchase_requests.details_rfq_locked_tooltip' | translate"
+              >
+                <ng-icon name="lucideLock" size="11" />
+                {{ 'purchase_requests.details_rfq_locked' | translate }}
+              </span>
+            }
             @if (req.draftStatus === 'fallback') {
               <span hlmMuted class="text-xs">
                 {{ 'purchase_requests.details_fallback_badge' | translate }}
@@ -162,6 +169,17 @@
                           {{ 'purchase_requests.details_badge_late' | translate }}
                         </span>
                       }
+                      @if (offer.extractionStatus === 'parsed') {
+                        <span hlmBadge variant="outline" class="gap-1 text-[11px] font-normal border-primary/30 text-primary bg-primary/5">
+                          <ng-icon name="lucideSparkles" size="11" />
+                          {{ 'purchase_requests.details_badge_ai_parsed' | translate }}
+                        </span>
+                      } @else if (offer.extractionStatus === 'manual' || (offer.unitAmount !== null && !offer.rawReply)) {
+                        <span hlmBadge variant="outline" class="gap-1 text-[11px] font-normal border-border/80 text-muted-foreground">
+                          <ng-icon name="lucideSlidersHorizontal" size="11" />
+                          {{ 'purchase_requests.details_badge_manual_quote' | translate }}
+                        </span>
+                      }
                     </div>
                     <p hlmMuted class="text-xs mt-1 truncate">{{ offer.supplierEmail }}</p>
                   </div>
@@ -228,12 +246,24 @@
                         hlmBtn
                         variant="ghost"
                         size="icon"
-                        [hlmTooltip]="'purchase_requests.details_btn_edit_numbers' | translate"
-                        [attr.aria-label]="'purchase_requests.details_btn_edit_numbers' | translate"
+                        [hlmTooltip]="
+                          (offer.unitAmount === null
+                            ? 'purchase_requests.details_btn_enter_quote_tooltip'
+                            : 'purchase_requests.details_btn_adjust_quote_tooltip') | translate
+                        "
+                        [attr.aria-label]="
+                          (offer.unitAmount === null
+                            ? 'purchase_requests.details_btn_enter_quote'
+                            : 'purchase_requests.details_btn_adjust_quote') | translate
+                        "
                         (click)="openOfferEdit(offer)"
                         class="h-8 w-8 text-muted-foreground hover:text-foreground"
                       >
-                        <ng-icon name="lucideEdit3" size="14" />
+                        @if (offer.unitAmount === null) {
+                          <ng-icon name="lucideSlidersHorizontal" size="14" />
+                        } @else {
+                          <ng-icon name="lucideEdit3" size="14" />
+                        }
                       </button>
                     }
                     @if (
@@ -312,6 +342,11 @@
                 <ng-icon name="lucideEdit3" size="14" />
                 {{ 'purchase_requests.details_btn_edit_draft' | translate }}
               </button>
+            } @else {
+              <span class="text-xs text-muted-foreground inline-flex items-center gap-1.5">
+                <ng-icon name="lucideLock" size="12" />
+                {{ 'purchase_requests.details_email_dispatched_note' | translate }}
+              </span>
             }
           </div>
           <div class="bg-muted/30 p-4 border border-border rounded-xl text-xs sm:text-sm leading-6 whitespace-pre-wrap text-foreground">
@@ -324,9 +359,9 @@
           }
         </section>
       </div>
-    </hlm-sheet-content>
-  </hlm-sheet>
+  </div>
 }
+
 
 <!-- Dialog: Edit Purchase Request -->
 @if (showEdit() && request(); as req) {
@@ -413,12 +448,19 @@
   <hlm-dialog [state]="'open'" (stateChanged)="$event === 'closed' ? showOfferEdit.set(false) : null">
     <hlm-dialog-content *brnDialogContent="let ctx" class="flex flex-col gap-0 p-0 sm:max-w-xl">
       <hlm-dialog-header class="p-6 pb-4">
-        <h3 hlmDialogTitle class="text-lg font-bold text-foreground">
-          {{ 'purchase_requests.correct_title' | translate: { supplier: offer.supplierName } }}
-        </h3>
-        <p hlmDialogDescription class="text-xs sm:text-sm text-muted-foreground mt-1">
-          {{ 'purchase_requests.correct_desc' | translate }}
-        </p>
+        <div class="flex items-start gap-3">
+          <span class="inline-flex p-2 rounded-xl bg-primary/10 text-primary shrink-0 mt-0.5">
+            <ng-icon name="lucideSlidersHorizontal" size="18" />
+          </span>
+          <div class="min-w-0">
+            <h3 hlmDialogTitle class="text-lg font-bold text-foreground">
+              {{ 'purchase_requests.correct_title' | translate: { supplier: offer.supplierName } }}
+            </h3>
+            <p hlmDialogDescription class="text-xs sm:text-sm text-muted-foreground mt-1">
+              {{ 'purchase_requests.correct_desc' | translate }}
+            </p>
+          </div>
+        </div>
       </hlm-dialog-header>
       <div class="px-6 py-2 space-y-4">
         <div class="gap-4 grid sm:grid-cols-3">

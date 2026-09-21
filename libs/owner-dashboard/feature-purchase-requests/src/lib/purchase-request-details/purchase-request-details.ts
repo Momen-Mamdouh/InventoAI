@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   computed,
   inject,
@@ -13,16 +12,29 @@ import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideAlertCircle,
+  lucideBuilding2,
   lucideCheck,
   lucideCheckCircle2,
+  lucideChevronDown,
+  lucideChevronUp,
   lucideClock3,
+  lucideCopy,
   lucideEdit3,
   lucideExternalLink,
+  lucideFileText,
+  lucideInbox,
+  lucideLock,
   lucideMail,
+  lucidePackage,
   lucideRefreshCw,
   lucideSend,
+  lucideSlidersHorizontal,
+  lucideSparkles,
   lucideTrash2,
+  lucideTrendingDown,
+  lucideTruck,
   lucideX,
+  lucideZap,
 } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
@@ -32,7 +44,6 @@ import { HlmLabel } from '@spartan/helm/label';
 import { HlmTextarea } from '@spartan/helm/textarea';
 import { HlmTooltip } from '@spartan/helm/tooltip';
 import { HlmH2, HlmMuted } from '@spartan/helm/typography';
-import { HlmSheet, HlmSheetContent, HlmSheetPortal } from '@spartan/helm/sheet';
 import {
   HlmDialog,
   HlmDialogContent,
@@ -79,9 +90,6 @@ import {
     HlmTooltip,
     HlmH2,
     HlmMuted,
-    HlmSheet,
-    HlmSheetContent,
-    HlmSheetPortal,
     HlmDialog,
     HlmDialogContent,
     HlmDialogHeader,
@@ -103,20 +111,32 @@ import {
   providers: [
     provideIcons({
       lucideAlertCircle,
+      lucideBuilding2,
       lucideCheck,
       lucideCheckCircle2,
+      lucideChevronDown,
+      lucideChevronUp,
       lucideClock3,
+      lucideCopy,
       lucideEdit3,
       lucideExternalLink,
+      lucideFileText,
+      lucideInbox,
+      lucideLock,
       lucideMail,
+      lucidePackage,
       lucideRefreshCw,
       lucideSend,
+      lucideSlidersHorizontal,
+      lucideSparkles,
       lucideTrash2,
+      lucideTrendingDown,
+      lucideTruck,
       lucideX,
+      lucideZap,
     }),
   ],
   templateUrl: './purchase-request-details.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PurchaseRequestDetails {
   private readonly router = inject(Router);
@@ -128,9 +148,9 @@ export class PurchaseRequestDetails {
 
   readonly saving = this.state.saving;
 
-  protected readonly sheetSide = computed<'left' | 'right'>(() =>
-    this.localeService.isRtl() ? 'left' : 'right',
-  );
+  readonly activeTab = signal<'offers' | 'specs' | 'email'>('offers');
+  readonly copiedId = signal<boolean>(false);
+  readonly expandedRawReplies = signal<Record<string, boolean>>({});
 
   readonly showEdit = signal<boolean>(false);
   readonly showCancelConfirm = signal<boolean>(false);
@@ -152,12 +172,98 @@ export class PurchaseRequestDetails {
   offerDeliveryDays: number | null = null;
   offerNotes: string | null = null;
 
+  readonly shortId = computed<string>(() => {
+    const id = this.request()?.id;
+    return id ? id.slice(0, 8).toUpperCase() : '';
+  });
+
+  readonly recommendedOffer = computed<SupplierOffer | null>(() => {
+    return this.request()?.offers.find((o) => o.isRecommended) ?? null;
+  });
+
+  readonly cheapestOffer = computed<SupplierOffer | null>(() => {
+    return this.request()?.offers.find((o) => o.isCheapest) ?? null;
+  });
+
+  readonly fastestOffer = computed<SupplierOffer | null>(() => {
+    return this.request()?.offers.find((o) => o.isFastest) ?? null;
+  });
+
+  readonly wonOffer = computed<SupplierOffer | null>(() => {
+    return this.request()?.offers.find((o) => o.status === 'won') ?? null;
+  });
+
+  readonly bestUnitPrice = computed<number | null>(() => {
+    const offers = this.request()?.offers ?? [];
+    const priced = offers.filter((o) => o.unitAmount !== null).map((o) => o.unitAmount as number);
+    return priced.length > 0 ? Math.min(...priced) : null;
+  });
+
+  readonly fastestDeliveryDays = computed<number | null>(() => {
+    const offers = this.request()?.offers ?? [];
+    const days = offers.filter((o) => o.deliveryDays !== null).map((o) => o.deliveryDays as number);
+    return days.length > 0 ? Math.min(...days) : null;
+  });
+
+  readonly responseRate = computed<number>(() => {
+    const req = this.request();
+    if (!req || req.offerCount === 0) {
+      return 0;
+    }
+    return Math.min(100, Math.round((req.receivedCount / req.offerCount) * 100));
+  });
+
+  readonly lifecycleStep = computed<number>(() => {
+    const req = this.request();
+    if (!req) {
+      return 1;
+    }
+    if (req.status === 'draft') {
+      return 1;
+    }
+    if (req.status === 'sent') {
+      return 2;
+    }
+    if (req.status === 'replied') {
+      return 3;
+    }
+    if (req.status === 'confirmed' || req.status === 'cancelled') {
+      return 4;
+    }
+    return 1;
+  });
+
+  copyRequestId(): void {
+    const req = this.request();
+    if (!req) {
+      return;
+    }
+    const fullId = `PR-${this.shortId()}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(fullId).then(() => {
+        this.copiedId.set(true);
+        setTimeout(() => this.copiedId.set(false), 2000);
+      });
+    }
+  }
+
+  toggleRawReply(offerId: string): void {
+    this.expandedRawReplies.update((curr) => ({
+      ...curr,
+      [offerId]: !curr[offerId],
+    }));
+  }
+
+  isRawReplyExpanded(offerId: string): boolean {
+    return !!this.expandedRawReplies()[offerId];
+  }
+
   statusClass(status: PurchaseRequestStatus): string {
     return {
       draft: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
       sent: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
-      replied: 'bg-warning/10 text-warning',
-      confirmed: 'bg-success/10 text-success',
+      replied: 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300',
+      confirmed: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
       cancelled: 'bg-destructive/10 text-destructive',
     }[status];
   }
@@ -166,7 +272,7 @@ export class PurchaseRequestDetails {
     return {
       awaiting: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
       received: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
-      won: 'bg-success/10 text-success',
+      won: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 font-semibold',
       declined: 'bg-destructive/10 text-destructive',
     }[status];
   }
@@ -193,7 +299,9 @@ export class PurchaseRequestDetails {
 
   openEdit(): void {
     const req = this.request();
-    if (!req || req.status !== 'draft') return;
+    if (!req || req.status !== 'draft') {
+      return;
+    }
     this.editSubject = req.subject;
     this.editBody = req.body;
     this.editQuantity = req.quantity;
@@ -207,7 +315,9 @@ export class PurchaseRequestDetails {
 
   saveEdit(): void {
     const req = this.request();
-    if (!req) return;
+    if (!req) {
+      return;
+    }
     this.state.updateRequest(
       req.id,
       {
@@ -226,13 +336,17 @@ export class PurchaseRequestDetails {
 
   send(): void {
     const req = this.request();
-    if (!req || req.status === 'confirmed' || req.status === 'cancelled') return;
+    if (!req || req.status === 'confirmed' || req.status === 'cancelled') {
+      return;
+    }
     this.state.sendRequest(req.id);
   }
 
   cancel(): void {
     const req = this.request();
-    if (!req) return;
+    if (!req) {
+      return;
+    }
     this.state.cancelRequest(req.id, () => {
       this.showCancelConfirm.set(false);
     });
@@ -247,7 +361,9 @@ export class PurchaseRequestDetails {
   pasteReply(): void {
     const req = this.request();
     const offer = this.selectedOffer();
-    if (!req || !offer || !this.replyBody.trim()) return;
+    if (!req || !offer || !this.replyBody.trim()) {
+      return;
+    }
     this.state.pasteReply(req.id, offer.id, { body: this.replyBody.trim() }, () => {
       this.showReply.set(false);
     });
@@ -265,7 +381,9 @@ export class PurchaseRequestDetails {
   saveOffer(): void {
     const req = this.request();
     const offer = this.selectedOffer();
-    if (!req || !offer) return;
+    if (!req || !offer) {
+      return;
+    }
     this.state.correctOffer(
       req.id,
       offer.id,
@@ -297,7 +415,9 @@ export class PurchaseRequestDetails {
   proceedConfirmOffer(): void {
     const req = this.request();
     const offer = this.offerToConfirm();
-    if (!req || !offer) return;
+    if (!req || !offer) {
+      return;
+    }
     this.state.confirmOffer(req.id, offer.id, offer.supplierName, () => {
       this.offerToConfirm.set(null);
     });

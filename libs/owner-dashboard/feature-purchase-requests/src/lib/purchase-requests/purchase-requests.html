@@ -1,4 +1,9 @@
-<div class="space-y-6 p-4 md:p-6 lg:p-8 w-full">
+<div
+  class="space-y-6 p-4 md:p-6 lg:p-8 w-full transition-opacity duration-150"
+  [class.opacity-0]="selected()"
+  [class.pointer-events-none]="selected()"
+  [attr.inert]="selected() ? '' : null"
+>
   <!-- ══════════════════════════════════════════════════════════
        PAGE HEADER
   ══════════════════════════════════════════════════════════ -->
@@ -413,10 +418,17 @@
 
 <!-- Slide-over Request Details Drawer -->
 @if (selected()) {
-  <app-purchase-request-details
-    [request]="selected()"
-    (closed)="closeDetail()"
-  />
+  <hlm-sheet [side]="sheetSide()" [state]="'open'" (stateChanged)="onDetailDrawerStateChanged($event)">
+    <hlm-sheet-content
+      *hlmSheetPortal="let ctx"
+      class="flex flex-col gap-0 p-0 !w-full !max-w-full sm:!max-w-2xl md:!max-w-3xl lg:!max-w-4xl xl:!max-w-5xl h-full bg-background border-s border-border shadow-2xl overflow-y-auto"
+    >
+      <app-purchase-request-details
+        [request]="selected()"
+        (closed)="closeDetail()"
+      />
+    </hlm-sheet-content>
+  </hlm-sheet>
 }
 
 <!-- Create Purchase Request Drawer/Modal -->
