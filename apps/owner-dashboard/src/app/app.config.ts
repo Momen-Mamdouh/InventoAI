@@ -13,7 +13,7 @@ import { provideSpartanHlm } from '@spartan/helm/utils';
 import { provideDirectionalitySync, TRANSLATION_LOADER } from '@invento/shared-util-i18n';
 import type { Locale } from '@invento/shared-util-i18n';
 import { AUTH_CONFIG, AuthConfig, authInterceptor } from '@invento/shared-data-access-auth';
-import { SITE_BUILDER_URL } from '@invento/owner-dashboard-util-site-builder-url';
+import { SITE_BUILDER_URL, STORE_BASE_URL } from '@invento/owner-dashboard-util-site-builder-url';
 import { environment } from '../environments/environment';
 import en from '../assets/i18n/en.json';
 import ar from '../assets/i18n/ar.json';
@@ -58,6 +58,7 @@ export const appConfig: ApplicationConfig = {
       },
     },
     { provide: SITE_BUILDER_URL, useValue: environment.siteBuilderUrl },
+    { provide: STORE_BASE_URL, useValue: environment.storeBaseUrl },
     {
       provide: TRANSLATION_LOADER,
       useValue: (locale: Locale) => (locale === 'ar' ? ar : en),

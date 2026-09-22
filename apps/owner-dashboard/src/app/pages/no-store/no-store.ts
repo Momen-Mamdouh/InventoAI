@@ -42,7 +42,7 @@ export class NoStore {
 
   readonly isDark = this.themeService.isDark;
   readonly siteBuilderUrl = signal<string>(
-    (environment as { siteBuilderUrl?: string }).siteBuilderUrl ||
+    environment.siteBuilderUrl ||
       (environment.production ? 'https://test-site-builder.vercel.app' : 'http://localhost:4200'),
   );
 }

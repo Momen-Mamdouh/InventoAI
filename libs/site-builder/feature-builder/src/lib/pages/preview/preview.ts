@@ -152,7 +152,15 @@ export class Preview {
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9-]/g, '');
-    return `https://localhost/${cleanDomain || 'my-site'}.com`;
+    const slug = cleanDomain || 'my-site';
+    const base =
+      this.apiConfig?.storeBaseUrl ||
+      (this.apiConfig as unknown as { storefrontUrl?: string })?.storefrontUrl ||
+      'http://localhost:4300';
+    if (base.includes('{slug}')) {
+      return base.replace('{slug}', slug);
+    }
+    return `${base.replace(/\/+$/, '')}/${slug}`;
   });
 
   readonly skeletonThemes = Array(4);

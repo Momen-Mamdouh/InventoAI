@@ -138,16 +138,12 @@
                 [class.border-destructive]="highlightErrorElement() === 'domain'"
                 [class.animate-shake]="highlightErrorElement() === 'domain'"
               >
-                <!-- Host Prefix Badge (dev: http://localhost:4300/ | prod: https://invento-store.vercel.app/) -->
+                <!-- Host Prefix Badge (dynamically resolved from storeBaseUrl) -->
                 <div
                   class="inline-flex items-center px-3.5 bg-muted/60 text-muted-foreground text-xs font-mono select-none border-e border-border rounded-s-md whitespace-nowrap"
                   dir="ltr"
                 >
-                  @if (isProduction()) {
-                    <span class="text-foreground/70 font-medium">https://</span>invento-store.vercel.app/
-                  } @else {
-                    <span class="text-foreground/70 font-medium">http://</span>localhost:4300/
-                  }
+                  <span class="text-foreground/70 font-medium">{{ storeBaseProtocol() }}</span>{{ storeBaseHost() }}/
                 </div>
 
                 <!-- Slug Input -->

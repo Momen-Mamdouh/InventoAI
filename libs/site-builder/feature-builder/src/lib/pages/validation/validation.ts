@@ -139,9 +139,19 @@ export class Validation {
 
   readonly isProduction = computed(() => this.apiConfig.isProduction);
   readonly storeBaseUrl = computed(() => this.apiConfig.storeBaseUrl);
+  readonly storeBaseProtocol = computed(() =>
+    this.storeBaseUrl().startsWith('https://') ? 'https://' : 'http://',
+  );
+  readonly storeBaseHost = computed(() =>
+    this.storeBaseUrl().replace(/^https?:\/\//, '').replace(/\/+$/, ''),
+  );
   readonly fullStoreUrl = computed(() => {
     const slug = this.domain().trim() || 'store';
-    return `${this.storeBaseUrl()}/${slug}`;
+    const base = this.storeBaseUrl();
+    if (base.includes('{slug}')) {
+      return base.replace('{slug}', slug);
+    }
+    return `${base}/${slug}`;
   });
 
   readonly isSubmitting = signal(false);

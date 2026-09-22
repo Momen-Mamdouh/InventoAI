@@ -10,6 +10,7 @@ import { AppEnvironment } from '@invento/shared-util-environment';
 export interface SiteBuilderEnvironment extends AppEnvironment {
   readonly inventoDashboardUrl?: string;
   readonly inventoLoginUrl?: string;
+  readonly storeBaseUrl?: string;
 }
 
 export const SITE_BUILDER_ENVIRONMENT = new InjectionToken<SiteBuilderEnvironment>(

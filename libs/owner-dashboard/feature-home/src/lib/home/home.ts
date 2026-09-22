@@ -43,7 +43,7 @@ import { AuthService } from '@invento/shared-data-access-auth';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSeparator } from '@spartan/helm/separator';
 import { HlmAlert, HlmAlertDescription } from '@spartan/helm/alert';
-import { SITE_BUILDER_URL } from '@invento/owner-dashboard-util-site-builder-url';
+import { SITE_BUILDER_URL, STORE_BASE_URL } from '@invento/owner-dashboard-util-site-builder-url';
 import {
   StorefrontHome,
   StorefrontHomeHero,
@@ -134,6 +134,16 @@ export class Home implements OnInit {
   focalPoint = signal<{ x: number; y: number }>({ x: 50, y: 50 });
   isDraggingFocal = signal<boolean>(false);
 
+  private readonly storeBaseUrl = inject(STORE_BASE_URL, { optional: true }) ?? 'http://localhost:4300';
+
+  private formatStoreUrl(slug: string): string {
+    const base = this.storeBaseUrl;
+    if (base.includes('{slug}')) {
+      return base.replace('{slug}', slug);
+    }
+    return `${base.replace(/\/+$/, '')}/${slug}`;
+  }
+
   // Store Hydration State Signals
   isLoadingStore = signal<boolean>(true);
   storeLoadError = signal<string | null>(null);
@@ -141,12 +151,12 @@ export class Home implements OnInit {
 
   storeUrl = computed(() => {
     const slug = this.storeData()?.slug || 'yourbrand';
-    return `http://localhost:4300/${slug}`;
+    return this.formatStoreUrl(slug);
   });
 
   storeDomain = computed(() => {
     const slug = this.storeData()?.slug || 'yourbrand';
-    return `http://localhost:4300/${slug}`;
+    return this.formatStoreUrl(slug);
   });
 
   storeName = computed(() => this.storeData()?.name || 'YourBrand');

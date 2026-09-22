@@ -37,6 +37,7 @@ import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreService } from '@invento/owner-dashboard-data-access-store';
+import { STORE_BASE_URL } from '@invento/owner-dashboard-util-site-builder-url';
 
 export interface StoreItem {
   id: string;
@@ -102,6 +103,8 @@ export class MyStores {
   private readonly router = inject(Router);
   private readonly storeService = inject(StoreService);
 
+  private readonly storeBaseUrl = inject(STORE_BASE_URL, { optional: true }) ?? 'http://localhost:4300';
+
   readonly loading = signal<boolean>(true);
   readonly hasStore = signal<boolean>(false);
 
@@ -124,10 +127,9 @@ export class MyStores {
           year: 'numeric',
         });
         const statusMap = store.status?.toLowerCase() === 'live' ? 'Live' : 'Draft';
-        const storeUrl =
-          typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-            ? `${window.location.protocol}//${window.location.host}/${store.slug}`
-            : `http://localhost:4300/${store.slug}`;
+        const storeUrl = this.storeBaseUrl.includes('{slug}')
+          ? this.storeBaseUrl.replace('{slug}', store.slug)
+          : `${this.storeBaseUrl.replace(/\/+$/, '')}/${store.slug}`;
 
         this.stores.set([
           {

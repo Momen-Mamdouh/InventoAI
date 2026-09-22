@@ -30,6 +30,8 @@ export class ApiConfig {
   readonly inventoLoginUrl = this.resolveLoginUrl();
   readonly isProduction = !!this.environment.production;
   readonly storeBaseUrl = this.resolveStoreBaseUrl();
+  /** Alias for storeBaseUrl to support legacy test mocks */
+  readonly storefrontUrl = this.storeBaseUrl;
 
   /**
    * Builds a full endpoint URL. Pass a leading-slash path, e.g. '/site-builder/publish'.
@@ -75,7 +77,7 @@ export class ApiConfig {
     const configured = this.resolve(
       'SITE_BUILDER_STORE_BASE_URL',
       'SITE_BASE_URL',
-      '',
+      this.environment.storeBaseUrl ?? '',
     );
     if (configured) return configured.replace(/\/+$/, '');
     return this.environment.production

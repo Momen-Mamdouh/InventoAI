@@ -92,6 +92,13 @@ export class ExistingStore {
     if (!slug) {
       return '';
     }
+    const storeBase = this.environment.storeBaseUrl;
+    if (storeBase) {
+      if (storeBase.includes('{slug}')) {
+        return storeBase.replace('{slug}', slug);
+      }
+      return `${storeBase.replace(/\/+$/, '')}/${slug}`;
+    }
     return this.environment.production
       ? `https://${slug}.invento.site`
       : `http://localhost:4300/${slug}`;

@@ -47,6 +47,7 @@ Thumbs.db
 .nx/cache
 .nx/workspace-data
 .nx/migrate-runs
+.vercel
 
 # Local secrets / environment
 # `env.example` is the committed template; `.env` is yours and stays local.
