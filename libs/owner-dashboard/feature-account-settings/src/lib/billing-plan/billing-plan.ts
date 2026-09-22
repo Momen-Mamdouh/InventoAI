@@ -38,6 +38,7 @@ import { HlmDialogImports } from '@spartan/helm/dialog';
 // project's `@spartan/helm` alias, so import them directly (see category-form-dialog.ts).
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { HlmH1, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
+import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { TableHeaderCell, SortDirection, FilterOption } from '@invento/shared-ui-table-header';
 import { Pagination } from '@invento/shared-ui-pagination';
 import { EmptyState } from '@invento/shared-ui-empty-state';
@@ -100,6 +101,7 @@ export interface PlanInfo {
     HlmH3,
     HlmH4,
     HlmMuted,
+    HlmTooltipImports,
   ],
   providers: [
     provideIcons({

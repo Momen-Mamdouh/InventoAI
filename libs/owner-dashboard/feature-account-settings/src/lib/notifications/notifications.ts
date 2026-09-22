@@ -12,6 +12,7 @@ import {
   lucideCreditCard,
   lucideStore,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmH1, HlmH3, HlmH4, HlmMuted } from '@spartan/helm/typography';
@@ -41,6 +42,7 @@ export interface PreferenceGroup {
     FormsModule,
     RouterLink,
     NgIcon,
+    HlmBadge,
     HlmCardImports,
     HlmButton,
     HlmH1,

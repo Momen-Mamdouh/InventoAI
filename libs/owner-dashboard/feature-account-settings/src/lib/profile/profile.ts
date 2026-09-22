@@ -14,6 +14,7 @@ import {
   lucideCreditCard,
   lucideStore,
 } from '@ng-icons/lucide';
+import { HlmBadge } from '@spartan/helm/badge';
 import { HlmCardImports } from '@spartan/helm/card';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmInput } from '@spartan/helm/input';
@@ -34,6 +35,7 @@ import { AccountSettingsService } from '../services/account-settings.service';
     FormsModule,
     RouterLink,
     NgIcon,
+    HlmBadge,
     HlmCardImports,
     HlmButton,
     HlmInput,
