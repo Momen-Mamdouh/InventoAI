@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideZap,
@@ -35,6 +35,7 @@ import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
 import { HlmH1, HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 import { StoreService } from '@invento/owner-dashboard-data-access-store';
 
 export interface StoreItem {
@@ -55,6 +56,8 @@ export interface StoreItem {
     CommonModule,
     FormsModule,
     RouterLink,
+    RouterLinkActive,
+    TranslatePipe,
     NgIcon,
     HlmBadge,
     HlmCard,
@@ -169,6 +172,33 @@ export class MyStores {
   readonly statusItemToString = (value: unknown): string => {
     return String(value) || 'Live';
   };
+
+  onFormNameInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      this.formName.set(input.value);
+    }
+  }
+
+  onFormDescInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      this.formDescription.set(input.value);
+    }
+  }
+
+  onFormImageInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      this.formImage.set(input.value);
+    }
+  }
+
+  onFormStatusChange(val: string | null | undefined): void {
+    if (val === 'Live' || val === 'Draft' || val === 'Maintenance') {
+      this.formStatus.set(val);
+    }
+  }
 
   // Actions
   openCreateModal() {

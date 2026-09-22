@@ -5,9 +5,9 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 hlmH1>Account Settings</h1>
+      <h1 hlmH1>{{ 'account_settings.page_title' | translate }}</h1>
       <p hlmMuted class="mt-0.5">
-        Manage your subscription plan, payment details, and invoice history.
+        {{ 'billing.subtitle' | translate }}
       </p>
     </div>
 
@@ -15,45 +15,55 @@
     <div class="flex items-center gap-1 sm:gap-2 border-border border-b overflow-x-auto">
       <a
         routerLink="/profile"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideUser" size="16" />
-        <span>Profile</span>
+        <span>{{ 'account_settings.tabs.profile' | translate }}</span>
       </a>
       <a
         routerLink="/security"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideShield" size="16" />
-        <span>Security</span>
+        <span>{{ 'account_settings.tabs.security' | translate }}</span>
       </a>
       <a
         routerLink="/notifications"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideBell" size="16" />
-        <span>Notifications</span>
+        <span>{{ 'account_settings.tabs.notifications' | translate }}</span>
       </a>
       <a
         routerLink="/billing"
-        class="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b-2 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border-primary text-primary"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideCreditCard" size="16" />
-        <span>Billing & Plan</span>
+        <span>{{ 'account_settings.tabs.billing' | translate }}</span>
         <span
           hlmBadge
           variant="outline"
           class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400 ms-1"
         >
-          Coming Soon
+          {{ 'account_settings.tabs.coming_soon' | translate }}
         </span>
       </a>
       <a
         routerLink="/my-stores"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideStore" size="16" />
-        <span>My Stores</span>
+        <span>{{ 'account_settings.tabs.my_store' | translate }}</span>
       </a>
     </div>
   </div>
@@ -71,17 +81,17 @@
       </div>
       <div class="space-y-0.5">
         <div class="flex items-center gap-2">
-          <span class="font-semibold text-foreground">Subscription & Billing Under Development</span>
+          <span class="font-semibold text-foreground">{{ 'billing.notice_title' | translate }}</span>
           <span
             hlmBadge
             variant="outline"
             class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400"
           >
-            Coming Soon
+            {{ 'account_settings.tabs.coming_soon' | translate }}
           </span>
         </div>
         <p class="text-muted-foreground">
-          Automated plan upgrades, payment card processing, and invoice generation will be enabled in a future release. All platform features and limits are currently complimentary with your account.
+          {{ 'billing.notice_desc' | translate }}
         </p>
       </div>
     </div>
@@ -108,9 +118,9 @@
     <div hlmCard>
       <!-- Card Header -->
       <div hlmCardHeader class="border-b">
-        <h2 hlmCardTitle>Current Plan</h2>
+        <h2 hlmCardTitle>{{ 'billing.plan_card_title' | translate }}</h2>
         <p hlmCardDescription>
-          Your active Invento subscription.
+          {{ 'billing.plan_card_desc' | translate }}
         </p>
       </div>
 
@@ -143,22 +153,22 @@
             <div class="flex flex-wrap items-center gap-3 sm:gap-5 text-muted-foreground text-xs">
               <span class="flex items-center gap-1.5">
                 <ng-icon name="lucideStore" size="14" class="text-primary" />
-                <span>{{ plan().storesLimit }}</span>
+                <span>{{ 'billing.stores_limit' | translate }}</span>
               </span>
               <span class="flex items-center gap-1.5">
                 <ng-icon name="lucidePackage" size="14" class="text-primary" />
-                <span>{{ plan().productsLimit }}</span>
+                <span>{{ 'billing.products_limit' | translate }}</span>
               </span>
               <span class="flex items-center gap-1.5">
                 <ng-icon name="lucideBarChart3" size="14" class="text-primary" />
-                <span>{{ plan().analyticsLimit }}</span>
+                <span>{{ 'billing.analytics_limit' | translate }}</span>
               </span>
             </div>
 
             <!-- Renews On Meta -->
             <div class="flex items-center gap-1.5 pt-1 text-muted-foreground text-xs">
               <ng-icon name="lucideRefreshCw" size="13" />
-              <span>Renews on {{ plan().renewsOn }}</span>
+              <span>{{ 'billing.renews_on' | translate : { date: plan().renewsOn } }}</span>
             </div>
           </div>
 
@@ -172,16 +182,16 @@
               variant="outline"
               class="gap-2 shadow-sm px-4 py-2.5 font-semibold text-xs sm:text-sm transition-all opacity-60 cursor-not-allowed border-amber-500/30 w-full md:w-auto"
               [disabled]="true"
-              [hlmTooltip]="'Billing and plan management is coming in a future update'"
+              [hlmTooltip]="'billing.change_plan_tooltip' | translate"
             >
               <ng-icon name="lucideZap" size="16" />
-              <span>Change Plan</span>
+              <span>{{ 'billing.change_plan_btn' | translate }}</span>
               <span
                 hlmBadge
                 variant="outline"
                 class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400"
               >
-                Coming Soon
+                {{ 'account_settings.tabs.coming_soon' | translate }}
               </span>
             </button>
           </div>
@@ -193,9 +203,9 @@
     <div hlmCard>
       <!-- Card Header -->
       <div hlmCardHeader class="border-b">
-        <h2 hlmCardTitle>Payment Method</h2>
+        <h2 hlmCardTitle>{{ 'billing.payment_card_title' | translate }}</h2>
         <p hlmCardDescription>
-          The card used for your monthly subscription.
+          {{ 'billing.payment_card_desc' | translate }}
         </p>
       </div>
 
@@ -229,10 +239,10 @@
             <!-- Card Info -->
             <div class="space-y-0.5 min-w-0">
               <h3 hlmH3 class="text-foreground">
-                {{ paymentCard().type }} ending in {{ paymentCard().last4 }}
+                {{ 'billing.card_ending' | translate : { type: paymentCard().type, last4: paymentCard().last4 } }}
               </h3>
               <p hlmMuted class="truncate">
-                Expires {{ paymentCard().expiry }} · Billing: {{ paymentCard().billingLocation }}
+                {{ 'billing.card_expires' | translate : { expiry: paymentCard().expiry, location: paymentCard().billingLocation } }}
               </p>
             </div>
           </div>
@@ -244,10 +254,10 @@
             variant="outline"
             class="gap-1.5 border-border shadow-2xs ms-auto sm:ms-0 h-9 font-medium text-xs sm:text-sm opacity-60 cursor-not-allowed"
             [disabled]="true"
-            [hlmTooltip]="'Payment method updates will be available in a future release'"
+            [hlmTooltip]="'billing.update_payment_tooltip' | translate"
           >
             <ng-icon name="lucidePencil" size="14" class="text-muted-foreground" />
-            <span>Update</span>
+            <span>{{ 'billing.update_payment_btn' | translate }}</span>
           </button>
         </div>
       </div>
@@ -257,9 +267,9 @@
     <div hlmCard>
       <!-- Card Header -->
       <div hlmCardHeader class="border-b">
-        <h2 hlmCardTitle>Billing History</h2>
+        <h2 hlmCardTitle>{{ 'billing.history_card_title' | translate }}</h2>
         <p hlmCardDescription>
-          Past invoices and payment records.
+          {{ 'billing.history_card_desc' | translate }}
         </p>
       </div>
 

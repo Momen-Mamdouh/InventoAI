@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AccountSettingsService } from '../services/account-settings.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -101,6 +101,7 @@ function detectCurrentSession(): ActiveSession {
     CommonModule,
     FormsModule,
     RouterLink,
+    RouterLinkActive,
     NgIcon,
     HlmBadge,
     HlmCardImports,
@@ -169,6 +170,30 @@ export class Security {
   clearMessages() {
     this.passwordError.set(null);
     this.passwordSuccess.set(null);
+  }
+
+  onCurrentPasswordInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      this.currentPassword.set(input.value);
+      this.clearMessages();
+    }
+  }
+
+  onNewPasswordInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      this.newPassword.set(input.value);
+      this.clearMessages();
+    }
+  }
+
+  onConfirmPasswordInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input) {
+      this.confirmPassword.set(input.value);
+      this.clearMessages();
+    }
   }
 
   // Update Password Action

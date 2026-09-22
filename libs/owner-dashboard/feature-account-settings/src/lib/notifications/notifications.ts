@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideMail,
@@ -23,15 +23,15 @@ import { StatusBanner } from '@invento/shared-ui-status-banner';
 
 export interface PreferenceSetting {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
   email: boolean;
   inApp: boolean;
 }
 
 export interface PreferenceGroup {
   id: string;
-  title: string;
+  titleKey: string;
   items: PreferenceSetting[];
 }
 
@@ -41,6 +41,7 @@ export interface PreferenceGroup {
   imports: [
     FormsModule,
     RouterLink,
+    RouterLinkActive,
     NgIcon,
     HlmBadge,
     HlmCardImports,
@@ -75,26 +76,26 @@ export class Notifications {
   private defaultGroups: PreferenceGroup[] = [
     {
       id: 'store_activity',
-      title: 'STORE ACTIVITY',
+      titleKey: 'notifications.group_store_activity',
       items: [
         {
           id: 'new_orders',
-          title: 'New Orders',
-          description: 'When a customer places an order',
+          titleKey: 'notifications.item_new_orders_title',
+          descKey: 'notifications.item_new_orders_desc',
           email: true,
           inApp: true,
         },
         {
           id: 'low_stock',
-          title: 'Low Stock Alerts',
-          description: 'When a product drops below 10 units',
+          titleKey: 'notifications.item_low_stock_title',
+          descKey: 'notifications.item_low_stock_desc',
           email: true,
           inApp: true,
         },
         {
           id: 'supplier_replies',
-          title: 'Supplier Email Replies',
-          description: 'When a supplier responds to an AI-sent email',
+          titleKey: 'notifications.item_supplier_replies_title',
+          descKey: 'notifications.item_supplier_replies_desc',
           email: false,
           inApp: true,
         },
@@ -102,19 +103,19 @@ export class Notifications {
     },
     {
       id: 'ai_insights',
-      title: 'AI & INSIGHTS',
+      titleKey: 'notifications.group_ai_insights',
       items: [
         {
           id: 'ai_recommendations',
-          title: 'AI Advisor Recommendations',
-          description: 'Weekly inventory and pricing insights',
+          titleKey: 'notifications.item_ai_recommendations_title',
+          descKey: 'notifications.item_ai_recommendations_desc',
           email: false,
           inApp: true,
         },
         {
           id: 'weekly_analytics',
-          title: 'Weekly Analytics Summary',
-          description: 'Every Monday at 9 AM in your timezone',
+          titleKey: 'notifications.item_weekly_analytics_title',
+          descKey: 'notifications.item_weekly_analytics_desc',
           email: true,
           inApp: false,
         },
@@ -122,12 +123,12 @@ export class Notifications {
     },
     {
       id: 'account',
-      title: 'ACCOUNT',
+      titleKey: 'notifications.group_account',
       items: [
         {
           id: 'account_security',
-          title: 'Account & Security Alerts',
-          description: 'New logins, password changes, 2FA events',
+          titleKey: 'notifications.item_account_security_title',
+          descKey: 'notifications.item_account_security_desc',
           email: true,
           inApp: true,
         },
@@ -140,7 +141,7 @@ export class Notifications {
 
   // UI State Signals
   isSaved = signal<boolean>(true);
-  saveSuccessMessage = signal<string | null>(null);
+  saveSuccessKey = signal<string | null>(null);
   isFadingOut = signal<boolean>(false);
 
   // Toggle channel action
@@ -166,29 +167,29 @@ export class Notifications {
     );
 
     this.isSaved.set(false);
-    this.saveSuccessMessage.set(null);
+    this.saveSuccessKey.set(null);
   }
 
   // Save Preferences action
   savePreferences() {
     this.isSaved.set(true);
-    this.showFeedback('Notification preferences saved successfully!');
+    this.showFeedback('notifications.save_success');
   }
 
   // Reset to defaults action
   resetToDefaults() {
     this.preferenceGroups.set(JSON.parse(JSON.stringify(this.defaultGroups)));
     this.isSaved.set(true);
-    this.showFeedback('Notification preferences reset to defaults.');
+    this.showFeedback('notifications.reset_success');
   }
 
-  private showFeedback(msg: string) {
+  private showFeedback(key: string) {
     this.isFadingOut.set(false);
-    this.saveSuccessMessage.set(msg);
+    this.saveSuccessKey.set(key);
     setTimeout(() => {
       this.isFadingOut.set(true);
       setTimeout(() => {
-        this.saveSuccessMessage.set(null);
+        this.saveSuccessKey.set(null);
         this.isFadingOut.set(false);
       }, 350);
     }, 3500);

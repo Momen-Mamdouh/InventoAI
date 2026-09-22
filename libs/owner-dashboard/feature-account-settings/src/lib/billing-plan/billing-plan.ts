@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideZap,
@@ -78,6 +78,7 @@ export interface PlanInfo {
     CommonModule,
     FormsModule,
     RouterLink,
+    RouterLinkActive,
     NgIcon,
     HlmBadge,
     HlmCardImports,

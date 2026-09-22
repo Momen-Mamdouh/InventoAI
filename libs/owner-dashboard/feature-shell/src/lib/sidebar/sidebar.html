@@ -62,6 +62,8 @@
           [hlmDropdownMenuTrigger]="profileMenu"
           size="lg"
           class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          [class.bg-sidebar-accent]="isAccountRoute()"
+          [class.text-sidebar-accent-foreground]="isAccountRoute()"
         >
           <hlm-avatar class="h-8 w-8 rounded-lg overflow-hidden">
             @if (user().image) {
@@ -114,34 +116,59 @@
     </hlm-dropdown-menu-label>
     <hlm-dropdown-menu-separator />
     <hlm-dropdown-menu-group>
-      <button hlmDropdownMenuItem routerLink="/my-stores" class="cursor-pointer gap-2">
+      <button
+        hlmDropdownMenuItem
+        routerLink="/my-stores"
+        routerLinkActive="bg-accent text-accent-foreground font-medium"
+        class="cursor-pointer gap-2"
+      >
         <ng-icon hlm name="lucideStore" />
-        <span>My Stores</span>
+        <span>{{ 'nav_my_store' | translate }}</span>
       </button>
     </hlm-dropdown-menu-group>
     <hlm-dropdown-menu-separator />
     <hlm-dropdown-menu-group>
-      <button hlmDropdownMenuItem routerLink="/profile" class="cursor-pointer gap-2">
+      <button
+        hlmDropdownMenuItem
+        routerLink="/profile"
+        routerLinkActive="bg-accent text-accent-foreground font-medium"
+        class="cursor-pointer gap-2"
+      >
         <ng-icon hlm name="lucideUser" />
-        <span>Profile</span>
+        <span>{{ 'account_settings.tabs.profile' | translate }}</span>
       </button>
-      <button hlmDropdownMenuItem routerLink="/security" class="cursor-pointer gap-2">
+      <button
+        hlmDropdownMenuItem
+        routerLink="/security"
+        routerLinkActive="bg-accent text-accent-foreground font-medium"
+        class="cursor-pointer gap-2"
+      >
         <ng-icon hlm name="lucideLock" />
-        <span>Security</span>
+        <span>{{ 'account_settings.tabs.security' | translate }}</span>
       </button>
-      <button hlmDropdownMenuItem routerLink="/notifications" class="cursor-pointer gap-2">
+      <button
+        hlmDropdownMenuItem
+        routerLink="/notifications"
+        routerLinkActive="bg-accent text-accent-foreground font-medium"
+        class="cursor-pointer gap-2"
+      >
         <ng-icon hlm name="lucideBell" />
-        <span>Notifications</span>
+        <span>{{ 'account_settings.tabs.notifications' | translate }}</span>
       </button>
-      <button hlmDropdownMenuItem routerLink="/billing" class="cursor-pointer gap-2">
+      <button
+        hlmDropdownMenuItem
+        routerLink="/billing"
+        routerLinkActive="bg-accent text-accent-foreground font-medium"
+        class="cursor-pointer gap-2"
+      >
         <ng-icon hlm name="lucideCreditCard" />
-        <span>Billing & Plan</span>
+        <span>{{ 'account_settings.tabs.billing' | translate }}</span>
       </button>
     </hlm-dropdown-menu-group>
     <hlm-dropdown-menu-separator />
     <button hlmDropdownMenuItem class="cursor-pointer gap-2" (click)="logout()">
       <ng-icon hlm name="lucideLogOut" />
-      <span>Log out</span>
+      <span>{{ 'nav_logout' | translate }}</span>
     </button>
   </hlm-dropdown-menu>
 </ng-template>

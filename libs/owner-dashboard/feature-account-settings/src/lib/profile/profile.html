@@ -5,9 +5,9 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 hlmH1>Account Settings</h1>
+      <h1 hlmH1>{{ 'account_settings.page_title' | translate }}</h1>
       <p hlmMuted class="mt-0.5">
-        Manage your profile details, photo, and preferences used across Invento.
+        {{ 'profile.subtitle' | translate }}
       </p>
     </div>
 
@@ -15,45 +15,55 @@
     <div class="flex items-center gap-1 sm:gap-2 border-border border-b overflow-x-auto">
       <a
         routerLink="/profile"
-        class="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b-2 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border-primary text-primary"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideUser" size="16" />
-        <span>Profile</span>
+        <span>{{ 'account_settings.tabs.profile' | translate }}</span>
       </a>
       <a
         routerLink="/security"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideShield" size="16" />
-        <span>Security</span>
+        <span>{{ 'account_settings.tabs.security' | translate }}</span>
       </a>
       <a
         routerLink="/notifications"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideBell" size="16" />
-        <span>Notifications</span>
+        <span>{{ 'account_settings.tabs.notifications' | translate }}</span>
       </a>
       <a
         routerLink="/billing"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideCreditCard" size="16" />
-        <span>Billing & Plan</span>
+        <span>{{ 'account_settings.tabs.billing' | translate }}</span>
         <span
           hlmBadge
           variant="outline"
           class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400 ms-1"
         >
-          Coming Soon
+          {{ 'account_settings.tabs.coming_soon' | translate }}
         </span>
       </a>
       <a
         routerLink="/my-stores"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideStore" size="16" />
-        <span>My Stores</span>
+        <span>{{ 'account_settings.tabs.my_store' | translate }}</span>
       </a>
     </div>
   </div>
@@ -62,7 +72,7 @@
   <div class="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 pb-12">
     <!-- Success Banner -->
     @if (saveSuccess()) {
-      <app-status-banner message="Profile settings updated successfully!" [fadingOut]="isFadingOut()" />
+      <app-status-banner [message]="'profile.save_success' | translate" [fadingOut]="isFadingOut()" />
     }
 
     <!-- Error Banner -->
@@ -74,9 +84,9 @@
     <div hlmCard>
       <!-- Card Header -->
       <div hlmCardHeader class="border-b">
-        <h2 hlmCardTitle>Profile Photo</h2>
+        <h2 hlmCardTitle>{{ 'profile.photo_card_title' | translate }}</h2>
         <p hlmCardDescription>
-          Upload a profile photo visible to your team and customers.
+          {{ 'profile.photo_card_desc' | translate }}
         </p>
       </div>
 
@@ -111,7 +121,7 @@
             class="absolute inset-0 flex flex-col justify-center items-center gap-1 bg-black/40 opacity-0 group-hover:opacity-100 rounded-2xl text-white transition-opacity duration-200"
           >
             <ng-icon name="lucideUpload" size="18" />
-            <span class="font-medium text-[10px]">Change</span>
+            <span class="font-medium text-[10px]">{{ 'profile.photo_change' | translate }}</span>
           </div>
         </button>
 
@@ -134,7 +144,7 @@
               (click)="fileInput.click()"
             >
               <ng-icon name="lucideUpload" size="15" class="text-primary" />
-              Upload Photo
+              {{ 'profile.photo_upload' | translate }}
             </button>
 
             @if (avatarUrl()) {
@@ -146,14 +156,13 @@
                 (click)="removePhoto()"
               >
                 <ng-icon name="lucideTrash2" size="15" class="me-1" />
-                Remove
+                {{ 'profile.photo_remove' | translate }}
               </button>
             }
           </div>
 
           <p hlmMuted>
-            JPG, PNG or WebP. Max 4 MB. Min 200×200 px.<br />
-            Or drag and drop onto the avatar.
+            {{ 'profile.photo_hint' | translate }}
           </p>
         </div>
       </div>
@@ -163,9 +172,9 @@
     <div hlmCard>
       <!-- Card Header -->
       <div hlmCardHeader class="border-b">
-        <h2 hlmCardTitle>Personal Information</h2>
+        <h2 hlmCardTitle>{{ 'profile.personal_card_title' | translate }}</h2>
         <p hlmCardDescription>
-          Your name and contact details used across Invento.
+          {{ 'profile.personal_card_desc' | translate }}
         </p>
       </div>
 
@@ -174,80 +183,80 @@
         <div class="gap-4 sm:gap-6 grid grid-cols-1 sm:grid-cols-2">
           <!-- Full Name -->
           <div class="space-y-1.5">
-            <label hlmLabel for="fullNameInput" class="font-medium text-foreground text-xs sm:text-sm"
-              >Full Name</label
-            >
+            <label hlmLabel for="fullNameInput" class="font-medium text-foreground text-xs sm:text-sm">
+              {{ 'profile.full_name' | translate }}
+            </label>
             <input
               id="fullNameInput"
               hlmInput
               type="text"
               class="w-full"
-              placeholder="e.g. Clara Morin"
+              [placeholder]="'profile.full_name_placeholder' | translate"
               [value]="fullName()"
-              (input)="onFullNameChange($any($event.target).value)"
+              (input)="onFullNameInput($event)"
             />
           </div>
 
           <!-- Email Address -->
           <div class="space-y-1.5">
-            <label hlmLabel for="emailInput" class="font-medium text-foreground text-xs sm:text-sm"
-              >Email Address</label
-            >
+            <label hlmLabel for="emailInput" class="font-medium text-foreground text-xs sm:text-sm">
+              {{ 'profile.email' | translate }}
+            </label>
             <input
               id="emailInput"
               hlmInput
               type="email"
               class="w-full"
-              placeholder="clara@luminarygoods.com"
+              [placeholder]="'profile.email_placeholder' | translate"
               [value]="email()"
-              (input)="onEmailChange($any($event.target).value)"
+              (input)="onEmailInput($event)"
             />
           </div>
 
           <!-- Phone Number -->
           <div class="space-y-1.5">
-            <label hlmLabel for="phoneInput" class="font-medium text-foreground text-xs sm:text-sm"
-              >Phone Number</label
-            >
+            <label hlmLabel for="phoneInput" class="font-medium text-foreground text-xs sm:text-sm">
+              {{ 'profile.phone' | translate }}
+            </label>
             <input
               id="phoneInput"
               hlmInput
               type="tel"
               class="w-full"
-              placeholder="+1 503 441 9900"
+              [placeholder]="'profile.phone_placeholder' | translate"
               [value]="phone()"
-              (input)="onPhoneChange($any($event.target).value)"
+              (input)="onPhoneInput($event)"
             />
             <p hlmMuted class="mt-1">
-              Used for account security and support only.
+              {{ 'profile.phone_hint' | translate }}
             </p>
           </div>
 
           <!-- Business / Company Name -->
           <div class="space-y-1.5">
-            <label hlmLabel for="companyInput" class="font-medium text-foreground text-xs sm:text-sm"
-              >Business / Company Name</label
-            >
+            <label hlmLabel for="companyInput" class="font-medium text-foreground text-xs sm:text-sm">
+              {{ 'profile.company' | translate }}
+            </label>
             <input
               id="companyInput"
               hlmInput
               type="text"
               class="w-full"
-              placeholder="e.g. Luminary Goods LLC"
+              [placeholder]="'profile.company_placeholder' | translate"
               [value]="company()"
-              (input)="onCompanyChange($any($event.target).value)"
+              (input)="onCompanyInput($event)"
             />
           </div>
 
           <!-- Time Zone Dropdown -->
           <div class="space-y-1.5">
-            <label hlmLabel for="timeZoneSelect" class="font-medium text-foreground text-xs sm:text-sm"
-              >Time Zone</label
-            >
+            <label hlmLabel for="timeZoneSelect" class="font-medium text-foreground text-xs sm:text-sm">
+              {{ 'profile.time_zone' | translate }}
+            </label>
             <hlm-select
               id="timeZoneSelect"
               [value]="timeZone()"
-              (valueChange)="onTimeZoneChange($any($event))"
+              (valueChange)="onTimeZoneChange($event)"
               [itemToString]="timeZoneItemToString"
               class="w-full"
             >
@@ -255,8 +264,8 @@
                 <hlm-select-value />
               </hlm-select-trigger>
               <hlm-select-content *hlmSelectPortal>
-                @for (tz of timeZones; track tz) {
-                  <hlm-select-item [value]="tz">{{ tz }}</hlm-select-item>
+                @for (tz of timeZones; track tz.value) {
+                  <hlm-select-item [value]="tz.value">{{ tz.labelKey | translate }}</hlm-select-item>
                 }
               </hlm-select-content>
             </hlm-select>
@@ -264,13 +273,13 @@
 
           <!-- Language Dropdown -->
           <div class="space-y-1.5">
-            <label hlmLabel for="languageSelect" class="font-medium text-foreground text-xs sm:text-sm"
-              >Language</label
-            >
+            <label hlmLabel for="languageSelect" class="font-medium text-foreground text-xs sm:text-sm">
+              {{ 'profile.language' | translate }}
+            </label>
             <hlm-select
               id="languageSelect"
               [value]="language()"
-              (valueChange)="onLanguageChange($any($event))"
+              (valueChange)="onLanguageChange($event)"
               [itemToString]="languageItemToString"
               class="w-full"
             >
@@ -279,7 +288,7 @@
               </hlm-select-trigger>
               <hlm-select-content *hlmSelectPortal>
                 @for (lang of languages; track lang.value) {
-                  <hlm-select-item [value]="lang.value">{{ lang.label }}</hlm-select-item>
+                  <hlm-select-item [value]="lang.value">{{ lang.labelKey | translate }}</hlm-select-item>
                 }
               </hlm-select-content>
             </hlm-select>
@@ -299,10 +308,10 @@
           >
             @if (saving()) {
               <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent"></span>
-              <span>Saving...</span>
+              <span>{{ 'profile.saving_btn' | translate }}</span>
             } @else {
               <ng-icon name="lucideCheck" size="16" />
-              <span>Save Changes</span>
+              <span>{{ 'profile.save_btn' | translate }}</span>
             }
           </button>
 
@@ -313,7 +322,7 @@
             class="px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
             (click)="resetForm()"
           >
-            Cancel
+            {{ 'profile.cancel_btn' | translate }}
           </button>
         </div>
       </div>
