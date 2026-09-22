@@ -55,7 +55,7 @@ export class ApiConfig {
     );
     if (configured) return configured;
     return this.environment.production
-      ? 'https://invento-ai.vercel.app/home'
+      ? 'https://invento-owner-dashboard.vercel.app/home'
       : 'http://localhost:4400/home';
   }
 
@@ -69,7 +69,7 @@ export class ApiConfig {
       return configured;
     }
     return this.environment.production
-      ? 'https://invento-ai.vercel.app/auth/login'
+      ? 'https://invento-owner-dashboard.vercel.app/auth/login'
       : 'http://localhost:4400/auth/login';
   }
 
@@ -81,7 +81,7 @@ export class ApiConfig {
     );
     if (configured) return configured.replace(/\/+$/, '');
     return this.environment.production
-      ? 'https://invento-store.vercel.app'
+      ? 'https://invento-user-site.vercel.app'
       : 'http://localhost:4300';
   }
 
