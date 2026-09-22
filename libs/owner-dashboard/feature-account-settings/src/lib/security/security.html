@@ -255,40 +255,22 @@
         <div>
           <div class="flex items-center gap-2">
             <h2 hlmCardTitle>Active Sessions</h2>
-            <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-muted-foreground/30 text-muted-foreground">Preview</span>
+            <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-emerald-500/40 text-emerald-600 dark:text-emerald-400">Current Device</span>
           </div>
           <p hlmCardDescription>
-            Devices currently signed in to your account. Remote session revocation will be available in a future release.
+            Your active authenticated session on this browser. Remote multi-device management will be supported in an upcoming platform release.
           </p>
         </div>
-
-        @if (hasOtherSessions()) {
-          <button
-            type="button"
-            hlmBtn
-            variant="ghost"
-            class="hover:bg-rose-50 dark:hover:bg-rose-950/40 gap-1.5 px-3 h-9 font-medium text-xs text-rose-600 hover:text-rose-700 dark:text-rose-400 sm:text-sm transition-colors cursor-pointer"
-            (click)="revokeAllOtherSessions()"
-          >
-            <ng-icon name="lucideLogOut" size="15" />
-            <span>Log Out All Others</span>
-          </button>
-        }
       </div>
 
-      <!-- Card Body List (full-bleed, own row dividers — kept outside hlmCardContent) -->
+      <!-- Card Body List -->
       <div class="divide-y divide-border/60">
         @for (session of sessions(); track session.id) {
           <div class="flex flex-wrap sm:flex-nowrap justify-between items-center gap-3 p-4 sm:p-5">
             <div class="flex items-center gap-3.5 min-w-0">
               <!-- Device Icon -->
               <div
-                class="flex flex-shrink-0 justify-center items-center rounded-xl w-10 h-10"
-                [ngClass]="
-                  session.isCurrent
-                    ? 'bg-primary/10 text-primary'
-                    : 'bg-muted text-muted-foreground'
-                "
+                class="flex flex-shrink-0 justify-center items-center rounded-xl w-10 h-10 bg-primary/10 text-primary"
               >
                 <ng-icon [name]="session.icon" size="20" />
               </div>
@@ -299,20 +281,14 @@
                   <span class="font-semibold text-xs sm:text-sm truncate">
                     {{ session.device }} · {{ session.browser }}
                   </span>
-                  @if (session.isCurrent) {
-                    <span
-                      class="inline-flex items-center bg-primary/10 px-2 py-0.5 rounded-full font-medium text-[11px] text-primary"
-                    >
-                      This device
-                    </span>
-                  }
+                  <span
+                    class="inline-flex items-center bg-primary/10 px-2 py-0.5 rounded-full font-medium text-[11px] text-primary"
+                  >
+                    This device
+                  </span>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 text-muted-foreground text-xs">
-                  <span class="flex items-center gap-1">
-                    <ng-icon name="lucideMapPin" size="12" />
-                    <span>{{ session.location }}</span>
-                  </span>
                   <span class="flex items-center gap-1">
                     <ng-icon name="lucideClock" size="12" />
                     <span>{{ session.lastActive }}</span>
@@ -320,20 +296,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- Action Button -->
-            @if (!session.isCurrent) {
-              <button
-                type="button"
-                hlmBtn
-                variant="ghost"
-                class="hover:bg-rose-50 dark:hover:bg-rose-950/40 ms-auto sm:ms-0 gap-1 px-3 h-8 font-medium text-xs text-muted-foreground hover:text-rose-600 transition-colors cursor-pointer"
-                (click)="revokeSession(session.id)"
-              >
-                <ng-icon name="lucideLogOut" size="13" />
-                <span>Revoke</span>
-              </button>
-            }
           </div>
         }
       </div>

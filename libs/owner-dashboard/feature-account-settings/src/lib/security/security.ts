@@ -41,6 +41,59 @@ export interface ActiveSession {
   icon: string;
 }
 
+function detectCurrentSession(): ActiveSession {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return {
+      id: 'current',
+      device: 'Current Device',
+      browser: 'Web Browser',
+      location: 'Active Session',
+      lastActive: 'Active now',
+      isCurrent: true,
+      icon: 'lucideMonitor',
+    };
+  }
+
+  const ua = navigator.userAgent;
+  let device = 'Desktop PC';
+  let icon = 'lucideMonitor';
+
+  if (/android/i.test(ua)) {
+    device = 'Android Device';
+    icon = 'lucideSmartphone';
+  } else if (/ipad|iphone|ipod/i.test(ua)) {
+    device = 'iOS Device';
+    icon = 'lucideSmartphone';
+  } else if (/windows/i.test(ua)) {
+    device = 'Windows PC';
+  } else if (/macintosh|mac os x/i.test(ua)) {
+    device = 'Mac';
+  } else if (/linux/i.test(ua)) {
+    device = 'Linux PC';
+  }
+
+  let browser = 'Web Browser';
+  if (/edg/i.test(ua)) {
+    browser = 'Microsoft Edge';
+  } else if (/chrome|crios/i.test(ua) && !/opr|opera/i.test(ua)) {
+    browser = 'Google Chrome';
+  } else if (/firefox|fxios/i.test(ua)) {
+    browser = 'Mozilla Firefox';
+  } else if (/safari/i.test(ua)) {
+    browser = 'Apple Safari';
+  }
+
+  return {
+    id: 'current',
+    device,
+    browser,
+    location: 'Current Browser Session',
+    lastActive: 'Active now',
+    isCurrent: true,
+    icon,
+  };
+}
+
 @Component({
   selector: 'app-security',
   standalone: true,
@@ -108,38 +161,10 @@ export class Security {
   twoFactorEnabled = signal<boolean>(false);
 
   // Active Sessions Data
-  sessions = signal<ActiveSession[]>([
-    {
-      id: 's1',
-      device: 'MacBook Pro',
-      browser: 'Chrome 125',
-      location: 'Portland, OR, US',
-      lastActive: 'Active now',
-      isCurrent: true,
-      icon: 'lucideMonitor',
-    },
-    {
-      id: 's2',
-      device: 'iPhone 15 Pro',
-      browser: 'Safari Mobile',
-      location: 'Portland, OR, US',
-      lastActive: '2 hours ago',
-      isCurrent: false,
-      icon: 'lucideSmartphone',
-    },
-    {
-      id: 's3',
-      device: 'Windows PC',
-      browser: 'Edge 124',
-      location: 'Seattle, WA, US',
-      lastActive: '3 days ago',
-      isCurrent: false,
-      icon: 'lucideMonitor',
-    },
-  ]);
+  sessions = signal<ActiveSession[]>([detectCurrentSession()]);
 
   // Computed helper to check if non-current sessions exist
-  hasOtherSessions = computed(() => this.sessions().some((s) => !s.isCurrent));
+  hasOtherSessions = computed(() => false);
 
   clearMessages() {
     this.passwordError.set(null);

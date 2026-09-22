@@ -63,7 +63,10 @@
           size="lg"
           class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
-          <hlm-avatar class="h-8 w-8 rounded-lg">
+          <hlm-avatar class="h-8 w-8 rounded-lg overflow-hidden">
+            @if (user().image) {
+              <img hlmAvatarImage [src]="user().image" [alt]="user().name" class="object-cover w-full h-full" />
+            }
             <span hlmAvatarFallback class="rounded-lg bg-primary/20 text-primary font-bold">{{
               userInitials()
             }}</span>
@@ -95,7 +98,10 @@
   >
     <hlm-dropdown-menu-label class="p-0 font-normal">
       <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-        <hlm-avatar class="h-8 w-8 rounded-lg">
+        <hlm-avatar class="h-8 w-8 rounded-lg overflow-hidden">
+          @if (user().image) {
+            <img hlmAvatarImage [src]="user().image" [alt]="user().name" class="object-cover w-full h-full" />
+          }
           <span hlmAvatarFallback class="rounded-lg bg-primary/20 text-primary font-bold">{{
             userInitials()
           }}</span>
@@ -108,7 +114,7 @@
     </hlm-dropdown-menu-label>
     <hlm-dropdown-menu-separator />
     <hlm-dropdown-menu-group>
-      <button hlmDropdownMenuItem routerLink="/stores" class="cursor-pointer gap-2">
+      <button hlmDropdownMenuItem routerLink="/my-stores" class="cursor-pointer gap-2">
         <ng-icon hlm name="lucideStore" />
         <span>My Stores</span>
       </button>

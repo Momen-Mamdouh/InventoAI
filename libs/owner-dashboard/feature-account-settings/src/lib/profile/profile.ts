@@ -24,6 +24,7 @@ import { HlmSeparator } from '@spartan/helm/separator';
 import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@invento/shared-data-access-auth';
+import { LocaleService } from '@invento/shared-util-i18n';
 import { StatusBanner } from '@invento/shared-ui-status-banner';
 import { AccountSettingsService } from '../services/account-settings.service';
 
@@ -67,6 +68,7 @@ import { AccountSettingsService } from '../services/account-settings.service';
 export class Profile {
   private readonly authService = inject(AuthService);
   private readonly accountSettingsService = inject(AccountSettingsService);
+  private readonly localeService = inject(LocaleService);
 
   readonly loading = signal<boolean>(true);
   readonly saving = signal<boolean>(false);
@@ -81,7 +83,7 @@ export class Profile {
   private initialPhone = '+1 503 441 9900';
   private initialCompany = 'Luminary Goods LLC';
   private initialTimeZone = 'America/Los_Angeles (UTC-8)';
-  private initialLanguage = 'English (US)';
+  private initialLanguage: string = this.localeService.locale() || 'en';
   private initialAvatarUrl: string | null = this.currentUser?.image || null;
 
   // Signals
@@ -110,12 +112,9 @@ export class Profile {
     'Asia/Tokyo (UTC+9)',
   ];
 
-  languages: string[] = [
-    'English (US)',
-    'Arabic (العربية)',
-    'Spanish (Español)',
-    'French (Français)',
-    'German (Deutsch)',
+  languages: { label: string; value: string }[] = [
+    { label: 'English (US)', value: 'en' },
+    { label: 'العربية (Arabic)', value: 'ar' },
   ];
 
   readonly timeZoneItemToString = (value: unknown): string => {
@@ -123,7 +122,8 @@ export class Profile {
   };
 
   readonly languageItemToString = (value: unknown): string => {
-    return String(value) || this.initialLanguage;
+    const found = this.languages.find((l) => l.value === value);
+    return found ? found.label : (value === 'ar' ? 'العربية (Arabic)' : 'English (US)');
   };
 
   // Computed initials from full name
@@ -172,6 +172,9 @@ export class Profile {
     this.language.set(val);
     this.isSaved.set(false);
     this.saveSuccess.set(false);
+    if (val === 'en' || val === 'ar') {
+      this.localeService.switchLocale(val);
+    }
   }
 
   // File upload handlers
@@ -235,7 +238,8 @@ export class Profile {
         this.initialPhone = profile.phone ?? '';
         this.initialCompany = profile.company ?? '';
         this.initialTimeZone = profile.timeZone ?? this.initialTimeZone;
-        this.initialLanguage = profile.language ?? this.initialLanguage;
+        const normalizedLang = profile.language === 'ar' ? 'ar' : 'en';
+        this.initialLanguage = normalizedLang;
         this.initialAvatarUrl = profile.image;
 
         this.fullName.set(this.initialFullName);
@@ -285,7 +289,7 @@ export class Profile {
           this.initialPhone = updated.phone ?? '';
           this.initialCompany = updated.company ?? '';
           this.initialTimeZone = updated.timeZone ?? this.initialTimeZone;
-          this.initialLanguage = updated.language ?? this.initialLanguage;
+          this.initialLanguage = updated.language === 'ar' ? 'ar' : 'en';
           this.initialAvatarUrl = updated.image;
           const currentUser = this.authService.currentUser();
           if (currentUser) {

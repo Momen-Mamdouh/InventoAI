@@ -278,8 +278,8 @@
                 <hlm-select-value />
               </hlm-select-trigger>
               <hlm-select-content *hlmSelectPortal>
-                @for (lang of languages; track lang) {
-                  <hlm-select-item [value]="lang">{{ lang }}</hlm-select-item>
+                @for (lang of languages; track lang.value) {
+                  <hlm-select-item [value]="lang.value">{{ lang.label }}</hlm-select-item>
                 }
               </hlm-select-content>
             </hlm-select>

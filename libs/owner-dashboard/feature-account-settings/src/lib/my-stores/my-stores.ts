@@ -40,9 +40,10 @@ import { StoreService } from '@invento/owner-dashboard-data-access-store';
 export interface StoreItem {
   id: string;
   name: string;
+  slug: string;
   status: 'Live' | 'Draft' | 'Maintenance';
   description: string;
-  domain: string;
+  storeUrl: string;
   createdAt: string;
   image: string;
 }
@@ -120,13 +121,19 @@ export class MyStores {
           year: 'numeric',
         });
         const statusMap = store.status?.toLowerCase() === 'live' ? 'Live' : 'Draft';
+        const storeUrl =
+          typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+            ? `${window.location.protocol}//${window.location.host}/${store.slug}`
+            : `http://localhost:4300/${store.slug}`;
+
         this.stores.set([
           {
             id: store.id,
             name: store.name,
+            slug: store.slug,
             status: statusMap,
             description: store.description || 'E-commerce store powered by Invento',
-            domain: `${store.slug}.inventoai.shop`,
+            storeUrl,
             createdAt: formattedDate,
             image:
               store.heroImageUrl ||
@@ -155,7 +162,7 @@ export class MyStores {
   // Form Signals
   formName = signal<string>('');
   formDescription = signal<string>('');
-  formDomain = signal<string>('');
+  formSlug = signal<string>('');
   formStatus = signal<'Live' | 'Draft' | 'Maintenance'>('Live');
   formImage = signal<string>('');
 
@@ -168,7 +175,7 @@ export class MyStores {
     this.editingStoreId.set(null);
     this.formName.set('');
     this.formDescription.set('');
-    this.formDomain.set('');
+    this.formSlug.set('');
     this.formStatus.set('Live');
     this.formImage.set(
       'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&auto=format&fit=crop&q=80',
@@ -180,7 +187,7 @@ export class MyStores {
     this.editingStoreId.set(store.id);
     this.formName.set(store.name);
     this.formDescription.set(store.description);
-    this.formDomain.set(store.domain);
+    this.formSlug.set(store.slug);
     this.formStatus.set(store.status);
     this.formImage.set(store.image);
     this.isModalOpen.set(true);
@@ -209,29 +216,13 @@ export class MyStores {
                 ...s,
                 name: this.formName(),
                 description: this.formDescription() || 'E-commerce store',
-                domain: this.formDomain() || `${name.toLowerCase().replace(/\s+/g, '')}.com`,
                 status: this.formStatus(),
                 image: this.formImage() || s.image,
               }
             : s,
         ),
       );
-      this.showNotification(`Store "${name}" updated successfully!`);
-    } else {
-      // Generate new store
-      const newStore: StoreItem = {
-        id: `store-${Date.now()}`,
-        name: name,
-        description: this.formDescription() || 'Curated online store',
-        domain: this.formDomain() || `${name.toLowerCase().replace(/\s+/g, '')}.com`,
-        status: this.formStatus(),
-        createdAt: 'Just now',
-        image:
-          this.formImage() ||
-          'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&auto=format&fit=crop&q=80',
-      };
-      this.stores.update((items) => [newStore, ...items]);
-      this.showNotification(`New store "${name}" generated successfully!`);
+      this.showNotification(`Store "${name}" updated.`);
     }
 
     this.closeModal();
