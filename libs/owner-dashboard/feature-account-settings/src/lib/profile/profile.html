@@ -58,6 +58,11 @@
       <app-status-banner message="Profile settings updated successfully!" [fadingOut]="isFadingOut()" />
     }
 
+    <!-- Error Banner -->
+    @if (errorMessage()) {
+      <app-status-banner variant="destructive" [message]="errorMessage()!" />
+    }
+
     <!-- Card 1: Profile Photo -->
     <div hlmCard>
       <!-- Card Header -->
@@ -282,11 +287,16 @@
             type="button"
             hlmBtn
             class="gap-2 disabled:opacity-50 shadow-sm px-5 py-2.5 transition-all cursor-pointer"
-            [disabled]="isSaved()"
+            [disabled]="isSaved() || saving()"
             (click)="saveChanges()"
           >
-            <ng-icon name="lucideCheck" size="16" />
-            <span>Save Changes</span>
+            @if (saving()) {
+              <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent"></span>
+              <span>Saving...</span>
+            } @else {
+              <ng-icon name="lucideCheck" size="16" />
+              <span>Save Changes</span>
+            }
           </button>
 
           <button
