@@ -73,26 +73,61 @@
       </div>
     }
 
+    <!-- Single Store Limit Banner -->
+    <div
+      class="flex items-start gap-3 bg-amber-500/10 p-4 border border-amber-500/20 rounded-xl text-amber-950 dark:text-amber-200 text-xs sm:text-sm"
+    >
+      <div
+        class="flex shrink-0 justify-center items-center bg-amber-500/20 rounded-full w-6 h-6 text-amber-600 dark:text-amber-400 mt-0.5"
+      >
+        <ng-icon name="lucideAlertTriangle" size="14" />
+      </div>
+      <div class="space-y-0.5">
+        <span class="font-semibold text-foreground">Single Store Limit</span>
+        <p class="text-muted-foreground">
+          Each Invento account currently supports 1 active store. Multi-store creation and centralized management will be unlocked in an upcoming release.
+        </p>
+      </div>
+    </div>
+
     <!-- Top Action Bar (Store Counter + Generate New Store Button) -->
     <div class="flex flex-wrap justify-between items-center gap-4">
       <p hlmMuted>
-        <span class="font-bold text-foreground">{{ stores().length }}</span> stores linked to your
-        account
+        <span class="font-bold text-foreground">{{ stores().length }}</span>
+        <span> of 1 store linked to your account</span>
       </p>
 
       <button
         type="button"
         hlmBtn
-        class="gap-2 shadow-sm px-4 py-2.5 font-medium transition-all cursor-pointer"
-        (click)="openCreateModal()"
+        variant="outline"
+        class="gap-2 shadow-sm px-4 py-2.5 font-medium transition-all opacity-60 cursor-not-allowed border-amber-500/30"
+        [disabled]="true"
+        [hlmTooltip]="'Single store limit reached for this account'"
       >
         <ng-icon name="lucideZap" size="16" />
         <span>Generate New Store</span>
+        <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400">Limit Reached</span>
       </button>
     </div>
 
-    <!-- Store Cards List -->
-    <div class="space-y-4">
+    @if (loading()) {
+      <div class="space-y-4">
+        <div hlmSkeleton class="h-36 w-full rounded-2xl border"></div>
+      </div>
+    } @else if (stores().length === 0) {
+      <div class="flex flex-col items-center justify-center p-12 text-center border border-dashed rounded-2xl bg-card">
+        <div class="flex justify-center items-center bg-muted rounded-2xl w-12 h-12 text-muted-foreground mb-3">
+          <ng-icon name="lucideStore" size="24" />
+        </div>
+        <h3 hlmH3>No Store Found</h3>
+        <p hlmMuted class="mt-1 max-w-sm text-xs sm:text-sm">
+          You do not have an active store yet. Complete the site builder to configure your storefront.
+        </p>
+      </div>
+    } @else {
+      <!-- Store Cards List -->
+      <div class="space-y-4">
       @for (store of stores(); track store.id) {
         <div
           hlmCard
@@ -192,10 +227,10 @@
                 type="button"
                 hlmBtn
                 variant="ghost"
-                class="hover:bg-red-50 dark:hover:bg-red-950/40 p-0 w-9 h-9 text-muted-foreground hover:text-red-600 rounded-lg cursor-pointer"
-                (click)="confirmDeleteStore(store)"
-                [hlmTooltip]="'my_stores.delete_store' | translate"
-                [attr.aria-label]="'my_stores.delete_store' | translate"
+                class="hover:bg-muted p-0 w-9 h-9 text-muted-foreground opacity-50 rounded-lg cursor-not-allowed"
+                [disabled]="true"
+                [hlmTooltip]="'Primary store cannot be deleted'"
+                [attr.aria-label]="'Primary store cannot be deleted'"
               >
                 <ng-icon name="lucideTrash2" size="15" />
               </button>
@@ -203,7 +238,8 @@
           </div>
         </div>
       }
-    </div>
+      </div>
+    }
   </div>
 
   <!-- Generate / Edit Store Modal Dialog -->

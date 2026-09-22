@@ -183,11 +183,17 @@
           <button
             type="button"
             hlmBtn
-            class="gap-2 shadow-sm px-5 py-2.5 transition-all cursor-pointer"
+            class="gap-2 shadow-sm px-5 py-2.5 transition-all cursor-pointer disabled:opacity-50"
+            [disabled]="updating() || !currentPassword().trim() || !newPassword().trim() || !confirmPassword().trim()"
             (click)="updatePassword()"
           >
-            <ng-icon name="lucideLock" size="16" />
-            <span>Update Password</span>
+            @if (updating()) {
+              <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent"></span>
+              <span>Updating Password...</span>
+            } @else {
+              <ng-icon name="lucideLock" size="16" />
+              <span>Update Password</span>
+            }
           </button>
         </div>
       </div>
@@ -216,23 +222,19 @@
             <div class="space-y-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2">
                 <span class="font-semibold text-sm sm:text-base">Authenticator App</span>
-                @if (twoFactorEnabled()) {
-                  <span hlmBadge class="bg-success/10 text-success"> Enabled </span>
-                } @else {
-                  <span hlmBadge class="bg-destructive/10 text-destructive"> Disabled </span>
-                }
+                <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400">Coming Soon</span>
               </div>
               <p hlmMuted>
-                Require a verification code from your phone on login.
+                Authenticator app verification (TOTP) will be enabled in an upcoming security release.
               </p>
             </div>
           </div>
 
           <!-- Toggle Switch Button -->
           <hlm-switch
-            class="self-start sm:self-auto"
-            [checked]="twoFactorEnabled()"
-            (checkedChange)="toggle2FA()"
+            class="self-start sm:self-auto opacity-50 cursor-not-allowed"
+            [checked]="false"
+            [disabled]="true"
             [attr.aria-label]="'security.two_factor_toggle' | translate"
           />
         </div>
@@ -244,9 +246,12 @@
       <!-- Card Header -->
       <div hlmCardHeader class="flex flex-wrap justify-between items-center gap-2 border-b">
         <div>
-          <h2 hlmCardTitle>Active Sessions</h2>
+          <div class="flex items-center gap-2">
+            <h2 hlmCardTitle>Active Sessions</h2>
+            <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-muted-foreground/30 text-muted-foreground">Preview</span>
+          </div>
           <p hlmCardDescription>
-            Devices currently signed in to your account.
+            Devices currently signed in to your account. Remote session revocation will be available in a future release.
           </p>
         </div>
 

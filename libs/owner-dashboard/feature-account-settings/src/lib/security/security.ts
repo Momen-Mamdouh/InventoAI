@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AccountSettingsService } from '../services/account-settings.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideLock,
@@ -83,6 +84,10 @@ export interface ActiveSession {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Security {
+  private readonly accountSettingsService = inject(AccountSettingsService);
+
+  readonly updating = signal<boolean>(false);
+
   // Password Form Signals
   currentPassword = signal<string>('');
   newPassword = signal<string>('');
@@ -142,7 +147,7 @@ export class Security {
   }
 
   // Update Password Action
-  updatePassword() {
+  updatePassword(): void {
     this.clearMessages();
 
     if (!this.currentPassword().trim()) {
@@ -160,20 +165,39 @@ export class Security {
       return;
     }
 
-    // Success
-    this.isFadingOut.set(false);
-    this.passwordSuccess.set('Password updated successfully!');
-    this.currentPassword.set('');
-    this.newPassword.set('');
-    this.confirmPassword.set('');
+    this.updating.set(true);
+    this.accountSettingsService
+      .changePassword({
+        oldPassword: this.currentPassword(),
+        newPassword: this.newPassword(),
+        confirmPassword: this.confirmPassword(),
+      })
+      .subscribe({
+        next: (res) => {
+          this.updating.set(false);
+          this.isFadingOut.set(false);
+          this.passwordSuccess.set(res.message || 'Password updated successfully!');
+          this.currentPassword.set('');
+          this.newPassword.set('');
+          this.confirmPassword.set('');
 
-    setTimeout(() => {
-      this.isFadingOut.set(true);
-      setTimeout(() => {
-        this.passwordSuccess.set(null);
-        this.isFadingOut.set(false);
-      }, 350);
-    }, 3500);
+          setTimeout(() => {
+            this.isFadingOut.set(true);
+            setTimeout(() => {
+              this.passwordSuccess.set(null);
+              this.isFadingOut.set(false);
+            }, 350);
+          }, 3500);
+        },
+        error: (err: { error?: { message?: string | string[] }; message?: string }) => {
+          this.updating.set(false);
+          const apiMsg = err.error?.message;
+          const msg = Array.isArray(apiMsg)
+            ? apiMsg[0]
+            : apiMsg || err.message || 'Failed to update password. Please check your current password.';
+          this.passwordError.set(msg);
+        },
+      });
   }
 
   // Toggle 2FA Action

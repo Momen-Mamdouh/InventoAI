@@ -5,4 +5,5 @@ export type {
   StoreFeaturedProduct,
   StoreResponse,
   StoreNotFoundResponse,
+  MyStoreResponse,
 } from './lib/store.service';

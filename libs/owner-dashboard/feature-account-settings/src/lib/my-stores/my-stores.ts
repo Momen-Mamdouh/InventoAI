@@ -34,7 +34,8 @@ import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
 import { HlmH1, HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { HlmTooltipImports } from '@spartan/helm/tooltip';
-import { TranslatePipe } from '@invento/shared-util-i18n';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { StoreService } from '@invento/owner-dashboard-data-access-store';
 
 export interface StoreItem {
   id: string;
@@ -68,7 +69,7 @@ export interface StoreItem {
     HlmH3,
     HlmMuted,
     HlmTooltipImports,
-    TranslatePipe,
+    HlmSkeleton,
   ],
   providers: [
     provideIcons({
@@ -95,40 +96,51 @@ export interface StoreItem {
 })
 export class MyStores {
   private readonly router = inject(Router);
+  private readonly storeService = inject(StoreService);
+
+  readonly loading = signal<boolean>(true);
+  readonly hasStore = signal<boolean>(false);
 
   // Stores Data List
-  stores = signal<StoreItem[]>([
-    {
-      id: 'store-1',
-      name: 'Luminary Goods',
-      status: 'Live',
-      description: 'Curated homeware & lifestyle',
-      domain: 'luminarygoods.com',
-      createdAt: '1 Nov 2023',
-      image:
-        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'store-2',
-      name: 'Arc Vault',
-      status: 'Draft',
-      description: 'Modernist ceramics & objects',
-      domain: 'arcvault.shop',
-      createdAt: '14 Feb 2025',
-      image:
-        'https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 'store-3',
-      name: 'Novaline Studio',
-      status: 'Maintenance',
-      description: 'Scented goods & wellness',
-      domain: 'novalinestudio.co',
-      createdAt: '3 May 2025',
-      image:
-        'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&auto=format&fit=crop&q=80',
-    },
-  ]);
+  stores = signal<StoreItem[]>([]);
+
+  constructor() {
+    this.fetchStore();
+  }
+
+  private fetchStore(): void {
+    this.loading.set(true);
+    this.storeService.getMyStore().subscribe({
+      next: (store) => {
+        this.loading.set(false);
+        this.hasStore.set(true);
+        const formattedDate = new Date(store.createdAt).toLocaleDateString('en-US', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        const statusMap = store.status?.toLowerCase() === 'live' ? 'Live' : 'Draft';
+        this.stores.set([
+          {
+            id: store.id,
+            name: store.name,
+            status: statusMap,
+            description: store.description || 'E-commerce store powered by Invento',
+            domain: `${store.slug}.inventoai.shop`,
+            createdAt: formattedDate,
+            image:
+              store.heroImageUrl ||
+              'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&auto=format&fit=crop&q=80',
+          },
+        ]);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.hasStore.set(false);
+        this.stores.set([]);
+      },
+    });
+  }
 
   // Modal State Signals
   isModalOpen = signal<boolean>(false);
