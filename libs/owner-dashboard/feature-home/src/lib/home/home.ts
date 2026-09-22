@@ -10,7 +10,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@invento/shared-util-i18n';
 import type { ThemeApiResponse, Palette } from '@invento/shared-util-theme';
-import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { HlmSpinner } from '@spartan/helm/spinner';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmLabel } from '@spartan/helm/label';
@@ -78,7 +77,6 @@ const HERO_DEFAULTS = {
     CommonModule,
     NgIcon,
     TranslatePipe,
-    HlmSkeleton,
     HlmSpinner,
     HlmButton,
     HlmInput,

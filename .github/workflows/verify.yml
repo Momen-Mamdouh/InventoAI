@@ -76,12 +76,23 @@ jobs:
       - name: Run tests with coverage for userSite app
         run: npm run test:user-site -- --coverage
 
+      - name: Run tests with coverage for ownerDashboard app
+        run: npm run test:owner-dashboard -- --coverage
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: site-builder-coverage
           path: coverage/site-builder/
+          if-no-files-found: ignore
+
+      - name: Upload owner dashboard coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: owner-dashboard-coverage
+          path: coverage/owner-dashboard/
           if-no-files-found: ignore
 
   build:
