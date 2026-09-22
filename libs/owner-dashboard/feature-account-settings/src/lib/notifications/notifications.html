@@ -5,9 +5,9 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 hlmH1>Account Settings</h1>
+      <h1 hlmH1>{{ 'account_settings.page_title' | translate }}</h1>
       <p hlmMuted class="mt-0.5">
-        Manage how and where you receive notifications across Invento.
+        {{ 'notifications.subtitle' | translate }}
       </p>
     </div>
 
@@ -15,38 +15,55 @@
     <div class="flex items-center gap-1 sm:gap-2 border-border border-b overflow-x-auto">
       <a
         routerLink="/profile"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideUser" size="16" />
-        <span>Profile</span>
+        <span>{{ 'account_settings.tabs.profile' | translate }}</span>
       </a>
       <a
         routerLink="/security"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideShield" size="16" />
-        <span>Security</span>
+        <span>{{ 'account_settings.tabs.security' | translate }}</span>
       </a>
       <a
         routerLink="/notifications"
-        class="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b-2 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border-primary text-primary"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideBell" size="16" />
-        <span>Notifications</span>
+        <span>{{ 'account_settings.tabs.notifications' | translate }}</span>
       </a>
       <a
         routerLink="/billing"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideCreditCard" size="16" />
-        <span>Billing & Plan</span>
+        <span>{{ 'account_settings.tabs.billing' | translate }}</span>
+        <span
+          hlmBadge
+          variant="outline"
+          class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400 ms-1"
+        >
+          {{ 'account_settings.tabs.coming_soon' | translate }}
+        </span>
       </a>
       <a
         routerLink="/my-stores"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideStore" size="16" />
-        <span>My Stores</span>
+        <span>{{ 'account_settings.tabs.my_store' | translate }}</span>
       </a>
     </div>
   </div>
@@ -54,17 +71,17 @@
   <!-- Content Container -->
   <div class="space-y-6 max-w-4xl mx-auto px-4 sm:px-6 pb-12">
     <!-- Feedback Banner -->
-    @if (saveSuccessMessage()) {
-      <app-status-banner [message]="saveSuccessMessage() ?? ''" [fadingOut]="isFadingOut()" />
+    @if (saveSuccessKey()) {
+      <app-status-banner [message]="saveSuccessKey()! | translate" [fadingOut]="isFadingOut()" />
     }
 
     <!-- Main Preferences Card -->
     <div hlmCard>
       <!-- Card Header -->
       <div hlmCardHeader class="border-b">
-        <h2 hlmCardTitle>Notification Preferences</h2>
+        <h2 hlmCardTitle>{{ 'notifications.preferences_title' | translate }}</h2>
         <p hlmCardDescription>
-          Choose how and where you receive notifications.
+          {{ 'notifications.preferences_desc' | translate }}
         </p>
       </div>
 
@@ -74,7 +91,7 @@
           <div class="space-y-3">
             <!-- Group Section Header -->
             <h3 hlmH3 class="text-muted-foreground/90 uppercase">
-              {{ group.title }}
+              {{ group.titleKey | translate }}
             </h3>
 
             <!-- Sub-card Table Container -->
@@ -83,7 +100,7 @@
               <div
                 class="flex justify-between items-center bg-muted/40 px-4 sm:px-5 py-2.5 border-border/60 border-b text-xs text-muted-foreground font-medium"
               >
-                <span class="whitespace-nowrap font-semibold">Event Type</span>
+                <span class="whitespace-nowrap font-semibold">{{ 'notifications.event_type' | translate }}</span>
 
                 <!-- Channel Labels (Right) -->
                 <div class="flex items-center justify-around w-32 sm:w-40 shrink-0 text-center">
@@ -91,13 +108,13 @@
                     class="inline-flex items-center justify-center gap-1 sm:gap-1.5 w-14 sm:w-16 whitespace-nowrap"
                   >
                     <ng-icon name="lucideMail" size="13" />
-                    <span>Email</span>
+                    <span>{{ 'notifications.email_channel' | translate }}</span>
                   </span>
                   <span
                     class="inline-flex items-center justify-center gap-1 sm:gap-1.5 w-14 sm:w-16 whitespace-nowrap"
                   >
                     <ng-icon name="lucideBell" size="13" />
-                    <span>In-app</span>
+                    <span>{{ 'notifications.inapp_channel' | translate }}</span>
                   </span>
                 </div>
               </div>
@@ -111,10 +128,10 @@
                     <!-- Item Info -->
                     <div class="space-y-0.5 min-w-0">
                       <h4 hlmH4 class="text-foreground">
-                        {{ item.title }}
+                        {{ item.titleKey | translate }}
                       </h4>
                       <p hlmMuted>
-                        {{ item.description }}
+                        {{ item.descKey | translate }}
                       </p>
                     </div>
 
@@ -173,7 +190,7 @@
             (click)="savePreferences()"
           >
             <ng-icon name="lucideCheck" size="16" />
-            <span>Save Preferences</span>
+            <span>{{ 'notifications.save_btn' | translate }}</span>
           </button>
 
           <button
@@ -183,7 +200,7 @@
             class="px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
             (click)="resetToDefaults()"
           >
-            Reset to defaults
+            {{ 'notifications.reset_defaults_btn' | translate }}
           </button>
         </div>
       </div>

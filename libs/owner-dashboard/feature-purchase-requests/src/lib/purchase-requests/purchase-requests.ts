@@ -1,5 +1,3 @@
-import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,126 +6,128 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideAlertCircle,
-  lucideArrowLeft,
-  lucideCheck,
   lucideCheckCircle2,
   lucideChevronRight,
-  lucideCircleDollarSign,
   lucideClock3,
-  lucideCloudDownload,
-  lucideEdit3,
-  lucideExternalLink,
-  lucideLoader2,
   lucideMail,
   lucideMailCheck,
   lucidePackage,
   lucidePlus,
   lucideRefreshCw,
-  lucideSend,
   lucideSettings2,
   lucideShieldCheck,
   lucideTrash2,
-  lucideTruck,
   lucideX,
 } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
-import { HlmCheckboxImports } from '@spartan/helm/checkbox';
-import { HlmToggleGroupImports } from '@spartan/helm/toggle-group';
-import { HlmCardImports } from '@spartan/helm/card';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmLabelImports } from '@spartan/helm/label';
-import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmTextareaImports } from '@spartan/helm/textarea';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmSheet, HlmSheetContent, HlmSheetPortal } from '@spartan/helm/sheet';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
 import { HlmSpinner } from '@spartan/helm/spinner';
-import { HlmTableImports } from '@spartan/helm/table';
-import { HlmDialogImports } from '@spartan/helm/dialog';
-import { HlmSheetImports } from '@spartan/helm/sheet';
-import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
-import { HlmH1, HlmH2, HlmMuted, HlmSmall } from '@spartan/helm/typography';
-import { HlmTooltipImports } from '@spartan/helm/tooltip';
-import { TranslatePipe } from '@invento/shared-util-i18n';
-// Brain primitives are the plain npm package — they are NOT re-exported through the
-// project's `@spartan/helm` alias, so import them directly instead of reaching into
-// node_modules' compiled type declarations (which is fragile and breaks on upgrades).
-import { BrnDialogImports } from '@spartan-ng/brain/dialog';
-import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
-import { ProductService, ApiProductDetail } from '@invento/owner-dashboard-data-access-product';
-import { SupplierService, Supplier } from '@invento/owner-dashboard-data-access-supplier';
+import {
+  HlmTable,
+  HlmTHead,
+  HlmTBody,
+  HlmTr,
+  HlmTh,
+  HlmTd,
+} from '@spartan/helm/table';
+import { HlmToggleGroup, HlmToggleGroupItem } from '@spartan/helm/toggle-group';
+import {
+  HlmAlertDialog,
+  HlmAlertDialogAction,
+  HlmAlertDialogCancel,
+  HlmAlertDialogContent,
+  HlmAlertDialogDescription,
+  HlmAlertDialogFooter,
+  HlmAlertDialogHeader,
+  HlmAlertDialogTitle,
+} from '@spartan/helm/alert-dialog';
+import { BrnAlertDialogContent } from '@spartan-ng/brain/alert-dialog';
+import { HlmH1, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
+import {
+  TableHeaderCell,
+  TableColumnSortDirection,
+  TableColumnFilterOption,
+} from '@invento/shared-ui-table-header';
 import {
   MailboxStatus,
   PurchaseRequestDetail,
-  PurchaseRequestService,
+  PurchaseRequestsState,
   PurchaseRequestStatus,
-  SupplierOffer,
 } from '@invento/owner-dashboard-data-access-purchase-request';
-import { Pagination } from '@invento/shared-ui-pagination';
-import { EmptyState } from '@invento/shared-ui-empty-state';
+import { ProductService } from '@invento/owner-dashboard-data-access-product';
+import { SupplierService } from '@invento/owner-dashboard-data-access-supplier';
+import { PurchaseRequestDetails } from '../purchase-request-details/purchase-request-details';
+import {
+  PurchaseRequestCreate,
+  preloadCreateDependencies,
+} from '../purchase-request-create/purchase-request-create';
 
 @Component({
   selector: 'app-purchase-requests',
+  standalone: true,
   imports: [
-    CurrencyPipe,
     DatePipe,
-    TitleCasePipe,
-    FormsModule,
     NgIcon,
     HlmBadge,
     HlmButton,
-    HlmCardImports,
-    HlmInputImports,
-    HlmLabelImports,
-    HlmSelectImports,
-    HlmTextareaImports,
+    HlmCard,
+    HlmSheet,
+    HlmSheetContent,
+    HlmSheetPortal,
     HlmSkeleton,
     HlmSpinner,
-    HlmTableImports,
-    HlmDialogImports,
-    HlmSheetImports,
-    HlmAlertDialogImports,
-    BrnDialogImports,
-    BrnAlertDialogImports,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmToggleGroup,
+    HlmToggleGroupItem,
+    HlmAlertDialog,
+    HlmAlertDialogContent,
+    HlmAlertDialogHeader,
+    HlmAlertDialogTitle,
+    HlmAlertDialogDescription,
+    HlmAlertDialogFooter,
+    HlmAlertDialogAction,
+    HlmAlertDialogCancel,
+    BrnAlertDialogContent,
     HlmH1,
-    HlmH2,
     HlmMuted,
     HlmSmall,
-    HlmTooltipImports,
-    TranslatePipe,
-    HlmCheckboxImports,
-    HlmToggleGroupImports,
     Pagination,
     EmptyState,
+    PurchaseRequestDetails,
+    PurchaseRequestCreate,
+    TranslatePipe,
+    TableHeaderCell,
   ],
   providers: [
     provideIcons({
       lucideAlertCircle,
-      lucideArrowLeft,
-      lucideCheck,
       lucideCheckCircle2,
       lucideChevronRight,
-      lucideCircleDollarSign,
       lucideClock3,
-      lucideCloudDownload,
-      lucideEdit3,
-      lucideExternalLink,
-      lucideLoader2,
       lucideMail,
       lucideMailCheck,
       lucidePackage,
       lucidePlus,
       lucideRefreshCw,
-      lucideSend,
       lucideSettings2,
       lucideShieldCheck,
       lucideTrash2,
-      lucideTruck,
       lucideX,
     }),
   ],
@@ -135,130 +135,128 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PurchaseRequests implements OnInit {
-  private readonly api = inject(PurchaseRequestService);
-  private readonly suppliersApi = inject(SupplierService);
-  private readonly productsApi = inject(ProductService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly state = inject(PurchaseRequestsState);
+  private readonly localeService = inject(LocaleService);
+  private readonly suppliersApi = inject(SupplierService);
+  private readonly productsApi = inject(ProductService);
 
-  readonly requests = signal<PurchaseRequestDetail[]>([]);
-  readonly loading = signal(true);
-  readonly detailLoading = signal(false);
-  readonly saving = signal(false);
-  readonly error = signal<string | null>(null);
-  readonly selected = signal<PurchaseRequestDetail | null>(null);
-  readonly statusFilter = signal<'all' | PurchaseRequestStatus>('all');
-  readonly page = signal(1);
-  readonly limit = signal(20);
-  readonly total = signal(0);
-  readonly totalPages = signal(1);
-  readonly mailbox = signal<MailboxStatus | null>(null);
-  readonly mailboxLoading = signal(false);
+  readonly requests = this.state.requests;
+  readonly total = this.state.total;
+  readonly page = this.state.page;
+  readonly limit = this.state.limit;
+  readonly totalPages = this.state.totalPages;
+  readonly loading = this.state.loading;
+  readonly error = this.state.error;
+  readonly statusFilter = this.state.statusFilter;
+  readonly selected = this.state.selected;
+  readonly detailLoading = this.state.detailLoading;
+  readonly mailbox = this.state.mailbox;
+  readonly mailboxLoading = this.state.mailboxLoading;
+  readonly kpis = this.state.kpis;
+
   readonly showMailbox = signal(false);
   readonly showCreate = signal(false);
-  readonly showCancelConfirm = signal(false);
-  readonly offerToConfirm = signal<SupplierOffer | null>(null);
   readonly showDisconnectMailboxConfirm = signal(false);
-  readonly showEdit = signal(false);
-  readonly showReply = signal(false);
-  readonly showOfferEdit = signal(false);
-  readonly selectedOffer = signal<SupplierOffer | null>(null);
-  readonly createProducts = signal<ApiProductDetail[]>([]);
-  readonly createSuppliers = signal<Supplier[]>([]);
-  readonly createLoading = signal(false);
-  readonly actionMessage = signal<string | null>(null);
 
-  readonly createProductId = signal('');
-  createVariantId = '';
-  createQuantity = 1;
-  createDeadline: number | null = null;
-  createNote = '';
-  createSupplierIds: string[] = [];
+  protected readonly sheetSide = computed<'left' | 'right'>(() =>
+    this.localeService.isRtl() ? 'left' : 'right',
+  );
 
-  readonly productItemToString = (id: unknown): string => {
-    if (!id || typeof id !== 'string') return '';
-    const prod = this.createProducts().find((p) => p.id === id);
-    return prod ? prod.title : '';
-  };
-
-  readonly variantItemToString = (id: unknown): string => {
-    if (!id || typeof id !== 'string') return '';
-    const v = this.selectedVariantOptions().find((opt) => opt.id === id);
-    return v ? `${v.sku} — ${this.variantLabel(v.attributeValues)}` : '';
-  };
-
-  editSubject = '';
-  editBody = '';
-  editQuantity = 1;
-  editDeadline: number | null = null;
-  editNote: string | null = null;
-  editSupplierIds: string[] = [];
-
-  replyBody = '';
-  offerUnitMajor: number | null = null;
-  offerQuantity: number | null = null;
-  offerDeliveryDays: number | null = null;
-  offerNotes: string | null = null;
-
-  readonly statusTabs: { value: 'all' | PurchaseRequestStatus; label: string }[] = [
-    { value: 'all', label: 'All requests' },
-    { value: 'draft', label: 'Drafts' },
-    { value: 'sent', label: 'Sent' },
-    { value: 'replied', label: 'Needs decision' },
-    { value: 'confirmed', label: 'Confirmed' },
-    { value: 'cancelled', label: 'Cancelled' },
+  readonly statusTabs: { value: 'all' | PurchaseRequestStatus; key: string }[] = [
+    { value: 'all', key: 'purchase_requests.tab_all' },
+    { value: 'draft', key: 'purchase_requests.tab_draft' },
+    { value: 'sent', key: 'purchase_requests.tab_sent' },
+    { value: 'replied', key: 'purchase_requests.tab_replied' },
+    { value: 'confirmed', key: 'purchase_requests.tab_confirmed' },
+    { value: 'cancelled', key: 'purchase_requests.tab_cancelled' },
   ];
 
-  readonly pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
-  readonly selectedVariantOptions = computed(() => {
-    const product = this.createProducts().find((p) => p.id === this.createProductId());
-    return product?.variants ?? [];
+  readonly colRequestSearch = signal('');
+  readonly colSuppliersSearch = signal('');
+  readonly colStatusFilter = signal('');
+  readonly colQuantitySort = signal<TableColumnSortDirection>('none');
+  readonly colCreatedSort = signal<TableColumnSortDirection>('none');
+
+  readonly statusFilterOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    {
+      label: this.localeService.translate('purchase_requests.tab_draft') || 'Draft',
+      value: 'draft',
+    },
+    {
+      label: this.localeService.translate('purchase_requests.tab_sent') || 'Sent',
+      value: 'sent',
+    },
+    {
+      label: this.localeService.translate('purchase_requests.tab_replied') || 'Replied',
+      value: 'replied',
+    },
+    {
+      label: this.localeService.translate('purchase_requests.tab_confirmed') || 'Confirmed',
+      value: 'confirmed',
+    },
+    {
+      label: this.localeService.translate('purchase_requests.tab_cancelled') || 'Cancelled',
+      value: 'cancelled',
+    },
+  ]);
+
+  readonly displayedRequests = computed(() => {
+    let list = [...this.requests()];
+    const reqSearch = this.colRequestSearch().trim().toLowerCase();
+    if (reqSearch) {
+      list = list.filter(
+        (r) =>
+          r.productTitle?.toLowerCase().includes(reqSearch) ||
+          r.variantLabel?.toLowerCase().includes(reqSearch) ||
+          r.subject?.toLowerCase().includes(reqSearch) ||
+          r.note?.toLowerCase().includes(reqSearch),
+      );
+    }
+    const supSearch = this.colSuppliersSearch().trim().toLowerCase();
+    if (supSearch) {
+      list = list.filter((r) =>
+        r.offers?.some((o) => o.supplierName?.toLowerCase().includes(supSearch)),
+      );
+    }
+    const status = this.colStatusFilter();
+    if (status && status !== 'all') {
+      list = list.filter((r) => r.status === status);
+    }
+    const qSort = this.colQuantitySort();
+    if (qSort === 'asc') {
+      list.sort((a, b) => (a.quantity ?? 0) - (b.quantity ?? 0));
+    } else if (qSort === 'desc') {
+      list.sort((a, b) => (b.quantity ?? 0) - (a.quantity ?? 0));
+    }
+    const cSort = this.colCreatedSort();
+    if (cSort === 'asc') {
+      list.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    } else if (cSort === 'desc') {
+      list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return list;
   });
 
   ngOnInit(): void {
     const id = this.route.snapshot.queryParamMap.get('request');
-    this.load();
-    this.loadMailbox();
-    this.loadCreateDependencies();
-    if (id) this.openDetail(id);
+    this.state.loadRequests();
+    this.state.loadKpis();
+    this.state.loadMailbox();
+    preloadCreateDependencies(this.suppliersApi, this.productsApi);
+    if (id) {
+      this.openDetail(id);
+    }
   }
 
-  load(): void {
-    this.loading.set(true);
-    this.error.set(null);
-    const status = this.statusFilter();
-    this.api
-      .list({
-        page: this.page(),
-        limit: this.limit(),
-        status: status === 'all' ? undefined : status,
-      })
-      .subscribe({
-        next: (response) => {
-          this.requests.set(response.items.map((item) => ({ ...item, offers: [] })));
-          this.total.set(response.total);
-          this.page.set(response.page);
-          this.limit.set(response.limit);
-          this.totalPages.set(response.totalPages);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set(this.messageFromError(err, 'Could not load purchase requests.'));
-          this.loading.set(false);
-        },
-      });
+  onRefresh(): void {
+    this.state.loadRequests();
+    this.state.loadKpis();
+    this.state.loadMailbox();
   }
 
-  setStatus(status: 'all' | PurchaseRequestStatus): void {
-    this.statusFilter.set(status);
-    this.page.set(1);
-    this.load();
-  }
-
-  /**
-   * `hlm-toggle-group` (type="single", non-nullable) always emits a single, defined value —
-   * this guard just narrows the brain's broader `T | T[] | null | undefined` output type.
-   */
   onStatusChange(
     status:
       | ('all' | PurchaseRequestStatus)
@@ -266,353 +264,78 @@ export class PurchaseRequests implements OnInit {
       | null
       | undefined,
   ): void {
-    // `Array.isArray` is typed `(arg: any) => arg is any[]`, so it does not narrow a
-    // `readonly T[]` out of this union. Both branch values are string-literal unions, so
-    // `typeof` narrows cleanly instead.
     if (typeof status === 'string') {
-      this.setStatus(status);
+      this.state.setStatusFilter(status);
     }
   }
 
+  onPageChange(page: number): void {
+    this.state.setPage(page);
+  }
+
   openDetail(id: string): void {
-    this.detailLoading.set(true);
-    this.api.get(id).subscribe({
-      next: (detail) => {
-        this.selected.set(detail);
-        this.detailLoading.set(false);
-        this.router.navigate([], {
-          queryParams: { request: id },
-          queryParamsHandling: 'merge',
-          replaceUrl: true,
-        });
-      },
-      error: (err) => {
-        this.error.set(this.messageFromError(err, 'Could not load this purchase request.'));
-        this.detailLoading.set(false);
-      },
+    this.state.openDetail(id);
+    this.router.navigate([], {
+      queryParams: { request: id },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
     });
   }
 
   closeDetail(): void {
-    this.selected.set(null);
+    this.state.closeDetail();
     this.router.navigate([], { queryParams: {}, replaceUrl: true });
   }
 
-  onDetailStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.closeDetail();
+  onDetailDrawerStateChanged(state: 'open' | 'closed'): void {
+    // BrnDialog emits 'closed' once immediately on teardown/backdrop-click.
+    // We only close when the sheet signals 'closed' while a request is selected,
+    // which means the user explicitly dismissed it (backdrop or close button).
+    if (state === 'closed' && this.selected()) {
+      this.closeDetail();
+    }
   }
 
-  refreshDetail(): void {
-    const id = this.selected()?.id;
-    if (id) this.openDetail(id);
-  }
 
   openCreate(): void {
-    this.createQuantity = 1;
-    this.createDeadline = null;
-    this.createNote = '';
-    this.createSupplierIds = [];
-    this.createProductId.set('');
-    this.createVariantId = '';
     this.showCreate.set(true);
   }
 
-  onCreateStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.showCreate.set(false);
+  closeCreate(): void {
+    this.showCreate.set(false);
   }
 
-  onCreateProductChange(value: string): void {
-    this.createProductId.set(value);
-    const variants = this.createProducts().find((p) => p.id === value)?.variants ?? [];
-    this.createVariantId = variants[0]?.id ?? '';
-  }
 
-  toggleCreateSupplier(id: string): void {
-    this.createSupplierIds = this.createSupplierIds.includes(id)
-      ? this.createSupplierIds.filter((item) => item !== id)
-      : [...this.createSupplierIds, id];
-  }
-
-  toggleEditSupplier(id: string): void {
-    this.editSupplierIds = this.editSupplierIds.includes(id)
-      ? this.editSupplierIds.filter((item) => item !== id)
-      : [...this.editSupplierIds, id];
-  }
-
-  createRequest(): void {
-    if (!this.createVariantId || this.createQuantity < 1 || this.createSupplierIds.length === 0)
-      return;
-    this.saving.set(true);
-    this.api
-      .create({
-        variantId: this.createVariantId,
-        quantity: this.createQuantity,
-        supplierIds: this.createSupplierIds,
-        neededWithinDays: this.createDeadline || undefined,
-        note: this.createNote.trim() || undefined,
-      })
-      .subscribe({
-        next: (detail) => {
-          this.saving.set(false);
-          this.showCreate.set(false);
-          this.actionMessage.set('Purchase request draft created.');
-          this.load();
-          this.openDetail(detail.id);
-        },
-        error: (err) => this.handleActionError(err),
-      });
-  }
-
-  openEdit(): void {
-    const request = this.selected();
-    if (!request || request.status !== 'draft') return;
-    this.editSubject = request.subject;
-    this.editBody = request.body;
-    this.editQuantity = request.quantity;
-    this.editDeadline = request.neededWithinDays;
-    this.editNote = request.note;
-    this.editSupplierIds = request.offers
-      .map((offer) => offer.supplierId)
-      .filter((id): id is string => !!id);
-    this.showEdit.set(true);
-  }
-
-  onEditStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.showEdit.set(false);
-  }
-
-  saveEdit(): void {
-    const request = this.selected();
-    if (!request) return;
-    this.saving.set(true);
-    this.api
-      .update(request.id, {
-        subject: this.editSubject,
-        body: this.editBody,
-        quantity: this.editQuantity,
-        neededWithinDays: this.editDeadline,
-        note: this.editNote,
-        supplierIds: this.editSupplierIds,
-      })
-      .subscribe({
-        next: (detail) => {
-          this.saving.set(false);
-          this.showEdit.set(false);
-          this.selected.set(detail);
-          this.load();
-        },
-        error: (err) => this.handleActionError(err),
-      });
-  }
-
-  send(): void {
-    const request = this.selected();
-    if (!request || request.status === 'confirmed' || request.status === 'cancelled') return;
-    this.saving.set(true);
-    this.api.send(request.id).subscribe({
-      next: (detail) => {
-        this.saving.set(false);
-        this.selected.set(detail);
-        this.load();
-        this.actionMessage.set('Purchase request sent.');
-      },
-      error: (err) => this.handleActionError(err),
-    });
-  }
-
-  cancel(): void {
-    const request = this.selected();
-    if (!request) return;
-    this.saving.set(true);
-    this.api.cancel(request.id).subscribe({
-      next: (detail) => {
-        this.saving.set(false);
-        this.showCancelConfirm.set(false);
-        this.selected.set(detail);
-        this.load();
-        this.actionMessage.set('Purchase request cancelled.');
-      },
-      error: (err) => this.handleActionError(err),
-    });
-  }
-
-  onCancelConfirmStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.showCancelConfirm.set(false);
-  }
-
-  openReply(offer: SupplierOffer): void {
-    this.selectedOffer.set(offer);
-    this.replyBody = '';
-    this.showReply.set(true);
-  }
-
-  onReplyStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.showReply.set(false);
-  }
-
-  pasteReply(): void {
-    const request = this.selected();
-    const offer = this.selectedOffer();
-    if (!request || !offer || !this.replyBody.trim()) return;
-    this.saving.set(true);
-    this.api.pasteReply(request.id, offer.id, { body: this.replyBody.trim() }).subscribe({
-      next: (detail) => {
-        this.saving.set(false);
-        this.showReply.set(false);
-        this.selected.set(detail);
-        this.load();
-      },
-      error: (err) => this.handleActionError(err),
-    });
-  }
-
-  openOfferEdit(offer: SupplierOffer): void {
-    this.selectedOffer.set(offer);
-    this.offerUnitMajor = offer.unitAmount == null ? null : offer.unitAmount / 100;
-    this.offerQuantity = offer.quantity;
-    this.offerDeliveryDays = offer.deliveryDays;
-    this.offerNotes = offer.notes;
-    this.showOfferEdit.set(true);
-  }
-
-  onOfferEditStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.showOfferEdit.set(false);
-  }
-
-  saveOffer(): void {
-    const request = this.selected();
-    const offer = this.selectedOffer();
-    if (!request || !offer) return;
-    this.saving.set(true);
-    this.api
-      .correctOffer(request.id, offer.id, {
-        unitAmount: this.offerUnitMajor == null ? null : Math.round(this.offerUnitMajor * 100),
-        quantity: this.offerQuantity,
-        deliveryDays: this.offerDeliveryDays,
-        notes: this.offerNotes,
-      })
-      .subscribe({
-        next: (detail) => {
-          this.saving.set(false);
-          this.showOfferEdit.set(false);
-          this.selected.set(detail);
-          this.load();
-        },
-        error: (err) => this.handleActionError(err),
-      });
-  }
-
-  confirmOffer(offer: SupplierOffer): void {
-    const request = this.selected();
-    if (
-      !request ||
-      offer.unitAmount == null ||
-      request.status === 'confirmed' ||
-      request.status === 'cancelled'
-    )
-      return;
-    this.offerToConfirm.set(offer);
-  }
-
-  cancelConfirmOffer(): void {
-    this.offerToConfirm.set(null);
-  }
-
-  onConfirmOfferStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.cancelConfirmOffer();
-  }
-
-  proceedConfirmOffer(): void {
-    const request = this.selected();
-    const offer = this.offerToConfirm();
-    if (!request || !offer) return;
-    this.saving.set(true);
-    this.api.confirmOffer(request.id, offer.id).subscribe({
-      next: (detail) => {
-        this.saving.set(false);
-        this.selected.set(detail);
-        this.offerToConfirm.set(null);
-        this.load();
-        this.actionMessage.set(`${offer.supplierName} won this request.`);
-      },
-      error: (err) => {
-        this.offerToConfirm.set(null);
-        this.handleActionError(err);
-      },
-    });
-  }
-
-  openSupplier(offer: SupplierOffer): void {
-    if (offer.supplierId) this.router.navigate(['/suppliers', offer.supplierId]);
+  onRequestCreated(detail: PurchaseRequestDetail): void {
+    this.closeCreate();
+    this.openDetail(detail.id);
   }
 
   syncMailbox(): void {
-    this.mailboxLoading.set(true);
-    this.api.syncMailbox().subscribe({
-      next: (response) => {
-        this.mailboxLoading.set(false);
-        this.actionMessage.set(response.message);
-        this.loadMailbox();
-        if (this.selected()) this.refreshDetail();
-      },
-      error: (err) => {
-        this.mailboxLoading.set(false);
-        this.handleActionError(err);
-      },
-    });
+    this.state.syncMailbox();
   }
 
   connectMailbox(): void {
-    this.mailboxLoading.set(true);
-    this.api.connectMailbox().subscribe({
-      next: (response) => {
-        this.mailboxLoading.set(false);
-        if (typeof window !== 'undefined')
-          sessionStorage.setItem('invento_mailbox_state', response.state);
-        window.location.assign(response.consentUrl);
-      },
-      error: (err) => {
-        this.mailboxLoading.set(false);
-        this.handleActionError(err);
-      },
-    });
+    this.state.connectMailbox();
   }
 
   disconnectMailbox(): void {
     this.showDisconnectMailboxConfirm.set(true);
   }
 
-  cancelDisconnectMailbox(): void {
-    this.showDisconnectMailboxConfirm.set(false);
-  }
-
-  onDisconnectMailboxStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.cancelDisconnectMailbox();
-  }
-
   proceedDisconnectMailbox(): void {
-    this.showDisconnectMailboxConfirm.set(false);
-    this.mailboxLoading.set(true);
-    this.api.disconnectMailbox().subscribe({
-      next: (response) => {
-        this.mailboxLoading.set(false);
-        this.actionMessage.set(response.message);
-        this.loadMailbox();
-      },
-      error: (err) => {
-        this.mailboxLoading.set(false);
-        this.handleActionError(err);
-      },
+    this.state.disconnectMailbox(() => {
+      this.showDisconnectMailboxConfirm.set(false);
     });
   }
 
   mailboxStateLabel(status: MailboxStatus | null): string {
-    if (!status) return 'Mailbox status';
-    if (!status.isSupported) return 'Mailbox unavailable';
-    if (!status.isConnected) return 'Connect mailbox';
-    if (status.status === 'connected') return 'Mailbox connected';
-    if (status.status === 'revoked') return 'Mailbox access revoked';
-    return 'Mailbox credential expired';
+    if (!status) return this.localeService.translate('purchase_requests.mailbox_state_default');
+    if (!status.isSupported) return this.localeService.translate('purchase_requests.mailbox_state_unavailable');
+    if (!status.isConnected) return this.localeService.translate('purchase_requests.mailbox_state_connect');
+    if (status.status === 'connected') return this.localeService.translate('purchase_requests.mailbox_state_connected');
+    if (status.status === 'revoked') return this.localeService.translate('purchase_requests.mailbox_state_revoked');
+    return this.localeService.translate('purchase_requests.mailbox_state_expired');
   }
 
   statusClass(status: PurchaseRequestStatus): string {
@@ -623,67 +346,5 @@ export class PurchaseRequests implements OnInit {
       confirmed: 'bg-success/10 text-success',
       cancelled: 'bg-destructive/10 text-destructive',
     }[status];
-  }
-
-  offerStatusClass(status: SupplierOffer['status']): string {
-    return {
-      awaiting: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-      received: 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
-      won: 'bg-success/10 text-success',
-      declined: 'bg-destructive/10 text-destructive',
-    }[status];
-  }
-
-  formatMoney(minor: number | null): number | null {
-    return minor == null ? null : minor / 100;
-  }
-
-  variantLabel(values: { value: string }[]): string {
-    return values.map((value) => value.value).join(', ') || 'Default';
-  }
-
-  private loadMailbox(): void {
-    this.api
-      .mailboxStatus()
-      .subscribe({ next: (status) => this.mailbox.set(status), error: () => undefined });
-  }
-
-  private loadCreateDependencies(): void {
-    this.createLoading.set(true);
-    forkJoin({
-      suppliers: this.suppliersApi.list({ page: 1, limit: 100, isActive: true }),
-      products: this.productsApi.getProducts({ page: 1, limit: 100 }),
-    }).subscribe({
-      next: ({ suppliers, products }) => {
-        this.createSuppliers.set(suppliers.items);
-        const detailRequests: Observable<ApiProductDetail>[] = products.items.map((p) =>
-          this.productsApi.getProductById(p.id),
-        );
-        if (detailRequests.length === 0) {
-          this.createProducts.set([]);
-          this.createLoading.set(false);
-          return;
-        }
-        forkJoin(detailRequests).subscribe({
-          next: (details) => {
-            this.createProducts.set(details.filter((p) => p.variants.length > 0));
-            this.createLoading.set(false);
-          },
-          error: () => this.createLoading.set(false),
-        });
-      },
-      error: () => this.createLoading.set(false),
-    });
-  }
-
-  private handleActionError(err: HttpErrorResponse): void {
-    this.saving.set(false);
-    this.error.set(this.messageFromError(err, 'The action could not be completed.'));
-  }
-
-  private messageFromError(err: HttpErrorResponse, fallback: string): string {
-    const message: unknown = err?.error?.message;
-    if (Array.isArray(message)) return message.join(', ');
-    return typeof message === 'string' && message ? message : fallback;
   }
 }

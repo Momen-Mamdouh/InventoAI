@@ -3,6 +3,7 @@ import './test-setup';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { LocaleService } from '@invento/shared-util-i18n';
 import { OrderStore } from './order-store';
 import { OrderService } from './order.service';
 import { OrderListItem, OrderDetail, OrdersListResponse } from './order.model';
@@ -14,6 +15,11 @@ describe('OrderStore', () => {
     getOrderById: ReturnType<typeof vi.fn>;
     updateOrderStatus: ReturnType<typeof vi.fn>;
     updateOrderNote: ReturnType<typeof vi.fn>;
+  };
+  let localeServiceMock: {
+    translate: ReturnType<typeof vi.fn>;
+    locale: ReturnType<typeof vi.fn>;
+    isRtl: ReturnType<typeof vi.fn>;
   };
 
   const sampleOrder: OrderListItem = {
@@ -61,9 +67,19 @@ describe('OrderStore', () => {
       updateOrderNote: vi.fn().mockReturnValue(of({ ...sampleDetail, internalNote: 'New note' })),
     };
 
+    localeServiceMock = {
+      translate: vi.fn((key: string) => key),
+      locale: vi.fn(() => 'en'),
+      isRtl: vi.fn(() => false),
+    };
+
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      providers: [OrderStore, { provide: OrderService, useValue: orderServiceMock }],
+      providers: [
+        OrderStore,
+        { provide: OrderService, useValue: orderServiceMock },
+        { provide: LocaleService, useValue: localeServiceMock },
+      ],
     });
 
     store = TestBed.inject(OrderStore);

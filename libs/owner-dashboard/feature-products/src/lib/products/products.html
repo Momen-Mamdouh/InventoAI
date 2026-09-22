@@ -2,9 +2,9 @@
   <!-- Header & Breadcrumbs -->
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      <h1 hlmH1 class="text-foreground">Products</h1>
+      <h1 hlmH1 class="text-foreground">{{ 'products.page_title' | translate }}</h1>
       <p hlmMuted>
-        Manage your store catalog — {{ totalProducts() }} products total
+        {{ 'products.page_subtitle' | translate: { count: totalProducts() } }}
       </p>
     </div>
 
@@ -15,7 +15,7 @@
           class="flex flex-wrap items-center gap-2 bg-muted/20 border border-border p-1 rounded-md mr-2"
         >
           <span class="text-xs font-semibold px-2 text-muted-foreground"
-            >{{ selectedProductIds().length }} selected</span
+            >{{ 'products.selected_count' | translate: { count: selectedProductIds().length } }}</span
           >
           <button
             hlmBtn
@@ -24,8 +24,9 @@
             class="h-8 px-3 text-xs"
             (click)="bulkUpdateStatus('active')"
             [disabled]="isBulkActing()"
+            [attr.aria-label]="'products.bulk_set_active' | translate"
           >
-            Set Active
+            {{ 'products.bulk_set_active' | translate }}
           </button>
           <button
             hlmBtn
@@ -34,8 +35,9 @@
             class="h-8 px-3 text-xs"
             (click)="bulkUpdateStatus('draft')"
             [disabled]="isBulkActing()"
+            [attr.aria-label]="'products.bulk_set_draft' | translate"
           >
-            Set Draft
+            {{ 'products.bulk_set_draft' | translate }}
           </button>
           <button
             hlmBtn
@@ -44,8 +46,9 @@
             class="h-8 px-3 text-xs"
             (click)="bulkUpdateStatus('archived')"
             [disabled]="isBulkActing()"
+            [attr.aria-label]="'products.bulk_set_archived' | translate"
           >
-            Set Archived
+            {{ 'products.bulk_set_archived' | translate }}
           </button>
           <button
             hlmBtn
@@ -54,18 +57,19 @@
             class="h-8 px-3 text-xs text-white bg-rose-600 hover:bg-rose-700"
             (click)="openBulkDeleteModal()"
             [disabled]="isBulkActing()"
+            [attr.aria-label]="'products.bulk_delete' | translate"
           >
-            Delete
+            {{ 'products.bulk_delete' | translate }}
           </button>
         </div>
       } @else {
         <button hlmBtn variant="outline" class="bg-card hover:bg-accent shadow-sm" disabled>
-          Bulk Actions
+          {{ 'products.bulk_actions' | translate }}
         </button>
       }
       <button hlmBtn class="flex items-center gap-2" (click)="toggleDrawer()">
         <ng-icon name="lucidePlus" size="16" />
-        <span>Add Product</span>
+        <span>{{ 'products.add_product' | translate }}</span>
       </button>
     </div>
   </div>
@@ -83,55 +87,96 @@
         type="text"
         [ngModel]="searchTerm()"
         (ngModelChange)="searchTerm.set($event)"
-        placeholder="Search by name or SKU..."
+        [placeholder]="'products.search_placeholder' | translate"
         class="bg-card shadow-sm ps-9 border-border rounded-full focus:ring-2 focus:ring-primary/20 w-full h-9"
       />
     </div>
   </div>
 
+  <!-- Error State -->
+  @if (errorMessage()) {
+    <div hlmAlert variant="destructive" class="flex items-center gap-3">
+      <ng-icon name="lucideAlertCircle" size="16" />
+      <p hlmAlertDescription class="flex-1">{{ errorMessage() }}</p>
+      <button
+        hlmBtn
+        variant="outline"
+        size="sm"
+        class="h-8 shrink-0"
+        (click)="fetchProducts()"
+        [attr.aria-label]="'products.error_retry' | translate"
+      >
+        <ng-icon name="lucideRefreshCw" size="14" class="me-1.5" />
+        {{ 'products.error_retry' | translate }}
+      </button>
+    </div>
+  }
+
   <!-- Products Data Table Card -->
   <div hlmCard class="bg-card shadow-sm border-border rounded-xl overflow-hidden">
-    <div class="overflow-x-auto">
-      <table hlmTable class="w-full text-sm text-left border-collapse">
+    <div hlmTableContainer class="overflow-x-auto">
+      <table hlmTable class="w-full text-sm text-start border-collapse">
         <thead hlmTHead class="bg-muted/30 border-b border-border/60">
           <tr hlmTr>
             <th hlmTh class="px-2 sm:px-3 md:px-4 py-3 w-10 text-center">
               <hlm-checkbox [checked]="isAllSelected()" (checkedChange)="toggleSelectAll()" />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              Product
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap">
+              <app-table-header-cell
+                type="search"
+                [label]="'products.col_product' | translate"
+                [searchValue]="colSearchTitle()"
+                (searchChange)="onTitleSearchChange($event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              Variants
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap">
+              <app-table-header-cell
+                type="none"
+                [label]="'products.col_variants' | translate"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              Category
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap">
+              <app-table-header-cell
+                type="filter"
+                [label]="'products.col_category' | translate"
+                [filterOptions]="categoryFilterOptions()"
+                [selectedFilterValue]="colFilterCategory()"
+                (filterChange)="onCategoryFilterChange($event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-right"
-            >
-              Price
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-end">
+              <app-table-header-cell
+                type="sort"
+                align="end"
+                [label]="'products.col_price' | translate"
+                [sortDirection]="sortColumn() === 'price' ? sortDirection() : null"
+                (sortChange)="onSortChange('price', $event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-right"
-            >
-              Stock
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-end">
+              <app-table-header-cell
+                type="sort"
+                align="end"
+                [label]="'products.col_stock' | translate"
+                [sortDirection]="sortColumn() === 'stock' ? sortDirection() : null"
+                (sortChange)="onSortChange('stock', $event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              Status
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap">
+              <app-table-header-cell
+                type="filter"
+                [label]="'products.col_status' | translate"
+                [filterOptions]="statusFilterOptions"
+                [selectedFilterValue]="colFilterStatus()"
+                (filterChange)="onStatusFilterChange($event)"
+              />
             </th>
-            <th hlmTh
-              class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap"
-            >
-              Date Added
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 font-semibold text-muted-foreground whitespace-nowrap text-end">
+              <app-table-header-cell
+                type="none"
+                align="end"
+                [label]="'products.col_date_added' | translate"
+              />
             </th>
           </tr>
         </thead>
@@ -175,22 +220,22 @@
               <td hlmTd colspan="8" class="p-16 text-center">
                 <app-empty-state
                   icon="lucideFolderOpen"
-                  title="No products found"
+                  [title]="'products.empty_title' | translate"
                   [description]="
                     attributes().length === 0
-                      ? 'Get started by defining your product attributes first.'
-                      : 'Get started by creating your first product or generating with AI.'
+                      ? ('products.empty_desc_no_attrs' | translate)
+                      : ('products.empty_desc_with_attrs' | translate)
                   "
                 >
                   @if (attributes().length === 0) {
                     <button hlmBtn (click)="goToAttributes()" class="gap-1.5 mt-2" variant="outline">
                       <ng-icon name="lucidePlus" size="16" />
-                      Define Attributes First
+                      {{ 'products.empty_define_attrs' | translate }}
                     </button>
                   } @else {
                     <button hlmBtn (click)="toggleDrawer()" class="gap-1.5 mt-2" variant="outline">
                       <ng-icon name="lucidePlus" size="16" />
-                      Add Product
+                      {{ 'products.empty_add_product' | translate }}
                     </button>
                   }
                 </app-empty-state>
@@ -198,7 +243,7 @@
             </tr>
           } @else {
             <!-- Products Iteration -->
-            @for (product of products() | search: searchTerm() : ['title']; track product.id) {
+            @for (product of paginatedProducts(); track product.id) {
               <tr hlmTr cdkDrag class="group hover:bg-muted/40 transition-colors cursor-move">
                 <td hlmTd class="px-2 sm:px-3 md:px-4 py-3 text-center">
                   <hlm-checkbox
@@ -229,7 +274,7 @@
                     <div>
                       <button
                         (click)="viewProductDetails(product.id)"
-                        class="font-semibold text-foreground line-clamp-1 text-left hover:underline hover:text-primary transition-colors"
+                        class="font-semibold text-foreground line-clamp-1 text-start hover:underline hover:text-primary transition-colors"
                       >
                         {{ product.title }}
                       </button>
@@ -238,7 +283,11 @@
                 </td>
 
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
-                  {{ product.variantCount }} variant{{ product.variantCount !== 1 ? 's' : '' }}
+                  {{
+                    product.variantCount !== 1
+                      ? ('products.variant_count_other' | translate: { count: product.variantCount })
+                      : ('products.variant_count_one' | translate: { count: product.variantCount })
+                  }}
                 </td>
 
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3">
@@ -253,26 +302,26 @@
                   </div>
                 </td>
 
-                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-right font-medium">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end font-medium">
                   @if (product.minPriceAmount === product.maxPriceAmount) {
                     {{ product.minPriceAmount / 100 | currency: 'USD' }}
                   } @else {
                     {{ product.minPriceAmount / 100 | currency: 'USD' }} -
                     {{ product.maxPriceAmount / 100 | currency: 'USD' }}
                   }
-                  @if ($any(product).minCompareAtAmount || $any(product).compareAtAmount) {
+                  @if (product.minCompareAtAmount || product.compareAtAmount) {
                     <span
-                      class="text-xs line-through text-muted-foreground block sm:inline sm:ml-1 font-normal"
+                      class="text-xs line-through text-muted-foreground block sm:inline sm:ms-1 font-normal"
                     >
                       {{
-                        ($any(product).minCompareAtAmount || $any(product).compareAtAmount) / 100
+                        ((product.minCompareAtAmount ?? product.compareAtAmount) ?? 0) / 100
                           | currency: 'USD'
                       }}
                     </span>
                   }
                 </td>
 
-                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-right text-muted-foreground">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end text-muted-foreground">
                   {{ product.totalStock }}
                 </td>
 
@@ -280,27 +329,28 @@
                   <span
                     hlmBadge
                     class="gap-1.5 capitalize"
-                    [ngClass]="{
-                      'bg-success/10 text-success': product.status === 'active',
-                      'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400':
-                        product.status === 'draft',
-                      'bg-stone-100 text-stone-700 dark:bg-stone-500/20 dark:text-stone-400':
-                        product.status === 'archived',
-                    }"
+                    [class.bg-success/10]="product.status === 'active'"
+                    [class.text-success]="product.status === 'active'"
+                    [class.bg-amber-50]="product.status === 'draft'"
+                    [class.text-amber-700]="product.status === 'draft'"
+                    [class.dark:bg-amber-500/10]="product.status === 'draft'"
+                    [class.dark:text-amber-400]="product.status === 'draft'"
+                    [class.bg-stone-100]="product.status === 'archived'"
+                    [class.text-stone-700]="product.status === 'archived'"
+                    [class.dark:bg-stone-500/20]="product.status === 'archived'"
+                    [class.dark:text-stone-400]="product.status === 'archived'"
                   >
                     <span
                       class="h-1.5 w-1.5 rounded-full"
-                      [ngClass]="{
-                        'bg-success': product.status === 'active',
-                        'bg-amber-500': product.status === 'draft',
-                        'bg-stone-500': product.status === 'archived',
-                      }"
+                      [class.bg-success]="product.status === 'active'"
+                      [class.bg-amber-500]="product.status === 'draft'"
+                      [class.bg-stone-500]="product.status === 'archived'"
                     ></span>
-                    {{ product.status }}
+                    {{ 'products.status_' + product.status | translate }}
                   </span>
                 </td>
 
-                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap">
+                <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-muted-foreground whitespace-nowrap text-end">
                   {{ product.createdAt | date: 'MMM d, y' }}
                 </td>
               </tr>
@@ -309,12 +359,12 @@
                 <td hlmTd colspan="8" class="p-16 text-center">
                   <app-empty-state
                     icon="lucideSearch"
-                    title="No matching products"
-                    description='No products match "{{ searchTerm() }}". Try adjusting your search query.'
+                    [title]="'products.search_empty_title' | translate"
+                    [description]="'products.search_empty_desc' | translate: { query: searchTerm() || colSearchTitle() }"
                   >
-                    <button hlmBtn (click)="searchTerm.set('')" class="gap-1.5 mt-2" variant="outline">
+                    <button hlmBtn (click)="resetAllFilters()" class="gap-1.5 mt-2" variant="outline">
                       <ng-icon name="lucideX" size="16" />
-                      Clear Search
+                      {{ 'products.search_empty_clear' | translate }}
                     </button>
                   </app-empty-state>
                 </td>
@@ -324,6 +374,19 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Pagination -->
+    @if (totalProductPages() > 1 || processedProducts().length > pageSize()) {
+      <div class="p-4 border-t border-border/60 bg-card">
+        <app-pagination
+          [currentPage]="currentPage()"
+          [totalPages]="totalProductPages()"
+          [totalItems]="processedProducts().length"
+          [pageSize]="pageSize()"
+          (pageChange)="onPageChange($event)"
+        />
+      </div>
+    }
   </div>
 </div>
 
@@ -335,7 +398,9 @@
       class="flex flex-col gap-0 data-[side=right]:w-full data-[side=right]:sm:max-w-[500px]"
     >
       <hlm-sheet-header class="p-6 border-b border-border">
-        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">Add New Product</h2>
+        <h2 hlmSheetTitle class="text-xl font-bold text-foreground tracking-tight">
+          {{ 'products.drawer_title' | translate }}
+        </h2>
       </hlm-sheet-header>
 
       <!-- Form Content -->
@@ -344,12 +409,9 @@
           <div hlmAlert class="bg-warning/10 text-warning rounded-xl text-xs">
             <ng-icon name="lucideAlertCircle" size="16" />
             <p hlmAlertDescription class="text-warning flex items-center justify-between gap-2">
-              <span
-                >No product attributes defined yet. Products require attributes for catalog
-                classification.</span
-              >
+              <span>{{ 'products.no_attrs_warning' | translate }}</span>
               <a routerLink="/attributes" class="font-bold underline hover:opacity-80 shrink-0">
-                Add Attributes
+                {{ 'products.no_attrs_link' | translate }}
               </a>
             </p>
           </div>
@@ -361,13 +423,13 @@
             hlmH3
             class="text-foreground uppercase text-muted-foreground border-b border-border pb-2"
           >
-            Basic Information
+            {{ 'products.section_basic' | translate }}
           </h3>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
               <label hlmLabel for="product-name" class="text-sm font-semibold mb-2 block text-foreground"
-                >Product Title <span class="text-rose-500">*</span></label
+                >{{ 'products.field_title' | translate }} <span class="text-rose-500">*</span></label
               >
               <input
                 hlmInput
@@ -375,13 +437,13 @@
                 type="text"
                 [(ngModel)]="newProduct.title"
                 class="w-full"
-                placeholder="e.g. Scented Candle"
+                [placeholder]="'products.field_title_placeholder' | translate"
               />
             </div>
 
             <div>
               <label hlmLabel for="product-status" class="text-sm font-semibold mb-2 block text-foreground"
-                >Status</label
+                >{{ 'products.field_status' | translate }}</label
               >
               <hlm-select
                 id="product-status"
@@ -393,9 +455,9 @@
                   <hlm-select-value />
                 </hlm-select-trigger>
                 <hlm-select-content *hlmSelectPortal>
-                  <hlm-select-item value="draft">Draft</hlm-select-item>
-                  <hlm-select-item value="active">Active</hlm-select-item>
-                  <hlm-select-item value="archived">Archived</hlm-select-item>
+                  <hlm-select-item value="draft">{{ 'products.status_draft' | translate }}</hlm-select-item>
+                  <hlm-select-item value="active">{{ 'products.status_active' | translate }}</hlm-select-item>
+                  <hlm-select-item value="archived">{{ 'products.status_archived' | translate }}</hlm-select-item>
                 </hlm-select-content>
               </hlm-select>
             </div>
@@ -407,10 +469,10 @@
           <div class="space-y-4">
             <div class="flex items-center justify-between border-b border-border pb-2">
               <h3 hlmH3 class="text-foreground uppercase text-muted-foreground">
-                Attributes & Specifications
+                {{ 'products.section_attrs' | translate }}
               </h3>
               <a routerLink="/attributes" class="text-xs text-primary hover:underline font-medium">
-                Manage Attributes
+                {{ 'products.manage_attrs' | translate }}
               </a>
             </div>
 
@@ -431,12 +493,12 @@
                       [buttonId]="'new-product-attr-' + attr.id"
                       class="w-full h-9 bg-transparent"
                     >
-                      <hlm-select-value [placeholder]="'Select ' + attr.name" />
+                      <hlm-select-value [placeholder]="'products.select_attr' | translate: { name: attr.name }" />
                     </hlm-select-trigger>
                     <hlm-select-content *hlmSelectPortal>
                       @if (attr.values.length === 0) {
                         <div class="p-2 text-xs text-muted-foreground text-center italic">
-                          No values defined yet
+                          {{ 'products.no_values' | translate }}
                         </div>
                       } @else {
                         @for (val of attr.values; track val.id) {
@@ -455,7 +517,7 @@
         <div class="space-y-4">
           <div class="flex items-center justify-between border-b border-border pb-2">
             <h3 hlmH3 class="text-foreground uppercase text-muted-foreground">
-              Variants <span class="text-rose-500">*</span>
+              {{ 'products.section_variants' | translate }} <span class="text-rose-500">*</span>
             </h3>
             <button
               hlmBtn
@@ -465,7 +527,8 @@
               type="button"
               class="h-8 px-3"
             >
-              <ng-icon name="lucidePlus" size="14" class="me-1.5" /> Add Variant
+              <ng-icon name="lucidePlus" size="14" class="me-1.5" />
+              {{ 'products.add_variant' | translate }}
             </button>
           </div>
 
@@ -502,12 +565,12 @@
                           [buttonId]="'variant-' + vi + '-attr-' + attr.id"
                           class="w-full h-9 bg-transparent"
                         >
-                          <hlm-select-value [placeholder]="'Select ' + attr.name" />
+                          <hlm-select-value [placeholder]="'products.select_attr' | translate: { name: attr.name }" />
                         </hlm-select-trigger>
                         <hlm-select-content *hlmSelectPortal>
                           @if (attr.values.length === 0) {
                             <div class="p-2 text-xs text-muted-foreground text-center italic">
-                              No values defined yet
+                              {{ 'products.no_values' | translate }}
                             </div>
                           } @else {
                             @for (val of attr.values; track val.id) {
@@ -526,7 +589,7 @@
                   <label hlmLabel
                     [for]="'sku_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
-                    >SKU</label
+                    >{{ 'products.field_sku' | translate }}</label
                   >
                   <input
                     [id]="'sku_' + vi"
@@ -542,7 +605,7 @@
                   <label hlmLabel
                     [for]="'price_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
-                    >Price <span class="text-rose-500">*</span></label
+                    >{{ 'products.field_price' | translate }} <span class="text-rose-500">*</span></label
                   >
                   <input
                     [id]="'price_' + vi"
@@ -558,7 +621,7 @@
                   <label hlmLabel
                     [for]="'compare_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
-                    >Compare At</label
+                    >{{ 'products.field_compare_at' | translate }}</label
                   >
                   <input
                     [id]="'compare_' + vi"
@@ -574,7 +637,7 @@
                   <label hlmLabel
                     [for]="'stock_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
-                    >Stock</label
+                    >{{ 'products.field_stock' | translate }}</label
                   >
                   <input
                     [id]="'stock_' + vi"
@@ -590,7 +653,7 @@
                   <label hlmLabel
                     [for]="'lowStock_' + vi"
                     class="text-xs font-semibold mb-1.5 block text-muted-foreground"
-                    >Low Stock</label
+                    >{{ 'products.field_low_stock' | translate }}</label
                   >
                   <input
                     [id]="'lowStock_' + vi"
@@ -613,13 +676,13 @@
             hlmH3
             class="text-foreground uppercase text-muted-foreground border-b border-border pb-2"
           >
-            Optional Details
+            {{ 'products.section_optional' | translate }}
           </h3>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
               <label hlmLabel for="product-slug" class="text-sm font-semibold mb-2 block text-foreground"
-                >Slug</label
+                >{{ 'products.field_slug' | translate }}</label
               >
               <input
                 hlmInput
@@ -627,7 +690,7 @@
                 type="text"
                 [(ngModel)]="newProduct.slug"
                 class="w-full"
-                placeholder="Auto-generated if left empty"
+                [placeholder]="'products.field_slug_placeholder' | translate"
               />
             </div>
 
@@ -635,7 +698,7 @@
               <label hlmLabel
                 for="product-short-desc"
                 class="text-sm font-semibold mb-2 block text-foreground"
-                >Short Description</label
+                >{{ 'products.field_short_desc' | translate }}</label
               >
               <input
                 hlmInput
@@ -643,26 +706,26 @@
                 type="text"
                 [(ngModel)]="newProduct.shortDescription"
                 class="w-full"
-                placeholder="Max 300 characters..."
+                [placeholder]="'products.field_short_desc_placeholder' | translate"
               />
             </div>
 
             <div class="sm:col-span-2">
               <label hlmLabel for="product-desc" class="text-sm font-semibold mb-2 block text-foreground"
-                >Full Description</label
+                >{{ 'products.field_full_desc' | translate }}</label
               >
               <textarea hlmTextarea
                 id="product-desc"
                 [(ngModel)]="newProduct.description"
                 rows="4"
                 class="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                placeholder="Detailed description..."
+                [placeholder]="'products.field_full_desc_placeholder' | translate"
               ></textarea>
             </div>
 
             <div class="sm:col-span-2">
               <label hlmLabel for="product-keywords" class="text-sm font-semibold mb-2 block text-foreground"
-                >Search Keywords</label
+                >{{ 'products.field_keywords' | translate }}</label
               >
               <input
                 hlmInput
@@ -670,13 +733,13 @@
                 type="text"
                 [(ngModel)]="newProduct.searchKeywords"
                 class="w-full"
-                placeholder="e.g. abaya, elegant, black"
+                [placeholder]="'products.field_keywords_placeholder' | translate"
               />
             </div>
 
             <div>
               <label hlmLabel for="product-weight" class="text-sm font-semibold mb-2 block text-foreground"
-                >Weight (grams)</label
+                >{{ 'products.field_weight' | translate }}</label
               >
               <input
                 hlmInput
@@ -689,7 +752,9 @@
             </div>
 
             <div>
-              <span class="text-sm font-semibold mb-2 block text-foreground">Categories</span>
+              <span class="text-sm font-semibold mb-2 block text-foreground">
+                {{ 'products.field_categories' | translate }}
+              </span>
               <hlm-toggle-group
                 type="multiple"
                 [value]="newProduct.categoryIds"
@@ -710,14 +775,14 @@
                 }
               </hlm-toggle-group>
               <p hlmMuted class="mt-1">
-                Click to select or deselect categories
+                {{ 'products.categories_hint' | translate }}
               </p>
             </div>
 
             <div class="flex items-center gap-2 mt-4 sm:col-span-2">
               <hlm-checkbox inputId="product-featured" [(ngModel)]="newProduct.isFeatured" />
               <label hlmLabel for="product-featured" class="text-sm font-medium text-foreground"
-                >Feature this product on storefront</label
+                >{{ 'products.field_featured' | translate }}</label
               >
             </div>
           </div>
@@ -726,13 +791,15 @@
 
       <!-- Footer -->
       <hlm-sheet-footer class="flex-row justify-end gap-3 p-6 border-t border-border bg-muted/20">
-        <button hlmBtn variant="outline" (click)="toggleDrawer()">Cancel</button>
+        <button hlmBtn variant="outline" (click)="toggleDrawer()">
+          {{ 'products.btn_cancel' | translate }}
+        </button>
         <button hlmBtn (click)="submitProduct()" [disabled]="isSubmitting()">
           @if (isSubmitting()) {
             <hlm-spinner class="text-[16px] me-2" />
-            Saving...
+            {{ 'products.btn_saving' | translate }}
           } @else {
-            Save Product
+            {{ 'products.btn_save' | translate }}
           }
         </button>
       </hlm-sheet-footer>
@@ -742,7 +809,7 @@
 
 @if (isBulkDeleteModalOpen()) {
   <app-delete-confirm-dialog
-    [name]="selectedProductIds().length + ' selected products'"
+    [name]="'products.delete_confirm_label' | translate: { count: selectedProductIds().length }"
     (confirmed)="bulkDelete()"
     (canceled)="isBulkDeleteModalOpen.set(false)"
   ></app-delete-confirm-dialog>

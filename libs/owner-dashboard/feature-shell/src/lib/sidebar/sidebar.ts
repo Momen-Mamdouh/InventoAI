@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { HlmSidebarImports } from '@spartan/helm/sidebar';
 import {
@@ -26,7 +28,7 @@ import {
   lucideStore,
 } from '@ng-icons/lucide';
 import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
-import { HlmAvatar, HlmAvatarFallback } from '@spartan/helm/avatar';
+import { HlmAvatar, HlmAvatarFallback, HlmAvatarImage } from '@spartan/helm/avatar';
 import { TranslatePipe, LocaleService } from '@invento/shared-util-i18n';
 import { BrandLogo } from '@invento/shared-ui-brand-logo';
 import { toast } from '@spartan/helm/sonner';
@@ -50,6 +52,7 @@ interface NavItem {
     HlmDropdownMenuImports,
     HlmAvatar,
     HlmAvatarFallback,
+    HlmAvatarImage,
   ],
   providers: [
     provideIcons({
@@ -87,10 +90,11 @@ export class Sidebar {
 
   protected readonly navItems: NavItem[] = [
     { label: 'nav_home', icon: 'lucideLayoutDashboard', route: '/home' },
+    { label: 'nav_my_store', icon: 'lucideStore', route: '/my-stores' },
     { label: 'nav_products', icon: 'lucidePackage', route: '/products' },
     { label: 'nav_attributes', icon: 'lucideTags', route: '/attributes' },
     { label: 'nav_categories', icon: 'lucideFolderTree', route: '/categories' },
-    { label: 'AI Catalog', icon: 'lucideSparkles', route: '/catalog-ai' },
+    { label: 'nav_catalog_ai', icon: 'lucideSparkles', route: '/catalog-ai' },
     { label: 'nav_orders', icon: 'lucideShoppingCart', route: '/orders' },
     { label: 'nav_faq', icon: 'lucideMessageCircleQuestionMark', route: '/faq' },
     { label: 'nav_suppliers', icon: 'lucideTruck', route: '/suppliers' },
@@ -98,6 +102,28 @@ export class Sidebar {
     { label: 'nav_ai_advisor', icon: 'lucideBot', route: '/ai-advisor' },
     { label: 'nav_chatbot', icon: 'lucideBotMessageSquare', route: '/chatbot' },
   ];
+
+  private readonly router = inject(Router);
+  protected readonly currentUrl = signal<string>(this.router.url);
+
+  protected readonly isAccountRoute = computed(() => {
+    const url = this.currentUrl();
+    return (
+      url.startsWith('/profile') ||
+      url.startsWith('/security') ||
+      url.startsWith('/notifications') ||
+      url.startsWith('/billing')
+    );
+  });
+
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((e) => this.currentUrl.set(e.urlAfterRedirects));
+  }
 
   private readonly authService = inject(AuthService);
 

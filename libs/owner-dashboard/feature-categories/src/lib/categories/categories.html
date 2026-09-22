@@ -2,9 +2,9 @@
   <!-- Header & Breadcrumbs -->
   <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
     <div class="space-y-1">
-      <h1 hlmH1 class="text-foreground">Categories</h1>
+      <h1 hlmH1 class="text-foreground">{{ 'categories.title' | translate }}</h1>
       <p hlmMuted>
-        Organize how products are grouped and displayed in the storefront.
+        {{ 'categories.subtitle' | translate }}
       </p>
     </div>
 
@@ -16,27 +16,27 @@
         size="icon"
         (click)="onRefresh()"
         [disabled]="loading()"
-        aria-label="Refresh"
+        [attr.aria-label]="'categories.btn_refresh' | translate"
         class="bg-card hover:bg-accent shadow-sm"
       >
         <ng-icon name="lucideRefreshCw" size="16" [class.animate-spin]="loading()" />
       </button>
       <button hlmBtn class="flex items-center gap-2" (click)="onAdd()">
         <ng-icon name="lucidePlus" size="16" />
-        <span>Add Category</span>
+        <span>{{ 'categories.btn_add' | translate }}</span>
       </button>
     </div>
   </div>
 
   @if (error()) {
     <div hlmAlert variant="destructive" class="mb-4">
-      <ng-icon name="lucideTriangleAlert" />
-      <h4 hlmAlertTitle>Something went wrong</h4>
+      <ng-icon name="lucideTriangleAlert" size="16" />
+      <h4 hlmAlertTitle>{{ 'categories.error_title' | translate }}</h4>
       <p hlmAlertDescription class="flex sm:flex-row flex-col sm:items-center gap-2">
         <span>{{ error() }}</span>
         <button hlmBtn variant="outline" size="sm" (click)="onRefresh()" class="gap-1.5 w-fit">
-          <ng-icon name="lucideRefreshCw" size="0.85rem" />
-          Retry
+          <ng-icon name="lucideRefreshCw" size="14" />
+          {{ 'categories.btn_retry' | translate }}
         </button>
       </p>
     </div>
@@ -53,7 +53,7 @@
       <input
         hlmInput
         class="bg-card shadow-sm ps-9 border-border rounded-full focus:ring-2 focus:ring-primary/20 w-full h-9"
-        placeholder="Search categories…"
+        [placeholder]="'categories.search_placeholder' | translate"
         [value]="searchTerm()"
         (input)="onSearchInput($any($event.target).value)"
       />
@@ -67,12 +67,16 @@
         class="w-[150px]"
       >
         <hlm-select-trigger class="bg-card shadow-sm border-border h-9">
-          <hlm-select-value placeholder="Status" />
+          <hlm-select-value [placeholder]="'categories.filter_status_placeholder' | translate" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
-          <hlm-select-item value="all">All statuses</hlm-select-item>
-          <hlm-select-item value="published">Published</hlm-select-item>
-          <hlm-select-item value="unpublished">Unpublished</hlm-select-item>
+          <hlm-select-item value="all">{{ 'categories.filter_status_all' | translate }}</hlm-select-item>
+          <hlm-select-item value="published">{{
+            'categories.filter_status_published' | translate
+          }}</hlm-select-item>
+          <hlm-select-item value="unpublished">{{
+            'categories.filter_status_unpublished' | translate
+          }}</hlm-select-item>
         </hlm-select-content>
       </hlm-select>
 
@@ -83,12 +87,16 @@
         class="w-[150px]"
       >
         <hlm-select-trigger class="bg-card shadow-sm border-border h-9">
-          <hlm-select-value placeholder="Featured" />
+          <hlm-select-value [placeholder]="'categories.filter_featured_placeholder' | translate" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
-          <hlm-select-item value="all">All categories</hlm-select-item>
-          <hlm-select-item value="featured">Featured</hlm-select-item>
-          <hlm-select-item value="unfeatured">Not featured</hlm-select-item>
+          <hlm-select-item value="all">{{ 'categories.filter_featured_all' | translate }}</hlm-select-item>
+          <hlm-select-item value="featured">{{
+            'categories.filter_featured_featured' | translate
+          }}</hlm-select-item>
+          <hlm-select-item value="unfeatured">{{
+            'categories.filter_featured_unfeatured' | translate
+          }}</hlm-select-item>
         </hlm-select-content>
       </hlm-select>
     </div>
@@ -103,19 +111,49 @@
             class="bg-muted/30 border-border border-b font-semibold text-muted-foreground text-xs tracking-wider"
           >
             <th hlmTh class="w-10"></th>
-            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Category</th>
-            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">Status</th>
-            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-28">Position</th>
-            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-40">Actions</th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <app-table-header-cell
+                [label]="'categories.th_category' | translate"
+                type="search"
+                [searchValue]="colNameSearch()"
+                (searchChange)="colNameSearch.set($event)"
+              />
+            </th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-start whitespace-nowrap">
+              <app-table-header-cell
+                [label]="'categories.th_status' | translate"
+                type="filter"
+                [filterOptions]="statusOptions()"
+                [selectedFilter]="colStatusFilter()"
+                (filterChange)="colStatusFilter.set($event)"
+              />
+            </th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-28">
+              <app-table-header-cell
+                [label]="'categories.th_position' | translate"
+                type="sort"
+                align="end"
+                [sortDirection]="colPositionSort()"
+                (sortChange)="colPositionSort.set($event)"
+              />
+            </th>
+            <th hlmTh class="px-2.5 sm:px-3 md:px-4 py-3 text-end whitespace-nowrap w-40">
+              <app-table-header-cell
+                [label]="'categories.th_actions' | translate"
+                type="none"
+                align="end"
+              />
+            </th>
           </tr>
         </thead>
         <tbody
           hlmTBody
           cdkDropList
+          [cdkDropListDisabled]="isColumnFilteredOrSorted()"
           (cdkDropListDropped)="onDrop($event)"
           class="divide-y divide-border/60 text-sm"
         >
-          @if (loading() && categories().length === 0) {
+          @if (loading() && displayedCategories().length === 0) {
             @for (item of [1, 2, 3, 4, 5]; track item) {
               <tr hlmTr>
                 <td hlmTd class="px-2 md:px-3 align-middle w-10 text-center">
@@ -134,30 +172,30 @@
                   <hlm-skeleton class="h-5 w-20 rounded-full" />
                 </td>
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
-                  <hlm-skeleton class="h-4 w-8 ml-auto" />
+                  <hlm-skeleton class="h-4 w-8 ms-auto" />
                 </td>
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 text-end">
-                  <hlm-skeleton class="h-8 w-24 ml-auto" />
+                  <hlm-skeleton class="h-8 w-24 ms-auto" />
                 </td>
               </tr>
             }
-          } @else if (categories().length === 0) {
+          } @else if (displayedCategories().length === 0) {
             <tr hlmTr>
               <td hlmTd colspan="5" class="p-16 text-center">
                 <app-empty-state
                   icon="lucideFolderOpen"
-                  title="No categories found"
-                  description="Try adjusting your search or filters, or add a new category."
+                  [title]="'categories.empty_title' | translate"
+                  [description]="'categories.empty_desc' | translate"
                 >
                   <button hlmBtn (click)="onAdd()" class="gap-1.5 mt-2" variant="outline">
                     <ng-icon name="lucidePlus" size="16" />
-                    Add Category
+                    {{ 'categories.btn_add' | translate }}
                   </button>
                 </app-empty-state>
               </td>
             </tr>
           } @else {
-            @for (c of categories(); track c.id) {
+            @for (c of displayedCategories(); track c.id) {
               <tr hlmTr class="group hover:bg-muted/40 transition-colors cursor-move" cdkDrag>
                 <div
                   *cdkDragPreview
@@ -172,7 +210,7 @@
                     cdkDragHandle
                     class="cursor-grab active:cursor-grabbing hover:text-foreground inline-flex items-center justify-center p-1 rounded transition-colors"
                   >
-                    <ng-icon name="lucideGripVertical" size="18"></ng-icon>
+                    <ng-icon name="lucideGripVertical" size="18" />
                   </div>
                 </td>
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
@@ -205,16 +243,18 @@
                 <td hlmTd class="px-2.5 sm:px-3 md:px-4 py-3 whitespace-nowrap">
                   <div class="flex items-center gap-1.5">
                     @if (c.isPublished) {
-                      <span hlmBadge class="bg-success/10 text-success">Published</span>
+                      <span hlmBadge class="bg-success/10 text-success">
+                        {{ 'categories.status_published' | translate }}
+                      </span>
                     } @else {
-                      <span hlmBadge class="border-border bg-muted text-muted-foreground"
-                        >Unpublished</span
-                      >
+                      <span hlmBadge class="border-border bg-muted text-muted-foreground">
+                        {{ 'categories.status_unpublished' | translate }}
+                      </span>
                     }
                     @if (c.isFeatured) {
-                      <span hlmBadge class="border-primary/20 bg-primary/10 text-primary"
-                        >Featured</span
-                      >
+                      <span hlmBadge class="border-primary/20 bg-primary/10 text-primary">
+                        {{ 'categories.status_featured' | translate }}
+                      </span>
                     }
                   </div>
                 </td>
@@ -231,7 +271,8 @@
                       variant="ghost"
                       size="icon"
                       (click)="onEdit(c)"
-                      aria-label="Edit category"
+                      [hlmTooltip]="'categories.action_edit' | translate"
+                      [attr.aria-label]="'categories.action_edit' | translate"
                       class="h-8 w-8 text-muted-foreground hover:text-foreground"
                     >
                       <ng-icon name="lucidePencil" size="16" />
@@ -241,7 +282,8 @@
                       variant="ghost"
                       size="icon"
                       (click)="openDelete(c)"
-                      aria-label="Delete category"
+                      [hlmTooltip]="'categories.action_delete' | translate"
+                      [attr.aria-label]="'categories.action_delete' | translate"
                       class="h-8 w-8 text-muted-foreground hover:text-destructive"
                     >
                       <ng-icon name="lucideTrash2" size="16" />
@@ -258,7 +300,7 @@
     <!-- Pagination -->
     <div class="flex sm:flex-row flex-col justify-between items-center gap-3 p-4 border-t">
       <div class="flex items-center gap-2">
-        <span hlmMuted>Rows per page</span>
+        <span hlmMuted>{{ 'categories.rows_per_page' | translate }}</span>
         <hlm-select [value]="store.limit()" (valueChange)="onLimitChange($event)" class="w-[80px]">
           <hlm-select-trigger>
             <hlm-select-value />
@@ -270,7 +312,7 @@
             <hlm-select-item [value]="50">50</hlm-select-item>
           </hlm-select-content>
         </hlm-select>
-        <span hlmMuted>{{ store.total() }} total</span>
+        <span hlmMuted>{{ 'categories.total_count' | translate: { count: store.total() } }}</span>
       </div>
 
       <app-pagination
@@ -290,6 +332,7 @@
 
   @if (isDeleteOpen() && toDelete()) {
     <app-delete-confirm-dialog
+      title="categories.confirm_delete_title"
       [name]="toDelete()?.name || ''"
       (confirmed)="confirmDelete()"
       (canceled)="cancelDelete()"

@@ -10,13 +10,13 @@
         <ng-icon
           name="lucideSearch"
           size="16"
-          class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+          class="absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
         <input
           hlmInput
           type="text"
-          placeholder="Search name, email, or content..."
-          class="w-full pl-9 h-9 text-sm"
+          [placeholder]="'history.search_placeholder' | translate"
+          class="w-full ps-9 h-9 text-sm"
           name="search"
           [(ngModel)]="searchInput"
         />
@@ -28,15 +28,15 @@
         [value]="unansweredFilterValue()"
         (valueChange)="onUnansweredChange($event)"
         [itemToString]="unansweredItemToString"
-        class="w-36"
+        class="w-40"
       >
         <hlm-select-trigger class="bg-background shadow-2xs h-9 text-sm">
           <hlm-select-value />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
-          <hlm-select-item value="all">All Questions</hlm-select-item>
-          <hlm-select-item value="true">Has Unanswered</hlm-select-item>
-          <hlm-select-item value="false">Fully Answered</hlm-select-item>
+          <hlm-select-item value="all">{{ 'history.all_questions' | translate }}</hlm-select-item>
+          <hlm-select-item value="true">{{ 'history.has_unanswered' | translate }}</hlm-select-item>
+          <hlm-select-item value="false">{{ 'history.fully_answered' | translate }}</hlm-select-item>
         </hlm-select-content>
       </hlm-select>
 
@@ -51,9 +51,9 @@
           <hlm-select-value />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
-          <hlm-select-item value="all">All Users</hlm-select-item>
-          <hlm-select-item value="true">Signed In</hlm-select-item>
-          <hlm-select-item value="false">Guests</hlm-select-item>
+          <hlm-select-item value="all">{{ 'history.all_users' | translate }}</hlm-select-item>
+          <hlm-select-item value="true">{{ 'history.signed_in' | translate }}</hlm-select-item>
+          <hlm-select-item value="false">{{ 'history.guests' | translate }}</hlm-select-item>
         </hlm-select-content>
       </hlm-select>
     </div>
@@ -66,50 +66,119 @@
       class="h-9 gap-2 shrink-0 w-full sm:w-auto"
       (click)="loadSessions()"
     >
-      Refresh
+      {{ 'history.refresh' | translate }}
     </button>
   </div>
 
   <!-- Data Table -->
   <div hlmCard class="border-border rounded-xl shadow-xs overflow-hidden">
     @if (isLoading()) {
-      <div class="flex justify-center items-center py-12">
-        <hlm-spinner class="text-[32px] text-primary" />
+      <div hlmTableContainer class="overflow-x-auto">
+        <table hlmTable class="w-full text-sm text-start">
+          <thead hlmTHead class="text-xs text-muted-foreground bg-muted/40 uppercase border-b border-border/60">
+            <tr hlmTr>
+              <th hlmTh scope="col" class="px-6 py-3.5"><hlm-skeleton class="h-4 w-20" /></th>
+              <th hlmTh scope="col" class="px-6 py-3.5"><hlm-skeleton class="h-4 w-16" /></th>
+              <th hlmTh scope="col" class="px-6 py-3.5 hidden md:table-cell"><hlm-skeleton class="h-4 w-24" /></th>
+              <th hlmTh scope="col" class="px-6 py-3.5 hidden sm:table-cell"><hlm-skeleton class="h-4 w-16" /></th>
+              <th hlmTh scope="col" class="px-6 py-3.5 text-end"><hlm-skeleton class="h-4 w-12 ms-auto" /></th>
+            </tr>
+          </thead>
+          <tbody hlmTBody class="divide-y divide-border/60">
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <tr hlmTr>
+                <td hlmTd class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <hlm-skeleton class="w-8 h-8 rounded-full shrink-0" />
+                    <div class="space-y-1.5 flex-1">
+                      <hlm-skeleton class="h-4 w-28" />
+                      <hlm-skeleton class="h-3 w-36" />
+                    </div>
+                  </div>
+                </td>
+                <td hlmTd class="px-6 py-4"><hlm-skeleton class="h-4 w-12" /></td>
+                <td hlmTd class="px-6 py-4 hidden md:table-cell"><hlm-skeleton class="h-4 w-48" /></td>
+                <td hlmTd class="px-6 py-4 hidden sm:table-cell"><hlm-skeleton class="h-4 w-20" /></td>
+                <td hlmTd class="px-6 py-4 text-end"><hlm-skeleton class="h-8 w-8 rounded-lg ms-auto" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     } @else if (errorState()) {
       <div class="flex flex-col items-center justify-center py-16 text-center">
         <div
-          class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mb-4"
+          class="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mb-4"
         >
           <ng-icon name="lucideAlertCircle" size="24" />
         </div>
-        <h3 hlmH3>Failed to Load Sessions</h3>
+        <h3 hlmH3>{{ 'history.error_title' | translate }}</h3>
         <p hlmMuted class="max-w-md mt-2">
-          We couldn't retrieve the chat history. Please make sure the server is running.
+          {{ 'history.error_desc' | translate }}
         </p>
       </div>
     } @else {
       <div hlmTableContainer class="overflow-x-auto">
-        <table hlmTable class="w-full text-sm text-left">
-          <thead hlmTHead class="text-xs text-muted-foreground bg-muted/50 uppercase border-b border-border">
+        <table hlmTable class="w-full text-sm text-start">
+          <thead hlmTHead class="text-xs text-muted-foreground bg-muted/40 uppercase border-b border-border/60">
             <tr hlmTr>
-              <th hlmTh scope="col" class="px-6 py-3 font-medium">Customer</th>
-              <th hlmTh scope="col" class="px-6 py-3 font-medium">Messages</th>
-              <th hlmTh scope="col" class="px-6 py-3 font-medium hidden md:table-cell">Preview</th>
-              <th hlmTh scope="col" class="px-6 py-3 font-medium hidden sm:table-cell">Date</th>
-              <th hlmTh scope="col" class="px-6 py-3 font-medium text-right">Actions</th>
+              <th hlmTh scope="col" class="px-6 py-3.5 font-medium">
+                <app-table-header-cell
+                  type="search"
+                  [label]="'history.col_customer' | translate"
+                  [searchValue]="customerSearch()"
+                  (searchChange)="onCustomerSearchChange($event)"
+                />
+              </th>
+              <th hlmTh scope="col" class="px-6 py-3.5 font-medium">
+                <app-table-header-cell
+                  type="sort"
+                  [label]="'history.col_messages' | translate"
+                  [sortDirection]="sortColumn() === 'messages' ? sortDirection() : null"
+                  (sortChange)="onSortChange('messages', $event)"
+                />
+              </th>
+              <th hlmTh scope="col" class="px-6 py-3.5 font-medium hidden md:table-cell">
+                <app-table-header-cell
+                  type="none"
+                  [label]="'history.col_preview' | translate"
+                />
+              </th>
+              <th hlmTh scope="col" class="px-6 py-3.5 font-medium hidden sm:table-cell">
+                <app-table-header-cell
+                  type="sort"
+                  [label]="'history.col_date' | translate"
+                  [sortDirection]="sortColumn() === 'date' ? sortDirection() : null"
+                  (sortChange)="onSortChange('date', $event)"
+                />
+              </th>
+              <th hlmTh scope="col" class="px-6 py-3.5 font-medium text-end">
+                <app-table-header-cell
+                  type="none"
+                  align="end"
+                  [label]="'history.col_actions' | translate"
+                />
+              </th>
             </tr>
           </thead>
-          <tbody hlmTBody class="divide-y divide-border">
-            @if (data()?.items?.length === 0) {
+          <tbody hlmTBody class="divide-y divide-border/60">
+            @if (displayedSessions().length === 0) {
               <tr hlmTr>
                 <td hlmTd colspan="5" class="px-6 py-12 text-center text-muted-foreground">
-                  <p hlmSmall>No chat sessions found matching your filters.</p>
+                  <app-empty-state
+                    icon="lucideMessageSquare"
+                    [title]="'history.empty_title' | translate"
+                    [description]="
+                      (customerSearch() || search())
+                        ? ('history.empty_search_desc' | translate)
+                        : ('history.empty_desc' | translate)
+                    "
+                  />
                 </td>
               </tr>
             } @else {
-              @for (session of data()?.items; track session.id) {
-                <tr hlmTr class="hover:bg-muted/50 transition-colors">
+              @for (session of displayedSessions(); track session.id) {
+                <tr hlmTr class="hover:bg-muted/40 transition-colors">
                   <td hlmTd class="px-6 py-4">
                     <div class="flex items-center gap-3">
                       <div
@@ -119,18 +188,19 @@
                       </div>
                       <div>
                         <div class="font-medium flex items-center gap-2">
-                          {{ session.customerName || 'Guest User' }}
+                          {{ session.customerName || ('history.badge_guest' | translate) }}
                           @if (!session.isSignedIn) {
                             <span
                               hlmBadge
                               variant="secondary"
                               class="text-[10px] font-normal tracking-wide uppercase"
-                              >Guest</span
                             >
+                              {{ 'history.badge_guest' | translate }}
+                            </span>
                           }
                         </div>
                         <div class="text-xs text-muted-foreground">
-                          {{ session.customerEmail || 'No email provided' }}
+                          {{ session.customerEmail || '—' }}
                         </div>
                       </div>
                     </div>
@@ -154,24 +224,24 @@
                     class="px-6 py-4 hidden md:table-cell max-w-xs truncate text-muted-foreground"
                     [title]="session.preview"
                   >
-                    {{ session.preview || 'No preview available' }}
+                    {{ session.preview || '—' }}
                   </td>
                   <td
                     hlmTd
-                    class="px-6 py-4 hidden sm:table-cell whitespace-nowrap text-muted-foreground"
+                    class="px-6 py-4 whitespace-nowrap text-muted-foreground text-xs hidden sm:table-cell"
                   >
-                    {{ session.createdAt | date: 'mediumDate' }}
+                    {{ (session.lastMessageAt || session.createdAt) | date: 'medium' }}
                   </td>
-                  <td hlmTd class="px-6 py-4 text-right">
+                  <td hlmTd class="px-6 py-4 text-end whitespace-nowrap">
                     <a
                       [routerLink]="['/chatbot/history', session.id]"
                       hlmBtn
                       variant="ghost"
-                      size="sm"
-                      class="h-8 gap-2 text-primary hover:text-primary"
+                      size="icon"
+                      class="h-9 w-9 text-muted-foreground hover:text-foreground cursor-pointer"
+                      [attr.aria-label]="'history.col_actions' | translate"
                     >
-                      <ng-icon name="lucideEye" size="14" />
-                      View
+                      <ng-icon name="lucideEye" size="16" />
                     </a>
                   </td>
                 </tr>
@@ -182,18 +252,14 @@
       </div>
 
       <!-- Pagination -->
-      @if (data(); as d) {
-        @if (d.totalPages > 1) {
-          <div class="p-4 border-t border-border">
-            <app-pagination
-              [currentPage]="d.page"
-              [totalPages]="d.totalPages"
-              [totalItems]="d.total"
-              [pageSize]="d.limit"
-              (pageChange)="changePage($event)"
-            />
-          </div>
-        }
+      @if (data() && data()!.totalPages > 1) {
+        <div class="p-4 border-t border-border/60 bg-card">
+          <app-pagination
+            [currentPage]="page()"
+            [totalPages]="data()!.totalPages"
+            (pageChange)="changePage($event)"
+          />
+        </div>
       }
     }
   </div>

@@ -64,6 +64,25 @@ export interface StoreNotFoundResponse {
   statusCode: number;
 }
 
+export interface MyStoreResponse {
+  id: string;
+  ownerId: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  logoUrl: string | null;
+  heroImageUrl: string | null;
+  heroHeadline: string | null;
+  heroSubtitle: string | null;
+  heroCtaLabel: string | null;
+  heroCtaHref: string | null;
+  status: 'draft' | 'live' | string;
+  locale: string;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -80,6 +99,14 @@ export class StoreService {
    */
   getStore(slug: string): Observable<StoreResponse> {
     return this.http.get<StoreResponse>(`${this.apiBaseUrl}/site/${encodeURIComponent(slug)}`);
+  }
+
+  /**
+   * Authenticated endpoint to fetch the store owned by current user.
+   * GET /stores/me — Requires Auth header.
+   */
+  getMyStore(): Observable<MyStoreResponse> {
+    return this.http.get<MyStoreResponse>(`${this.apiBaseUrl}/stores/me`);
   }
 
   getHero(): Observable<HeroSectionResponse> {

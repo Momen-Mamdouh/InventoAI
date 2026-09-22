@@ -1,69 +1,113 @@
 <div class="relative flex flex-col w-full min-h-full overflow-x-hidden">
-  @if (isLoadingStore()) {
-    <!-- Loading Skeleton State -->
-    <div class="p-6 md:p-8 space-y-6">
-      <div class="flex justify-between items-center">
-        <div class="space-y-2">
-          <hlm-skeleton class="h-8 w-64 rounded-lg" />
-          <hlm-skeleton class="h-4 w-96 rounded-lg" />
-        </div>
-        <hlm-skeleton class="h-6 w-20 rounded-full" />
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 pt-6">
-        <hlm-skeleton class="h-[500px] w-full rounded-xl lg:col-span-1" />
-        <hlm-skeleton class="h-[500px] w-full rounded-xl lg:col-span-3" />
-      </div>
-    </div>
-  } @else {
-    <input
-      #fileInput
-      id="hero-file-input"
-      type="file"
-      accept="image/*"
-      class="hidden"
-      (change)="onFileSelected($event)"
-    />
+  <input
+    #fileInput
+    id="hero-file-input"
+    type="file"
+    accept="image/*"
+    class="hidden"
+    (change)="onFileSelected($event)"
+  />
 
-    <!-- Top Bar -->
-    <div class="p-4 md:p-6 lg:p-8 pb-0 md:pb-0 lg:pb-0">
-      <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
-        <div class="space-y-1">
-          <h1 hlmH1 class="text-foreground">
-            {{ 'home.editor_title' | translate }}
-          </h1>
-          <p hlmMuted>
-            {{ 'home.editor_subtitle' | translate }}
-            <a
-              [href]="storeUrl()"
-              target="_blank"
-              class="font-medium text-primary hover:underline"
-              >{{ storeUrl() }}</a
-            >
-          </p>
-        </div>
-        <div class="flex items-center self-start sm:self-auto gap-3">
-          <span class="flex items-center gap-1.5 font-medium text-green-600 text-sm">
-            <span class="bg-green-500 rounded-full w-2 h-2 animate-pulse"></span>
+  <!-- Top Bar -->
+  <div class="p-4 md:p-6 lg:p-8 pb-0">
+    <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
+      <div class="space-y-1">
+        <h1 hlmH1 class="text-foreground">
+          {{ 'home.editor_title' | translate }}
+        </h1>
+        <p hlmMuted>
+          {{ 'home.editor_subtitle' | translate }}
+          <a
+            [href]="storeUrl()"
+            target="_blank"
+            class="font-medium text-primary hover:underline"
+            >{{ storeUrl() }}</a
+          >
+        </p>
+      </div>
+      <div class="flex items-center self-start sm:self-auto gap-3">
+        <span
+          class="flex items-center gap-1.5 font-medium text-sm"
+          [class.text-green-600]="isSaved()"
+          [class.text-amber-600]="!isSaved()"
+        >
+          <span
+            class="rounded-full w-2 h-2"
+            [class.bg-green-500]="isSaved()"
+            [class.bg-amber-500]="!isSaved()"
+            [class.animate-pulse]="isSaved()"
+          ></span>
+          @if (isSaved()) {
             {{ 'home.status_live' | translate }}
-          </span>
+            @if (hero.lastSavedAt()) {
+              <span class="text-muted-foreground text-xs">
+                &middot; {{ hero.lastSavedAt() | date:'shortTime' }}
+              </span>
+            }
+          } @else {
+            {{ 'home.unsaved_changes' | translate }}
+          }
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Top Action Bar (always visible, no scrolling needed) -->
+  @if (!isFullScreenPreview()) {
+    <div class="sticky top-0 z-50 mx-4 mt-2">
+      <div
+        class="flex items-center justify-between bg-background/80 backdrop-blur-xl shadow-lg shadow-black/5 border border-border/50 rounded-xl px-4 py-2.5"
+      >
+        <button
+          type="button"
+          hlmBtn
+          variant="ghost"
+          class="text-muted-foreground text-xs"
+          (click)="discard()"
+        >
+          <span>Discard</span>
+          <kbd class="ms-2 text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono">Esc</kbd>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            hlmBtn
+            variant="outline"
+            class="text-xs"
+            (click)="openLive()"
+          >
+            <ng-icon name="lucideExternalLink" size="12" />
+            <span class="ms-1">Live Site</span>
+          </button>
+          <button
+            type="button"
+            hlmBtn
+            class="text-xs"
+            [disabled]="isSaved() || hero.isSaving()"
+            (click)="saveChanges()"
+          >
+            @if (hero.isSaving()) {
+              <hlm-spinner class="text-[14px]" />
+              <span class="ms-1">Saving...</span>
+            } @else {
+              <ng-icon name="lucideCheck" size="14" />
+              <span class="ms-1">{{ 'home.save_publish' | translate }}</span>
+              <kbd class="ms-1.5 text-[10px] bg-primary/20 px-1.5 py-0.5 rounded font-mono">Ctrl+S</kbd>
+            }
+          </button>
         </div>
       </div>
     </div>
+  }
 
-    <!-- Main Split -->
-    <div class="flex lg:flex-row flex-col flex-1 w-full min-h-0 mt-6 border-t border-border">
-      <!-- Left Editor -->
+  <!-- Main Split -->
+  <div class="flex lg:flex-row flex-col flex-1 w-full min-h-0 mt-2 border-t border-border">
+    <!-- Left Editor Panel (hidden in full-screen preview) -->
+    @if (!isFullScreenPreview()) {
       <div
-        class="flex-shrink-0 space-y-4 bg-muted/20 p-3 sm:p-5 border-border lg:border-e border-b lg:border-b-0 w-full lg:w-[380px] max-h-[400px] lg:max-h-none overflow-y-auto"
+        class="flex-shrink-0 space-y-4 bg-muted/20 p-3 sm:p-5 border-border lg:border-e border-b lg:border-b-0 w-full lg:w-[380px] overflow-y-auto"
       >
-        @if (isLoadingStore()) {
-          <div class="space-y-4">
-            <hlm-skeleton class="h-[280px] w-full rounded-xl" />
-            <hlm-skeleton class="h-[120px] w-full rounded-xl" />
-            <hlm-skeleton class="h-[180px] w-full rounded-xl" />
-          </div>
-        }
-
         @if (storeLoadError()) {
           <div hlmAlert variant="destructive" class="bg-destructive/10 rounded-xl text-xs font-medium">
             <ng-icon name="lucideAlertTriangle" size="16" />
@@ -97,49 +141,102 @@
                 {{ 'home.hero_image' | translate }}
               </p>
 
-              <!-- Fixed accessibility issue on click container -->
-              <button
-                type="button"
-                class="group block relative p-0 border-2 border-primary/40 hover:border-primary border-dashed rounded-xl w-full overflow-hidden text-start transition-colors duration-150 cursor-pointer"
-                (click)="fileInput.click()"
-              >
-                @if (heroImageUrl()) {
-                  <img
-                    [src]="heroImageUrl()"
-                    (error)="fallbackHeroImg()"
-                    alt="Hero banner"
-                    class="w-full h-[120px] sm:h-[140px] object-cover"
-                  />
-                } @else {
+              <!-- Image Preview with Focal Point Picker -->
+              @if (hero.imageUrl()) {
+                <div class="relative group">
                   <div
-                    class="w-full h-[120px] sm:h-[140px] bg-primary/10 flex flex-col items-center justify-center gap-1.5"
+                    data-focal-container
+                    class="relative w-full aspect-video overflow-hidden rounded-xl border-2 border-border cursor-crosshair select-none"
+                    (mousedown)="onFocalPointMouseDown($event)"
+                    (touchstart)="onFocalPointTouchStart($event)"
+                  >
+                    <img
+                      [src]="hero.imageUrl()"
+                      alt="Hero banner"
+                      class="w-full h-full object-cover"
+                      [style.object-position]="objectPosition()"
+                    />
+                    <!-- Focal Point Crosshair -->
+                    <div
+                      class="absolute pointer-events-none transition-transform duration-100"
+                      [style.left.%]="focalPoint().x"
+                      [style.top.%]="focalPoint().y"
+                      [style.transform]="'translate(-50%, -50%)'"
+                    >
+                      <ng-icon name="lucideCrosshair" size="20" class="text-white drop-shadow-lg" />
+                      <div class="absolute inset-0 -m-2 rounded-full border-2 border-white/60"></div>
+                    </div>
+                    <!-- Hover overlay hint -->
+                    <div
+                      class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center"
+                    >
+                      <span
+                        class="opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs font-medium bg-black/50 px-2 py-1 rounded"
+                      >
+                        {{ 'home.drag_to_adjust' | translate }}
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Reset Button -->
+                  <button
+                    type="button"
+                    hlmBtn
+                    variant="ghost"
+                    size="sm"
+                    class="absolute top-2 end-2 h-6 px-2 text-[10px] bg-background/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                    (click)="resetFocalPoint()"
+                  >
+                    <ng-icon name="lucideUndo2" size="12" />
+                    <span class="ms-1">{{ 'home.reset_position' | translate }}</span>
+                  </button>
+                </div>
+              } @else {
+                <button
+                  type="button"
+                  class="group block relative p-0 border-2 border-primary/40 hover:border-primary border-dashed rounded-xl w-full overflow-hidden text-start transition-colors duration-150 cursor-pointer"
+                  (click)="fileInput.click()"
+                >
+                  <div
+                    class="w-full aspect-video bg-primary/10 flex flex-col items-center justify-center gap-2"
                   >
                     <div
-                      class="flex justify-center items-center bg-primary/20 rounded-full w-9 sm:w-10 h-9 sm:h-10"
+                      class="flex justify-center items-center bg-primary/20 rounded-full w-10 h-10"
                     >
-                      <ng-icon name="lucideImage" size="18" class="text-primary" />
+                      <ng-icon name="lucideImage" size="22" class="text-primary" />
                     </div>
-                    <span class="text-[11px] font-medium text-muted-foreground">{{
+                    <span class="text-xs font-medium text-muted-foreground">{{
                       'home.no_image_set' | translate
                     }}</span>
                   </div>
-                }
-                <div
-                  class="absolute inset-0 flex flex-col justify-center items-center gap-2 bg-white/60 dark:bg-black/60 group-hover:bg-white/70 dark:group-hover:bg-black/70 transition-colors duration-150"
-                  [ngClass]="
-                    heroImageUrl() ? 'opacity-0 group-hover:opacity-100 transition-opacity' : ''
-                  "
-                >
                   <div
-                    class="flex justify-center items-center bg-primary/10 group-hover:bg-primary/20 rounded-full w-9 sm:w-10 h-9 sm:h-10 transition-colors duration-150"
+                    class="absolute inset-0 flex flex-col justify-center items-center gap-2 bg-white/60 dark:bg-black/60 group-hover:bg-white/70 dark:group-hover:bg-black/70 transition-colors duration-150"
                   >
-                    <ng-icon name="lucideUpload" size="18" class="text-primary" />
+                    <div
+                      class="flex justify-center items-center bg-primary/10 group-hover:bg-primary/20 rounded-full w-10 h-10 transition-colors duration-150"
+                    >
+                      <ng-icon name="lucideUpload" size="22" class="text-primary" />
+                    </div>
+                    <span class="font-semibold text-primary text-xs tracking-wide">{{
+                      'home.upload_image' | translate
+                    }}</span>
                   </div>
-                  <span class="font-semibold text-primary text-xs tracking-wide">{{
-                    (heroImageUrl() ? 'home.replace_image' : 'home.upload_image') | translate
-                  }}</span>
-                </div>
-              </button>
+                </button>
+              }
+
+              <!-- Change Image Button (when image exists) -->
+              @if (hero.imageUrl()) {
+                <button
+                  type="button"
+                  hlmBtn
+                  variant="outline"
+                  size="sm"
+                  class="w-full text-xs"
+                  (click)="fileInput.click()"
+                >
+                  <ng-icon name="lucideUpload" size="14" />
+                  <span class="ms-1">{{ 'home.replace_image' | translate }}</span>
+                </button>
+              }
             </div>
 
             <div hlmSeparator></div>
@@ -157,10 +254,10 @@
                   hlmInput
                   id="hero-title-input"
                   type="text"
-                  class="flex bg-transparent shadow-xs px-3 py-1 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-9 placeholder:text-muted-foreground text-xs transition-colors"
-                  [value]="heroTitle()"
+                  class="w-full"
+                  [value]="hero.title()"
                   [placeholder]="'home.headline_placeholder' | translate"
-                  (input)="onHeroTitleChange($any($event.target).value)"
+                  (input)="hero.setField('title', $any($event.target).value)"
                 />
               </div>
 
@@ -171,10 +268,10 @@
                 <textarea
                   hlmTextarea
                   id="hero-subtitle-input"
-                  class="flex bg-transparent shadow-xs px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full min-h-[70px] placeholder:text-muted-foreground text-xs transition-colors resize-none"
-                  [value]="heroSubtitle()"
+                  class="w-full min-h-[70px] resize-none"
+                  [value]="hero.subtitle()"
                   [placeholder]="'home.subtitle_placeholder' | translate"
-                  (input)="onHeroSubtitleChange($any($event.target).value)"
+                  (input)="hero.setField('subtitle', $any($event.target).value)"
                 ></textarea>
               </div>
 
@@ -186,10 +283,10 @@
                   hlmInput
                   id="hero-cta-label-input"
                   type="text"
-                  class="flex bg-transparent shadow-xs px-3 py-1 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-9 placeholder:text-muted-foreground text-xs transition-colors"
-                  [value]="heroCtaLabel()"
+                  class="w-full"
+                  [value]="hero.ctaLabel()"
                   [placeholder]="'home.button_label_placeholder' | translate"
-                  (input)="onHeroCtaLabelChange($any($event.target).value)"
+                  (input)="hero.setField('ctaLabel', $any($event.target).value)"
                 />
               </div>
 
@@ -201,365 +298,276 @@
                   hlmInput
                   id="hero-cta-href-input"
                   type="url"
+                  class="w-full"
                   [placeholder]="'home.button_link_placeholder' | translate"
-                  class="flex bg-transparent shadow-xs px-3 py-1 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-9 placeholder:text-muted-foreground text-xs transition-colors"
-                  [value]="heroCtaHref()"
-                  (input)="onHeroCtaHrefChange($any($event.target).value)"
+                  [value]="hero.ctaHref()"
+                  (input)="hero.setField('ctaHref', $any($event.target).value)"
                 />
               </div>
 
-              @if (heroSaveError()) {
+              @if (hero.error()) {
                 <div hlmAlert variant="destructive" class="bg-destructive/10 text-xs">
-                  <p hlmAlertDescription>{{ heroSaveError() }}</p>
+                  <p hlmAlertDescription>{{ hero.error() }}</p>
                 </div>
               }
             </div>
           </div>
         </div>
+      </div>
+    }
 
-        <!-- Featured Products Editor Card -->
-        <!-- <div
-          class="bg-card shadow-xs border border-border rounded-xl overflow-hidden text-card-foreground"
-        >
-          <div class="flex items-center gap-3 p-3 sm:p-5 pb-3">
-            <div
-              class="flex flex-shrink-0 justify-center items-center bg-primary/10 rounded-xl w-9 sm:w-10 h-9 sm:h-10"
-            >
-              <ng-icon name="lucideCheckCircle2" size="18" class="text-primary" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-xs sm:text-sm truncate">
-                {{ 'home.featured_products' | translate }}
-              </h3>
-              <p class="mt-0.5 text-[11px] text-muted-foreground sm:text-xs truncate">
-                {{ 'home.featured_products_desc' | translate }}
-              </p>
-            </div>
-            <span
-              class="inline-flex items-center bg-secondary px-2 py-0.5 rounded-full font-semibold text-[11px] text-secondary-foreground"
-            >
-              {{ selectedProducts().length }} {{ 'home.selected' | translate }}
-            </span>
+    <!-- Right Preview Section -->
+    <div class="flex flex-col flex-1 bg-muted/10 min-w-0 overflow-hidden">
+      <!-- Toolbar -->
+      <div
+        class="flex flex-wrap justify-between items-center gap-2 bg-background px-3 sm:px-4 py-2 border-border border-b"
+      >
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="hidden sm:flex flex-shrink-0 items-center gap-1.5 me-1">
+            <span class="bg-red-400 rounded-full w-2.5 h-2.5"></span>
+            <span class="bg-yellow-400 rounded-full w-2.5 h-2.5"></span>
+            <span class="bg-green-400 rounded-full w-2.5 h-2.5"></span>
           </div>
-          <div class="space-y-2 px-3 sm:px-5 pb-3">
-            <label
-              for="featured-title-input"
-              class="block font-semibold text-[11px] text-muted-foreground uppercase tracking-wider"
-              >{{ 'home.section_title' | translate }}</label
-            >
-            <input
-              id="featured-title-input"
-              type="text"
-              class="flex bg-transparent shadow-xs px-3 py-1 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full h-9 placeholder:text-muted-foreground text-xs transition-colors"
-              [value]="featuredTitle()"
-              (input)="onFeaturedTitleChange($any($event.target).value)"
-            />
+          <div
+            class="flex items-center gap-1.5 bg-muted px-2.5 py-1 rounded-lg w-28 sm:w-48 min-w-0 text-[11px] text-muted-foreground sm:text-xs"
+          >
+            <ng-icon name="lucideGlobe" size="11" class="flex-shrink-0" />
+            <span class="truncate">{{ storeDomain() }}</span>
           </div>
-          <div hlmSeparator class="mx-3 sm:mx-5"></div>
+          <!-- Undo/Redo -->
+          <div class="flex items-center gap-0.5">
+            <button
+              type="button"
+              hlmBtn
+              variant="ghost"
+              size="icon-xs"
+              class="w-7 h-7"
+              [disabled]="!hero.canUndo()"
+              (click)="undo()"
+            >
+              <ng-icon name="lucideUndo2" size="14" />
+            </button>
+            <button
+              type="button"
+              hlmBtn
+              variant="ghost"
+              size="icon-xs"
+              class="w-7 h-7"
+              [disabled]="!hero.canRedo()"
+              (click)="redo()"
+            >
+              <ng-icon name="lucideRedo2" size="14" />
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 ms-auto">
+          <!-- View Mode Toggle (3-way) -->
+          <div class="flex items-center gap-1 border border-input rounded-md p-0.5 bg-muted/30">
+            <button
+              type="button"
+              hlmBtn
+              [variant]="viewMode() === 'desktop' ? 'default' : 'ghost'"
+              size="sm"
+              class="h-7 px-2.5 text-xs"
+              (click)="viewMode.set('desktop')"
+            >
+              <ng-icon name="lucideMonitor" size="13" />
+              <span class="hidden sm:inline ms-1">Desktop</span>
+            </button>
+            <button
+              type="button"
+              hlmBtn
+              [variant]="viewMode() === 'tablet' ? 'default' : 'ghost'"
+              size="sm"
+              class="h-7 px-2.5 text-xs"
+              (click)="viewMode.set('tablet')"
+            >
+              <ng-icon name="lucideTablet" size="13" />
+              <span class="hidden sm:inline ms-1">Tablet</span>
+            </button>
+            <button
+              type="button"
+              hlmBtn
+              [variant]="viewMode() === 'mobile' ? 'default' : 'ghost'"
+              size="sm"
+              class="h-7 px-2.5 text-xs"
+              (click)="viewMode.set('mobile')"
+            >
+              <ng-icon name="lucideSmartphone" size="13" />
+              <span class="hidden sm:inline ms-1">Mobile</span>
+            </button>
+          </div>
+          <div hlmSeparator orientation="vertical" class="mx-0.5 h-4"></div>
+          <!-- Theme Toggle -->
           <button
             type="button"
-            class="flex justify-between items-center hover:bg-muted/50 px-3 sm:px-5 py-3 w-full font-medium text-xs sm:text-sm transition-colors cursor-pointer"
-            (click)="productPickerOpen.set(!productPickerOpen())"
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            class="h-7 px-2.5 text-xs"
+            [title]="'home.preview_theme' | translate"
+            (click)="togglePreviewTheme()"
           >
-            <span class="flex items-center gap-2">
-              <ng-icon name="lucidePackage" size="15" class="text-muted-foreground" />
-              {{ 'home.select_products' | translate }}
-            </span>
             <ng-icon
-              [name]="productPickerOpen() ? 'lucideChevronUp' : 'lucideChevronDown'"
-              size="15"
-              class="text-muted-foreground"
+              [name]="previewThemeMode() === 'dark' ? 'lucideSun' : 'lucideMoon'"
+              size="13"
             />
+            <span class="hidden sm:inline ms-1">{{
+              (previewThemeMode() === 'dark' ? 'home.light' : 'home.dark') | translate
+            }}</span>
           </button>
-          @if (productPickerOpen()) {
-            <div class="space-y-1 pb-3">
-              <div hlmSeparator class="mx-3 sm:mx-5 mb-2"></div>
-              @for (product of products(); track product.id) {
-                <label
-                  [for]="'product-checkbox-' + product.id"
-                  class="flex items-center gap-2.5 hover:bg-muted/40 mx-1.5 px-2.5 sm:px-4 py-2.5 rounded-lg transition-colors cursor-pointer"
-                  [ngClass]="product.selected ? 'bg-primary/5' : ''"
-                >
-                  <span
-                    class="flex flex-shrink-0 justify-center items-center border-2 rounded-md w-4 sm:w-5 h-4 sm:h-5 transition-colors"
-                    [ngClass]="product.selected ? 'bg-primary border-primary' : 'border-border'"
-                  >
-                    @if (product.selected) {
-                      <ng-icon name="lucideCheck" size="10" class="text-primary-foreground" />
-                    }
-                  </span>
-                  <img
-                    [src]="product.img"
-                    (error)="fallbackImg($event)"
-                    [alt]="product.name"
-                    class="flex-shrink-0 rounded-lg w-8 sm:w-10 h-8 sm:h-10 object-cover"
-                  />
-                  <div class="flex-1 min-w-0">
-                    <p class="font-medium text-xs truncate">{{ product.name }}</p>
-                    <p class="text-[11px] text-muted-foreground">{{ product.price }}</p>
-                  </div>
-                  <input
-                    [id]="'product-checkbox-' + product.id"
-                    type="checkbox"
-                    class="sr-only"
-                    [checked]="product.selected"
-                    (change)="toggleProduct(product.id)"
-                  />
-                </label>
-              }
-            </div>
-          } @else {
-            <div class="px-3 sm:px-5 pt-1 pb-3">
-              @if (selectedProducts().length > 0) {
-                <div class="flex flex-wrap gap-1.5">
-                  @for (product of selectedProducts(); track product.id) {
-                    <div class="flex items-center gap-1 bg-muted/60 px-2 py-1 rounded-lg">
-                      <img
-                        [src]="product.img"
-                        (error)="fallbackImg($event)"
-                        [alt]="product.name"
-                        class="rounded w-4 h-4 object-cover"
-                      />
-                      <span class="max-w-[75px] font-medium text-[10px] truncate">{{
-                        product.name
-                      }}</span>
-                    </div>
-                  }
-                </div>
-              } @else {
-                <p class="text-muted-foreground text-xs italic">
-                  {{ 'home.no_products' | translate }}
-                </p>
-              }
-            </div>
-          }
-        </div> -->
+          <div hlmSeparator orientation="vertical" class="mx-0.5 h-4"></div>
+          <!-- Full-screen Preview Toggle -->
+          <button
+            type="button"
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            class="h-7 px-2.5 text-xs"
+            [title]="isFullScreenPreview() ? 'Exit full-screen preview' : 'Full-screen preview'"
+            (click)="toggleFullScreenPreview()"
+          >
+            <ng-icon [name]="isFullScreenPreview() ? 'lucideMinimize' : 'lucideExpand'" size="13" />
+            <span class="hidden sm:inline ms-1">{{
+              isFullScreenPreview() ? 'Exit' : 'Focus'
+            }}</span>
+          </button>
+          <div hlmSeparator orientation="vertical" class="mx-0.5 h-4"></div>
+          <!-- Open Live -->
+          <button
+            type="button"
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            class="h-7 px-2.5 text-xs"
+            (click)="openLive()"
+          >
+            <ng-icon name="lucideExternalLink" size="12" />
+            <span class="hidden sm:inline ms-1">Open live</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Right Preview Section -->
-      <div class="flex flex-col flex-1 bg-muted/10 min-w-0 overflow-hidden">
-        <!-- Toolbar -->
-        <div
-          class="flex flex-wrap justify-between items-center gap-2 bg-background px-3 sm:px-4 py-2 border-border border-b"
-        >
-          <div class="flex items-center gap-2 min-w-0">
-            <div class="hidden sm:flex flex-shrink-0 items-center gap-1.5 me-1">
-              <span class="bg-red-400 rounded-full w-2.5 h-2.5"></span>
-              <span class="bg-yellow-400 rounded-full w-2.5 h-2.5"></span>
-              <span class="bg-green-400 rounded-full w-2.5 h-2.5"></span>
-            </div>
+      <!-- Preview Screen Wrapper -->
+      <div class="flex-1 p-1.5 sm:p-6 overflow-y-auto">
+        <div class="flex justify-center w-full">
+          <!-- Preview container: fills at desktop, scaled at tablet/mobile -->
+          <div
+            class="preview-container bg-background shadow-xl border border-border rounded-2xl overflow-hidden transition-all duration-300"
+            [style.max-width]="viewModeMaxWidth()"
+            [class.dark]="themeClass()"
+            [ngStyle]="themeStyles()"
+          >
+            <!-- Inner wrapper for scaled view modes -->
             <div
-              class="flex items-center gap-1.5 bg-muted px-2.5 py-1 rounded-lg w-28 sm:w-48 min-w-0 text-[11px] text-muted-foreground sm:text-xs"
+              class="preview-inner"
+              [style.width]="previewInnerWidth()"
+              [style.transform]="previewTransform()"
+              [style.transform-origin]="'top center'"
             >
-              <ng-icon name="lucideGlobe" size="11" class="flex-shrink-0" />
-              <span class="truncate">{{ storeDomain() }}</span>
-            </div>
-          </div>
-          <div class="flex items-center gap-1 ms-auto">
-            <hlm-toggle-group
-              type="single"
-              [nullable]="false"
-              [value]="viewMode()"
-              (valueChange)="onViewModeChange($event)"
-              class="flex items-center gap-1"
+            <!-- STORE NAVBAR -->
+            <nav
+              class="top-0 z-20 sticky flex justify-between items-center bg-background/95 backdrop-blur-xs px-3 sm:px-5 py-2.5 sm:py-3 border-border border-b"
             >
-              <button
-                hlmToggleGroupItem
-                value="desktop"
-                class="inline-flex justify-center items-center gap-1 px-2.5 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] sm:text-xs transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground text-muted-foreground data-[state=on]:bg-background data-[state=on]:border data-[state=on]:border-input data-[state=on]:shadow-xs data-[state=on]:text-foreground"
-              >
-                <ng-icon name="lucideMonitor" size="13" />
-                <span class="hidden sm:inline">Desktop</span>
-              </button>
-              <button
-                hlmToggleGroupItem
-                value="mobile"
-                class="inline-flex justify-center items-center gap-1 px-2.5 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] sm:text-xs transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground text-muted-foreground data-[state=on]:bg-background data-[state=on]:border data-[state=on]:border-input data-[state=on]:shadow-xs data-[state=on]:text-foreground"
-              >
-                <ng-icon name="lucideSmartphone" size="13" />
-                <span class="hidden sm:inline">Mobile</span>
-              </button>
-            </hlm-toggle-group>
-            <div hlmSeparator orientation="vertical" class="mx-0.5 h-4"></div>
-            <button
-              type="button"
-              [title]="'home.preview_theme' | translate"
-              class="inline-flex justify-center items-center gap-1 hover:bg-accent px-2 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] text-muted-foreground hover:text-foreground sm:text-xs transition-colors cursor-pointer"
-              (click)="togglePreviewTheme()"
-            >
-              <ng-icon
-                [name]="previewThemeMode() === 'dark' ? 'lucideSun' : 'lucideMoon'"
-                size="13"
-              />
-              <span class="hidden sm:inline">{{
-                (previewThemeMode() === 'dark' ? 'home.light' : 'home.dark') | translate
-              }}</span>
-            </button>
-            <div hlmSeparator orientation="vertical" class="mx-0.5 h-4"></div>
-            <button
-              type="button"
-              class="inline-flex justify-center items-center gap-1 hover:bg-accent px-2 py-1 rounded-md h-7 sm:h-8 font-medium text-[11px] text-muted-foreground hover:text-foreground sm:text-xs transition-colors cursor-pointer"
-              (click)="openLive()"
-            >
-              <ng-icon name="lucideExternalLink" size="12" />
-              <span class="hidden sm:inline">Open live</span>
-            </button>
-          </div>
-        </div>
+              <div class="flex items-center gap-2">
+                @if (storeData()?.logoUrl) {
+                  <img
+                    [src]="storeData()?.logoUrl"
+                    [alt]="storeName()"
+                    class="w-6 h-6 rounded object-contain"
+                  />
+                }
+                <span class="font-bold text-foreground text-xs sm:text-base tracking-tight">{{
+                  storeName()
+                }}</span>
+              </div>
 
-        <!-- Preview Screen Wrapper -->
-        <div class="flex-1 p-1.5 sm:p-6 overflow-y-auto">
-          <div class="flex justify-center w-full">
-            <div
-              class="bg-background shadow-xl border border-border rounded-2xl w-full overflow-hidden transition-all duration-300"
-              [ngClass]="[
-                viewMode() === 'desktop' ? 'max-w-[720px]' : 'max-w-[360px]',
-                themeClass(),
-              ]"
-              [ngStyle]="themeStyles()"
-            >
-              <!-- STORE NAVBAR -->
-              <nav
-                class="top-0 z-20 sticky flex justify-between items-center bg-background/95 backdrop-blur-xs px-3 sm:px-5 py-2.5 sm:py-3 border-border border-b"
-              >
-                <div class="flex items-center gap-2">
-                  @if (storeData()?.logoUrl) {
-                    <img
-                      [src]="storeData()?.logoUrl"
-                      [alt]="storeName()"
-                      class="w-6 h-6 rounded object-contain"
-                    />
-                  }
-                  <span class="font-bold text-foreground text-xs sm:text-base tracking-tight">{{
-                    storeName()
-                  }}</span>
-                </div>
-
-                <div
-                  class="flex items-center gap-2 sm:gap-5 font-medium text-[10px] text-muted-foreground sm:text-xs"
-                >
-                  <a class="font-semibold text-primary cursor-pointer">Home</a>
-                  <a class="hover:text-foreground transition-colors cursor-pointer">Shop</a>
-                  <a class="hover:text-foreground transition-colors cursor-pointer">Orders</a>
-                  <a class="hover:text-foreground transition-colors cursor-pointer">FAQ</a>
-                </div>
-
-                <div class="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    class="flex justify-center items-center bg-primary hover:bg-primary/90 shadow-xs rounded-full w-6 sm:w-8 h-6 sm:h-8 text-primary-foreground transition-colors cursor-pointer"
-                    aria-label="Cart"
-                  >
-                    <ng-icon name="lucideShoppingCart" size="12" />
-                  </button>
-                </div>
-              </nav>
-
-              <!-- STOREFRONT HOME UNIFIED COMPONENT (MATCHING USER-SITE) -->
-              <app-storefront-home
-                [hero]="previewHero()"
-                [categories]="previewCategories()"
-                [products]="previewProducts()"
-                [storeSlug]="storeData()?.slug || 'preview'"
-                [storeName]="storeName()"
-                [storeDescription]="storeData()?.description || ''"
-                [currency]="storeData()?.currency || 'USD'"
-                [isPreview]="true"
-              />
-
-              <!-- FOOTER -->
               <div
-                class="bg-muted/30 px-3 sm:px-6 py-4 sm:py-6 border-border border-t rounded-b-2xl"
+                class="flex items-center gap-2 sm:gap-5 font-medium text-[10px] text-muted-foreground sm:text-xs"
               >
-                <div
-                  class="gap-4 sm:gap-6 grid"
-                  [ngClass]="viewMode() === 'mobile' ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-3'"
+                <a class="font-semibold text-primary cursor-pointer">Home</a>
+                <a class="hover:text-foreground transition-colors cursor-pointer">Shop</a>
+                <a class="hover:text-foreground transition-colors cursor-pointer">Orders</a>
+                <a class="hover:text-foreground transition-colors cursor-pointer">FAQ</a>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  class="flex justify-center items-center bg-primary hover:bg-primary/90 shadow-xs rounded-full w-6 sm:w-8 h-6 sm:h-8 text-primary-foreground transition-colors cursor-pointer"
+                  aria-label="Cart"
                 >
-                  <div>
-                    <span
-                      class="font-extrabold text-foreground text-xs sm:text-sm tracking-tight"
-                      >{{ storeName() }}</span
-                    >
-                    <p hlmMuted class="mt-1 sm:mt-2">
-                      {{
-                        storeData()?.description ||
-                          'Empowering modern professionals with cutting-edge tools.'
-                      }}
-                    </p>
-                  </div>
-                  <div class="flex gap-6 sm:gap-8">
-                    <div class="flex-1">
-                      <h4 hlmH4 class="text-foreground uppercase">
-                        Legal
-                      </h4>
-                      <ul
-                        class="space-y-1 mt-1.5 font-medium text-[10px] text-muted-foreground sm:text-[11px]"
-                      >
-                        <li><a class="hover:text-foreground cursor-pointer">Privacy Policy</a></li>
-                        <li>
-                          <a class="hover:text-foreground cursor-pointer">Terms of Service</a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="flex-1">
-                      <h4 hlmH4 class="text-foreground uppercase">
-                        Support
-                      </h4>
-                      <ul
-                        class="space-y-1 mt-1.5 font-medium text-[10px] text-muted-foreground sm:text-[11px]"
-                      >
-                        <li><a class="hover:text-foreground cursor-pointer">Shipping Info</a></li>
-                        <li><a class="hover:text-foreground cursor-pointer">Returns</a></li>
-                      </ul>
-                    </div>
-                  </div>
+                  <ng-icon name="lucideShoppingCart" size="12" />
+                </button>
+              </div>
+            </nav>
+
+            <!-- STOREFRONT HOME UNIFIED COMPONENT -->
+            <app-storefront-home
+              [hero]="previewHero()"
+              [storeSlug]="storeData()?.slug || 'preview'"
+              [storeName]="storeName()"
+              [storeDescription]="storeData()?.description || ''"
+              [currency]="storeData()?.currency || 'USD'"
+              [isPreview]="true"
+            />
+
+            <!-- FOOTER -->
+            <div
+              class="bg-muted/30 px-3 sm:px-6 py-4 sm:py-6 border-border border-t rounded-b-2xl"
+            >
+              <div
+                class="gap-4 sm:gap-6 grid grid-cols-1 sm:grid-cols-3"
+              >
+                <div>
+                  <span
+                    class="font-extrabold text-foreground text-xs sm:text-sm tracking-tight"
+                    >{{ storeName() }}</span
+                  >
+                  <p hlmMuted class="mt-1 sm:mt-2">
+                    {{
+                      storeData()?.description ||
+                        'Empowering modern professionals with cutting-edge tools.'
+                    }}
+                  </p>
                 </div>
-                <div
-                  class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-border/60 border-t font-medium text-[10px] text-muted-foreground text-center"
-                >
-                  &copy; {{ storeName() }}. All rights reserved.
+                <div class="flex gap-6 sm:gap-8">
+                  <div class="flex-1">
+                    <h4 class="text-foreground uppercase text-xs font-semibold">
+                      Legal
+                    </h4>
+                    <ul
+                      class="space-y-1 mt-1.5 font-medium text-[10px] text-muted-foreground sm:text-[11px]"
+                    >
+                      <li><a class="hover:text-foreground cursor-pointer">Privacy Policy</a></li>
+                      <li>
+                        <a class="hover:text-foreground cursor-pointer">Terms of Service</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="text-foreground uppercase text-xs font-semibold">
+                      Support
+                    </h4>
+                    <ul
+                      class="space-y-1 mt-1.5 font-medium text-[10px] text-muted-foreground sm:text-[11px]"
+                    >
+                      <li><a class="hover:text-foreground cursor-pointer">Shipping Info</a></li>
+                      <li><a class="hover:text-foreground cursor-pointer">Returns</a></li>
+                    </ul>
+                  </div>
                 </div>
               </div>
+              <div
+                class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-border/60 border-t font-medium text-[10px] text-muted-foreground text-center"
+              >
+                &copy; {{ storeName() }}. All rights reserved.
+              </div>
             </div>
+            </div><!-- /.preview-inner -->
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Bottom Action Bar -->
-    <div
-      class="flex flex-wrap sm:flex-nowrap justify-end items-center gap-2 bg-background px-3 sm:px-6 py-2.5 sm:py-3 border-border border-t"
-    >
-      <button
-        type="button"
-        class="inline-flex justify-center items-center hover:bg-accent px-3 sm:px-4 py-1.5 sm:py-2 rounded-md font-medium text-muted-foreground text-xs sm:text-sm transition-colors hover:text-accent-foreground cursor-pointer"
-        (click)="discard()"
-      >
-        {{ 'home.discard_changes' | translate }}
-      </button>
-      <button
-        type="button"
-        class="inline-flex justify-center items-center gap-1.5 bg-background hover:bg-accent shadow-xs px-3 sm:px-4 py-1.5 sm:py-2 border border-input rounded-md font-medium text-xs sm:text-sm transition-colors hover:text-accent-foreground cursor-pointer"
-        (click)="openLive()"
-      >
-        <ng-icon name="lucideExternalLink" size="14" />
-        <span class="hidden sm:inline">Preview Live Site</span>
-        <span class="sm:hidden">Live</span>
-      </button>
-      <button
-        type="button"
-        class="inline-flex justify-center items-center gap-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 shadow-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-md font-medium text-primary-foreground text-xs sm:text-sm transition-colors cursor-pointer disabled:pointer-events-none"
-        [disabled]="isSaved() || isSavingHero()"
-        (click)="saveChanges()"
-      >
-        @if (isSavingHero()) {
-          <hlm-spinner class="text-[14px]" />
-          <span>Saving...</span>
-        } @else {
-          <ng-icon name="lucideCheck" size="14" />
-          <span>{{ 'home.save_publish' | translate }}</span>
-        }
-      </button>
-    </div>
-  }
+  </div>
 </div>

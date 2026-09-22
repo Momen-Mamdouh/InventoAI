@@ -1,12 +1,20 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDragPreview,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucidePlus,
@@ -19,20 +27,42 @@ import {
   lucideSearch,
   lucideTriangleAlert,
 } from '@ng-icons/lucide';
-import { HlmButtonImports } from '@spartan/helm/button';
-import { HlmBadgeImports } from '@spartan/helm/badge';
-import { HlmCardImports } from '@spartan/helm/card';
-import { HlmSkeletonImports } from '@spartan/helm/skeleton';
-import { HlmTableImports } from '@spartan/helm/table';
-import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmAlertImports } from '@spartan/helm/alert';
+import { HlmButton } from '@spartan/helm/button';
+import { HlmBadge } from '@spartan/helm/badge';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
+import {
+  HlmTable,
+  HlmTableContainer,
+  HlmTBody,
+  HlmTd,
+  HlmTh,
+  HlmTHead,
+  HlmTr,
+} from '@spartan/helm/table';
+import {
+  HlmSelect,
+  HlmSelectContent,
+  HlmSelectItem,
+  HlmSelectPortal,
+  HlmSelectTrigger,
+  HlmSelectValue,
+} from '@spartan/helm/select';
+import { HlmInput } from '@spartan/helm/input';
+import { HlmAlert, HlmAlertDescription, HlmAlertTitle } from '@spartan/helm/alert';
 import { HlmH1, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { HlmTooltip } from '@spartan/helm/tooltip';
 import { CategoryFormDialog } from './category-form-dialog';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { Category, CategoriesState } from '@invento/owner-dashboard-data-access-category';
 import { Pagination } from '@invento/shared-ui-pagination';
 import { EmptyState } from '@invento/shared-ui-empty-state';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
+import {
+  TableHeaderCell,
+  TableColumnSortDirection,
+  TableColumnFilterOption,
+} from '@invento/shared-ui-table-header';
 
 type PublishedFilter = 'all' | 'published' | 'unpublished';
 type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
@@ -42,22 +72,41 @@ type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
   standalone: true,
   imports: [
     NgIcon,
-    HlmButtonImports,
-    HlmBadgeImports,
-    HlmCardImports,
-    HlmSkeletonImports,
-    HlmTableImports,
-    HlmSelectImports,
-    HlmInputImports,
-    HlmAlertImports,
-    DragDropModule,
+    HlmButton,
+    HlmBadge,
+    HlmCard,
+    HlmSkeleton,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmTableContainer,
+    HlmSelect,
+    HlmSelectTrigger,
+    HlmSelectValue,
+    HlmSelectContent,
+    HlmSelectItem,
+    HlmSelectPortal,
+    HlmInput,
+    HlmAlert,
+    HlmAlertTitle,
+    HlmAlertDescription,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
+    CdkDragPreview,
     CategoryFormDialog,
     DeleteConfirmDialog,
     HlmH1,
     HlmMuted,
     HlmSmall,
+    HlmTooltip,
     Pagination,
     EmptyState,
+    TranslatePipe,
+    TableHeaderCell,
   ],
   providers: [
     provideIcons({
@@ -78,6 +127,7 @@ type FeaturedFilter = 'all' | 'featured' | 'unfeatured';
 })
 export class Categories implements OnInit, OnDestroy {
   private readonly state = inject(CategoriesState);
+  private readonly localeService = inject(LocaleService);
 
   readonly categories = this.state.categories;
   readonly loading = this.state.loading;
@@ -93,25 +143,78 @@ export class Categories implements OnInit, OnDestroy {
   readonly publishedFilter = signal<PublishedFilter>('all');
   readonly featuredFilter = signal<FeaturedFilter>('all');
 
-  private readonly publishedFilterLabels: Record<PublishedFilter, string> = {
-    all: 'All statuses',
-    published: 'Published',
-    unpublished: 'Unpublished',
+  readonly publishedItemToString = (value: PublishedFilter): string => {
+    if (!value) {
+      return '';
+    }
+    return this.localeService.translate(`categories.filter_status_${value}`);
   };
 
-  private readonly featuredFilterLabels: Record<FeaturedFilter, string> = {
-    all: 'All categories',
-    featured: 'Featured',
-    unfeatured: 'Not featured',
+  readonly featuredItemToString = (value: FeaturedFilter): string => {
+    if (!value) {
+      return '';
+    }
+    return this.localeService.translate(`categories.filter_featured_${value}`);
   };
 
-  // hlm-select-value shows the raw bound value unless the select is given an
-  // itemToString mapper — without this it would literally render "all"/"published"/etc.
-  readonly publishedItemToString = (value: PublishedFilter): string =>
-    this.publishedFilterLabels[value] ?? '';
+  readonly colNameSearch = signal('');
+  readonly colStatusFilter = signal('');
+  readonly colPositionSort = signal<TableColumnSortDirection>('none');
 
-  readonly featuredItemToString = (value: FeaturedFilter): string =>
-    this.featuredFilterLabels[value] ?? '';
+  readonly statusOptions = computed<TableColumnFilterOption[]>(() => [
+    {
+      label: this.localeService.translate('categories.filter_status_all') || 'All',
+      value: 'all',
+    },
+    {
+      label: this.localeService.translate('categories.filter_status_published') || 'Published',
+      value: 'published',
+    },
+    {
+      label: this.localeService.translate('categories.filter_status_unpublished') || 'Unpublished',
+      value: 'unpublished',
+    },
+    {
+      label: this.localeService.translate('categories.filter_featured_featured') || 'Featured',
+      value: 'featured',
+    },
+  ]);
+
+  readonly isColumnFilteredOrSorted = computed(
+    () =>
+      Boolean(this.colNameSearch().trim()) ||
+      Boolean(this.colStatusFilter()) ||
+      this.colPositionSort() !== 'none',
+  );
+
+  readonly displayedCategories = computed(() => {
+    let list = [...this.categories()];
+    const search = this.colNameSearch().trim().toLowerCase();
+    if (search) {
+      list = list.filter(
+        (c) =>
+          c.name.toLowerCase().includes(search) ||
+          c.slug.toLowerCase().includes(search),
+      );
+    }
+    const status = this.colStatusFilter();
+    if (status && status !== 'all') {
+      if (status === 'published') {
+        list = list.filter((c) => c.isPublished);
+      } else if (status === 'unpublished') {
+        list = list.filter((c) => !c.isPublished);
+      } else if (status === 'featured') {
+        list = list.filter((c) => c.isFeatured);
+      }
+    }
+    const sort = this.colPositionSort();
+    if (sort === 'asc') {
+      list.sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    } else if (sort === 'desc') {
+      list.sort((a, b) => (b.position ?? 0) - (a.position ?? 0));
+    }
+    return list;
+  });
 
   private searchDebounce?: ReturnType<typeof setTimeout>;
 
@@ -188,11 +291,16 @@ export class Categories implements OnInit, OnDestroy {
 
   confirmDelete(): void {
     const id = this.toDelete()?.id;
-    if (id) this.state.deleteCategory(id);
+    if (id) {
+      this.state.deleteCategory(id);
+    }
     this.cancelDelete();
   }
 
   onDrop(event: CdkDragDrop<Category[]>): void {
+    if (this.isColumnFilteredOrSorted()) {
+      return;
+    }
     const arr = [...this.categories()];
     moveItemInArray(arr, event.previousIndex, event.currentIndex);
     this.state.optimisticReorder(arr);

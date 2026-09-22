@@ -5,9 +5,9 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 hlmH1>Account Settings</h1>
+      <h1 hlmH1>{{ 'account_settings.page_title' | translate }}</h1>
       <p hlmMuted class="mt-0.5">
-        Manage your password, authentication, and active device sessions.
+        {{ 'security.subtitle' | translate }}
       </p>
     </div>
 
@@ -15,38 +15,55 @@
     <div class="flex items-center gap-1 sm:gap-2 border-border border-b overflow-x-auto">
       <a
         routerLink="/profile"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideUser" size="16" />
-        <span>Profile</span>
+        <span>{{ 'account_settings.tabs.profile' | translate }}</span>
       </a>
       <a
         routerLink="/security"
-        class="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b-2 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border-primary text-primary"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideShield" size="16" />
-        <span>Security</span>
+        <span>{{ 'account_settings.tabs.security' | translate }}</span>
       </a>
       <a
         routerLink="/notifications"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideBell" size="16" />
-        <span>Notifications</span>
+        <span>{{ 'account_settings.tabs.notifications' | translate }}</span>
       </a>
       <a
         routerLink="/billing"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideCreditCard" size="16" />
-        <span>Billing & Plan</span>
+        <span>{{ 'account_settings.tabs.billing' | translate }}</span>
+        <span
+          hlmBadge
+          variant="outline"
+          class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400 ms-1"
+        >
+          {{ 'account_settings.tabs.coming_soon' | translate }}
+        </span>
       </a>
       <a
         routerLink="/my-stores"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideStore" size="16" />
-        <span>My Stores</span>
+        <span>{{ 'account_settings.tabs.my_store' | translate }}</span>
       </a>
     </div>
   </div>
@@ -86,9 +103,9 @@
     <div hlmCard>
       <!-- Card Header -->
       <div hlmCardHeader class="border-b">
-        <h2 hlmCardTitle>Change Password</h2>
+        <h2 hlmCardTitle>{{ 'security.password_card_title' | translate }}</h2>
         <p hlmCardDescription>
-          Use a strong password at least 12 characters long.
+          {{ 'security.password_card_desc' | translate }}
         </p>
       </div>
 
@@ -96,18 +113,18 @@
       <div hlmCardContent class="space-y-4 sm:space-y-5">
         <!-- Current Password -->
         <div class="space-y-1.5 max-w-full sm:max-w-2xl">
-          <label hlmLabel for="currentPasswordInput" class="font-medium text-foreground text-xs sm:text-sm"
-            >Current Password</label
-          >
+          <label hlmLabel for="currentPasswordInput" class="font-medium text-foreground text-xs sm:text-sm">
+            {{ 'security.current_password' | translate }}
+          </label>
           <div class="relative">
             <input
               id="currentPasswordInput"
               hlmInput
               [type]="showCurrentPassword() ? 'text' : 'password'"
               class="pe-10 w-full"
-              placeholder="Enter current password"
+              [placeholder]="'security.current_password_placeholder' | translate"
               [value]="currentPassword()"
-              (input)="currentPassword.set($any($event.target).value); clearMessages()"
+              (input)="onCurrentPasswordInput($event)"
             />
             <button
               type="button"
@@ -125,18 +142,18 @@
         <div class="gap-4 sm:gap-6 grid grid-cols-1 sm:grid-cols-2">
           <!-- New Password -->
           <div class="space-y-1.5">
-            <label hlmLabel for="newPasswordInput" class="font-medium text-foreground text-xs sm:text-sm"
-              >New Password</label
-            >
+            <label hlmLabel for="newPasswordInput" class="font-medium text-foreground text-xs sm:text-sm">
+              {{ 'security.new_password' | translate }}
+            </label>
             <div class="relative">
               <input
                 id="newPasswordInput"
                 hlmInput
                 [type]="showNewPassword() ? 'text' : 'password'"
                 class="pe-10 w-full"
-                placeholder="Min. 8 characters"
+                [placeholder]="'security.new_password_placeholder' | translate"
                 [value]="newPassword()"
-                (input)="newPassword.set($any($event.target).value); clearMessages()"
+                (input)="onNewPasswordInput($event)"
               />
               <button
                 type="button"
@@ -152,18 +169,18 @@
 
           <!-- Confirm New Password -->
           <div class="space-y-1.5">
-            <label hlmLabel for="confirmPasswordInput" class="font-medium text-foreground text-xs sm:text-sm"
-              >Confirm New Password</label
-            >
+            <label hlmLabel for="confirmPasswordInput" class="font-medium text-foreground text-xs sm:text-sm">
+              {{ 'security.confirm_password' | translate }}
+            </label>
             <div class="relative">
               <input
                 id="confirmPasswordInput"
                 hlmInput
                 [type]="showConfirmPassword() ? 'text' : 'password'"
                 class="pe-10 w-full"
-                placeholder="Repeat new password"
+                [placeholder]="'security.confirm_password_placeholder' | translate"
                 [value]="confirmPassword()"
-                (input)="confirmPassword.set($any($event.target).value); clearMessages()"
+                (input)="onConfirmPasswordInput($event)"
               />
               <button
                 type="button"
@@ -183,11 +200,17 @@
           <button
             type="button"
             hlmBtn
-            class="gap-2 shadow-sm px-5 py-2.5 transition-all cursor-pointer"
+            class="gap-2 shadow-sm px-5 py-2.5 transition-all cursor-pointer disabled:opacity-50"
+            [disabled]="updating() || !currentPassword().trim() || !newPassword().trim() || !confirmPassword().trim()"
             (click)="updatePassword()"
           >
-            <ng-icon name="lucideLock" size="16" />
-            <span>Update Password</span>
+            @if (updating()) {
+              <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent"></span>
+              <span>{{ 'security.updating_password_btn' | translate }}</span>
+            } @else {
+              <ng-icon name="lucideLock" size="16" />
+              <span>{{ 'security.update_password_btn' | translate }}</span>
+            }
           </button>
         </div>
       </div>
@@ -197,9 +220,9 @@
     <div hlmCard>
       <!-- Card Header -->
       <div hlmCardHeader class="border-b">
-        <h2 hlmCardTitle>Two-Factor Authentication</h2>
+        <h2 hlmCardTitle>{{ 'security.two_factor_title' | translate }}</h2>
         <p hlmCardDescription>
-          Add an extra layer of security to your account.
+          {{ 'security.two_factor_desc' | translate }}
         </p>
       </div>
 
@@ -215,24 +238,22 @@
 
             <div class="space-y-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="font-semibold text-sm sm:text-base">Authenticator App</span>
-                @if (twoFactorEnabled()) {
-                  <span hlmBadge class="bg-success/10 text-success"> Enabled </span>
-                } @else {
-                  <span hlmBadge class="bg-destructive/10 text-destructive"> Disabled </span>
-                }
+                <span class="font-semibold text-sm sm:text-base">{{ 'security.authenticator_app' | translate }}</span>
+                <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400">
+                  {{ 'account_settings.tabs.coming_soon' | translate }}
+                </span>
               </div>
               <p hlmMuted>
-                Require a verification code from your phone on login.
+                {{ 'security.authenticator_desc' | translate }}
               </p>
             </div>
           </div>
 
           <!-- Toggle Switch Button -->
           <hlm-switch
-            class="self-start sm:self-auto"
-            [checked]="twoFactorEnabled()"
-            (checkedChange)="toggle2FA()"
+            class="self-start sm:self-auto opacity-50 cursor-not-allowed"
+            [checked]="false"
+            [disabled]="true"
             [attr.aria-label]="'security.two_factor_toggle' | translate"
           />
         </div>
@@ -244,39 +265,26 @@
       <!-- Card Header -->
       <div hlmCardHeader class="flex flex-wrap justify-between items-center gap-2 border-b">
         <div>
-          <h2 hlmCardTitle>Active Sessions</h2>
+          <div class="flex items-center gap-2">
+            <h2 hlmCardTitle>{{ 'security.sessions_title' | translate }}</h2>
+            <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-emerald-500/40 text-emerald-600 dark:text-emerald-400">
+              {{ 'security.sessions_badge' | translate }}
+            </span>
+          </div>
           <p hlmCardDescription>
-            Devices currently signed in to your account.
+            {{ 'security.sessions_desc' | translate }}
           </p>
         </div>
-
-        @if (hasOtherSessions()) {
-          <button
-            type="button"
-            hlmBtn
-            variant="ghost"
-            class="hover:bg-rose-50 dark:hover:bg-rose-950/40 gap-1.5 px-3 h-9 font-medium text-xs text-rose-600 hover:text-rose-700 dark:text-rose-400 sm:text-sm transition-colors cursor-pointer"
-            (click)="revokeAllOtherSessions()"
-          >
-            <ng-icon name="lucideLogOut" size="15" />
-            <span>Log Out All Others</span>
-          </button>
-        }
       </div>
 
-      <!-- Card Body List (full-bleed, own row dividers — kept outside hlmCardContent) -->
+      <!-- Card Body List -->
       <div class="divide-y divide-border/60">
         @for (session of sessions(); track session.id) {
           <div class="flex flex-wrap sm:flex-nowrap justify-between items-center gap-3 p-4 sm:p-5">
             <div class="flex items-center gap-3.5 min-w-0">
               <!-- Device Icon -->
               <div
-                class="flex flex-shrink-0 justify-center items-center rounded-xl w-10 h-10"
-                [ngClass]="
-                  session.isCurrent
-                    ? 'bg-primary/10 text-primary'
-                    : 'bg-muted text-muted-foreground'
-                "
+                class="flex flex-shrink-0 justify-center items-center rounded-xl w-10 h-10 bg-primary/10 text-primary"
               >
                 <ng-icon [name]="session.icon" size="20" />
               </div>
@@ -287,41 +295,21 @@
                   <span class="font-semibold text-xs sm:text-sm truncate">
                     {{ session.device }} · {{ session.browser }}
                   </span>
-                  @if (session.isCurrent) {
-                    <span
-                      class="inline-flex items-center bg-primary/10 px-2 py-0.5 rounded-full font-medium text-[11px] text-primary"
-                    >
-                      This device
-                    </span>
-                  }
+                  <span
+                    class="inline-flex items-center bg-primary/10 px-2 py-0.5 rounded-full font-medium text-[11px] text-primary"
+                  >
+                    {{ 'security.this_device' | translate }}
+                  </span>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 text-muted-foreground text-xs">
                   <span class="flex items-center gap-1">
-                    <ng-icon name="lucideMapPin" size="12" />
-                    <span>{{ session.location }}</span>
-                  </span>
-                  <span class="flex items-center gap-1">
                     <ng-icon name="lucideClock" size="12" />
-                    <span>{{ session.lastActive }}</span>
+                    <span>{{ 'security.active_now' | translate }}</span>
                   </span>
                 </div>
               </div>
             </div>
-
-            <!-- Action Button -->
-            @if (!session.isCurrent) {
-              <button
-                type="button"
-                hlmBtn
-                variant="ghost"
-                class="hover:bg-rose-50 dark:hover:bg-rose-950/40 ms-auto sm:ms-0 gap-1 px-3 h-8 font-medium text-xs text-muted-foreground hover:text-rose-600 transition-colors cursor-pointer"
-                (click)="revokeSession(session.id)"
-              >
-                <ng-icon name="lucideLogOut" size="13" />
-                <span>Revoke</span>
-              </button>
-            }
           </div>
         }
       </div>

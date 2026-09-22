@@ -1,8 +1,9 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { toast } from '@spartan-ng/brain/sonner';
+import { LocaleService } from '@invento/shared-util-i18n';
+import { extractErrorMessage } from '@invento/shared-util-error';
 import {
   OrderDetail,
   OrderListItem,
@@ -15,6 +16,7 @@ import { OrderService } from './order.service';
 @Injectable({ providedIn: 'root' })
 export class OrderStore {
   private readonly orderService = inject(OrderService);
+  private readonly localeService = inject(LocaleService);
 
   readonly orders = signal<OrderListItem[]>([]);
   readonly selectedOrder = signal<OrderDetail | null>(null);
@@ -47,7 +49,9 @@ export class OrderStore {
 
   readonly isAllCurrentPageSelected = computed(() => {
     const current = this.orders();
-    if (current.length === 0) return false;
+    if (current.length === 0) {
+      return false;
+    }
     const selected = this.selectedOrderIds();
     return current.every((o) => selected.has(o.id));
   });
@@ -101,8 +105,11 @@ export class OrderStore {
       .getOrders(params)
       .pipe(
         finalize(() => this.isLoading.set(false)),
-        catchError((err) => {
-          const msg = this.extractErrorMessage(err) || 'Failed to load orders';
+        catchError((err: unknown) => {
+          const msg = extractErrorMessage(
+            err,
+            this.localeService.translate('orders.toast_load_error'),
+          );
           this.error.set(msg);
           toast.error(msg);
           return of(null);
@@ -154,8 +161,11 @@ export class OrderStore {
       .getOrderById(id)
       .pipe(
         finalize(() => this.isDetailLoading.set(false)),
-        catchError((err) => {
-          const msg = this.extractErrorMessage(err) || 'Failed to load order details';
+        catchError((err: unknown) => {
+          const msg = extractErrorMessage(
+            err,
+            this.localeService.translate('orders.toast_detail_load_error'),
+          );
           toast.error(msg);
           return of(null);
         }),
@@ -179,28 +189,38 @@ export class OrderStore {
       .updateOrderStatus(id, { status: newStatus, ...(reason ? { reason } : {}) })
       .pipe(
         finalize(() => this.isUpdatingStatus.set(false)),
-        catchError((err) => {
-          const msg =
-            this.extractErrorMessage(err) || `Failed to update order status to ${newStatus}`;
+        catchError((err: unknown) => {
+          const msg = extractErrorMessage(
+            err,
+            this.localeService.translate('orders.toast_status_update_error', {
+              status: this.localeService.translate(`orders.filter_${newStatus.toLowerCase()}`),
+            }),
+          );
           toast.error(msg);
           return of(null);
         }),
       )
       .subscribe((updatedOrder) => {
         if (updatedOrder) {
-          toast.success(`Order #${updatedOrder.orderNumber} status updated to ${newStatus}`);
+          toast.success(
+            this.localeService.translate('orders.toast_status_updated', {
+              number: updatedOrder.orderNumber,
+              status: this.localeService.translate(`orders.filter_${newStatus.toLowerCase()}`),
+            }),
+          );
 
           // Update current list item
           this.orders.update((list) =>
-            list.map((o) =>
-              o.id === id
-                ? {
-                    ...o,
-                    status: updatedOrder.status,
-                    paymentStatus: updatedOrder.paymentStatus,
-                  }
-                : o,
-            ),
+            list.map((o) => {
+              if (o.id === id) {
+                return {
+                  ...o,
+                  status: updatedOrder.status,
+                  paymentStatus: updatedOrder.paymentStatus,
+                };
+              }
+              return o;
+            }),
           );
 
           // Update detail view if matching
@@ -209,7 +229,9 @@ export class OrderStore {
           }
 
           this.loadStats();
-          if (onSuccess) onSuccess();
+          if (onSuccess) {
+            onSuccess();
+          }
         }
       });
   }
@@ -221,33 +243,46 @@ export class OrderStore {
       .updateOrderNote(id, note)
       .pipe(
         finalize(() => this.isUpdatingNote.set(false)),
-        catchError((err) => {
-          const msg = this.extractErrorMessage(err) || 'Failed to update order note';
+        catchError((err: unknown) => {
+          const msg = extractErrorMessage(
+            err,
+            this.localeService.translate('orders.toast_note_update_error'),
+          );
           toast.error(msg);
           return of(null);
         }),
       )
       .subscribe((updatedOrder) => {
         if (updatedOrder) {
-          toast.success('Internal note saved successfully');
+          toast.success(this.localeService.translate('orders.toast_note_saved'));
           if (this.selectedOrder()?.id === id) {
             this.selectedOrder.set(updatedOrder);
           }
-          if (onSuccess) onSuccess();
+          if (onSuccess) {
+            onSuccess();
+          }
         }
       });
   }
 
   bulkUpdateStatus(status: OrderStatus, reason?: string, onSuccess?: () => void): void {
     const selectedIds = Array.from(this.selectedOrderIds());
-    if (selectedIds.length === 0) return;
+    if (selectedIds.length === 0) {
+      return;
+    }
 
     const currentOrders = this.orders();
     const eligibleOrders = currentOrders.filter((o) => {
       if (selectedIds.includes(o.id)) {
-        if (status === 'confirmed') return o.status === 'pending';
-        if (status === 'shipped') return o.status === 'confirmed';
-        if (status === 'delivered') return o.status === 'shipped';
+        if (status === 'confirmed') {
+          return o.status === 'pending';
+        }
+        if (status === 'shipped') {
+          return o.status === 'confirmed';
+        }
+        if (status === 'delivered') {
+          return o.status === 'shipped';
+        }
         if (status === 'cancelled') {
           return o.status === 'pending' || o.status === 'confirmed' || o.status === 'shipped';
         }
@@ -256,7 +291,11 @@ export class OrderStore {
     });
 
     if (eligibleOrders.length === 0) {
-      toast.error(`None of the selected orders can be moved to "${status}".`);
+      toast.error(
+        this.localeService.translate('orders.toast_bulk_none_eligible', {
+          status: this.localeService.translate(`orders.filter_${status.toLowerCase()}`),
+        }),
+      );
       return;
     }
 
@@ -272,13 +311,20 @@ export class OrderStore {
       .subscribe((results) => {
         const successCount = results.filter((r) => r !== null).length;
         if (successCount > 0) {
-          toast.success(`Updated status of ${successCount} order(s) to "${status}".`);
+          toast.success(
+            this.localeService.translate('orders.toast_bulk_success', {
+              count: successCount,
+              status: this.localeService.translate(`orders.filter_${status.toLowerCase()}`),
+            }),
+          );
           this.clearSelection();
           this.loadOrders();
           this.loadStats();
-          if (onSuccess) onSuccess();
+          if (onSuccess) {
+            onSuccess();
+          }
         } else {
-          toast.error('Failed to update status for selected orders.');
+          toast.error(this.localeService.translate('orders.toast_bulk_error'));
         }
       });
   }
@@ -354,7 +400,7 @@ export class OrderStore {
   exportOrders(): void {
     const list = this.orders();
     if (!list.length) {
-      toast.error('No orders to export');
+      toast.error(this.localeService.translate('orders.toast_export_empty'));
       return;
     }
 
@@ -396,27 +442,6 @@ export class OrderStore {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    toast.success('Orders exported successfully');
-  }
-
-  private extractErrorMessage(err: unknown): string | null {
-    if (!err) return null;
-    if (err instanceof HttpErrorResponse) {
-      if (err.error?.message) {
-        if (Array.isArray(err.error.message)) {
-          return err.error.message.join(', ');
-        }
-        return String(err.error.message);
-      }
-      if (err.status === 409) {
-        return 'This order changed while you were working on it — reload it';
-      }
-      if (err.status === 404) {
-        return 'Order not found';
-      }
-      return err.message;
-    }
-    if (err instanceof Error) return err.message;
-    return null;
+    toast.success(this.localeService.translate('orders.toast_export_success'));
   }
 }

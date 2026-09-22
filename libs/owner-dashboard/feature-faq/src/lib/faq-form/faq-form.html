@@ -1,76 +1,168 @@
-<hlm-sheet-header class="mb-3 p-0">
-  <h3 hlmSheetTitle>{{ isEdit() ? 'Edit FAQ entry' : 'Add FAQ entry' }}</h3>
-  <p hlmSheetDescription>
-    {{
-      isEdit()
-        ? 'Update the question, answer, or visibility.'
-        : 'This is appended to the end of the list — drag to reorder it afterwards.'
-    }}
+<hlm-sheet-header class="mb-4 p-0">
+  <h3 hlmSheetTitle class="text-lg font-bold text-foreground">
+    {{ (isEdit() ? 'faq.drawer_edit_title' : 'faq.drawer_add_title') | translate }}
+  </h3>
+  <p hlmSheetDescription class="text-xs sm:text-sm text-muted-foreground mt-1">
+    {{ (isEdit() ? 'faq.drawer_edit_desc' : 'faq.drawer_add_desc') | translate }}
   </p>
 </hlm-sheet-header>
 
 <form class="flex flex-col gap-5 py-2" [formGroup]="form" (ngSubmit)="onSubmit()">
   @if (serverError()) {
-    <div hlmAlert variant="destructive" class="bg-destructive/10 text-sm">
-      <p hlmAlertDescription>{{ serverError() }}</p>
+    <div hlmAlert variant="destructive" class="bg-destructive/10 text-xs sm:text-sm p-3 rounded-lg">
+      <ng-icon name="lucideAlertCircle" size="16" class="text-destructive me-2 inline" />
+      <p hlmAlertDescription class="inline">{{ serverError() }}</p>
     </div>
   }
 
-  <hlm-field-group>
-    <hlm-field>
-      <label hlmFieldLabel for="question">Question</label>
-      <input
-        hlmInput
-        id="question"
-        type="text"
-        formControlName="question"
-        placeholder="Do you offer gift wrapping?"
-        autocomplete="off"
-      />
-      @if (form.controls.question.touched && form.controls.question.invalid) {
-        <hlm-field-error>Question must be 5–300 characters.</hlm-field-error>
-      } @else {
-        <p hlmFieldDescription>{{ form.controls.question.value.length }}/300 characters</p>
-      }
-    </hlm-field>
-
-    <hlm-field>
-      <label hlmFieldLabel for="answer">Answer</label>
-      <textarea
-        hlmTextarea
-        id="answer"
-        rows="5"
-        formControlName="answer"
-        placeholder="Yes — add a note at checkout and we wrap the order in tissue and a ribbon at no extra cost."
-      ></textarea>
-      @if (form.controls.answer.touched && form.controls.answer.invalid) {
-        <hlm-field-error>Answer must be 1–2000 characters.</hlm-field-error>
-      } @else {
-        <p hlmFieldDescription>
-          Plain text only, line breaks are kept · {{ form.controls.answer.value.length }}/2000
-          characters
-        </p>
-      }
-    </hlm-field>
-  </hlm-field-group>
-
-  <div class="flex justify-between items-center px-3 py-2.5 border rounded-md">
-    <label hlmLabel for="isPublished">Published</label>
-    <hlm-switch id="isPublished" formControlName="isPublished" />
+  <!-- Question Field -->
+  <div class="space-y-1.5">
+    <div class="flex justify-between items-center">
+      <label hlmLabel for="faq-question" class="text-xs font-semibold text-foreground">
+        {{ 'faq.field_question' | translate }} <span class="text-destructive">*</span>
+      </label>
+      <span class="text-[11px] text-muted-foreground font-mono">
+        {{ form.controls.question.value.length }}/300
+      </span>
+    </div>
+    <input
+      hlmInput
+      id="faq-question"
+      type="text"
+      formControlName="question"
+      [placeholder]="'faq.field_question_placeholder' | translate"
+      autocomplete="off"
+      class="w-full text-xs sm:text-sm bg-card border-border rounded-lg focus:ring-2 focus:ring-primary/20"
+      [class.border-destructive]="form.controls.question.touched && form.controls.question.invalid"
+    />
+    @if (form.controls.question.touched && form.controls.question.invalid) {
+      <p class="text-[11px] text-destructive font-medium">
+        {{ 'faq.field_question_error' | translate }}
+      </p>
+    }
   </div>
 
-  <hlm-sheet-footer class="mt-1">
+  <!-- Answer Field -->
+  <div class="space-y-1.5">
+    <div class="flex justify-between items-center">
+      <label hlmLabel for="faq-answer" class="text-xs font-semibold text-foreground">
+        {{ 'faq.field_answer' | translate }} <span class="text-destructive">*</span>
+      </label>
+      <span class="text-[11px] text-muted-foreground font-mono">
+        {{ form.controls.answer.value.length }}/2000
+      </span>
+    </div>
+    <textarea
+      hlmTextarea
+      id="faq-answer"
+      rows="5"
+      formControlName="answer"
+      [placeholder]="'faq.field_answer_placeholder' | translate"
+      class="w-full text-xs sm:text-sm p-3 bg-card border-border rounded-lg focus:ring-2 focus:ring-primary/20 text-foreground resize-y"
+      [class.border-destructive]="form.controls.answer.touched && form.controls.answer.invalid"
+    ></textarea>
+    @if (form.controls.answer.touched && form.controls.answer.invalid) {
+      <p class="text-[11px] text-destructive font-medium">
+        {{ 'faq.field_answer_error' | translate }}
+      </p>
+    } @else {
+      <p class="text-[11px] text-muted-foreground">
+        {{ 'faq.field_answer_hint' | translate: { count: form.controls.answer.value.length } }}
+      </p>
+    }
+  </div>
+
+  <!-- Category Field -->
+  <div class="space-y-2">
+    <div class="flex justify-between items-center">
+      <label hlmLabel for="faq-category" class="text-xs font-semibold text-foreground">
+        {{ 'faq.field_category' | translate }} <span class="text-destructive">*</span>
+      </label>
+      <span class="text-[11px] text-muted-foreground">
+        {{ 'faq.field_category_desc' | translate }}
+      </span>
+    </div>
+
+    <!-- Quick Preset Chips -->
+    <div class="flex flex-wrap gap-1.5">
+      @for (preset of presets; track preset.id) {
+        <button
+          type="button"
+          (click)="selectPreset(preset.id)"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors cursor-pointer select-none"
+          [class.bg-primary]="selectedPreset() === preset.id"
+          [class.text-primary-foreground]="selectedPreset() === preset.id"
+          [class.border-primary]="selectedPreset() === preset.id"
+          [class.bg-card]="selectedPreset() !== preset.id"
+          [class.text-muted-foreground]="selectedPreset() !== preset.id"
+          [class.border-border]="selectedPreset() !== preset.id"
+          [class.hover:border-primary/50]="selectedPreset() !== preset.id"
+          [class.hover:text-foreground]="selectedPreset() !== preset.id"
+        >
+          <ng-icon [name]="preset.icon" size="13" />
+          <span>{{ ('faq.category_' + preset.id) | translate }}</span>
+        </button>
+      }
+    </div>
+
+    <input
+      hlmInput
+      id="faq-category"
+      type="text"
+      formControlName="category"
+      [placeholder]="'faq.field_category_placeholder' | translate"
+      autocomplete="off"
+      class="w-full text-xs sm:text-sm bg-card border-border rounded-lg focus:ring-2 focus:ring-primary/20"
+      [class.border-destructive]="form.controls.category.touched && form.controls.category.invalid"
+    />
+    @if (form.controls.category.touched && form.controls.category.invalid) {
+      <p class="text-[11px] text-destructive font-medium">
+        {{ 'faq.field_category_error' | translate }}
+      </p>
+    }
+  </div>
+
+  <!-- Published Status Switch Box -->
+  <div class="flex justify-between items-center p-3.5 bg-muted/30 border border-border rounded-xl">
+    <div class="space-y-0.5">
+      <label hlmLabel for="faq-isPublished" class="text-xs font-semibold text-foreground cursor-pointer">
+        {{ 'faq.field_published' | translate }}
+      </label>
+      <p class="text-[11px] text-muted-foreground">
+        {{ 'faq.field_published_desc' | translate }}
+      </p>
+    </div>
+    <hlm-switch id="faq-isPublished" formControlName="isPublished" />
+  </div>
+
+  <!-- Sheet Actions Footer -->
+  <hlm-sheet-footer class="mt-2 flex items-center justify-end gap-2 pt-4 border-t border-border">
     <button
       hlmBtn
       type="button"
       variant="outline"
+      size="sm"
+      class="h-9 px-4 text-xs font-medium"
       [disabled]="saving()"
       (click)="$event.stopPropagation(); onCancel()"
     >
-      Cancel
+      {{ 'faq.btn_cancel' | translate }}
     </button>
-    <button hlmBtn type="submit" [disabled]="saving()" (click)="$event.stopPropagation()">
-      {{ saving() ? 'Saving…' : isEdit() ? 'Save changes' : 'Add entry' }}
+    <button
+      hlmBtn
+      type="submit"
+      size="sm"
+      class="h-9 px-4 text-xs font-semibold gap-1.5 shadow-sm"
+      [disabled]="saving()"
+      (click)="$event.stopPropagation()"
+    >
+      @if (saving()) {
+        <hlm-spinner class="text-[14px]" />
+        <span>{{ 'faq.btn_saving' | translate }}</span>
+      } @else {
+        <ng-icon [name]="isEdit() ? 'lucideSave' : 'lucidePlus'" size="14" />
+        <span>{{ (isEdit() ? 'faq.btn_save' : 'faq.btn_create') | translate }}</span>
+      }
     </button>
   </hlm-sheet-footer>
 </form>

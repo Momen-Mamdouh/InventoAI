@@ -1,0 +1,187 @@
+<div class="space-y-6 w-full p-4 md:p-6 lg:p-8">
+  <!-- Page Header & Actions -->
+  <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
+    <div class="space-y-1">
+      <h1 hlmH1 class="text-foreground">
+        {{ 'faq.title' | translate }}
+      </h1>
+      <p hlmMuted class="text-xs sm:text-sm">
+        {{ 'faq.subtitle' | translate }} —
+        {{ 'faq.count_summary' | translate: { count: store.entries().length } }}
+      </p>
+    </div>
+
+    <!-- Add FAQ Button -->
+    <div class="flex items-center self-start sm:self-auto gap-2 sm:gap-3 flex-wrap">
+      <button
+        hlmBtn
+        type="button"
+        size="sm"
+        class="flex items-center gap-2 shadow-sm font-semibold"
+        [disabled]="store.isFull()"
+        (click)="openCreateDrawer()"
+      >
+        <ng-icon name="lucidePlus" size="16" />
+        <span>{{ 'faq.btn_add' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Max Capacity Alert Banner -->
+  @if (store.isFull()) {
+    <div hlmAlert class="bg-warning/10 text-warning text-xs sm:text-sm p-3 rounded-xl border border-warning/20 flex items-center gap-2.5">
+      <ng-icon name="lucideAlertCircle" size="18" class="shrink-0 text-warning" />
+      <p hlmAlertDescription class="text-warning font-medium">
+        {{ 'faq.max_capacity_warning' | translate }}
+      </p>
+    </div>
+  }
+
+  <!-- KPI Summary Cards Grid (4 Cards) -->
+  <div class="gap-3 sm:gap-4 grid grid-cols-2 lg:grid-cols-4">
+    <!-- Total Questions Card -->
+    <div hlmCard class="p-4 sm:p-5 border border-border/80 rounded-xl relative overflow-hidden bg-card shadow-sm">
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-xs sm:text-sm font-medium text-muted-foreground truncate">
+          {{ 'faq.kpi_total' | translate }}
+        </span>
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-primary/10 text-primary shrink-0">
+          <ng-icon name="lucideMessageCircleQuestionMark" size="18" />
+        </div>
+      </div>
+      <div class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground flex items-baseline gap-1.5">
+        <span>{{ store.stats().total }}</span>
+        <span class="text-xs font-normal text-muted-foreground">/ 100</span>
+      </div>
+    </div>
+
+    <!-- Categories Card -->
+    <div hlmCard class="p-4 sm:p-5 border border-border/80 rounded-xl relative overflow-hidden bg-card shadow-sm">
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-xs sm:text-sm font-medium text-muted-foreground truncate">
+          {{ 'faq.kpi_categories' | translate }}
+        </span>
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-violet-500/10 text-violet-700 dark:text-violet-400 shrink-0">
+          <ng-icon name="lucideTag" size="18" />
+        </div>
+      </div>
+      <div class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+        {{ store.categories().length || 1 }}
+      </div>
+    </div>
+
+    <!-- Published Questions Card -->
+    <div hlmCard class="p-4 sm:p-5 border border-border/80 rounded-xl relative overflow-hidden bg-card shadow-sm">
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-xs sm:text-sm font-medium text-muted-foreground truncate">
+          {{ 'faq.kpi_published' | translate }}
+        </span>
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-emerald-500/10 text-emerald-700 shrink-0">
+          <ng-icon name="lucideCheckCircle2" size="18" />
+        </div>
+      </div>
+      <div class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+        {{ store.stats().published }}
+      </div>
+    </div>
+
+    <!-- Drafts Card -->
+    <div hlmCard class="p-4 sm:p-5 border border-border/80 rounded-xl relative overflow-hidden bg-card shadow-sm">
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-xs sm:text-sm font-medium text-muted-foreground truncate">
+          {{ 'faq.kpi_drafts' | translate }}
+        </span>
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-amber-500/10 text-amber-700 shrink-0">
+          <ng-icon name="lucideClock" size="18" />
+        </div>
+      </div>
+      <div class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+        {{ store.stats().drafts }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Toolbar -->
+  <div class="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
+    <div class="relative w-full sm:w-72 md:w-96">
+      <ng-icon
+        name="lucideSearch"
+        size="16"
+        class="top-1/2 absolute text-muted-foreground -translate-y-1/2 pointer-events-none start-3"
+      />
+      <input
+        hlmInput
+        class="bg-card shadow-sm ps-9 border-border rounded-full focus:ring-2 focus:ring-primary/20 w-full h-9 text-xs sm:text-sm"
+        [placeholder]="'faq.search_placeholder' | translate"
+        [value]="store.searchQuery()"
+        (input)="onSearchInput($event)"
+      />
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
+      <!-- Category Filter Select -->
+      <hlm-select
+        [value]="store.categoryFilter()"
+        (valueChange)="onCategoryFilterChange($event)"
+        [itemToString]="categoryItemToString"
+        class="w-[150px]"
+      >
+        <hlm-select-trigger class="bg-card shadow-sm border-border h-9 text-xs">
+          <hlm-select-value [placeholder]="'faq.filter_category_placeholder' | translate" />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item value="all">{{ 'faq.filter_all_categories' | translate }}</hlm-select-item>
+          @for (cat of availableCategories(); track cat) {
+            <hlm-select-item [value]="cat">{{ getCategoryLabel(cat) }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
+
+      <!-- Status Filter Select -->
+      <hlm-select
+        [value]="store.statusFilter()"
+        (valueChange)="onStatusFilterChange($event)"
+        [itemToString]="statusItemToString"
+        class="w-[140px]"
+      >
+        <hlm-select-trigger class="bg-card shadow-sm border-border h-9 text-xs">
+          <hlm-select-value [placeholder]="'faq.filter_status_placeholder' | translate" />
+        </hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          <hlm-select-item value="all">{{ 'faq.filter_all' | translate }}</hlm-select-item>
+          <hlm-select-item value="published">{{ 'faq.filter_published' | translate }}</hlm-select-item>
+          <hlm-select-item value="draft">{{ 'faq.filter_draft' | translate }}</hlm-select-item>
+        </hlm-select-content>
+      </hlm-select>
+    </div>
+  </div>
+
+  <!-- Drag Reorder Hint Bar (when not searching) -->
+  @if (!store.isFiltering() && store.entries().length > 1) {
+    <p class="text-[11px] text-muted-foreground">
+      {{ 'faq.drag_reorder_hint' | translate }}
+    </p>
+  }
+
+  <!-- FAQ List Component -->
+  <app-faq-list
+    (edit)="openEditDrawer($event)"
+    (createNew)="openCreateDrawer()"
+  />
+
+  <!-- Unified Slide-over Sheet Drawer (Shared for Add & Edit) -->
+  @if (isDrawerOpen()) {
+    <hlm-sheet [side]="sheetSide()" [state]="'open'" (stateChanged)="onDrawerStateChanged($event)">
+      <hlm-sheet-content
+        *hlmSheetPortal="let ctx"
+        class="p-5 sm:p-6 w-full sm:w-[540px] sm:max-w-[600px] h-full overflow-y-auto flex flex-col"
+      >
+        <app-faq-form
+          [entry]="editingEntry()"
+          (saved)="closeDrawer()"
+          (canceled)="closeDrawer()"
+        />
+      </hlm-sheet-content>
+    </hlm-sheet>
+  }
+</div>

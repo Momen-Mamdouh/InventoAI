@@ -1,1 +1,1 @@
-export { purchaseRequestsRoutes, mailboxCallbackRoutes } from './lib/purchase-requests.routes';
+export * from './lib/purchase-requests.routes';

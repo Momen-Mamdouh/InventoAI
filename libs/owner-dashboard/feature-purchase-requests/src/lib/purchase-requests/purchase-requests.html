@@ -1,20 +1,40 @@
-<div class="space-y-6 p-4 md:p-6 lg:p-8 w-full">
+<div
+  class="space-y-6 p-4 md:p-6 lg:p-8 w-full transition-opacity duration-150"
+  [class.opacity-0]="selected()"
+  [class.pointer-events-none]="selected()"
+  [attr.inert]="selected() ? '' : null"
+>
+  <!-- ══════════════════════════════════════════════════════════
+       PAGE HEADER
+  ══════════════════════════════════════════════════════════ -->
   <div class="flex lg:flex-row flex-col lg:justify-between lg:items-center gap-4">
     <div>
-      <div class="flex items-center gap-2 mb-2 text-muted-foreground text-xs">
-        <ng-icon name="lucidePackage" size="14" /> Procurement
-      </div>
-      <h1 hlmH1>Purchase Requests</h1>
+      <nav class="flex items-center gap-1.5 mb-2 font-medium text-muted-foreground text-xs">
+        <ng-icon name="lucidePackage" size="14" />
+        <span>{{ 'purchase_requests.breadcrumb_procurement' | translate }}</span>
+        <ng-icon name="lucideChevronRight" size="14" class="text-muted-foreground/60 rtl:rotate-180" />
+        <span class="font-semibold text-foreground">
+          {{ 'purchase_requests.breadcrumb_requests' | translate }}
+        </span>
+      </nav>
+      <h1 hlmH1 class="text-foreground">{{ 'purchase_requests.title' | translate }}</h1>
       <p hlmMuted class="mt-1">
-        Ask suppliers for quotes, compare their replies, and close the best deal.
+        {{ 'purchase_requests.subtitle' | translate }}
       </p>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-      <button hlmBtn variant="outline" class="gap-2" (click)="showMailbox.set(!showMailbox())">
-        <ng-icon name="lucideSettings2" size="16" /> {{ mailboxStateLabel(mailbox()) }}
+      <button
+        hlmBtn
+        variant="outline"
+        class="gap-2 bg-card hover:bg-accent shadow-xs text-xs font-medium"
+        (click)="showMailbox.set(!showMailbox())"
+      >
+        <ng-icon name="lucideSettings2" size="15" />
+        <span>{{ mailboxStateLabel(mailbox()) }}</span>
       </button>
-      <button hlmBtn class="gap-2" (click)="openCreate()">
-        <ng-icon name="lucidePlus" size="16" /> New purchase request
+      <button hlmBtn class="gap-2 shadow-xs text-xs font-semibold" (click)="openCreate()">
+        <ng-icon name="lucidePlus" size="16" />
+        <span>{{ 'purchase_requests.btn_new' | translate }}</span>
       </button>
     </div>
   </div>
@@ -22,99 +42,198 @@
   @if (error()) {
     <div hlmAlert variant="destructive" class="bg-destructive/10 rounded-xl">
       <ng-icon name="lucideAlertCircle" size="18" />
-      <p hlmAlertDescription class="flex items-center justify-between gap-3">
+      <p hlmAlertDescription class="flex items-center justify-between gap-3 text-xs sm:text-sm">
         <span>{{ error() }}</span>
-        <button class="font-medium text-xs underline shrink-0" (click)="error.set(null)">
-          Dismiss
+        <button
+          class="font-semibold text-xs underline shrink-0 cursor-pointer"
+          (click)="onRefresh()"
+        >
+          {{ 'purchase_requests.btn_refresh' | translate }}
         </button>
       </p>
     </div>
   }
 
-  @if (actionMessage()) {
-    <div hlmAlert class="bg-success/10 text-success rounded-xl text-sm">
-      <ng-icon name="lucideCheckCircle2" size="18" />
-      <p hlmAlertDescription class="text-success flex items-center justify-between gap-3">
-        <span>{{ actionMessage() }}</span>
-        <button class="ms-auto font-medium text-xs underline shrink-0" (click)="actionMessage.set(null)">
-          Dismiss
-        </button>
-      </p>
+  <!-- ══════════════════════════════════════════════════════════
+       KPI CARDS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="gap-3 sm:gap-4 grid grid-cols-2 lg:grid-cols-4">
+    <!-- Total Requests -->
+    <div
+      hlmCard
+      class="!flex !flex-row justify-start !items-center gap-3.5 p-4 w-full min-w-0 text-start bg-card border-border rounded-xl shadow-xs"
+    >
+      <div
+        class="flex flex-shrink-0 justify-center items-center bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl w-12 h-12"
+      >
+        <ng-icon name="lucidePackage" size="22" class="text-indigo-600 dark:text-indigo-400" />
+      </div>
+      <div class="flex flex-col justify-center items-start min-w-0">
+        <span class="w-full font-medium text-muted-foreground text-xs truncate leading-none">
+          {{ 'purchase_requests.kpi_total' | translate }}
+        </span>
+        <span class="mt-1.5 font-bold text-foreground text-2xl leading-none tracking-tight">
+          {{ kpis().total }}
+        </span>
+      </div>
     </div>
-  }
 
+    <!-- In Progress (Sent) -->
+    <div
+      hlmCard
+      class="!flex !flex-row justify-start !items-center gap-3.5 p-4 w-full min-w-0 text-start bg-card border-border rounded-xl shadow-xs"
+    >
+      <div
+        class="flex flex-shrink-0 justify-center items-center bg-blue-50 dark:bg-blue-500/10 rounded-2xl w-12 h-12"
+      >
+        <ng-icon name="lucideMail" size="22" class="text-blue-600 dark:text-blue-400" />
+      </div>
+      <div class="flex flex-col justify-center items-start min-w-0">
+        <span class="w-full font-medium text-muted-foreground text-xs truncate leading-none">
+          {{ 'purchase_requests.kpi_in_progress' | translate }}
+        </span>
+        <span class="mt-1.5 font-bold text-foreground text-2xl leading-none tracking-tight">
+          {{ kpis().inProgress }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Needs Decision (Replied) -->
+    <div
+      hlmCard
+      class="!flex !flex-row justify-start !items-center gap-3.5 p-4 w-full min-w-0 text-start bg-card border-border rounded-xl shadow-xs"
+    >
+      <div
+        class="flex flex-shrink-0 justify-center items-center bg-amber-50 dark:bg-amber-500/10 rounded-2xl w-12 h-12"
+      >
+        <ng-icon name="lucideClock3" size="22" class="text-amber-600 dark:text-amber-400" />
+      </div>
+      <div class="flex flex-col justify-center items-start min-w-0">
+        <span class="w-full font-medium text-muted-foreground text-xs truncate leading-none">
+          {{ 'purchase_requests.kpi_needs_decision' | translate }}
+        </span>
+        <span class="mt-1.5 font-bold text-foreground text-2xl leading-none tracking-tight">
+          {{ kpis().needsDecision }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Confirmed Deals -->
+    <div
+      hlmCard
+      class="!flex !flex-row justify-start !items-center gap-3.5 p-4 w-full min-w-0 text-start bg-card border-border rounded-xl shadow-xs"
+    >
+      <div
+        class="flex flex-shrink-0 justify-center items-center bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl w-12 h-12"
+      >
+        <ng-icon
+          name="lucideCheckCircle2"
+          size="22"
+          class="text-emerald-600 dark:text-emerald-400"
+        />
+      </div>
+      <div class="flex flex-col justify-center items-start min-w-0">
+        <span class="w-full font-medium text-muted-foreground text-xs truncate leading-none">
+          {{ 'purchase_requests.kpi_confirmed' | translate }}
+        </span>
+        <span class="mt-1.5 font-bold text-foreground text-2xl leading-none tracking-tight">
+          {{ kpis().confirmed }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       MAILBOX INTEGRATION CARD (EXPANDABLE)
+  ══════════════════════════════════════════════════════════ -->
   @if (showMailbox() && mailbox(); as mb) {
-    <div hlmCard class="shadow-sm p-5 border-border rounded-2xl">
+    <div hlmCard class="shadow-sm p-5 border-border rounded-2xl bg-card transition-all">
       @if (!mb.isSupported) {
         <div class="flex items-start gap-3">
-          <ng-icon name="lucideShieldCheck" size="20" class="mt-0.5 text-muted-foreground" />
+          <ng-icon name="lucideShieldCheck" size="20" class="mt-0.5 text-muted-foreground shrink-0" />
           <div>
-            <p hlmSmall>Supplier mailbox automation is not configured</p>
-            <p hlmMuted class="mt-1">
-              Purchase requests still work through SMTP and pasted supplier replies.
+            <p hlmSmall class="font-semibold">{{ 'purchase_requests.mailbox_unsupported_title' | translate }}</p>
+            <p hlmMuted class="mt-1 text-xs sm:text-sm">
+              {{ 'purchase_requests.mailbox_unsupported_desc' | translate }}
             </p>
           </div>
         </div>
       } @else if (!mb.isConnected) {
         <div class="flex sm:flex-row flex-col justify-between sm:items-center gap-4">
           <div>
-            <p hlmSmall>Connect Gmail for automatic supplier replies</p>
-            <p hlmMuted class="mt-1">
-              Replies to watched offers are checked automatically. Manual paste remains available.
+            <p hlmSmall class="font-semibold">{{ 'purchase_requests.mailbox_connect_title' | translate }}</p>
+            <p hlmMuted class="mt-1 text-xs sm:text-sm">
+              {{ 'purchase_requests.mailbox_connect_desc' | translate }}
             </p>
           </div>
-          <button hlmBtn class="gap-2" [disabled]="mailboxLoading()" (click)="connectMailbox()">
+          <button
+            hlmBtn
+            size="sm"
+            class="gap-2 text-xs font-semibold shrink-0"
+            [disabled]="mailboxLoading()"
+            (click)="connectMailbox()"
+          >
             @if (mailboxLoading()) {
-              <hlm-spinner />
+              <hlm-spinner class="text-[14px]" />
             } @else {
-              <ng-icon name="lucideMail" size="16" />
+              <ng-icon name="lucideMail" size="14" />
             }
-            Connect Gmail
+            {{ 'purchase_requests.mailbox_btn_connect_gmail' | translate }}
           </button>
         </div>
       } @else {
         <div class="flex lg:flex-row flex-col justify-between lg:items-center gap-4">
           <div class="flex items-start gap-3">
             <div
-              class="flex justify-center items-center bg-emerald-50 dark:bg-emerald-950/30 rounded-xl w-10 h-10"
+              class="flex justify-center items-center bg-emerald-50 dark:bg-emerald-950/30 rounded-xl w-10 h-10 shrink-0"
             >
-              <ng-icon name="lucideMailCheck" size="18" class="text-emerald-600" />
+              <ng-icon name="lucideMailCheck" size="18" class="text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <p hlmSmall>{{ mb.accountEmail }}</p>
-              <p hlmMuted class="mt-1">
+              <p hlmSmall class="font-semibold">{{ mb.accountEmail }}</p>
+              <p hlmMuted class="mt-0.5 text-xs sm:text-sm">
                 @if (mb.status === 'connected') {
-                  Automatic replies are being watched.
+                  {{ 'purchase_requests.mailbox_watching_desc' | translate }}
                 } @else {
-                  {{ mb.lastError || 'Reconnect to resume automatic replies.' }}
+                  {{ mb.lastError || ('purchase_requests.mailbox_btn_reconnect' | translate) }}
                 }
               </p>
             </div>
           </div>
-          <div class="flex flex-wrap gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <button
               hlmBtn
               variant="outline"
-              class="gap-2"
+              size="sm"
+              class="gap-2 text-xs"
               [disabled]="mailboxLoading()"
               (click)="syncMailbox()"
             >
-              <ng-icon name="lucideRefreshCw" size="15" [class.animate-spin]="mailboxLoading()" />
-              Check for replies now
+              <ng-icon name="lucideRefreshCw" size="14" [class.animate-spin]="mailboxLoading()" />
+              {{ 'purchase_requests.mailbox_btn_sync' | translate }}
             </button>
             @if (mb.status !== 'connected') {
-              <button hlmBtn class="gap-2" [disabled]="mailboxLoading()" (click)="connectMailbox()">
-                <ng-icon name="lucideMail" size="15" /> Reconnect
+              <button
+                hlmBtn
+                size="sm"
+                class="gap-2 text-xs"
+                [disabled]="mailboxLoading()"
+                (click)="connectMailbox()"
+              >
+                <ng-icon name="lucideMail" size="14" />
+                {{ 'purchase_requests.mailbox_btn_reconnect' | translate }}
               </button>
             } @else {
               <button
                 hlmBtn
                 variant="outline"
-                class="gap-2 text-destructive"
+                size="sm"
+                class="gap-2 text-xs text-destructive hover:bg-destructive/10 border-destructive/30"
                 [disabled]="mailboxLoading()"
                 (click)="disconnectMailbox()"
               >
-                <ng-icon name="lucideTrash2" size="15" /> Disconnect
+                <ng-icon name="lucideTrash2" size="14" />
+                {{ 'purchase_requests.mailbox_btn_disconnect' | translate }}
               </button>
             }
           </div>
@@ -123,6 +242,9 @@
     </div>
   }
 
+  <!-- ══════════════════════════════════════════════════════════
+       STATUS FILTER TOGGLE TABS
+  ══════════════════════════════════════════════════════════ -->
   <hlm-toggle-group
     type="single"
     [nullable]="false"
@@ -134,86 +256,143 @@
       <button
         hlmToggleGroupItem
         [value]="tab.value"
-        class="h-auto min-w-0 shrink-0 rounded-none border-b-2 border-transparent bg-transparent px-3 py-2.5 font-medium text-sm text-muted-foreground whitespace-nowrap transition-colors hover:bg-transparent data-[state=on]:border-primary data-[state=on]:bg-transparent data-[state=on]:text-primary"
+        class="h-auto min-w-0 shrink-0 rounded-none border-b-2 border-transparent bg-transparent px-3.5 py-2.5 font-medium text-xs sm:text-sm text-muted-foreground whitespace-nowrap transition-colors hover:bg-transparent data-[state=on]:border-primary data-[state=on]:bg-transparent data-[state=on]:text-primary cursor-pointer"
       >
-        {{ tab.label }}
+        {{ tab.key | translate }}
       </button>
     }
   </hlm-toggle-group>
 
-  <div hlmCard class="shadow-sm border-border rounded-2xl overflow-hidden">
-    <div hlmTableContainer class="overflow-x-auto">
-      <table hlmTable class="w-full min-w-[900px] text-sm">
+  <!-- ══════════════════════════════════════════════════════════
+       REQUESTS TABLE
+  ══════════════════════════════════════════════════════════ -->
+  <div hlmCard class="shadow-sm border-border rounded-2xl overflow-hidden bg-card">
+    <div class="overflow-x-auto">
+      <table hlmTable class="w-full min-w-[900px] text-sm text-start border-collapse">
         <thead
           hlmTHead
           class="bg-muted/30 border-border border-b text-muted-foreground text-xs uppercase tracking-wider"
         >
           <tr hlmTr>
-            <th hlmTh class="px-4 py-3 text-start">Request</th>
-            <th hlmTh class="px-4 py-3 text-start">Quantity</th>
-            <th hlmTh class="px-4 py-3 text-start">Suppliers</th>
-            <th hlmTh class="px-4 py-3 text-start">Status</th>
-            <th hlmTh class="px-4 py-3 text-start">Created</th>
-            <th hlmTh class="px-4 py-3 text-end">Action</th>
+            <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
+              <app-table-header-cell
+                [label]="'purchase_requests.col_request' | translate"
+                type="search"
+                [searchPlaceholder]="'purchase_requests.search_request_placeholder' | translate"
+                [searchValue]="colRequestSearch()"
+                (searchChange)="colRequestSearch.set($event)"
+              />
+            </th>
+            <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
+              <app-table-header-cell
+                [label]="'purchase_requests.col_quantity' | translate"
+                type="sort"
+                [sortDirection]="colQuantitySort()"
+                (sortChange)="colQuantitySort.set($event)"
+              />
+            </th>
+            <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
+              <app-table-header-cell
+                [label]="'purchase_requests.col_suppliers' | translate"
+                type="search"
+                [searchPlaceholder]="'purchase_requests.search_supplier_placeholder' | translate"
+                [searchValue]="colSuppliersSearch()"
+                (searchChange)="colSuppliersSearch.set($event)"
+              />
+            </th>
+            <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
+              <app-table-header-cell
+                [label]="'purchase_requests.col_status' | translate"
+                type="filter"
+                [filterOptions]="statusFilterOptions()"
+                [selectedFilter]="colStatusFilter()"
+                (filterChange)="colStatusFilter.set($event)"
+              />
+            </th>
+            <th hlmTh class="px-4 py-3 text-start whitespace-nowrap">
+              <app-table-header-cell
+                [label]="'purchase_requests.col_created' | translate"
+                type="sort"
+                [sortDirection]="colCreatedSort()"
+                (sortChange)="colCreatedSort.set($event)"
+              />
+            </th>
+            <th hlmTh class="px-4 py-3 text-end whitespace-nowrap">
+              <app-table-header-cell
+                [label]="'purchase_requests.col_actions' | translate"
+                type="none"
+                align="end"
+              />
+            </th>
           </tr>
         </thead>
         <tbody hlmTBody class="divide-y divide-border/60">
-          @if (loading()) {
+          @if (loading() && displayedRequests().length === 0) {
             @for (row of [1, 2, 3, 4, 5]; track row) {
               <tr hlmTr>
-                @for (cell of [1, 2, 3, 4, 5, 6]; track cell) {
-                  <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-24 h-4" /></td>
-                }
+                <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-36 h-4" /></td>
+                <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-16 h-4" /></td>
+                <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-24 h-4" /></td>
+                <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-20 h-5 rounded-full" /></td>
+                <td hlmTd class="px-4 py-4"><hlm-skeleton class="w-28 h-4" /></td>
+                <td hlmTd class="px-4 py-4 text-end"><hlm-skeleton class="w-8 h-8 rounded-lg ms-auto" /></td>
               </tr>
             }
-          } @else if (requests().length === 0) {
+          } @else if (displayedRequests().length === 0) {
             <tr hlmTr>
               <td hlmTd colspan="6" class="p-16 text-center">
                 <app-empty-state
                   icon="lucidePackage"
-                  title="No purchase requests"
-                  description="Start a request when you need supplier quotes for a product variant."
+                  [title]="'purchase_requests.empty_title' | translate"
+                  [description]="'purchase_requests.empty_desc' | translate"
                 >
-                  <button hlmBtn variant="outline" class="gap-2 mt-1" (click)="openCreate()">
-                    <ng-icon name="lucidePlus" size="15" /> Create request
+                  <button hlmBtn variant="outline" size="sm" class="gap-2 mt-3" (click)="openCreate()">
+                    <ng-icon name="lucidePlus" size="15" />
+                    {{ 'purchase_requests.empty_btn_create' | translate }}
                   </button>
                 </app-empty-state>
               </td>
             </tr>
           } @else {
-            @for (request of requests(); track request.id) {
+            @for (req of displayedRequests(); track req.id) {
               <tr
                 hlmTr
-                class="hover:bg-muted/30 transition-colors cursor-pointer"
-                (click)="openDetail(request.id)"
+                class="hover:bg-muted/30 transition-colors cursor-pointer group"
+                (click)="openDetail(req.id)"
               >
-                <td hlmTd class="px-4 py-4">
-                  <div class="font-medium text-foreground">{{ request.productTitle }}</div>
-                  @if (request.variantLabel) {
-                    <div class="mt-1 text-muted-foreground text-xs">{{ request.variantLabel }}</div>
+                <td hlmTd class="px-4 py-4 whitespace-nowrap">
+                  <div class="font-medium text-foreground group-hover:text-primary transition-colors">
+                    {{ req.productTitle }}
+                  </div>
+                  @if (req.variantLabel) {
+                    <div class="mt-0.5 text-muted-foreground text-xs">{{ req.variantLabel }}</div>
                   }
                 </td>
-                <td hlmTd class="px-4 py-4 text-muted-foreground">{{ request.quantity }}</td>
-                <td hlmTd class="px-4 py-4">
-                  <span class="font-medium">{{ request.receivedCount }}</span
-                  ><span class="text-muted-foreground"> / {{ request.offerCount }} replied</span>
+                <td hlmTd class="px-4 py-4 text-muted-foreground whitespace-nowrap">
+                  {{ req.quantity }} {{ 'purchase_requests.units' | translate }}
                 </td>
-                <td hlmTd class="px-4 py-4">
-                  <span hlmBadge [class]="statusClass(request.status)">{{
-                    request.status | titlecase
-                  }}</span>
+                <td hlmTd class="px-4 py-4 whitespace-nowrap">
+                  <span class="font-semibold text-foreground">{{ req.receivedCount }}</span>
+                  <span class="text-muted-foreground"> / {{ req.offerCount }}</span>
                 </td>
-                <td hlmTd class="px-4 py-4 text-muted-foreground">
-                  {{ request.createdAt | date: 'mediumDate' }}
+                <td hlmTd class="px-4 py-4 whitespace-nowrap">
+                  <span hlmBadge [class]="statusClass(req.status)" class="text-[11px]">
+                    {{ ('purchase_requests.tab_' + req.status) | translate }}
+                  </span>
                 </td>
-                <td hlmTd class="px-4 py-4 text-end">
+                <td hlmTd class="px-4 py-4 text-muted-foreground whitespace-nowrap">
+                  {{ req.createdAt | date: 'mediumDate' }}
+                </td>
+                <td hlmTd class="px-4 py-4 text-end whitespace-nowrap">
                   <button
                     hlmBtn
                     variant="ghost"
                     size="icon"
-                    (click)="openDetail(request.id); $event.stopPropagation()"
+                    (click)="openDetail(req.id); $event.stopPropagation()"
+                    [attr.aria-label]="'purchase_requests.action_view' | translate"
+                    class="h-8 w-8 text-muted-foreground group-hover:text-foreground"
                   >
-                    <ng-icon name="lucideChevronRight" size="17" />
+                    <ng-icon name="lucideChevronRight" size="16" class="rtl:rotate-180" />
                   </button>
                 </td>
               </tr>
@@ -222,659 +401,69 @@
         </tbody>
       </table>
     </div>
-    <div class="flex justify-between items-center gap-3 p-4 border-border border-t text-sm">
-      <span class="text-muted-foreground">{{ total() }} total requests</span>
+
+    <!-- Pagination Footer -->
+    <div class="flex sm:flex-row flex-col justify-between items-center gap-3 p-4 border-t border-border text-xs sm:text-sm">
+      <span class="text-muted-foreground">
+        {{ 'purchase_requests.total_count' | translate: { count: total() } }}
+      </span>
       <app-pagination
         [currentPage]="page()"
         [totalPages]="totalPages()"
-        (pageChange)="page.set($event); load()"
+        (pageChange)="onPageChange($event)"
       />
     </div>
   </div>
 </div>
 
-@if (selected(); as request) {
-  <hlm-sheet [state]="'open'" side="right" (stateChanged)="onDetailStateChanged($event)">
+<!-- Slide-over Request Details Drawer -->
+@if (selected()) {
+  <hlm-sheet [side]="sheetSide()" [state]="'open'" (stateChanged)="onDetailDrawerStateChanged($event)">
     <hlm-sheet-content
       *hlmSheetPortal="let ctx"
-      [showCloseButton]="false"
-      class="flex flex-col gap-0 p-0 w-full sm:max-w-5xl overflow-y-auto"
+      class="flex flex-col gap-0 p-0 !w-full !max-w-full sm:!max-w-2xl md:!max-w-3xl lg:!max-w-4xl xl:!max-w-5xl h-full bg-background border-s border-border shadow-2xl overflow-y-auto"
     >
-    <div
-      class="top-0 z-10 sticky flex justify-between items-center gap-3 bg-background/95 backdrop-blur px-5 py-4 border-border border-b"
-    >
-      <div class="min-w-0">
-        <div class="flex items-center gap-2 mb-1">
-          <span hlmBadge [class]="statusClass(request.status)">{{
-            request.status | titlecase
-          }}</span>
-          @if (request.draftStatus === 'fallback') {
-            <span hlmMuted>Fallback email</span>
-          }
-        </div>
-        <h2 hlmH2 class="truncate" dir="auto">{{ request.productTitle }}</h2>
-        <p hlmMuted>
-          {{ request.variantLabel || 'Default variant' }} · {{ request.quantity }} units
-        </p>
-      </div>
-      <div class="flex items-center gap-1">
-        <button hlmBtn variant="ghost" size="icon" (click)="refreshDetail()" aria-label="Refresh">
-          <ng-icon name="lucideRefreshCw" size="17" />
-        </button>
-        <button hlmBtn variant="ghost" size="icon" (click)="closeDetail()" aria-label="Close">
-          <ng-icon name="lucideX" size="19" />
-        </button>
-      </div>
-    </div>
-
-    <div class="space-y-6 p-5">
-      <div class="gap-3 grid grid-cols-2 md:grid-cols-4">
-        <div class="p-4 border border-border rounded-xl">
-          <p hlmMuted>Suppliers</p>
-          <p class="mt-1">{{ request.offerCount }}</p>
-        </div>
-        <div class="p-4 border border-border rounded-xl">
-          <p hlmMuted>Replies</p>
-          <p class="mt-1">{{ request.receivedCount }}</p>
-        </div>
-        <div class="p-4 border border-border rounded-xl">
-          <p hlmMuted>Deadline</p>
-          <p class="mt-1">
-            {{ request.neededWithinDays ? request.neededWithinDays + 'd' : '—' }}
-          </p>
-        </div>
-        <div class="p-4 border border-border rounded-xl">
-          <p hlmMuted>Created</p>
-          <p class="mt-1">{{ request.createdAt | date: 'mediumDate' }}</p>
-        </div>
-      </div>
-
-      <div class="flex flex-wrap gap-2">
-        @if (request.status === 'draft') {
-          <button hlmBtn variant="outline" class="gap-2" (click)="openEdit()">
-            <ng-icon name="lucideEdit3" size="15" /> Edit draft
-          </button>
-          <button hlmBtn class="gap-2" [disabled]="saving()" (click)="send()">
-            <ng-icon name="lucideSend" size="15" /> Send request
-          </button>
-        } @else if (request.status !== 'confirmed' && request.status !== 'cancelled') {
-          <button hlmBtn variant="outline" class="gap-2" [disabled]="saving()" (click)="send()">
-            <ng-icon name="lucideSend" size="15" /> Send / retry unsent
-          </button>
-        }
-        @if (request.status !== 'confirmed' && request.status !== 'cancelled') {
-          <button
-            hlmBtn
-            variant="outline"
-            class="gap-2 text-destructive"
-            (click)="showCancelConfirm.set(true)"
-          >
-            <ng-icon name="lucideTrash2" size="15" /> Cancel
-          </button>
-        }
-      </div>
-
-      <section hlmCard class="p-5 rounded-2xl">
-        <div class="flex justify-between items-start gap-4 mb-4">
-          <div>
-            <p hlmSmall>Supplier offers</p>
-            <p hlmMuted class="mt-1">
-              Offers are returned ranked best-first. Unpriced offers stay last.
-            </p>
-          </div>
-          @if (request.status === 'replied') {
-            <span class="flex items-center gap-1 font-medium text-amber-600 text-xs"
-              ><ng-icon name="lucideClock3" size="14" /> Decision needed</span
-            >
-          }
-        </div>
-        <div class="space-y-3">
-          @for (offer of request.offers; track offer.id; let i = $index) {
-            <div
-              class="p-4 border border-border rounded-xl"
-              [class.ring-1]="offer.isRecommended"
-              [class.border-primary]="offer.isRecommended"
-            >
-              <div class="flex xl:flex-row flex-col xl:items-center gap-4">
-                <div class="flex-1 min-w-0">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <button class="font-semibold hover:underline" (click)="openSupplier(offer)">
-                      {{ offer.supplierName }}
-                    </button>
-                    @if (offer.isRecommended) {
-                      <span hlmBadge class="bg-primary/10 text-[11px] text-primary"
-                        >Recommended</span
-                      >
-                    }
-                    @if (offer.isCheapest) {
-                      <span
-                        hlmBadge
-                        class="bg-emerald-50 dark:bg-emerald-950/30 text-[11px] text-emerald-700 dark:text-emerald-300"
-                        >Cheapest</span
-                      >
-                    }
-                    @if (offer.isFastest) {
-                      <span
-                        hlmBadge
-                        class="bg-blue-50 dark:bg-blue-950/30 text-[11px] text-blue-700 dark:text-blue-300"
-                        >Fastest</span
-                      >
-                    }
-                    @if (offer.isLate) {
-                      <span
-                        hlmBadge
-                        class="bg-rose-50 dark:bg-rose-950/30 text-[11px] text-rose-700 dark:text-rose-300"
-                        >Late</span
-                      >
-                    }
-                  </div>
-                  <p hlmMuted class="mt-1">{{ offer.supplierEmail }}</p>
-                </div>
-                <div class="gap-4 grid grid-cols-2 sm:grid-cols-4 min-w-0 xl:min-w-[430px]">
-                  <div>
-                    <p hlmMuted>Unit price</p>
-                    <p class="mt-1">
-                      {{
-                        offer.unitAmount === null
-                          ? '—'
-                          : (formatMoney(offer.unitAmount) | currency: 'EGP' : 'symbol' : '1.2-2')
-                      }}
-                    </p>
-                  </div>
-                  <div>
-                    <p hlmMuted>Qty</p>
-                    <p class="mt-1">{{ offer.quantity ?? request.quantity }}</p>
-                  </div>
-                  <div>
-                    <p hlmMuted>Delivery</p>
-                    <p class="mt-1">
-                      {{ offer.deliveryDays === null ? '—' : offer.deliveryDays + 'd' }}
-                    </p>
-                  </div>
-                  <div>
-                    <p hlmMuted>Total</p>
-                    <p class="mt-1">
-                      {{
-                        offer.totalAmount === null
-                          ? '—'
-                          : (formatMoney(offer.totalAmount) | currency: 'EGP' : 'symbol' : '1.2-2')
-                      }}
-                    </p>
-                  </div>
-                </div>
-                <div class="flex xl:justify-end items-center gap-1 xl:w-[250px]">
-                  <span hlmBadge [class]="offerStatusClass(offer.status)">{{
-                    offer.status | titlecase
-                  }}</span>
-                  <button
-                    hlmBtn
-                    variant="ghost"
-                    size="icon"
-                    [hlmTooltip]="'purchase_requests.view_supplier' | translate"
-                    [attr.aria-label]="'purchase_requests.view_supplier' | translate"
-                    (click)="openSupplier(offer)"
-                  >
-                    <ng-icon name="lucideExternalLink" size="15" />
-                  </button>
-                  @if (
-                    offer.status !== 'won' &&
-                    offer.status !== 'declined' &&
-                    request.status !== 'confirmed' &&
-                    request.status !== 'cancelled'
-                  ) {
-                    <button
-                      hlmBtn
-                      variant="ghost"
-                      size="icon"
-                      [hlmTooltip]="'purchase_requests.edit_numbers' | translate"
-                      [attr.aria-label]="'purchase_requests.edit_numbers' | translate"
-                      (click)="openOfferEdit(offer)"
-                    >
-                      <ng-icon name="lucideEdit3" size="15" />
-                    </button>
-                  }
-                  @if (
-                    !offer.isWatched &&
-                    offer.status === 'awaiting' &&
-                    request.status !== 'confirmed' &&
-                    request.status !== 'cancelled'
-                  ) {
-                    <button
-                      hlmBtn
-                      variant="ghost"
-                      size="icon"
-                      [hlmTooltip]="'purchase_requests.paste_reply' | translate"
-                      [attr.aria-label]="'purchase_requests.paste_reply' | translate"
-                      (click)="openReply(offer)"
-                    >
-                      <ng-icon name="lucideMail" size="15" />
-                    </button>
-                  }
-                  @if (
-                    offer.unitAmount !== null &&
-                    request.status !== 'confirmed' &&
-                    request.status !== 'cancelled' &&
-                    offer.status !== 'declined'
-                  ) {
-                    <button
-                      hlmBtn
-                      size="sm"
-                      class="gap-1.5"
-                      [disabled]="saving()"
-                      (click)="confirmOffer(offer)"
-                    >
-                      <ng-icon name="lucideCheck" size="14" /> Confirm
-                    </button>
-                  }
-                </div>
-              </div>
-              @if (offer.extractionStatus === 'failed' && offer.rawReply) {
-                <div hlmAlert class="bg-warning/10 mt-4 text-xs">
-                  <p hlmAlertTitle class="text-warning font-semibold">
-                    Could not read the quote automatically
-                  </p>
-                  <p hlmAlertDescription class="text-warning/80">
-                    Open “Edit numbers” and enter the supplier's price, quantity, and delivery time.
-                  </p>
-                  <pre
-                    class="mt-2 max-h-28 overflow-auto text-muted-foreground text-xs whitespace-pre-wrap"
-                    >{{ offer.rawReply }}</pre
-                  >
-                </div>
-              }
-              @if (offer.notes) {
-                <p hlmMuted class="mt-3">
-                  <span class="font-medium text-foreground">Note:</span> {{ offer.notes }}
-                </p>
-              }
-            </div>
-          }
-        </div>
-      </section>
-
-      <section hlmCard class="p-5 rounded-2xl">
-        <div class="flex justify-between items-center gap-3 mb-4">
-          <div>
-            <p hlmSmall>Email draft</p>
-            <p hlmMuted class="mt-1">{{ request.subject }}</p>
-          </div>
-          @if (request.status === 'draft') {
-            <button hlmBtn variant="ghost" size="sm" class="gap-1.5" (click)="openEdit()">
-              <ng-icon name="lucideEdit3" size="14" /> Edit
-            </button>
-          }
-        </div>
-        <div
-          class="bg-muted/30 p-4 border border-border rounded-xl text-sm leading-6 whitespace-pre-wrap"
-        >
-          {{ request.body }}
-        </div>
-        @if (request.note) {
-          <p hlmMuted class="mt-3">
-            <span class="font-medium">Internal note:</span> {{ request.note }}
-          </p>
-        }
-      </section>
-    </div>
+      <app-purchase-request-details
+        [request]="selected()"
+        (closed)="closeDetail()"
+      />
     </hlm-sheet-content>
   </hlm-sheet>
 }
 
+<!-- Create Purchase Request Drawer/Modal -->
 @if (showCreate()) {
-  <hlm-dialog [state]="'open'" (stateChanged)="onCreateStateChanged($event)">
-    <hlm-dialog-content
-      *brnDialogContent="let ctx"
-      class="flex flex-col gap-0 p-0 sm:max-w-2xl max-h-[100dvh] sm:max-h-[90vh] overflow-hidden"
-    >
-      <hlm-dialog-header class="p-6 pb-4">
-        <h3 hlmDialogTitle>New purchase request</h3>
-        <p hlmDialogDescription>
-          Select a variant and active suppliers. The server will create the draft email.
-        </p>
-      </hlm-dialog-header>
-      <div class="flex-1 min-h-0 overflow-y-auto px-6 py-1">
-        @if (createLoading()) {
-          <div class="space-y-4">
-            <hlm-skeleton class="w-full h-10" /><hlm-skeleton class="w-full h-10" /><hlm-skeleton
-              class="w-full h-24"
-            />
-          </div>
-        } @else {
-      <div class="gap-4 grid sm:grid-cols-2">
-        <div class="space-y-1">
-          <label hlmLabel for="createProductSelect" class="font-medium text-sm">Product</label>
-          <hlm-select
-            [value]="createProductId()"
-            (valueChange)="onCreateProductChange($any($event))"
-            [itemToString]="productItemToString"
-            class="w-full"
-          >
-            <hlm-select-trigger buttonId="createProductSelect" class="w-full h-10 bg-background">
-              <hlm-select-value placeholder="Select product" />
-            </hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal>
-              @for (product of createProducts(); track product.id) {
-                <hlm-select-item [value]="product.id">{{ product.title }}</hlm-select-item>
-              }
-            </hlm-select-content>
-          </hlm-select>
-        </div>
-        <div class="space-y-1">
-          <label hlmLabel for="createVariantSelect" class="font-medium text-sm">Variant</label>
-          <hlm-select
-            [value]="createVariantId"
-            (valueChange)="createVariantId = $any($event)"
-            [itemToString]="variantItemToString"
-            class="w-full"
-          >
-            <hlm-select-trigger buttonId="createVariantSelect" class="w-full h-10 bg-background">
-              <hlm-select-value placeholder="Select variant" />
-            </hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal>
-              @for (variant of selectedVariantOptions(); track variant.id) {
-                <hlm-select-item [value]="variant.id">
-                  {{ variant.sku }} — {{ variantLabel(variant.attributeValues) }}
-                </hlm-select-item>
-              }
-            </hlm-select-content>
-          </hlm-select>
-        </div>
-        <label hlmLabel class="font-medium text-sm"
-          >Quantity<input
-            hlmInput
-            type="number"
-            min="1"
-            [(ngModel)]="createQuantity"
-            class="mt-1 w-full"
-        /></label>
-        <label hlmLabel class="font-medium text-sm"
-          >Needed within days<input
-            hlmInput
-            type="number"
-            min="1"
-            max="365"
-            [(ngModel)]="createDeadline"
-            placeholder="Optional"
-            class="mt-1 w-full"
-        /></label>
-      </div>
-      <div class="mt-5">
-        <p hlmSmall class="mb-2">Active suppliers</p>
-        <div
-          class="gap-2 grid sm:grid-cols-2 p-2 border border-border rounded-xl max-h-48 overflow-y-auto"
-        >
-          @for (supplier of createSuppliers(); track supplier.id) {
-            <label
-              class="flex items-center gap-3 hover:bg-muted/40 p-3 rounded-lg cursor-pointer"
-              [for]="'create-supplier-' + supplier.id"
-              ><hlm-checkbox
-                [inputId]="'create-supplier-' + supplier.id"
-                [checked]="createSupplierIds.includes(supplier.id)"
-                (checkedChange)="toggleCreateSupplier(supplier.id)"
-              /><span class="min-w-0"
-                ><span class="block font-medium truncate">{{ supplier.name }}</span
-                ><span class="block text-muted-foreground text-xs truncate">{{
-                  supplier.contactEmail
-                }}</span></span
-              ></label
-            >
-          }
-        </div>
-      </div>
-      <label hlmLabel class="block mt-5 font-medium text-sm"
-        >Note
-        <textarea
-          hlmTextarea
-          class="bg-background mt-1 px-3 py-2 border border-input rounded-md w-full min-h-20 text-sm"
-          [(ngModel)]="createNote"
-          maxlength="500"
-          placeholder="Optional steer for the email, e.g. ask about bulk pricing"
-        ></textarea>
-      </label>
-        }
-      </div>
-      @if (!createLoading()) {
-        <hlm-dialog-footer class="p-6 pt-4 border-t">
-          <button hlmBtn variant="outline" (click)="showCreate.set(false)">Cancel</button>
-          <button
-            hlmBtn
-            [disabled]="saving() || !createVariantId || createSupplierIds.length === 0"
-            (click)="createRequest()"
-          >
-            {{ saving() ? 'Creating…' : 'Create draft' }}
-          </button>
-        </hlm-dialog-footer>
-      }
-    </hlm-dialog-content>
-  </hlm-dialog>
+  <app-purchase-request-create
+    [open]="true"
+    (created)="onRequestCreated($event)"
+    (closed)="closeCreate()"
+  />
 }
 
-@if (showEdit() && selected(); as request) {
-  <hlm-dialog [state]="'open'" (stateChanged)="onEditStateChanged($event)">
-    <hlm-dialog-content
-      *brnDialogContent="let ctx"
-      class="flex flex-col gap-0 p-0 sm:max-w-3xl max-h-[100dvh] sm:max-h-[90vh] overflow-hidden"
-    >
-      <hlm-dialog-header class="p-6 pb-4">
-        <h3 hlmDialogTitle>Edit purchase request</h3>
-        <p hlmDialogDescription>Only drafts can be edited.</p>
-      </hlm-dialog-header>
-      <div class="flex-1 min-h-0 overflow-y-auto px-6 py-1">
-    <div class="space-y-4">
-      <label hlmLabel class="block font-medium text-sm"
-        >Subject<input hlmInput [(ngModel)]="editSubject" class="mt-1 w-full" /></label
-      ><label hlmLabel class="block font-medium text-sm"
-        >Body<textarea
-          hlmTextarea
-          class="bg-background mt-1 px-3 py-2 border border-input rounded-md w-full min-h-48 text-sm"
-          [(ngModel)]="editBody"
-        ></textarea>
-      </label>
-      <div class="gap-4 grid sm:grid-cols-2">
-        <label hlmLabel class="font-medium text-sm"
-          >Quantity<input
-            hlmInput
-            type="number"
-            min="1"
-            [(ngModel)]="editQuantity"
-            class="mt-1 w-full" /></label
-        ><label hlmLabel class="font-medium text-sm"
-          >Needed within days<input
-            hlmInput
-            type="number"
-            min="1"
-            max="365"
-            [(ngModel)]="editDeadline"
-            class="mt-1 w-full"
-        /></label>
-      </div>
-      <label hlmLabel class="block font-medium text-sm"
-        >Note<textarea
-          hlmTextarea
-          class="bg-background mt-1 px-3 py-2 border border-input rounded-md w-full min-h-20 text-sm"
-          [(ngModel)]="editNote"
-        ></textarea>
-      </label>
-    </div>
-    <div class="mt-6">
-      <p hlmSmall class="mb-2">Recipients</p>
-      <div
-        class="gap-2 grid sm:grid-cols-2 p-2 border border-border rounded-xl max-h-48 overflow-y-auto"
-      >
-        @for (supplier of createSuppliers(); track supplier.id) {
-          <label
-            class="flex items-center gap-3 hover:bg-muted/40 p-3 rounded-lg cursor-pointer"
-            [for]="'edit-supplier-' + supplier.id"
-            ><hlm-checkbox
-              [inputId]="'edit-supplier-' + supplier.id"
-              [checked]="editSupplierIds.includes(supplier.id)"
-              (checkedChange)="
-                editSupplierIds = editSupplierIds.includes(supplier.id)
-                  ? editSupplierIds.filter((id) => id !== supplier.id)
-                  : [...editSupplierIds, supplier.id]
-              "
-            /><span
-              ><span class="block font-medium">{{ supplier.name }}</span
-              ><span class="block text-muted-foreground text-xs">{{
-                supplier.contactEmail
-              }}</span></span
-            ></label
-          >
-        }
-      </div>
-    </div>
-      </div>
-      <hlm-dialog-footer class="p-6 pt-4 border-t">
-        <button hlmBtn variant="outline" (click)="showEdit.set(false)">Cancel</button>
-        <button hlmBtn [disabled]="saving()" (click)="saveEdit()">
-          {{ saving() ? 'Saving…' : 'Save draft' }}
-        </button>
-      </hlm-dialog-footer>
-    </hlm-dialog-content>
-  </hlm-dialog>
-}
-
-@if (showReply() && selectedOffer(); as offer) {
-  <hlm-dialog [state]="'open'" (stateChanged)="onReplyStateChanged($event)">
-    <hlm-dialog-content *brnDialogContent="let ctx" class="flex flex-col gap-0 p-0 sm:max-w-2xl">
-      <hlm-dialog-header class="p-6 pb-4">
-        <h3 hlmDialogTitle>Paste {{ offer.supplierName }}'s reply</h3>
-        <p hlmDialogDescription>
-          Paste the whole email. The server extracts the quote and keeps the original reply.
-        </p>
-      </hlm-dialog-header>
-      <div class="px-6 pb-2">
-        <textarea
-          hlmTextarea
-          class="bg-background p-3 border border-input rounded-xl w-full min-h-64 text-sm"
-          [(ngModel)]="replyBody"
-          placeholder="Paste the supplier email here…"
-        ></textarea>
-      </div>
-      <hlm-dialog-footer class="p-6 pt-4 border-t">
-        <button hlmBtn variant="outline" (click)="showReply.set(false)">Cancel</button>
-        <button hlmBtn [disabled]="saving() || !replyBody.trim()" (click)="pasteReply()">
-          {{ saving() ? 'Reading…' : 'Save supplier reply' }}
-        </button>
-      </hlm-dialog-footer>
-    </hlm-dialog-content>
-  </hlm-dialog>
-}
-
-@if (showOfferEdit() && selectedOffer(); as offer) {
-  <hlm-dialog [state]="'open'" (stateChanged)="onOfferEditStateChanged($event)">
-    <hlm-dialog-content *brnDialogContent="let ctx" class="flex flex-col gap-0 p-0 sm:max-w-xl">
-      <hlm-dialog-header class="p-6 pb-4">
-        <h3 hlmDialogTitle>Correct {{ offer.supplierName }}'s offer</h3>
-        <p hlmDialogDescription>
-          Enter unit price in EGP. The API expects minor units, so the form converts it automatically.
-        </p>
-      </hlm-dialog-header>
-      <div class="px-6 pb-2">
-    <div class="gap-4 grid sm:grid-cols-2 mt-5">
-      <label hlmLabel class="font-medium text-sm"
-        >Unit price (EGP)<input
-          hlmInput
-          type="number"
-          min="0.01"
-          step="0.01"
-          [(ngModel)]="offerUnitMajor"
-          class="mt-1 w-full" /></label
-      ><label hlmLabel class="font-medium text-sm"
-        >Supplier quantity<input
-          hlmInput
-          type="number"
-          min="1"
-          [(ngModel)]="offerQuantity"
-          class="mt-1 w-full" /></label
-      ><label hlmLabel class="font-medium text-sm"
-        >Delivery days<input
-          hlmInput
-          type="number"
-          min="0"
-          [(ngModel)]="offerDeliveryDays"
-          class="mt-1 w-full"
-      /></label>
-    </div>
-    <label hlmLabel class="block mt-4 font-medium text-sm"
-      >Notes<textarea
-        hlmTextarea
-        class="bg-background mt-1 px-3 py-2 border border-input rounded-md w-full min-h-20 text-sm"
-        [(ngModel)]="offerNotes"
-      ></textarea>
-    </label>
-      </div>
-      <hlm-dialog-footer class="p-6 pt-4 border-t">
-        <button hlmBtn variant="outline" (click)="showOfferEdit.set(false)">Cancel</button>
-        <button hlmBtn [disabled]="saving()" (click)="saveOffer()">
-          {{ saving() ? 'Saving…' : 'Save numbers' }}
-        </button>
-      </hlm-dialog-footer>
-    </hlm-dialog-content>
-  </hlm-dialog>
-}
-
-@if (showCancelConfirm()) {
-  <hlm-alert-dialog [state]="'open'" (stateChanged)="onCancelConfirmStateChanged($event)">
-    <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
-      <hlm-alert-dialog-header>
-        <h2 hlmAlertDialogTitle>Cancel this purchase request?</h2>
-        <p hlmAlertDialogDescription>
-          This is terminal. Suppliers who already received the request are not contacted again.
-        </p>
-      </hlm-alert-dialog-header>
-      <hlm-alert-dialog-footer>
-        <button hlmAlertDialogCancel (click)="showCancelConfirm.set(false)">Keep request</button>
-        <button
-          hlmAlertDialogAction
-          class="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-          [disabled]="saving()"
-          (click)="cancel()"
-        >
-          Cancel request
-        </button>
-      </hlm-alert-dialog-footer>
-    </hlm-alert-dialog-content>
-  </hlm-alert-dialog>
-}
-
-@if (offerToConfirm(); as offer) {
-  <hlm-alert-dialog [state]="'open'" (stateChanged)="onConfirmOfferStateChanged($event)">
-    <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
-      <hlm-alert-dialog-header>
-        <h2 hlmAlertDialogTitle>Confirm {{ offer.supplierName }} as the winning supplier?</h2>
-        <p hlmAlertDialogDescription>
-          This request moves to confirmed and other offers are closed out.
-        </p>
-      </hlm-alert-dialog-header>
-      <hlm-alert-dialog-footer>
-        <button hlmAlertDialogCancel [disabled]="saving()" (click)="cancelConfirmOffer()">Cancel</button>
-        <button hlmAlertDialogAction [disabled]="saving()" (click)="proceedConfirmOffer()">
-          {{ saving() ? 'Confirming…' : 'Confirm supplier' }}
-        </button>
-      </hlm-alert-dialog-footer>
-    </hlm-alert-dialog-content>
-  </hlm-alert-dialog>
-}
-
+<!-- Alert Dialog: Disconnect Mailbox Confirmation -->
 @if (showDisconnectMailboxConfirm()) {
-  <hlm-alert-dialog [state]="'open'" (stateChanged)="onDisconnectMailboxStateChanged($event)">
+  <hlm-alert-dialog [state]="'open'" (stateChanged)="$event === 'closed' ? showDisconnectMailboxConfirm.set(false) : null">
     <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
       <hlm-alert-dialog-header>
-        <h2 hlmAlertDialogTitle>Disconnect the mailbox?</h2>
-        <p hlmAlertDialogDescription>Supplier replies can still be pasted manually.</p>
+        <h2 hlmAlertDialogTitle class="text-base font-bold text-foreground">
+          {{ 'purchase_requests.mailbox_disconnect_title' | translate }}
+        </h2>
+        <p hlmAlertDialogDescription class="text-xs sm:text-sm text-muted-foreground mt-1">
+          {{ 'purchase_requests.mailbox_disconnect_desc' | translate }}
+        </p>
       </hlm-alert-dialog-header>
-      <hlm-alert-dialog-footer>
-        <button hlmAlertDialogCancel [disabled]="mailboxLoading()" (click)="cancelDisconnectMailbox()">
-          Keep connected
+      <hlm-alert-dialog-footer class="flex items-center justify-end gap-2 pt-4">
+        <button hlmAlertDialogCancel size="sm" class="h-9 text-xs" [disabled]="mailboxLoading()" (click)="showDisconnectMailboxConfirm.set(false)">
+          {{ 'purchase_requests.mailbox_disconnect_keep' | translate }}
         </button>
         <button
           hlmAlertDialogAction
-          class="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+          size="sm"
+          class="h-9 text-xs bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold"
           [disabled]="mailboxLoading()"
           (click)="proceedDisconnectMailbox()"
         >
-          {{ mailboxLoading() ? 'Disconnecting…' : 'Disconnect' }}
+          {{ 'purchase_requests.mailbox_disconnect_confirm' | translate }}
         </button>
       </hlm-alert-dialog-footer>
     </hlm-alert-dialog-content>

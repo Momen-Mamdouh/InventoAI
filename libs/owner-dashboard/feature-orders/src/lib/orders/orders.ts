@@ -3,13 +3,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
 import { CurrencyPipe, NgClass } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -31,14 +31,7 @@ import {
   lucideMinus,
   lucideTruck,
   lucideX,
-  lucidePackageCheck,
   lucidePackage,
-  lucideMapPin,
-  lucideUser,
-  lucideMail,
-  lucidePhone,
-  lucideFileText,
-  lucideSave,
   lucideLoader2,
   lucideAlertCircle,
   lucideBan,
@@ -49,26 +42,42 @@ import {
 } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
-import { HlmCheckboxImports } from '@spartan/helm/checkbox';
+import { HlmCheckbox } from '@spartan/helm/checkbox';
 import { HlmSpinner } from '@spartan/helm/spinner';
-import { HlmCardImports } from '@spartan/helm/card';
-import { HlmDropdownMenuImports } from '@spartan/helm/dropdown-menu';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmLabelImports } from '@spartan/helm/label';
-import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmCard } from '@spartan/helm/card';
+import {
+  HlmDropdownMenu,
+  HlmDropdownMenuItem,
+  HlmDropdownMenuSeparator,
+  HlmDropdownMenuTrigger,
+} from '@spartan/helm/dropdown-menu';
+import { HlmInput } from '@spartan/helm/input';
+import {
+  HlmSelect,
+  HlmSelectContent,
+  HlmSelectItem,
+  HlmSelectPortal,
+  HlmSelectTrigger,
+  HlmSelectValue,
+} from '@spartan/helm/select';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
-import { HlmTextareaImports } from '@spartan/helm/textarea';
-import { HlmTableImports } from '@spartan/helm/table';
-import { HlmDialogImports } from '@spartan/helm/dialog';
-import { HlmAlertDialogImports } from '@spartan/helm/alert-dialog';
-// Brain primitives are the plain npm package — they are NOT re-exported through the
-// project's `@spartan/helm` alias, so import them directly instead of reaching into
-// node_modules' compiled type declarations (which is fragile and breaks on upgrades).
-import { BrnDialogImports } from '@spartan-ng/brain/dialog';
-import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
+import { HlmTextarea } from '@spartan/helm/textarea';
+import {
+  HlmTable,
+  HlmTHead,
+  HlmTBody,
+  HlmTr,
+  HlmTh,
+  HlmTd,
+} from '@spartan/helm/table';
+import {
+  HlmAlertDialog,
+  HlmAlertDialogContent,
+} from '@spartan/helm/alert-dialog';
+import { BrnAlertDialogContent } from '@spartan-ng/brain/alert-dialog';
 import { OrderStatCard } from './components/order-stat-card';
-import { TranslatePipe } from '@invento/shared-util-i18n';
-import { HlmH1, HlmH2, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
+import { HlmH1, HlmMuted } from '@spartan/helm/typography';
 import {
   OrderStore,
   type OrderListItem,
@@ -76,9 +85,15 @@ import {
   type OrderStatus,
 } from '@invento/owner-dashboard-data-access-order';
 import { Pagination } from '@invento/shared-ui-pagination';
+import {
+  TableHeaderCell,
+  TableColumnSortDirection,
+  TableColumnFilterOption,
+} from '@invento/shared-ui-table-header';
 
 @Component({
   selector: 'app-orders',
+  standalone: true,
   imports: [
     HlmSpinner,
     CurrencyPipe,
@@ -87,27 +102,37 @@ import { Pagination } from '@invento/shared-ui-pagination';
     NgIcon,
     HlmBadge,
     HlmButton,
-    HlmCardImports,
-    HlmDropdownMenuImports,
-    HlmInputImports,
-    HlmLabelImports,
-    HlmSelectImports,
+    HlmCard,
+    HlmCheckbox,
+    HlmDropdownMenu,
+    HlmDropdownMenuItem,
+    HlmDropdownMenuSeparator,
+    HlmDropdownMenuTrigger,
+    HlmInput,
+    HlmSelect,
+    HlmSelectContent,
+    HlmSelectItem,
+    HlmSelectPortal,
+    HlmSelectTrigger,
+    HlmSelectValue,
     OrderStatCard,
     EmptyState,
     TranslatePipe,
     HlmSkeleton,
-    HlmTableImports,
-    HlmTextareaImports,
-    HlmDialogImports,
-    HlmAlertDialogImports,
-    BrnDialogImports,
-    BrnAlertDialogImports,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmTextarea,
+    HlmAlertDialog,
+    HlmAlertDialogContent,
+    BrnAlertDialogContent,
     HlmH1,
-    HlmH2,
     HlmMuted,
-    HlmSmall,
-    HlmCheckboxImports,
     Pagination,
+    TableHeaderCell,
   ],
   providers: [
     provideIcons({
@@ -127,14 +152,7 @@ import { Pagination } from '@invento/shared-ui-pagination';
       lucideMinus,
       lucideTruck,
       lucideX,
-      lucidePackageCheck,
       lucidePackage,
-      lucideMapPin,
-      lucideUser,
-      lucideMail,
-      lucidePhone,
-      lucideFileText,
-      lucideSave,
       lucideLoader2,
       lucideAlertCircle,
       lucideBan,
@@ -150,46 +168,104 @@ import { Pagination } from '@invento/shared-ui-pagination';
 })
 export class Orders implements OnInit, OnDestroy {
   readonly store = inject(OrderStore);
+  private readonly router = inject(Router);
+  private readonly localeService = inject(LocaleService);
 
-  readonly isDetailsOpen = signal<boolean>(false);
   readonly isCancelModalOpen = signal<boolean>(false);
   readonly isBulkCancel = signal<boolean>(false);
   readonly orderToCancel = signal<OrderListItem | OrderDetail | null>(null);
   readonly cancelReason = signal<string>('');
-  readonly internalNoteDraft = signal<string>('');
 
-  private readonly statusFilterLabels: Record<string, string> = {
-    all: 'All statuses',
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    shipped: 'Shipped',
-    delivered: 'Delivered',
-    cancelled: 'Cancelled',
+  readonly statusItemToString = (value: unknown): string => {
+    const str = String(value);
+    const key = `orders.filter_${str.toLowerCase()}`;
+    const translated = this.localeService.translate(key);
+    return translated && translated !== key ? translated : str;
   };
 
-  private readonly timeFilterLabels: Record<string, string> = {
-    all_time: 'All time',
-    today: 'Today',
-    this_week: 'This week',
-    this_month: 'This month',
+  readonly timeItemToString = (value: unknown): string => {
+    const str = String(value);
+    const keyMap: Record<string, string> = {
+      all_time: 'orders.time_all',
+      today: 'orders.time_today',
+      this_week: 'orders.time_week',
+      this_month: 'orders.time_month',
+    };
+    const key = keyMap[str] ?? `orders.time_${str}`;
+    const translated = this.localeService.translate(key);
+    return translated && translated !== key ? translated : str;
   };
 
-  readonly statusItemToString = (value: string): string => this.statusFilterLabels[value] ?? value;
+  readonly colIdSearch = signal('');
+  readonly colCustomerSearch = signal('');
+  readonly colPaymentFilter = signal('');
+  readonly colFulfillmentFilter = signal('');
+  readonly colItemsSort = signal<TableColumnSortDirection>('none');
 
-  readonly timeItemToString = (value: string): string => this.timeFilterLabels[value] ?? value;
+  readonly dateSortDirection = computed<TableColumnSortDirection>(() => {
+    if (this.store.sortBy() !== 'createdAt') {
+      return 'none';
+    }
+    return this.store.sortDirection() === 'ASC' ? 'asc' : 'desc';
+  });
+
+  readonly totalSortDirection = computed<TableColumnSortDirection>(() => {
+    if (this.store.sortBy() !== 'totalAmount') {
+      return 'none';
+    }
+    return this.store.sortDirection() === 'ASC' ? 'asc' : 'desc';
+  });
+
+  readonly paymentFilterOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    { label: this.localeService.translate('orders.filter_paid') || 'Paid', value: 'paid' },
+    { label: this.localeService.translate('orders.filter_pending') || 'Pending', value: 'pending' },
+    { label: this.localeService.translate('orders.filter_failed') || 'Failed', value: 'failed' },
+    { label: this.localeService.translate('orders.filter_refunded') || 'Refunded', value: 'refunded' },
+  ]);
+
+  readonly fulfillmentFilterOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    { label: this.localeService.translate('orders.filter_pending') || 'Pending', value: 'pending' },
+    { label: this.localeService.translate('orders.filter_confirmed') || 'Confirmed', value: 'confirmed' },
+    { label: this.localeService.translate('orders.filter_shipped') || 'Shipped', value: 'shipped' },
+    { label: this.localeService.translate('orders.filter_delivered') || 'Delivered', value: 'delivered' },
+    { label: this.localeService.translate('orders.filter_cancelled') || 'Cancelled', value: 'cancelled' },
+  ]);
+
+  readonly displayedOrders = computed(() => {
+    let list = [...this.store.orders()];
+    const id = this.colIdSearch().trim().toLowerCase();
+    if (id) {
+      list = list.filter((o) => o.id.toLowerCase().includes(id));
+    }
+    const customer = this.colCustomerSearch().trim().toLowerCase();
+    if (customer) {
+      list = list.filter(
+        (o) =>
+          o.contactName?.toLowerCase().includes(customer) ||
+          o.contactEmail?.toLowerCase().includes(customer),
+      );
+    }
+    const payment = this.colPaymentFilter();
+    if (payment && payment !== 'all') {
+      list = list.filter((o) => (o.paymentStatus || '').toLowerCase() === payment.toLowerCase());
+    }
+    const fulfillment = this.colFulfillmentFilter();
+    if (fulfillment && fulfillment !== 'all') {
+      list = list.filter((o) => (o.status || '').toLowerCase() === fulfillment.toLowerCase());
+    }
+    const itemsSort = this.colItemsSort();
+    if (itemsSort === 'asc') {
+      list.sort((a, b) => (a.itemCount ?? 0) - (b.itemCount ?? 0));
+    } else if (itemsSort === 'desc') {
+      list.sort((a, b) => (b.itemCount ?? 0) - (a.itemCount ?? 0));
+    }
+    return list;
+  });
 
   private readonly searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;
-
-  constructor() {
-    // Sync note draft whenever selectedOrder changes
-    effect(() => {
-      const selected = this.store.selectedOrder();
-      if (selected) {
-        this.internalNoteDraft.set(selected.internalNote || '');
-      }
-    });
-  }
 
   ngOnInit(): void {
     this.store.loadOrders();
@@ -206,19 +282,21 @@ export class Orders implements OnInit, OnDestroy {
     this.searchSubscription?.unsubscribe();
   }
 
-  readonly pageRangeStart = computed(() => {
-    if (this.store.totalOrdersCount() === 0) return 0;
+  readonly pageRangeStart = computed<number>(() => {
+    if (this.store.totalOrdersCount() === 0) {
+      return 0;
+    }
     return (this.store.currentPage() - 1) * this.store.rowsPerPage() + 1;
   });
 
-  readonly pageRangeEnd = computed(() => {
+  readonly pageRangeEnd = computed<number>(() => {
     return Math.min(
       this.store.currentPage() * this.store.rowsPerPage(),
       this.store.totalOrdersCount(),
     );
   });
 
-  readonly pageNumbers = computed(() => {
+  readonly pageNumbers = computed<number[]>(() => {
     const total = this.store.totalPages();
     return Array.from({ length: total }, (_, i) => i + 1);
   });
@@ -265,7 +343,9 @@ export class Orders implements OnInit, OnDestroy {
   }
 
   openBulkCancelModal(): void {
-    if (this.store.selectedOrderIds().size === 0) return;
+    if (this.store.selectedOrderIds().size === 0) {
+      return;
+    }
     this.isBulkCancel.set(true);
     this.orderToCancel.set(null);
     this.cancelReason.set('');
@@ -280,12 +360,16 @@ export class Orders implements OnInit, OnDestroy {
   }
 
   onCancelModalStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.closeCancelModal();
+    if (state === 'closed') {
+      this.closeCancelModal();
+    }
   }
 
   submitCancelOrder(): void {
     const reason = this.cancelReason().trim();
-    if (!reason) return;
+    if (!reason) {
+      return;
+    }
 
     if (this.isBulkCancel()) {
       this.store.bulkUpdateStatus('cancelled', reason, () => this.closeCancelModal());
@@ -293,7 +377,9 @@ export class Orders implements OnInit, OnDestroy {
     }
 
     const order = this.orderToCancel();
-    if (!order) return;
+    if (!order) {
+      return;
+    }
 
     this.store.updateOrderStatus(order.id, 'cancelled', reason, () => this.closeCancelModal());
   }
@@ -305,24 +391,7 @@ export class Orders implements OnInit, OnDestroy {
 
   viewDetails(order: OrderListItem, event?: Event): void {
     event?.stopPropagation();
-    this.isDetailsOpen.set(true);
-    this.store.loadOrderDetail(order.id);
-  }
-
-  closeDetails(): void {
-    this.isDetailsOpen.set(false);
-    this.store.selectedOrder.set(null);
-  }
-
-  onDetailsStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.closeDetails();
-  }
-
-  saveInternalNote(): void {
-    const order = this.store.selectedOrder();
-    const note = this.internalNoteDraft().trim();
-    if (!order || !note) return;
-    this.store.updateOrderNote(order.id, note);
+    this.router.navigate(['/orders', order.id]);
   }
 
   resetFilters(): void {
@@ -333,7 +402,9 @@ export class Orders implements OnInit, OnDestroy {
 
   // Formatting helpers
   formatMinorUnits(minorUnits: number | null | undefined): number {
-    if (minorUnits === null || minorUnits === undefined) return 0;
+    if (minorUnits === null || minorUnits === undefined) {
+      return 0;
+    }
     return minorUnits / 100;
   }
 
@@ -360,7 +431,8 @@ export class Orders implements OnInit, OnDestroy {
   getDatePart(dateString: string): string {
     try {
       const d = new Date(dateString);
-      return d.toLocaleDateString('en-GB', {
+      const localeCode = this.localeService.locale() === 'ar' ? 'ar-EG' : 'en-GB';
+      return d.toLocaleDateString(localeCode, {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
@@ -373,7 +445,8 @@ export class Orders implements OnInit, OnDestroy {
   getTimePart(dateString: string): string {
     try {
       const d = new Date(dateString);
-      return d.toLocaleTimeString('en-US', {
+      const localeCode = this.localeService.locale() === 'ar' ? 'ar-EG' : 'en-US';
+      return d.toLocaleTimeString(localeCode, {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
@@ -383,11 +456,6 @@ export class Orders implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Mirrors user-site's `OrdersDataService.getStatusConfig` so the same order reads the same in
-   * both apps: awaiting action is warning, in-flight is primary, terminal-good is success. Only
-   * `delivered` earns success — `confirmed` is early in the pipeline, not an outcome.
-   */
   getFulfillmentBadgeClass(status: string): string {
     switch (status) {
       case 'cancelled':
@@ -409,7 +477,6 @@ export class Orders implements OnInit, OnDestroy {
       case 'paid':
         return 'bg-success/10 text-success';
       case 'refunded':
-        return 'bg-destructive/10 text-destructive';
       case 'failed':
         return 'bg-destructive/10 text-destructive';
       case 'unpaid':
@@ -417,9 +484,5 @@ export class Orders implements OnInit, OnDestroy {
       default:
         return 'bg-warning/10 text-warning';
     }
-  }
-
-  getObjectKeys(obj: Record<string, string> | undefined | null): string[] {
-    return obj ? Object.keys(obj) : [];
   }
 }

@@ -6,7 +6,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
@@ -32,7 +32,18 @@ import { HlmCardImports } from '@spartan/helm/card';
 import { HlmBadgeImports } from '@spartan/helm/badge';
 import { HlmInputImports } from '@spartan/helm/input';
 import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmTableImports } from '@spartan/helm/table';
+import {
+  HlmTable,
+  HlmTBody,
+  HlmTd,
+  HlmTh,
+  HlmTHead,
+  HlmTr,
+  HlmTableContainer,
+} from '@spartan/helm/table';
+import { TableHeaderCell, SortDirection } from '@invento/shared-ui-table-header';
+import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
 import { HlmSheetImports } from '@spartan/helm/sheet';
 import { HlmLabelImports } from '@spartan/helm/label';
 import { HlmTextareaImports } from '@spartan/helm/textarea';
@@ -49,19 +60,20 @@ import {
 import { AttributeService } from '@invento/owner-dashboard-data-access-attribute';
 import { ProductAttribute } from '@invento/owner-dashboard-data-access-attribute';
 import { CategoriesService, Category } from '@invento/owner-dashboard-data-access-category';
-import { toast } from '@spartan-ng/brain/sonner';
+import { toast } from '@spartan/helm/sonner';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 
 import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
   imports: [
     HlmSpinner,
-    CommonModule,
     DatePipe,
     DecimalPipe,
+    NgClass,
     FormsModule,
     NgIcon,
     HlmButton,
@@ -69,7 +81,16 @@ import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
     HlmBadgeImports,
     HlmInputImports,
     HlmSelectImports,
-    HlmTableImports,
+    HlmTable,
+    HlmTBody,
+    HlmTd,
+    HlmTh,
+    HlmTHead,
+    HlmTr,
+    HlmTableContainer,
+    TableHeaderCell,
+    Pagination,
+    EmptyState,
     CdkDropList,
     CdkDrag,
     DeleteConfirmDialog,
@@ -83,6 +104,7 @@ import { BreadcrumbService } from '@invento/owner-dashboard-util-breadcrumb';
     HlmSmall,
     HlmCheckboxImports,
     HlmToggleGroupImports,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({
@@ -108,6 +130,7 @@ export class ProductDetails implements OnInit {
   private readonly router = inject(Router);
   private readonly productService = inject(ProductService);
   private readonly attributeService = inject(AttributeService);
+  private readonly localeService = inject(LocaleService);
   private readonly categoriesService = inject(CategoriesService);
   private readonly breadcrumbService = inject(BreadcrumbService);
 
@@ -122,6 +145,91 @@ export class ProductDetails implements OnInit {
   readonly toDeleteVariantId = signal<string | null>(null);
   readonly isDeleteImageOpen = signal(false);
   readonly toDeleteImageId = signal<string | null>(null);
+
+  // Variant Table Signals & Pagination
+  readonly variantPage = signal<number>(1);
+  readonly variantPageSize = signal<number>(5);
+  readonly variantSortCol = signal<'price' | 'stock' | null>(null);
+  readonly variantSortDir = signal<SortDirection>(null);
+  readonly variantSearchSku = signal<string>('');
+  readonly variantSearchAttr = signal<string>('');
+
+  readonly processedVariants = computed(() => {
+    const raw = this.product()?.variants ?? [];
+    let list = [...raw];
+
+    // Search SKU
+    const skuQuery = this.variantSearchSku().trim().toLowerCase();
+    if (skuQuery) {
+      list = list.filter((v) => v.sku && v.sku.toLowerCase().includes(skuQuery));
+    }
+
+    // Search Attributes
+    const attrQuery = this.variantSearchAttr().trim().toLowerCase();
+    if (attrQuery) {
+      list = list.filter((v) =>
+        v.attributeValues?.some(
+          (a) =>
+            (a.attributeName && a.attributeName.toLowerCase().includes(attrQuery)) ||
+            (a.value && a.value.toLowerCase().includes(attrQuery)),
+        ),
+      );
+    }
+
+    // Sort
+    const col = this.variantSortCol();
+    const dir = this.variantSortDir();
+    if (col && dir) {
+      list.sort((a, b) => {
+        let diff = 0;
+        if (col === 'price') {
+          diff = (a.priceAmount ?? 0) - (b.priceAmount ?? 0);
+        } else if (col === 'stock') {
+          diff = (a.stockQuantity ?? 0) - (b.stockQuantity ?? 0);
+        }
+        return dir === 'asc' ? diff : -diff;
+      });
+    }
+
+    return list;
+  });
+
+  readonly totalVariantPages = computed(() => {
+    const total = this.processedVariants().length;
+    return Math.max(1, Math.ceil(total / this.variantPageSize()));
+  });
+
+  readonly paginatedVariants = computed(() => {
+    const start = (this.variantPage() - 1) * this.variantPageSize();
+    return this.processedVariants().slice(start, start + this.variantPageSize());
+  });
+
+  onVariantSortChange(col: 'price' | 'stock', dir: SortDirection): void {
+    this.variantSortCol.set(dir ? col : null);
+    this.variantSortDir.set(dir);
+  }
+
+  onVariantSearchSkuChange(q: string): void {
+    this.variantSearchSku.set(q);
+    this.variantPage.set(1);
+  }
+
+  onVariantSearchAttrChange(q: string): void {
+    this.variantSearchAttr.set(q);
+    this.variantPage.set(1);
+  }
+
+  onVariantPageChange(p: number): void {
+    this.variantPage.set(p);
+  }
+
+  resetVariantFilters(): void {
+    this.variantSearchSku.set('');
+    this.variantSearchAttr.set('');
+    this.variantSortCol.set(null);
+    this.variantSortDir.set(null);
+    this.variantPage.set(1);
+  }
 
   readonly isEditDrawerOpen = signal(false);
   readonly isSaving = signal(false);
@@ -138,14 +246,9 @@ export class ProductDetails implements OnInit {
     productAttributeValues: {} as Record<string, string>,
   };
 
-  private readonly statusLabels: Record<string, string> = {
-    draft: 'Draft',
-    active: 'Active',
-    archived: 'Archived',
-  };
-
   readonly statusItemToString = (value: unknown): string => {
-    return this.statusLabels[String(value).toLowerCase()] ?? 'Draft';
+    const val = String(value).toLowerCase();
+    return this.localeService.translate(`products.status_${val}`);
   };
 
   readonly getProductAttributeValueLabel = (attrId: string, valId: unknown): string => {
@@ -298,12 +401,12 @@ export class ProductDetails implements OnInit {
     this.isDeleting.set(true);
     this.productService.deleteProduct(p.id).subscribe({
       next: () => {
-        toast.success('Product deleted successfully');
+        toast.success(this.localeService.translate('product_details.toast_deleted'));
         this.router.navigate(['/products']);
       },
       error: (err) => {
         console.error('Failed to delete product', err);
-        toast.error('Failed to delete product');
+        toast.error(this.localeService.translate('product_details.toast_delete_error'));
         this.isDeleting.set(false);
         this.isDeleteProductOpen.set(false);
       },
@@ -352,12 +455,12 @@ export class ProductDetails implements OnInit {
     if (!p) return;
 
     if (!this.editProductForm.title.trim()) {
-      toast.error('Product title is required.');
+      toast.error(this.localeService.translate('product_details.toast_title_required'));
       return;
     }
 
     if (!this.editProductForm.status) {
-      toast.error('Product status is required.');
+      toast.error(this.localeService.translate('product_details.toast_status_required'));
       return;
     }
 
@@ -384,13 +487,13 @@ export class ProductDetails implements OnInit {
     this.productService.updateProduct(p.id, payload).subscribe({
       next: (updatedProduct) => {
         this.product.set(updatedProduct);
-        toast.success('Product updated successfully');
+        toast.success(this.localeService.translate('product_details.toast_updated'));
         this.isSaving.set(false);
         this.isEditDrawerOpen.set(false);
       },
       error: (err) => {
         console.error('Failed to update product', err);
-        toast.error('Failed to update product');
+        toast.error(this.localeService.translate('product_details.toast_update_error'));
         this.isSaving.set(false);
       },
     });
@@ -408,7 +511,11 @@ export class ProductDetails implements OnInit {
     const filesArray = Array.from(input.files);
     // Limit to 8
     if (p.images.length + filesArray.length > 8) {
-      toast.error(`You can only have up to 8 images total. You currently have ${p.images.length}.`);
+      toast.error(
+        this.localeService.translate('product_details.toast_images_limit', {
+          count: p.images.length,
+        }),
+      );
       return;
     }
 
@@ -416,13 +523,13 @@ export class ProductDetails implements OnInit {
     this.productService.uploadProductImages(p.id, filesArray).subscribe({
       next: (updatedProduct) => {
         this.product.set(updatedProduct);
-        toast.success('Images uploaded successfully');
+        toast.success(this.localeService.translate('product_details.toast_images_uploaded'));
         this.isUploadingImages.set(false);
         input.value = ''; // Reset input
       },
       error: (err) => {
         console.error('Failed to upload images', err);
-        toast.error('Failed to upload images');
+        toast.error(this.localeService.translate('product_details.toast_images_upload_error'));
         this.isUploadingImages.set(false);
         input.value = '';
       },
@@ -472,11 +579,11 @@ export class ProductDetails implements OnInit {
     this.productService.updateProductImage(p.id, imageId, newAlt).subscribe({
       next: (updatedProduct) => {
         this.product.set(updatedProduct);
-        toast.success('Image alt text updated');
+        toast.success(this.localeService.translate('product_details.toast_alt_updated'));
       },
       error: (err) => {
         console.error('Failed to update image alt text', err);
-        toast.error('Failed to update image alt text');
+        toast.error(this.localeService.translate('product_details.toast_alt_error'));
         this.loadProduct(p.id);
       },
     });
@@ -499,14 +606,14 @@ export class ProductDetails implements OnInit {
 
     this.productService.deleteProductImage(p.id, imageId).subscribe({
       next: () => {
-        toast.success('Image deleted successfully');
+        toast.success(this.localeService.translate('product_details.toast_image_deleted'));
         this.loadProduct(p.id);
         this.isDeleteImageOpen.set(false);
         this.toDeleteImageId.set(null);
       },
       error: (err) => {
         console.error('Failed to delete image', err);
-        toast.error('Failed to delete image');
+        toast.error(this.localeService.translate('product_details.toast_image_delete_error'));
         this.isDeleteImageOpen.set(false);
         this.toDeleteImageId.set(null);
       },
@@ -558,7 +665,7 @@ export class ProductDetails implements OnInit {
     if (!p) return;
 
     if (this.generateVariantsForm.priceAmount < 0) {
-      toast.error('Price cannot be negative.');
+      toast.error(this.localeService.translate('product_details.toast_price_negative'));
       return;
     }
 
@@ -566,7 +673,7 @@ export class ProductDetails implements OnInit {
       (a) => a.attributeId && a.valueIds.length > 0,
     );
     if (validAxes.length === 0) {
-      toast.error('Please select at least one attribute and value to generate variants.');
+      toast.error(this.localeService.translate('product_details.toast_select_attr_to_generate'));
       return;
     }
 
@@ -580,13 +687,13 @@ export class ProductDetails implements OnInit {
     this.productService.generateVariants(p.id, payload).subscribe({
       next: (updatedProduct) => {
         this.product.set(updatedProduct);
-        toast.success('Variants generated successfully');
+        toast.success(this.localeService.translate('product_details.toast_variants_generated'));
         this.isGenerating.set(false);
         this.isGenerateDrawerOpen.set(false);
       },
       error: (err) => {
         console.error('Failed to generate variants', err);
-        toast.error('Failed to generate variants');
+        toast.error(this.localeService.translate('product_details.toast_variants_generate_error'));
         this.isGenerating.set(false);
       },
     });
@@ -618,7 +725,7 @@ export class ProductDetails implements OnInit {
     } else {
       // For add variant, typically one value per axis. We don't enforce strictly on UI yet, just toggle it.
       if (this.addVariantForm.attributeValueIds.length >= 3) {
-        toast.error('You can select a maximum of 3 attribute values.');
+        toast.error(this.localeService.translate('product_details.toast_max_attr_values'));
         return;
       }
       this.addVariantForm.attributeValueIds.push(valueId);
@@ -630,7 +737,7 @@ export class ProductDetails implements OnInit {
     if (!p) return;
 
     if (this.addVariantForm.priceAmount < 0) {
-      toast.error('Price cannot be negative.');
+      toast.error(this.localeService.translate('product_details.toast_price_negative'));
       return;
     }
 
@@ -640,7 +747,7 @@ export class ProductDetails implements OnInit {
       this.addVariantForm.attributeValueIds.length !== requiredAxes.length
     ) {
       toast.error(
-        `Please select exactly one value for each of the ${requiredAxes.length} required attributes.`,
+        this.localeService.translate('product_details.attr_combination_desc'),
       );
       return;
     }
@@ -668,13 +775,13 @@ export class ProductDetails implements OnInit {
     this.productService.addVariant(p.id, payload).subscribe({
       next: (updatedProduct) => {
         this.product.set(updatedProduct);
-        toast.success('Variant added successfully');
+        toast.success(this.localeService.translate('product_details.toast_variant_added'));
         this.isAddingVariant.set(false);
         this.isAddVariantDrawerOpen.set(false);
       },
       error: (err) => {
         console.error('Failed to add variant', err);
-        toast.error('Failed to add variant');
+        toast.error(this.localeService.translate('product_details.toast_variant_add_error'));
         this.isAddingVariant.set(false);
       },
     });
@@ -698,7 +805,7 @@ export class ProductDetails implements OnInit {
   }
 
   onEditVariantDrawerStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.closeEditVariantDrawer();
+    if (state === 'closed' && this.closeEditVariantDrawer) this.closeEditVariantDrawer();
   }
 
   submitEditVariant(): void {
@@ -707,7 +814,7 @@ export class ProductDetails implements OnInit {
     if (!p || !vId) return;
 
     if (this.editVariantForm.priceAmount < 0) {
-      toast.error('Price cannot be negative.');
+      toast.error(this.localeService.translate('product_details.toast_price_negative'));
       return;
     }
 
@@ -731,13 +838,13 @@ export class ProductDetails implements OnInit {
     this.productService.updateVariant(p.id, vId, payload).subscribe({
       next: (updatedProduct) => {
         this.product.set(updatedProduct);
-        toast.success('Variant updated successfully');
+        toast.success(this.localeService.translate('product_details.toast_variant_updated'));
         this.isSaving.set(false);
         this.closeEditVariantDrawer();
       },
       error: (err) => {
         console.error('Failed to update variant', err);
-        toast.error('Failed to update variant');
+        toast.error(this.localeService.translate('product_details.toast_variant_update_error'));
         this.isSaving.set(false);
       },
     });
@@ -760,14 +867,14 @@ export class ProductDetails implements OnInit {
 
     this.productService.deleteVariant(p.id, variantId).subscribe({
       next: () => {
-        toast.success('Variant deleted successfully');
+        toast.success(this.localeService.translate('product_details.toast_variant_deleted'));
         this.loadProduct(p.id);
         this.isDeleteVariantOpen.set(false);
         this.toDeleteVariantId.set(null);
       },
       error: (err) => {
         console.error('Failed to delete variant', err);
-        toast.error('Failed to delete variant');
+        toast.error(this.localeService.translate('product_details.toast_variant_delete_error'));
         this.isDeleteVariantOpen.set(false);
         this.toDeleteVariantId.set(null);
       },

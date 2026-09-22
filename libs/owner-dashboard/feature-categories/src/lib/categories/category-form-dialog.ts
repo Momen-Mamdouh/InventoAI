@@ -11,21 +11,24 @@ import {
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideX, lucideCheck } from '@ng-icons/lucide';
-import { HlmButtonImports } from '@spartan/helm/button';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmDialogImports } from '@spartan/helm/dialog';
-import { HlmFieldImports } from '@spartan/helm/field';
-import { HlmTextareaImports } from '@spartan/helm/textarea';
+import { lucideX, lucideCheck, lucideLoader2 } from '@ng-icons/lucide';
+import { HlmButton } from '@spartan/helm/button';
+import { HlmInput } from '@spartan/helm/input';
+import {
+  HlmSheet,
+  HlmSheetContent,
+  HlmSheetDescription,
+  HlmSheetFooter,
+  HlmSheetHeader,
+  HlmSheetPortal,
+  HlmSheetTitle,
+} from '@spartan/helm/sheet';
+import { HlmTextarea } from '@spartan/helm/textarea';
 import { Category, CategoriesState } from '@invento/owner-dashboard-data-access-category';
-import { HlmLabelImports } from '@spartan/helm/label';
-import { HlmSwitchImports } from '@spartan/helm/switch';
-import { HlmSpinnerImports } from '@spartan/helm/spinner';
-// Brain primitives are the plain npm package — they are NOT re-exported through the
-// project's `@spartan/helm` alias, so import them directly instead of reaching into
-// node_modules' compiled type declarations (which is fragile and breaks on upgrades).
-import { BrnDialogImports } from '@spartan-ng/brain/dialog';
+import { HlmLabel } from '@spartan/helm/label';
+import { HlmSwitch } from '@spartan/helm/switch';
 import { ImageUpload } from './image-upload';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 function slugify(value: string): string {
   return value
@@ -42,18 +45,22 @@ function slugify(value: string): string {
     CommonModule,
     ReactiveFormsModule,
     NgIcon,
-    HlmButtonImports,
-    HlmInputImports,
-    HlmDialogImports,
-    HlmFieldImports,
-    HlmTextareaImports,
-    HlmLabelImports,
-    HlmSwitchImports,
-    HlmSpinnerImports,
-    BrnDialogImports,
+    HlmButton,
+    HlmInput,
+    HlmSheet,
+    HlmSheetContent,
+    HlmSheetHeader,
+    HlmSheetTitle,
+    HlmSheetDescription,
+    HlmSheetFooter,
+    HlmSheetPortal,
+    HlmTextarea,
+    HlmLabel,
+    HlmSwitch,
     ImageUpload,
+    TranslatePipe,
   ],
-  providers: [provideIcons({ lucideX, lucideCheck })],
+  providers: [provideIcons({ lucideX, lucideCheck, lucideLoader2 })],
   templateUrl: './category-form-dialog.html',
   styleUrls: ['./category-form-dialog.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -96,15 +103,19 @@ export class CategoryFormDialog implements OnInit {
         this.slugTouchedByUser = true;
       });
       this.form.controls.name.valueChanges.subscribe((name) => {
-        if (this.slugTouchedByUser) return;
+        if (this.slugTouchedByUser) {
+          return;
+        }
         const generated = slugify(name ?? '');
         this.form.controls.slug.setValue(generated, { emitEvent: false });
       });
     }
   }
 
-  onStateChanged(state: 'open' | 'closed') {
-    if (state === 'closed') this.close();
+  onStateChanged(state: 'open' | 'closed'): void {
+    if (state === 'closed') {
+      this.close();
+    }
   }
 
   close(): void {
@@ -127,12 +138,12 @@ export class CategoryFormDialog implements OnInit {
       isFeatured: raw.isFeatured,
     };
 
-    const onSuccess = () => {
+    const onSuccess = (): void => {
       this.submitting.set(false);
       this.close();
     };
-    const onError = () => {
-      // Keep the dialog open on failure so the user can fix and retry — the
+    const onError = (): void => {
+      // Keep the drawer open on failure so the user can fix and retry — the
       // toast (fired by CategoriesState) already surfaces the server message.
       this.submitting.set(false);
     };
@@ -145,7 +156,9 @@ export class CategoryFormDialog implements OnInit {
   }
 
   onImageUpload(file: File): void {
-    if (!this.category) return;
+    if (!this.category) {
+      return;
+    }
     this.imageBusy.set(true);
     this.state.uploadImage(
       this.category.id,
@@ -159,7 +172,9 @@ export class CategoryFormDialog implements OnInit {
   }
 
   onImageRemove(): void {
-    if (!this.category) return;
+    if (!this.category) {
+      return;
+    }
     this.imageBusy.set(true);
     this.state.deleteImage(
       this.category.id,

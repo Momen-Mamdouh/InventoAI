@@ -5,49 +5,65 @@
     class="space-y-4 bg-background px-4 sm:px-6 pt-4 sm:pt-6 pb-0 border-border border-b"
   >
     <div class="min-w-0">
-      <h1 hlmH1>Account Settings</h1>
+      <h1 hlmH1>{{ 'account_settings.page_title' | translate }}</h1>
       <p hlmMuted class="mt-0.5">
-        Manage all store instances linked to your Invento account.
+        {{ 'my_store.subtitle' | translate }}
       </p>
     </div>
 
     <!-- Navigation Tabs -->
-    <!-- Navigation Tabs -->
     <div class="flex items-center gap-1 sm:gap-2 border-border border-b overflow-x-auto">
       <a
         routerLink="/profile"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideUser" size="16" />
-        <span>Profile</span>
+        <span>{{ 'account_settings.tabs.profile' | translate }}</span>
       </a>
       <a
         routerLink="/security"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideShield" size="16" />
-        <span>Security</span>
+        <span>{{ 'account_settings.tabs.security' | translate }}</span>
       </a>
       <a
         routerLink="/notifications"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideBell" size="16" />
-        <span>Notifications</span>
+        <span>{{ 'account_settings.tabs.notifications' | translate }}</span>
       </a>
       <a
         routerLink="/billing"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideCreditCard" size="16" />
-        <span>Billing & Plan</span>
+        <span>{{ 'account_settings.tabs.billing' | translate }}</span>
+        <span
+          hlmBadge
+          variant="outline"
+          class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400 ms-1"
+        >
+          {{ 'account_settings.tabs.coming_soon' | translate }}
+        </span>
       </a>
       <a
         routerLink="/my-stores"
-        class="inline-flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b-2 font-semibold text-xs sm:text-sm transition-colors cursor-pointer border-primary text-primary"
+        routerLinkActive="border-primary text-primary font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="inline-flex items-center gap-2 border-b-2 border-transparent hover:border-border px-3 sm:px-4 py-2.5 font-medium text-xs text-muted-foreground hover:text-foreground sm:text-sm transition-colors cursor-pointer"
       >
         <ng-icon name="lucideStore" size="16" />
-        <span>My Stores</span>
+        <span>{{ 'account_settings.tabs.my_store' | translate }}</span>
       </a>
     </div>
   </div>
@@ -73,26 +89,63 @@
       </div>
     }
 
+    <!-- Single Store Limit Banner -->
+    <div
+      class="flex items-start gap-3 bg-amber-500/10 p-4 border border-amber-500/20 rounded-xl text-amber-950 dark:text-amber-200 text-xs sm:text-sm"
+    >
+      <div
+        class="flex shrink-0 justify-center items-center bg-amber-500/20 rounded-full w-6 h-6 text-amber-600 dark:text-amber-400 mt-0.5"
+      >
+        <ng-icon name="lucideAlertTriangle" size="14" />
+      </div>
+      <div class="space-y-0.5">
+        <span class="font-semibold text-foreground">{{ 'my_store.single_store_limit_title' | translate }}</span>
+        <p class="text-muted-foreground">
+          {{ 'my_store.single_store_limit_desc' | translate }}
+        </p>
+      </div>
+    </div>
+
     <!-- Top Action Bar (Store Counter + Generate New Store Button) -->
     <div class="flex flex-wrap justify-between items-center gap-4">
       <p hlmMuted>
-        <span class="font-bold text-foreground">{{ stores().length }}</span> stores linked to your
-        account
+        <span class="font-bold text-foreground">{{ stores().length }}</span>
+        <span> {{ 'my_store.stores_counter' | translate }}</span>
       </p>
 
       <button
         type="button"
         hlmBtn
-        class="gap-2 shadow-sm px-4 py-2.5 font-medium transition-all cursor-pointer"
-        (click)="openCreateModal()"
+        variant="outline"
+        class="gap-2 shadow-sm px-4 py-2.5 font-medium transition-all opacity-60 cursor-not-allowed border-amber-500/30"
+        [disabled]="true"
+        [hlmTooltip]="'my_store.limit_tooltip' | translate"
       >
         <ng-icon name="lucideZap" size="16" />
-        <span>Generate New Store</span>
+        <span>{{ 'my_store.generate_store_btn' | translate }}</span>
+        <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400">
+          {{ 'my_store.limit_reached' | translate }}
+        </span>
       </button>
     </div>
 
-    <!-- Store Cards List -->
-    <div class="space-y-4">
+    @if (loading()) {
+      <div class="space-y-4">
+        <div hlmSkeleton class="h-36 w-full rounded-2xl border"></div>
+      </div>
+    } @else if (stores().length === 0) {
+      <div class="flex flex-col items-center justify-center p-12 text-center border border-dashed rounded-2xl bg-card">
+        <div class="flex justify-center items-center bg-muted rounded-2xl w-12 h-12 text-muted-foreground mb-3">
+          <ng-icon name="lucideStore" size="24" />
+        </div>
+        <h3 hlmH3>{{ 'my_store.no_store_found_title' | translate }}</h3>
+        <p hlmMuted class="mt-1 max-w-sm text-xs sm:text-sm">
+          {{ 'my_store.no_store_found_desc' | translate }}
+        </p>
+      </div>
+    } @else {
+      <!-- Store Cards List -->
+      <div class="space-y-4">
       @for (store of stores(); track store.id) {
         <div
           hlmCard
@@ -124,17 +177,17 @@
                 @if (store.status === 'Live') {
                   <span hlmBadge class="gap-1.5 bg-success/10 text-success">
                     <span class="bg-success rounded-full w-1.5 h-1.5 animate-pulse"></span>
-                    Live
+                    {{ 'my_store.status_live' | translate }}
                   </span>
                 } @else if (store.status === 'Draft') {
                   <span hlmBadge class="gap-1.5 bg-muted text-muted-foreground">
                     <span class="bg-muted-foreground/60 rounded-full w-1.5 h-1.5"></span>
-                    Draft
+                    {{ 'my_store.status_draft' | translate }}
                   </span>
                 } @else {
                   <span hlmBadge class="gap-1.5 bg-warning/10 text-warning">
                     <span class="bg-warning rounded-full w-1.5 h-1.5"></span>
-                    Maintenance
+                    {{ 'my_store.status_maintenance' | translate }}
                   </span>
                 }
               </div>
@@ -147,12 +200,12 @@
               <!-- Domain & Created Meta -->
               <div class="flex flex-wrap items-center gap-3 pt-1 text-xs">
                 <a
-                  [href]="'https://' + store.domain"
+                  [href]="store.storeUrl"
                   target="_blank"
                   rel="noopener"
                   class="inline-flex items-center gap-1 font-medium text-primary hover:underline"
                 >
-                  <span>{{ store.domain }}</span>
+                  <span>/{{ store.slug }}</span>
                   <ng-icon name="lucideExternalLink" size="12" />
                 </a>
 
@@ -160,7 +213,7 @@
 
                 <span class="flex items-center gap-1 text-muted-foreground">
                   <ng-icon name="lucideClock" size="12" />
-                  <span>Created {{ store.createdAt }}</span>
+                  <span>{{ 'my_store.created_at' | translate : { date: store.createdAt } }}</span>
                 </span>
               </div>
             </div>
@@ -175,7 +228,7 @@
                 (click)="openEditModal(store)"
               >
                 <ng-icon name="lucidePencil" size="14" class="text-muted-foreground" />
-                <span>Edit</span>
+                <span>{{ 'my_store.edit_btn' | translate }}</span>
               </button>
 
               <button
@@ -185,17 +238,17 @@
                 (click)="manageStore(store)"
               >
                 <ng-icon name="lucideStore" size="14" />
-                <span>Manage</span>
+                <span>{{ 'my_store.manage_btn' | translate }}</span>
               </button>
 
               <button
                 type="button"
                 hlmBtn
                 variant="ghost"
-                class="hover:bg-red-50 dark:hover:bg-red-950/40 p-0 w-9 h-9 text-muted-foreground hover:text-red-600 rounded-lg cursor-pointer"
-                (click)="confirmDeleteStore(store)"
-                [hlmTooltip]="'my_stores.delete_store' | translate"
-                [attr.aria-label]="'my_stores.delete_store' | translate"
+                class="hover:bg-muted p-0 w-9 h-9 text-muted-foreground opacity-50 rounded-lg cursor-not-allowed"
+                [disabled]="true"
+                [hlmTooltip]="'my_store.delete_tooltip' | translate"
+                [attr.aria-label]="'my_store.delete_tooltip' | translate"
               >
                 <ng-icon name="lucideTrash2" size="15" />
               </button>
@@ -203,10 +256,11 @@
           </div>
         </div>
       }
-    </div>
+      </div>
+    }
   </div>
 
-  <!-- Generate / Edit Store Modal Dialog -->
+  <!-- Edit Store Modal Dialog -->
   @if (isModalOpen()) {
     <hlm-dialog [state]="'open'" (stateChanged)="onModalStateChanged($event)">
       <hlm-dialog-content
@@ -222,10 +276,10 @@
               <div
                 class="flex justify-center items-center bg-primary/10 rounded-xl w-9 h-9 text-primary"
               >
-                <ng-icon [name]="editingStoreId() ? 'lucidePencil' : 'lucideZap'" size="18" />
+                <ng-icon name="lucidePencil" size="18" />
               </div>
               <h3 hlmDialogTitle>
-                {{ editingStoreId() ? 'Edit Store' : 'Generate New Store' }}
+                {{ 'my_store.modal_edit_title' | translate }}
               </h3>
             </div>
           </hlm-dialog-header>
@@ -233,9 +287,9 @@
           <div class="flex-1 space-y-4 px-6 py-1 min-h-0 overflow-y-auto">
             <!-- Store Name -->
             <div class="space-y-1.5">
-              <label hlmLabel for="modalStoreName" class="font-medium text-foreground text-xs sm:text-sm"
-                >Store Name</label
-              >
+              <label hlmLabel for="modalStoreName" class="font-medium text-foreground text-xs sm:text-sm">
+                {{ 'my_store.modal_store_name' | translate }}
+              </label>
               <input
                 id="modalStoreName"
                 hlmInput
@@ -243,16 +297,16 @@
                 class="w-full"
                 placeholder="e.g. Luminary Goods"
                 [value]="formName()"
-                (input)="formName.set($any($event.target).value)"
+                (input)="onFormNameInput($event)"
                 required
               />
             </div>
 
             <!-- Description -->
             <div class="space-y-1.5">
-              <label hlmLabel for="modalStoreDesc" class="font-medium text-foreground text-xs sm:text-sm"
-                >Description / Category</label
-              >
+              <label hlmLabel for="modalStoreDesc" class="font-medium text-foreground text-xs sm:text-sm">
+                {{ 'my_store.modal_description' | translate }}
+              </label>
               <input
                 id="modalStoreDesc"
                 hlmInput
@@ -260,24 +314,31 @@
                 class="w-full"
                 placeholder="e.g. Curated homeware & lifestyle"
                 [value]="formDescription()"
-                (input)="formDescription.set($any($event.target).value)"
+                (input)="onFormDescInput($event)"
               />
             </div>
 
-            <!-- Domain -->
+            <!-- Storefront URL & Custom Domain -->
             <div class="space-y-1.5">
-              <label hlmLabel for="modalStoreDomain" class="font-medium text-foreground text-xs sm:text-sm"
-                >Custom Domain</label
-              >
+              <div class="flex items-center justify-between">
+                <label hlmLabel for="modalStoreSlug" class="font-medium text-foreground text-xs sm:text-sm">
+                  {{ 'my_store.modal_storefront_url' | translate }}
+                </label>
+                <span hlmBadge variant="outline" class="text-[10px] px-1.5 py-0 h-4 border-amber-500/40 text-amber-600 dark:text-amber-400">
+                  {{ 'my_store.modal_custom_domain_badge' | translate }}
+                </span>
+              </div>
               <input
-                id="modalStoreDomain"
+                id="modalStoreSlug"
                 hlmInput
                 type="text"
-                class="w-full"
-                placeholder="e.g. luminarygoods.com"
-                [value]="formDomain()"
-                (input)="formDomain.set($any($event.target).value)"
+                class="w-full bg-muted/50 cursor-not-allowed opacity-80"
+                [value]="'/' + formSlug()"
+                disabled
               />
+              <p hlmMuted class="text-[11px]">
+                {{ 'my_store.modal_custom_domain_hint' | translate : { slug: formSlug() } }}
+              </p>
             </div>
 
             <!-- Status & Image URL -->
@@ -288,12 +349,13 @@
                   hlmLabel
                   for="modalStoreStatus"
                   class="font-medium text-foreground text-xs sm:text-sm"
-                  >Status</label
                 >
+                  {{ 'my_store.modal_status' | translate }}
+                </label>
                 <hlm-select
                   id="modalStoreStatus"
                   [value]="formStatus()"
-                  (valueChange)="formStatus.set($any($event))"
+                  (valueChange)="onFormStatusChange($event)"
                   [itemToString]="statusItemToString"
                   class="w-full"
                 >
@@ -301,18 +363,18 @@
                     <hlm-select-value />
                   </hlm-select-trigger>
                   <hlm-select-content *hlmSelectPortal>
-                    <hlm-select-item value="Live">Live</hlm-select-item>
-                    <hlm-select-item value="Draft">Draft</hlm-select-item>
-                    <hlm-select-item value="Maintenance">Maintenance</hlm-select-item>
+                    <hlm-select-item value="Live">{{ 'my_store.status_live' | translate }}</hlm-select-item>
+                    <hlm-select-item value="Draft">{{ 'my_store.status_draft' | translate }}</hlm-select-item>
+                    <hlm-select-item value="Maintenance">{{ 'my_store.status_maintenance' | translate }}</hlm-select-item>
                   </hlm-select-content>
                 </hlm-select>
               </div>
 
               <!-- Image URL -->
               <div class="space-y-1.5">
-                <label hlmLabel for="modalStoreImage" class="font-medium text-foreground text-xs sm:text-sm"
-                  >Thumbnail Image URL</label
-                >
+                <label hlmLabel for="modalStoreImage" class="font-medium text-foreground text-xs sm:text-sm">
+                  {{ 'my_store.modal_thumbnail' | translate }}
+                </label>
                 <input
                   id="modalStoreImage"
                   hlmInput
@@ -320,58 +382,23 @@
                   class="w-full"
                   placeholder="https://..."
                   [value]="formImage()"
-                  (input)="formImage.set($any($event.target).value)"
+                  (input)="onFormImageInput($event)"
                 />
               </div>
             </div>
           </div>
 
           <hlm-dialog-footer class="p-6 pt-4 border-t">
-            <button type="button" hlmBtn variant="ghost" (click)="closeModal()">Cancel</button>
+            <button type="button" hlmBtn variant="ghost" (click)="closeModal()">
+              {{ 'my_store.modal_cancel' | translate }}
+            </button>
             <button type="submit" hlmBtn class="gap-1.5 shadow-sm cursor-pointer">
               <ng-icon name="lucideCheck" size="16" />
-              <span>{{ editingStoreId() ? 'Save Changes' : 'Generate Store' }}</span>
+              <span>{{ 'my_store.modal_save' | translate }}</span>
             </button>
           </hlm-dialog-footer>
         </form>
       </hlm-dialog-content>
     </hlm-dialog>
-  }
-
-  <!-- Delete Confirmation Modal Dialog -->
-  @if (isDeleteModalOpen() && storeToDelete()) {
-    <hlm-alert-dialog [state]="'open'" (stateChanged)="onDeleteModalStateChanged($event)">
-      <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
-        <hlm-alert-dialog-header>
-          <div class="flex items-start gap-3.5">
-            <div
-              class="flex flex-shrink-0 justify-center items-center bg-rose-100 dark:bg-rose-950/60 rounded-xl w-10 h-10 text-rose-600 dark:text-rose-400"
-            >
-              <ng-icon name="lucideAlertTriangle" size="20" />
-            </div>
-            <div class="space-y-1">
-              <h2 hlmAlertDialogTitle>Delete Store</h2>
-              <p hlmAlertDialogDescription>
-                Are you sure you want to delete
-                <span class="font-semibold text-foreground">"{{ storeToDelete()?.name }}"</span>?
-                This action cannot be undone.
-              </p>
-            </div>
-          </div>
-        </hlm-alert-dialog-header>
-
-        <hlm-alert-dialog-footer>
-          <button hlmAlertDialogCancel (click)="cancelDeleteStore()">Cancel</button>
-          <button
-            hlmAlertDialogAction
-            class="bg-rose-600 hover:bg-rose-700 text-white gap-1.5"
-            (click)="executeDeleteStore()"
-          >
-            <ng-icon name="lucideTrash2" size="15" />
-            <span>Delete Store</span>
-          </button>
-        </hlm-alert-dialog-footer>
-      </hlm-alert-dialog-content>
-    </hlm-alert-dialog>
   }
 </div>

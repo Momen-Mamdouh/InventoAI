@@ -40,7 +40,8 @@
             fetchpriority="high"
             loading="eager"
             decoding="async"
-            class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
+            class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+            [style.object-position]="hero()?.objectPosition || 'center'"
           />
           <div
             class="from-background/95 via-background/85 to-background/25 absolute inset-0 bg-gradient-to-r backdrop-blur-[1px] rtl:bg-gradient-to-l"

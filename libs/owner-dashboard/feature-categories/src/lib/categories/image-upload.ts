@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HlmButtonImports } from '@spartan/helm/button';
-import { HlmSpinnerImports } from '@spartan/helm/spinner';
+import { HlmButton } from '@spartan/helm/button';
+import { HlmSpinner } from '@spartan/helm/spinner';
 import { lucideImage, lucideTrash2, lucideUpload } from '@ng-icons/lucide';
 import { provideIcons, NgIcon } from '@ng-icons/core';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-image-upload',
   standalone: true,
-  imports: [CommonModule, HlmButtonImports, HlmSpinnerImports, NgIcon],
+  imports: [CommonModule, HlmButton, HlmSpinner, NgIcon, TranslatePipe],
   providers: [provideIcons({ lucideUpload, lucideTrash2, lucideImage })],
   templateUrl: './image-upload.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

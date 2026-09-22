@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -7,9 +14,17 @@ import { HlmCard } from '@spartan/helm/card';
 import { HlmInput } from '@spartan/helm/input';
 import { HlmButton } from '@spartan/helm/button';
 import { HlmSelectImports } from '@spartan/helm/select';
-import { HlmSpinner } from '@spartan/helm/spinner';
-import { HlmTableImports } from '@spartan/helm/table';
-import { HlmH3, HlmMuted, HlmSmall } from '@spartan/helm/typography';
+import {
+  HlmTable,
+  HlmTHead,
+  HlmTBody,
+  HlmTr,
+  HlmTh,
+  HlmTd,
+  HlmTableContainer,
+} from '@spartan/helm/table';
+import { HlmSkeleton } from '@spartan/helm/skeleton';
+import { HlmH3, HlmMuted } from '@spartan/helm/typography';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideSearch,
@@ -22,6 +37,9 @@ import {
 import { ChatAdminService } from '../../services/chat-admin.service';
 import { ChatSessionsResponse } from '../../types/chat-admin.types';
 import { Pagination } from '@invento/shared-ui-pagination';
+import { EmptyState } from '@invento/shared-ui-empty-state';
+import { TableHeaderCell, SortDirection } from '@invento/shared-ui-table-header';
+import { TranslatePipe } from '@invento/shared-util-i18n';
 
 @Component({
   selector: 'app-chatbot-history',
@@ -35,14 +53,22 @@ import { Pagination } from '@invento/shared-ui-pagination';
     HlmInput,
     HlmButton,
     HlmSelectImports,
-    HlmSpinner,
-    HlmTableImports,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmTableContainer,
+    HlmSkeleton,
     HlmH3,
     HlmMuted,
-    HlmSmall,
     NgIcon,
     DatePipe,
     Pagination,
+    EmptyState,
+    TableHeaderCell,
+    TranslatePipe,
   ],
   providers: [
     provideIcons({
@@ -74,6 +100,11 @@ export class History implements OnInit {
   readonly unansweredFilterValue = signal<string>('all');
   readonly signedInFilterValue = signal<string>('all');
 
+  // Column specific sort & search
+  readonly sortColumn = signal<'messages' | 'date' | null>(null);
+  readonly sortDirection = signal<SortDirection>(null);
+  readonly customerSearch = signal<string>('');
+
   private readonly unansweredLabels: Record<string, string> = {
     all: 'All Questions',
     true: 'Has Unanswered',
@@ -93,6 +124,41 @@ export class History implements OnInit {
   readonly signedInItemToString = (val: unknown): string => {
     return this.signedInLabels[String(val)] ?? 'All Users';
   };
+
+  // Processed sessions based on column sort & search
+  readonly displayedSessions = computed(() => {
+    const raw = this.data()?.items ?? [];
+    let result = [...raw];
+
+    // Column search on Customer
+    const query = this.customerSearch().trim().toLowerCase();
+    if (query) {
+      result = result.filter(
+        (s) =>
+          (s.customerName && s.customerName.toLowerCase().includes(query)) ||
+          (s.customerEmail && s.customerEmail.toLowerCase().includes(query)),
+      );
+    }
+
+    // Column sort
+    const col = this.sortColumn();
+    const dir = this.sortDirection();
+    if (col && dir) {
+      result.sort((a, b) => {
+        let diff = 0;
+        if (col === 'messages') {
+          diff = a.messageCount - b.messageCount;
+        } else if (col === 'date') {
+          const dateA = new Date(a.lastMessageAt || a.createdAt).getTime();
+          const dateB = new Date(b.lastMessageAt || b.createdAt).getTime();
+          diff = dateA - dateB;
+        }
+        return dir === 'asc' ? diff : -diff;
+      });
+    }
+
+    return result;
+  });
 
   // Temp form models
   searchInput = '';
@@ -130,6 +196,15 @@ export class History implements OnInit {
     this.loadSessions();
   }
 
+  onCustomerSearchChange(value: string) {
+    this.customerSearch.set(value);
+  }
+
+  onSortChange(col: 'messages' | 'date', direction: SortDirection) {
+    this.sortColumn.set(direction ? col : null);
+    this.sortDirection.set(direction);
+  }
+
   onUnansweredChange(val: string | null | undefined) {
     const v = val || 'all';
     this.unansweredFilterValue.set(v);
@@ -159,9 +234,13 @@ export class History implements OnInit {
   }
 
   changePage(newPage: number) {
-    if (newPage < 1) return;
+    if (newPage < 1) {
+      return;
+    }
     const totalPages = this.data()?.totalPages || 1;
-    if (newPage > totalPages) return;
+    if (newPage > totalPages) {
+      return;
+    }
 
     this.page.set(newPage);
     this.loadSessions();

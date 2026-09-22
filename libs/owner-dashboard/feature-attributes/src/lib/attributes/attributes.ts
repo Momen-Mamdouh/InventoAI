@@ -1,8 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { toast } from '@spartan/helm/sonner';
 import { extractErrorMessage } from '@invento/shared-util-error';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideDownload,
@@ -17,20 +23,43 @@ import {
   lucideEdit,
   lucideSettings2,
   lucideGripVertical,
+  lucideRefreshCw,
 } from '@ng-icons/lucide';
 import { HlmBadge } from '@spartan/helm/badge';
 import { HlmButton } from '@spartan/helm/button';
-import { HlmCheckboxImports } from '@spartan/helm/checkbox';
-import { HlmCardImports } from '@spartan/helm/card';
-import { HlmInputImports } from '@spartan/helm/input';
-import { HlmSelectImports } from '@spartan/helm/select';
+import { HlmCheckbox } from '@spartan/helm/checkbox';
+import { HlmCard } from '@spartan/helm/card';
+import { HlmInput } from '@spartan/helm/input';
+import {
+  HlmSelect,
+  HlmSelectContent,
+  HlmSelectItem,
+  HlmSelectPortal,
+  HlmSelectTrigger,
+  HlmSelectValue,
+} from '@spartan/helm/select';
 import { HlmSkeleton } from '@spartan/helm/skeleton';
-import { HlmTableImports } from '@spartan/helm/table';
-import { HlmSheetImports } from '@spartan/helm/sheet';
-import { HlmLabelImports } from '@spartan/helm/label';
+import {
+  HlmTable,
+  HlmTBody,
+  HlmTd,
+  HlmTh,
+  HlmTHead,
+  HlmTr,
+} from '@spartan/helm/table';
+import {
+  HlmSheet,
+  HlmSheetContent,
+  HlmSheetFooter,
+  HlmSheetHeader,
+  HlmSheetPortal,
+  HlmSheetTitle,
+} from '@spartan/helm/sheet';
+import { HlmLabel } from '@spartan/helm/label';
 import { HlmH1, HlmMuted, HlmSmall } from '@spartan/helm/typography';
-import { HlmTooltipImports } from '@spartan/helm/tooltip';
-import { TranslatePipe } from '@invento/shared-util-i18n';
+import { HlmTooltip } from '@spartan/helm/tooltip';
+import { HlmAlert, HlmAlertDescription } from '@spartan/helm/alert';
+import { LocaleService, TranslatePipe } from '@invento/shared-util-i18n';
 
 import {
   AttributeDisplayStyle,
@@ -38,9 +67,14 @@ import {
   ProductAttribute,
   ProductAttributeValue,
 } from '@invento/owner-dashboard-data-access-attribute';
-import { AttributeSearchPipe } from './attribute-search.pipe';
 import { DeleteConfirmDialog } from '@invento/owner-dashboard-ui-confirm-dialog';
 import { EmptyState } from '@invento/shared-ui-empty-state';
+import { Pagination } from '@invento/shared-ui-pagination';
+import {
+  TableHeaderCell,
+  TableColumnSortDirection,
+  TableColumnFilterOption,
+} from '@invento/shared-ui-table-header';
 
 @Component({
   selector: 'app-attributes',
@@ -49,23 +83,43 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
     NgIcon,
     HlmBadge,
     HlmButton,
-    HlmCardImports,
-    HlmInputImports,
-    HlmSelectImports,
-    DragDropModule,
-    AttributeSearchPipe,
+    HlmCard,
+    HlmInput,
+    HlmSelect,
+    HlmSelectTrigger,
+    HlmSelectValue,
+    HlmSelectContent,
+    HlmSelectItem,
+    HlmSelectPortal,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
     DeleteConfirmDialog,
     HlmSkeleton,
-    HlmTableImports,
-    HlmSheetImports,
-    HlmLabelImports,
+    HlmTable,
+    HlmTHead,
+    HlmTBody,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmSheet,
+    HlmSheetHeader,
+    HlmSheetTitle,
+    HlmSheetContent,
+    HlmSheetFooter,
+    HlmSheetPortal,
+    HlmLabel,
     HlmH1,
     HlmMuted,
     HlmSmall,
-    HlmTooltipImports,
+    HlmTooltip,
+    HlmAlert,
+    HlmAlertDescription,
     TranslatePipe,
-    HlmCheckboxImports,
+    HlmCheckbox,
     EmptyState,
+    Pagination,
+    TableHeaderCell,
   ],
   providers: [
     provideIcons({
@@ -81,6 +135,7 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
       lucideEdit,
       lucideSettings2,
       lucideGripVertical,
+      lucideRefreshCw,
     }),
   ],
   templateUrl: './attributes.html',
@@ -88,10 +143,119 @@ import { EmptyState } from '@invento/shared-ui-empty-state';
 })
 export class Attributes implements OnInit {
   private readonly attributeService = inject(AttributeService);
+  private readonly localeService = inject(LocaleService);
 
   readonly attributes = signal<ProductAttribute[]>([]);
   readonly isLoading = signal<boolean>(true);
+  readonly errorMessage = signal<string | null>(null);
   readonly searchQuery = signal('');
+
+  readonly page = signal(1);
+  readonly pageSize = signal(10);
+  readonly colNameSearch = signal('');
+  readonly colKeySearch = signal('');
+  readonly colFilterableFilter = signal('');
+  readonly colShowOnPageFilter = signal('');
+  readonly colDisplayStyleFilter = signal('');
+  readonly colValuesCountSort = signal<TableColumnSortDirection>('none');
+
+  readonly booleanFilterOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    { label: this.localeService.translate('attributes.yes') || 'Yes', value: 'true' },
+    { label: this.localeService.translate('attributes.no') || 'No', value: 'false' },
+  ]);
+
+  readonly displayStyleOptions = computed<TableColumnFilterOption[]>(() => [
+    { label: this.localeService.translate('common.all') || 'All', value: 'all' },
+    {
+      label: this.localeService.translate('attributes.style_list') || 'List',
+      value: AttributeDisplayStyle.List,
+    },
+    {
+      label: this.localeService.translate('attributes.style_dropdown') || 'Dropdown',
+      value: AttributeDisplayStyle.Dropdown,
+    },
+    {
+      label: this.localeService.translate('attributes.style_swatch') || 'Swatch',
+      value: AttributeDisplayStyle.Swatch,
+    },
+  ]);
+
+  readonly isColumnFilteredOrSorted = computed(
+    () =>
+      Boolean(this.colNameSearch().trim()) ||
+      Boolean(this.colKeySearch().trim()) ||
+      Boolean(this.colFilterableFilter()) ||
+      Boolean(this.colShowOnPageFilter()) ||
+      Boolean(this.colDisplayStyleFilter()) ||
+      this.colValuesCountSort() !== 'none',
+  );
+
+  readonly filteredAttributes = computed(() => {
+    let list = [...this.attributes()];
+    const query = this.searchQuery().trim().toLowerCase();
+    if (query) {
+      list = list.filter(
+        (a) =>
+          a.name.toLowerCase().includes(query) ||
+          a.key.toLowerCase().includes(query),
+      );
+    }
+    const nameSearch = this.colNameSearch().trim().toLowerCase();
+    if (nameSearch) {
+      list = list.filter((a) => a.name.toLowerCase().includes(nameSearch));
+    }
+    const keySearch = this.colKeySearch().trim().toLowerCase();
+    if (keySearch) {
+      list = list.filter((a) => a.key.toLowerCase().includes(keySearch));
+    }
+    const filterable = this.colFilterableFilter();
+    if (filterable && filterable !== 'all') {
+      const boolVal = filterable === 'true';
+      list = list.filter((a) => Boolean(a.isFilterable) === boolVal);
+    }
+    const showOnPage = this.colShowOnPageFilter();
+    if (showOnPage && showOnPage !== 'all') {
+      const boolVal = showOnPage === 'true';
+      list = list.filter((a) => Boolean(a.showOnProductPage) === boolVal);
+    }
+    const style = this.colDisplayStyleFilter();
+    if (style && style !== 'all') {
+      list = list.filter((a) => a.displayStyle === style);
+    }
+    const sort = this.colValuesCountSort();
+    if (sort === 'asc') {
+      list.sort((a, b) => (a.values?.length ?? 0) - (b.values?.length ?? 0));
+    } else if (sort === 'desc') {
+      list.sort((a, b) => (b.values?.length ?? 0) - (a.values?.length ?? 0));
+    }
+    return list;
+  });
+
+  readonly totalPages = computed(() => {
+    return Math.max(1, Math.ceil(this.filteredAttributes().length / this.pageSize()));
+  });
+
+  readonly paginatedAttributes = computed(() => {
+    const p = Math.min(this.page(), this.totalPages());
+    const start = (p - 1) * this.pageSize();
+    return this.filteredAttributes().slice(start, start + this.pageSize());
+  });
+
+  readonly pageRangeStart = computed(() => {
+    if (this.filteredAttributes().length === 0) {
+      return 0;
+    }
+    return (this.page() - 1) * this.pageSize() + 1;
+  });
+
+  readonly pageRangeEnd = computed(() => {
+    return Math.min(this.page() * this.pageSize(), this.filteredAttributes().length);
+  });
+
+  // Loading states for actions
+  readonly isSaving = signal<boolean>(false);
+  readonly isAddingValue = signal<boolean>(false);
 
   // Attribute Drawer State
   readonly isAttributeDrawerOpen = signal(false);
@@ -104,15 +268,9 @@ export class Attributes implements OnInit {
   attrIsFilterable = signal(true);
   attrShowOnProductPage = signal(true);
 
-  private readonly styleLabels: Record<string, string> = {
-    list: 'List',
-    dropdown: 'Dropdown',
-    swatch: 'Swatch',
-    chip: 'Chip',
-  };
-
   readonly styleItemToString = (value: unknown): string => {
-    return this.styleLabels[String(value).toLowerCase()] ?? 'List';
+    const key = String(value).toLowerCase();
+    return this.localeService.translate(`attributes.style_${key}`);
   };
 
   // Values Drawer State
@@ -136,6 +294,7 @@ export class Attributes implements OnInit {
 
   fetchAttributes(): void {
     this.isLoading.set(true);
+    this.errorMessage.set(null);
 
     this.attributeService.getAttributes().subscribe({
       next: (data: ProductAttribute[]) => {
@@ -144,6 +303,9 @@ export class Attributes implements OnInit {
       },
       error: (err: unknown) => {
         console.error('Failed to load attributes', err);
+        this.errorMessage.set(
+          extractErrorMessage(err, this.localeService.translate('attributes.error_fetch_failed')),
+        );
         this.isLoading.set(false);
       },
     });
@@ -176,33 +338,53 @@ export class Attributes implements OnInit {
   }
 
   onAttributeDrawerStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.closeAttributeDrawer();
+    if (state === 'closed') {
+      this.closeAttributeDrawer();
+    }
   }
 
   saveAttribute(): void {
+    const name = this.attrName().trim();
+    if (!name) {
+      toast.error(this.localeService.translate('attributes.toast_name_required'));
+      return;
+    }
+
+    this.isSaving.set(true);
     const isEdit = this.editingAttribute();
 
     if (isEdit) {
       this.attributeService
         .updateAttribute(isEdit.id, {
-          name: this.attrName(),
-          key: this.attrKey(),
+          name,
+          key: this.attrKey().trim() || undefined,
           displayStyle: this.attrStyle(),
           isFilterable: this.attrIsFilterable(),
           showOnProductPage: this.attrShowOnProductPage(),
         })
         .subscribe({
           next: () => {
+            this.isSaving.set(false);
             this.fetchAttributes();
             this.closeAttributeDrawer();
+            toast.success(this.localeService.translate('attributes.toast_updated'));
           },
-          error: (err) => console.error('Failed to update attribute', err),
+          error: (err: unknown) => {
+            this.isSaving.set(false);
+            console.error('Failed to update attribute', err);
+            toast.error(
+              extractErrorMessage(
+                err,
+                this.localeService.translate('attributes.toast_update_error'),
+              ),
+            );
+          },
         });
     } else {
       this.attributeService
         .createAttribute({
-          name: this.attrName(),
-          key: this.attrKey() || undefined,
+          name,
+          key: this.attrKey().trim() || undefined,
           displayStyle: this.attrStyle(),
           isFilterable: this.attrIsFilterable(),
           showOnProductPage: this.attrShowOnProductPage(),
@@ -210,10 +392,21 @@ export class Attributes implements OnInit {
         })
         .subscribe({
           next: () => {
+            this.isSaving.set(false);
             this.fetchAttributes();
             this.closeAttributeDrawer();
+            toast.success(this.localeService.translate('attributes.toast_created'));
           },
-          error: (err) => console.error('Failed to create attribute', err),
+          error: (err: unknown) => {
+            this.isSaving.set(false);
+            console.error('Failed to create attribute', err);
+            toast.error(
+              extractErrorMessage(
+                err,
+                this.localeService.translate('attributes.toast_create_error'),
+              ),
+            );
+          },
         });
     }
   }
@@ -232,16 +425,24 @@ export class Attributes implements OnInit {
         this.fetchAttributes();
         this.isDeleteAttributeModalOpen.set(false);
         this.attributeToDelete.set(null);
-        toast.success('Attribute deleted successfully');
+        toast.success(this.localeService.translate('attributes.toast_deleted'));
       },
-      error: (err) => {
+      error: (err: { status?: number; error?: { message?: string } }) => {
         console.error('Failed to delete attribute', err);
         this.isDeleteAttributeModalOpen.set(false);
 
         if (err.status === 409) {
-          toast.error(err.error?.message || 'Cannot delete this attribute because it is in use.');
+          toast.error(
+            err.error?.message ||
+              this.localeService.translate('attributes.toast_delete_in_use'),
+          );
         } else {
-          toast.error(extractErrorMessage(err, 'Failed to delete attribute'));
+          toast.error(
+            extractErrorMessage(
+              err,
+              this.localeService.translate('attributes.toast_delete_error'),
+            ),
+          );
         }
       },
     });
@@ -267,26 +468,47 @@ export class Attributes implements OnInit {
   }
 
   onValuesDrawerStateChanged(state: 'open' | 'closed'): void {
-    if (state === 'closed') this.closeValuesDrawer();
+    if (state === 'closed') {
+      this.closeValuesDrawer();
+    }
   }
 
   addValue(): void {
     const attr = this.activeAttributeForValues();
     if (!attr) return;
 
+    const valName = this.newValueName().trim();
+    if (!valName) {
+      toast.error(this.localeService.translate('attributes.toast_value_name_required'));
+      return;
+    }
+
+    this.isAddingValue.set(true);
+
     this.attributeService
       .addAttributeValue(attr.id, {
-        value: this.newValueName(),
-        slug: this.newValueSlug() || undefined,
+        value: valName,
+        slug: this.newValueSlug().trim() || undefined,
       })
       .subscribe({
         next: (updatedAttr) => {
+          this.isAddingValue.set(false);
           this.activeAttributeForValues.set(updatedAttr);
           this.newValueName.set('');
           this.newValueSlug.set('');
           this.fetchAttributes();
+          toast.success(this.localeService.translate('attributes.toast_value_added'));
         },
-        error: (err) => console.error('Failed to add value', err),
+        error: (err: unknown) => {
+          this.isAddingValue.set(false);
+          console.error('Failed to add value', err);
+          toast.error(
+            extractErrorMessage(
+              err,
+              this.localeService.translate('attributes.toast_value_add_error'),
+            ),
+          );
+        },
       });
   }
 
@@ -310,16 +532,24 @@ export class Attributes implements OnInit {
           this.activeAttributeForValues.set(updatedAttr);
           this.isDeleteValueModalOpen.set(false);
           this.valueToDelete.set(null);
-          toast.success('Value deleted successfully');
+          toast.success(this.localeService.translate('attributes.toast_value_deleted'));
         });
       },
-      error: (err) => {
+      error: (err: { status?: number; error?: { message?: string } }) => {
         console.error('Failed to delete value', err);
         this.isDeleteValueModalOpen.set(false);
         if (err.status === 409) {
-          toast.error(err.error?.message || 'Cannot delete this value because it is in use.');
+          toast.error(
+            err.error?.message ||
+              this.localeService.translate('attributes.toast_value_delete_in_use'),
+          );
         } else {
-          toast.error(extractErrorMessage(err, 'Failed to delete value'));
+          toast.error(
+            extractErrorMessage(
+              err,
+              this.localeService.translate('attributes.toast_value_delete_error'),
+            ),
+          );
         }
       },
     });
@@ -331,6 +561,10 @@ export class Attributes implements OnInit {
   }
 
   dropAttribute(event: CdkDragDrop<ProductAttribute[]>): void {
+    if (this.isColumnFilteredOrSorted() || this.page() !== 1) {
+      return;
+    }
+    const previousList = [...this.attributes()];
     const currentList = [...this.attributes()];
     moveItemInArray(currentList, event.previousIndex, event.currentIndex);
     this.attributes.set(currentList);
@@ -338,7 +572,11 @@ export class Attributes implements OnInit {
     const reorderItems = currentList.map((attr, index) => ({ id: attr.id, position: index }));
     this.attributeService.reorderAttributes({ items: reorderItems }).subscribe({
       next: (updatedAttrs) => this.attributes.set(updatedAttrs),
-      error: (err) => console.error('Failed to reorder attributes', err),
+      error: (err: unknown) => {
+        console.error('Failed to reorder attributes', err);
+        this.attributes.set(previousList);
+        toast.error(this.localeService.translate('attributes.toast_reorder_error'));
+      },
     });
   }
 
@@ -346,18 +584,23 @@ export class Attributes implements OnInit {
     const attr = this.activeAttributeForValues();
     if (!attr) return;
 
+    const previousValues = [...attr.values];
     const currentValues = [...attr.values];
     moveItemInArray(currentValues, event.previousIndex, event.currentIndex);
-    attr.values = currentValues;
-    this.activeAttributeForValues.set(attr);
+    const updatedAttr = { ...attr, values: currentValues };
+    this.activeAttributeForValues.set(updatedAttr);
 
     const reorderItems = currentValues.map((val, index) => ({ id: val.id, position: index }));
     this.attributeService.reorderAttributeValues(attr.id, { items: reorderItems }).subscribe({
-      next: (updatedAttr) => {
-        this.activeAttributeForValues.set(updatedAttr);
+      next: (savedAttr) => {
+        this.activeAttributeForValues.set(savedAttr);
         this.fetchAttributes();
       },
-      error: (err) => console.error('Failed to reorder values', err),
+      error: (err: unknown) => {
+        console.error('Failed to reorder values', err);
+        this.activeAttributeForValues.set({ ...attr, values: previousValues });
+        toast.error(this.localeService.translate('attributes.toast_reorder_error'));
+      },
     });
   }
 }

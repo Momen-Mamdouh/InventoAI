@@ -1,0 +1,201 @@
+<hlm-dialog [state]="'open'" (stateChanged)="onStateChanged($event)">
+  <hlm-dialog-content
+    *brnDialogContent="let ctx"
+    class="flex flex-col gap-0 p-0 sm:max-w-2xl max-h-[100dvh] sm:max-h-[90vh] overflow-hidden"
+  >
+    <hlm-dialog-header class="p-6 pb-4">
+      <h3 hlmDialogTitle class="text-lg font-bold text-foreground">
+        {{ 'purchase_requests.create_title' | translate }}
+      </h3>
+      <p hlmDialogDescription class="text-xs sm:text-sm text-muted-foreground mt-1">
+        {{ 'purchase_requests.create_desc' | translate }}
+      </p>
+    </hlm-dialog-header>
+
+    <div class="flex-1 min-h-0 overflow-y-auto px-6 py-2">
+      @if (loading()) {
+        <div class="space-y-4 py-3">
+          <hlm-skeleton class="w-full h-10 rounded-lg" />
+          <hlm-skeleton class="w-full h-10 rounded-lg" />
+          <hlm-skeleton class="w-full h-24 rounded-lg" />
+        </div>
+      } @else {
+        <div class="gap-4 grid sm:grid-cols-2">
+          <!-- Product Selector -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="createProductSelect" class="font-medium text-xs sm:text-sm">
+              {{ 'purchase_requests.create_field_product' | translate }}
+            </label>
+            <hlm-select
+              [value]="selectedProductId()"
+              (valueChange)="onProductChange($event)"
+              [itemToString]="productItemToString"
+              class="w-full"
+            >
+              <hlm-select-trigger buttonId="createProductSelect" class="w-full h-10 bg-background text-xs sm:text-sm">
+                <hlm-select-value [placeholder]="'purchase_requests.create_field_product_placeholder' | translate" />
+              </hlm-select-trigger>
+              <hlm-select-content *hlmSelectPortal>
+                @for (product of products(); track product.id) {
+                  <hlm-select-item [value]="product.id">{{ product.title }}</hlm-select-item>
+                }
+              </hlm-select-content>
+            </hlm-select>
+          </div>
+
+          <!-- Variant Selector -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="createVariantSelect" class="font-medium text-xs sm:text-sm">
+              {{ 'purchase_requests.create_field_variant' | translate }}
+            </label>
+            <hlm-select
+              [value]="selectedVariantId()"
+              (valueChange)="onVariantChange($event)"
+              [itemToString]="variantItemToString"
+              class="w-full"
+            >
+              <hlm-select-trigger buttonId="createVariantSelect" class="w-full h-10 bg-background text-xs sm:text-sm">
+                <hlm-select-value [placeholder]="'purchase_requests.create_field_variant_placeholder' | translate" />
+              </hlm-select-trigger>
+              <hlm-select-content *hlmSelectPortal>
+                @for (variant of selectedVariantOptions(); track variant.id) {
+                  <hlm-select-item [value]="variant.id">
+                    {{ variant.sku }} — {{ variantLabel(variant.attributeValues) }}
+                  </hlm-select-item>
+                }
+              </hlm-select-content>
+            </hlm-select>
+          </div>
+
+          <!-- Quantity -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="create-field-quantity-input" class="font-medium text-xs sm:text-sm">
+              {{ 'purchase_requests.create_field_quantity' | translate }}
+            </label>
+            <input
+              hlmInput
+              id="create-field-quantity-input"
+              type="number"
+              min="1"
+              [ngModel]="quantity()"
+              (ngModelChange)="quantity.set($event)"
+              class="w-full h-10"
+            />
+          </div>
+
+          <!-- Deadline -->
+          <div class="space-y-1.5">
+            <label hlmLabel for="create-field-deadline-input" class="font-medium text-xs sm:text-sm">
+              {{ 'purchase_requests.create_field_deadline' | translate }}
+            </label>
+            <input
+              hlmInput
+              id="create-field-deadline-input"
+              type="number"
+              min="1"
+              max="365"
+              [ngModel]="deadline()"
+              (ngModelChange)="deadline.set($event)"
+              [placeholder]="'purchase_requests.create_field_deadline_placeholder' | translate"
+              class="w-full h-10"
+            />
+          </div>
+        </div>
+
+        <!-- Active Suppliers Multi-Select Checkboxes -->
+        <div class="mt-5">
+          <div class="flex items-center justify-between mb-2">
+            <p class="font-semibold text-xs sm:text-sm text-foreground">
+              {{ 'purchase_requests.create_field_suppliers' | translate }}
+              @if (suppliers().length > 0) {
+                <span class="text-xs text-muted-foreground font-normal ms-1">
+                  ({{ selectedSupplierIds().length }}/{{ suppliers().length }})
+                </span>
+              }
+            </p>
+            @if (suppliers().length > 0) {
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  class="text-xs text-primary hover:underline font-medium cursor-pointer"
+                  (click)="selectAllSuppliers()"
+                >
+                  {{ 'purchase_requests.create_suppliers_select_all' | translate }}
+                </button>
+                <span class="text-xs text-muted-foreground">·</span>
+                <button
+                  type="button"
+                  class="text-xs text-muted-foreground hover:text-foreground hover:underline font-medium cursor-pointer"
+                  (click)="deselectAllSuppliers()"
+                >
+                  {{ 'purchase_requests.create_suppliers_deselect_all' | translate }}
+                </button>
+              </div>
+            }
+          </div>
+          <div class="gap-2 grid sm:grid-cols-2 p-2.5 border border-border rounded-xl max-h-48 overflow-y-auto bg-muted/20">
+            @for (supplier of suppliers(); track supplier.id) {
+              <label
+                class="flex items-center gap-3 hover:bg-card p-2.5 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-border select-none"
+                [for]="'create-supplier-' + supplier.id"
+              >
+                <hlm-checkbox
+                  [inputId]="'create-supplier-' + supplier.id"
+                  [checked]="selectedSupplierIds().includes(supplier.id)"
+                  (checkedChange)="toggleSupplier(supplier.id)"
+                />
+                <span class="min-w-0">
+                  <span class="block font-medium text-xs sm:text-sm truncate">{{ supplier.name }}</span>
+                  <span class="block text-muted-foreground text-[11px] truncate">{{ supplier.contactEmail }}</span>
+                </span>
+              </label>
+            } @empty {
+              <p class="col-span-2 py-4 text-center text-xs text-muted-foreground">
+                {{ 'purchase_requests.create_no_suppliers' | translate }}
+              </p>
+            }
+          </div>
+        </div>
+
+        <!-- Internal Note -->
+        <div class="mt-5 space-y-1.5">
+          <label hlmLabel for="create-field-note-input" class="font-medium text-xs sm:text-sm">
+            {{ 'purchase_requests.create_field_note' | translate }}
+          </label>
+          <textarea
+            hlmTextarea
+            id="create-field-note-input"
+            class="bg-background w-full min-h-20 text-xs sm:text-sm p-3 rounded-lg border-border focus:ring-2 focus:ring-primary/20"
+            [ngModel]="note()"
+            (ngModelChange)="note.set($event)"
+            maxlength="500"
+            [placeholder]="'purchase_requests.create_field_note_placeholder' | translate"
+          ></textarea>
+        </div>
+      }
+    </div>
+
+    @if (!loading()) {
+      <hlm-dialog-footer class="p-6 pt-4 border-t border-border flex items-center justify-end gap-2">
+        <button hlmBtn variant="outline" size="sm" class="h-9 px-4 text-xs font-medium" (click)="onCancel()">
+          {{ 'purchase_requests.btn_cancel' | translate }}
+        </button>
+        <button
+          hlmBtn
+          size="sm"
+          class="h-9 px-4 text-xs font-semibold gap-1.5 shadow-sm"
+          [disabled]="saving() || !selectedVariantId() || selectedSupplierIds().length === 0"
+          (click)="onSubmit()"
+        >
+          @if (saving()) {
+            <hlm-spinner class="text-[14px]" />
+            <span>{{ 'purchase_requests.create_btn_submitting' | translate }}</span>
+          } @else {
+            <ng-icon name="lucidePlus" size="14" />
+            <span>{{ 'purchase_requests.create_btn_submit' | translate }}</span>
+          }
+        </button>
+      </hlm-dialog-footer>
+    }
+  </hlm-dialog-content>
+</hlm-dialog>

@@ -8,14 +8,12 @@
           <ng-icon name="lucideTrash2" size="1.1rem" />
         </div>
         <div class="space-y-1">
-          <h2 hlmAlertDialogTitle>{{ title }}</h2>
+          <h2 hlmAlertDialogTitle>{{ title | translate }}</h2>
           <p hlmAlertDialogDescription>
             @if (description) {
               {{ description }}
             } @else {
-              Are you sure you want to delete
-              <span class="font-semibold text-foreground">"{{ name }}"</span>? This action cannot be
-              undone.
+              {{ 'confirm_dialog.delete_desc' | translate: { name: name } }}
             }
           </p>
         </div>
@@ -23,13 +21,13 @@
     </hlm-alert-dialog-header>
 
     <hlm-alert-dialog-footer>
-      <button hlmAlertDialogCancel (click)="canceled.emit()">Cancel</button>
+      <button hlmAlertDialogCancel (click)="canceled.emit()">{{ 'confirm_dialog.cancel' | translate }}</button>
       <button
         hlmAlertDialogAction
         class="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
         (click)="confirmed.emit()"
       >
-        Delete
+        {{ 'confirm_dialog.delete' | translate }}
       </button>
     </hlm-alert-dialog-footer>
   </hlm-alert-dialog-content>
