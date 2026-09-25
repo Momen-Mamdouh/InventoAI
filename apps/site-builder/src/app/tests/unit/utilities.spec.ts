@@ -476,7 +476,7 @@ describe('SiteBuilder Utilities & Helpers', () => {
       expect(config.isProduction).toBe(true);
       expect(config.inventoLoginUrl).toBe('https://auth.invento.ai/login');
       expect(config.dashboardUrl).toBe('https://dash.invento.ai');
-      expect(config.storeBaseUrl).toBe('https://invento-user-site.vercel.app');
+      expect(config.storeBaseUrl).toBe('https://invento-user-site-mu.vercel.app');
     });
   });
 
